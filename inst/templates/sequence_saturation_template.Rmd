@@ -1,28 +1,30 @@
 
 ### {{ title }}
-<!-- Component created on {{ date }} -->
 
-```{r setup}
+<!-- Component created on 2019-05-03 15:14:07 -->
+
+```{r}
 {{ env_id }} = readRDS("envs/{{ env_id }}.rds")
 
 is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
 ```
 
 ```{r, eval=!is_shiny}
+
 x_value <- {{ env_id }}$x[[1]]
-x_title <- names({{ env_id }}$x)
+x_title <- names({{ env_id }}$x[1])
 
 y_value <- {{ env_id }}$y[[1]]
-y_title <- names({{ env_id }}$y)
+y_title <- names({{ env_id }}$y[1])
 
 if(!is.null({{ env_id }}$colour_by)) {
   colour_value <- {{ env_id }}$colour_by[[1]]
-} 
+}
 
-p <- plotly::plot_ly(data.frame(x_value, y_value, colour_value =  I("black")),
+p <- plotly::plot_ly(data.frame(x_value, y_value, colour_value = I("black")),
              x = x_value,
              y = y_value,
-             colour = colour_value
+             color = colour_value
 )
 p <- plotly::layout(p,
             xaxis = list(title = x_title),
@@ -36,28 +38,29 @@ p
 ui_list <- list()
 # selection field for x
 if ({{ env_id }}$x_selection){
-ui_list <- rlist::list.append(ui_list,
-selectInput("select_x_{{ env_id }}", label = "Select data for x axis:",
-          choices = names({{ env_id }}$x)))
+  ui_list <- rlist::list.append(ui_list,
+  selectInput("select_x_{{ env_id }}", label = "Select data for x axis:",
+              choices = names({{ env_id }}$x)))
 }
 
 # selection field for y
 if ({{ env_id }}$y_selection){
-ui_list <- rlist::list.append(ui_list,
-selectInput("select_y_{{ env_id }}", label = "Select data for y axis:",
-          choices = names({{ env_id }}$y)))
+  ui_list <- rlist::list.append(ui_list,
+  selectInput("select_y_{{ env_id }}", label = "Select data for y axis:",
+              choices = names({{ env_id }}$y)))
 }
 
 # selection field for colour_by
-if ({{ env_id }}$colour_selection){
-ui_list <- rlist::list.append(ui_list,
-selectInput("select_colour_{{ env_id }}", label = "Select colouring:",
-          choices = names({{ env_id }}$colour_by)))
+if ({{ env_id }}$colour_by_selection){
+  ui_list <- rlist::list.append(ui_list,
+  selectInput("select_colour_{{ env_id }}", label = "Select colouring:",
+              choices = names({{ env_id }}$colour_by)))
 }
 
 fillCol(flex = c(NA, 1),
         do.call("inputPanel", ui_list),
-        plotly::plotlyOutput("plot_{{ env_id }}", height = "100%"))
+        plotly::plotlyOutput("plot_{{ env_id }}", height = "100%")
+        )
 
 output$plot_{{ env_id }} <- plotly::renderPlotly({
 
@@ -77,16 +80,16 @@ output$plot_{{ env_id }} <- plotly::renderPlotly({
     y_title <- input$select_y_{{ env_id }}
   }
 
-  if (!{{ env_id }}$colour_selection){
+  if (!{{ env_id }}$colour_by_selection){
     colour_value <- {{ env_id }}$colour_by[[1]]
   } else {
     colour_value <- {{ env_id }}$colour_by[[input$select_colour_{{ env_id }}]]
   }
 
-  p <- plotly::plot_ly(data.frame(x_value, y_value, colour_value),
+  p <- plotly::plot_ly(data.frame(x_value, y_value, colour_value = I("black")),
                x = x_value,
                y = y_value,
-               colour = colour_value
+               color = colour_value
   )
   p <- plotly::layout(p,
               xaxis = list(title = x_title),
