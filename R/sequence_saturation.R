@@ -3,11 +3,11 @@
 #' @param object A \linkS4class{i2dash::i2dashboard} object.
 #' @param x Numeric values mapped to the x-axis. In case of a nested list, a dropdown menu will be provided in the interactive mode.
 #' @param y Numeric values mapped to the y-axis. In case of a nested list, a dropdown menu will be provided in the interactive mode.
-#' @param coulor_by A factor that will be mapped to colors.In case of a nested list, a dropdown menu will be provided in the interactive mode.
+#' @param coulor_by A factor that will be mapped to colours.In case of a nested list, a dropdown menu will be provided in the interactive mode.
 #' @param title A title that will be displayed on top.
 #'
 #' @return A string containing markdown code for the rendered textbox
-render_sequence_saturation <- function(object, x, y, colour_by = NULL, title = "Sequencing saturation") {
+sequence_saturation <- function(object, x, y, colour_by = NULL, title = "Sequencing saturation") {
   # Create random env id
   env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
 
@@ -15,7 +15,7 @@ render_sequence_saturation <- function(object, x, y, colour_by = NULL, title = "
   .validate_input(object@workdir, env_id, x, y, colour_by)
 
   timestamp <- Sys.time()
-  expanded_component <- knitr::knit_expand(file = system.file("templates", "sequence_saturation_template.Rmd", package = "i2dash"), title = title, env_id = env_id, date = timestamp)
+  expanded_component <- knitr::knit_expand(file = system.file("templates", "sequence_saturation_template.Rmd", package = "i2dash.scrnaseq"), title = title, env_id = env_id, date = timestamp)
   return(expanded_component)
 }
 
@@ -46,4 +46,5 @@ render_sequence_saturation <- function(object, x, y, colour_by = NULL, title = "
 
   # save environment as rds-object
   saveRDS(env, file = file.path(workdir, "envs", paste0(env_id, ".rds")))
+  print("validation TRUE")
 }

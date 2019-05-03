@@ -6,7 +6,7 @@
 #' @param color_by A list with the color_by values. If it is a nested list, a dropdown-field will be provided in the interactive mode.
 #'
 #' @return A string containing markdown code for the rendered textbox
-render_multiplot <- function(object, plot_title, x, y, color_by) {
+multiplot <- function(object, plot_title, x, y, color_by) {
 
   env_id <- .create_id()
   # validate input, create environment variables, save environment object

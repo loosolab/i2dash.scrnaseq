@@ -5,57 +5,39 @@
 #' @param y A list with the y-axis values. If it is a nested list, a dropdown-field will be provided in the interactive mode.(Needs to be categorial. Horizontal violinplots are not possible.)
 #'
 #' @return A string containing markdown code for the rendered textbox
-render_features_by_factors <- function(object, plot_title, x, y) {
+features_by_factors <- function(object, x, y, title = "Features by factor") {
+  # Create random env id
+  env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
 
-  env_id <- .create_id()
   # validate input, create environment variables, save environment object
-  .validate_input_ff(object, env_id, x, y)
+  .validate_input(object@workdir, env_id, x, y)
+
   timestamp <- Sys.time()
-  expanded_component <- knitr::knit_expand(file = system.file("templates", "features_by_factors_template.Rmd", package = "i2dash"), plot_title = plot_title, env_id = env_id, date = timestamp)
+  expanded_component <- knitr::knit_expand(file = system.file("templates", "features_by_factors_template.Rmd", package = "i2dash"), title = title, env_id = env_id, date = timestamp)
   return(expanded_component)
 }
 
-.create_id <- function(n = 1) {
-  a <- do.call(paste0, replicate(5, sample(LETTERS, n, TRUE), FALSE))
-  paste0(a, sprintf("%04d", sample(9999, n, TRUE)), sample(LETTERS, n, TRUE))
-}
-
-.validate_input_ff <- function(object, env_id, x, y) {
+.validate_input <- function(workdir, env_id, x, y) {
   env <- new.env()
   env$x_selection <- FALSE
   env$y_selection <- FALSE
 
-  # validate x and create environment variables
-  if(is.list(x) & length(x) == 1) {
-    if (is.factor(x[[1]])){
-      env$x <- x
-    } else {
-      stop("x should contain factors")
-    }
+  # Create lists if needed
+  if(!is.list(x)) x <- list(x = x)
+  if(!is.list(y)) y <- list(y = y)
 
-  } else if (is.list(x) & length(x) > 1) {
-    for (i in length(x)){
-      if (is.factor(x[[i]])){
-        env$x_selection <- TRUE
-        env$x <- x
-      } else {
-        stop("x should contain only factors")
-      }
-    }
-  } else if (!is.list(x) | (is.list(x) & length(x) == 0)){
-    stop("x needs to be a named list with at least one element")
-  }
+  # Check validity
+  if(!all(sapply(x, is.numeric))) stop("x should only contain numeric values.")
+  if(!all(sapply(y, is.numeric))) stop("y should only contain numeric values.")
+  if(!all(sapply(x, is.factor))) stop("y should only contain factorial values.")
 
-  # validate y and create environment variables
-  if(is.list(y) & length(y) == 1) {
-    env$y <- y
-  } else if (is.list(y) & length(y) > 1) {
-    env$y_selection <- TRUE
-    env$y <- y
-  } else if (!is.list(y) | (is.list(y) & length(y) == 0)){
-    stop("y needs to be a named list with at least one element")
-  }
+  # Add objects to env
+  env$x <- x
+  env$x_selection <- length(env$x) > 1
+
+  env$y <- y
+  env$y_selection <- length(env$y) > 1
 
   # save environment as rds-object
-  saveRDS(env, file = file.path(object@workdir, "envs", sprintf("%s.rds", env_id)))
+  saveRDS(env, file = file.path(workdir, "envs", paste0(env_id, ".rds")))
 }
