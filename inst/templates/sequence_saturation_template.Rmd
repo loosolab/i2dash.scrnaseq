@@ -9,17 +9,56 @@ is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
 ```
 
 ```{r, eval=!is_shiny}
+x_value <- {{ env_id }}$x[[1]]
+x_title <- names({{ env_id }}$x)
+
+y_value <- {{ env_id }}$y[[1]]
+y_title <- names({{ env_id }}$y)
+
 if(!is.null({{ env_id }}$colour_by)) {
-  data <- data.frame(x = {{ env_id }}$x[[1]], y = {{ env_id }}$y[[1]], colour_by = {{ env_id }}$colour_by[[1]])
-  highcharter::hchart(data, "scatter", highcharter::hcaes(x = x, y = y, group = colour_by))
-} else {
-  data <- data.frame(x = {{ env_id }}$x[[1]], y = {{ env_id }}$y[[1]])
-  highcharter::hchart(data, "scatter", highcharter::hcaes(x = x, y = y))
-}
+  colour_value <- {{ env_id }}$colour_by[[1]]
+} 
+
+p <- plotly::plot_ly(data.frame(x_value, y_value, colour_value =  I("black")),
+             x = x_value,
+             y = y_value,
+             colour = colour_value
+)
+p <- plotly::layout(p,
+            xaxis = list(title = x_title),
+            yaxis = list(title = y_title))
+p
+
 ```
 
 ```{r, eval=is_shiny}
-plotly::plotlyOutput("plot_{{ env_id }}")
+
+ui_list <- list()
+# selection field for x
+if ({{ env_id }}$x_selection){
+ui_list <- rlist::list.append(ui_list,
+selectInput("select_x_{{ env_id }}", label = "Select data for x axis:",
+          choices = names({{ env_id }}$x)))
+}
+
+# selection field for y
+if ({{ env_id }}$y_selection){
+ui_list <- rlist::list.append(ui_list,
+selectInput("select_y_{{ env_id }}", label = "Select data for y axis:",
+          choices = names({{ env_id }}$y)))
+}
+
+# selection field for colour_by
+if ({{ env_id }}$colour_selection){
+ui_list <- rlist::list.append(ui_list,
+selectInput("select_colour_{{ env_id }}", label = "Select colouring:",
+          choices = names({{ env_id }}$colour_by)))
+}
+
+fillCol(flex = c(NA, 1),
+        do.call("inputPanel", ui_list),
+        plotly::plotlyOutput("plot_{{ env_id }}", height = "100%"))
+
 output$plot_{{ env_id }} <- plotly::renderPlotly({
 
   if (!{{ env_id }}$x_selection){
@@ -38,47 +77,27 @@ output$plot_{{ env_id }} <- plotly::renderPlotly({
     y_title <- input$select_y_{{ env_id }}
   }
 
-  if (!{{ env_id }}$color_selection){
-    color_value <- {{ env_id }}$color_by[[1]]
+  if (!{{ env_id }}$colour_selection){
+    colour_value <- {{ env_id }}$colour_by[[1]]
   } else {
-    color_value <- {{ env_id }}$color_by[[input$select_color_{{ env_id }}]]
+    colour_value <- {{ env_id }}$colour_by[[input$select_colour_{{ env_id }}]]
   }
 
-  p <- plotly::plot_ly(data.frame(x_value, y_value, color_value),
+  p <- plotly::plot_ly(data.frame(x_value, y_value, colour_value),
                x = x_value,
                y = y_value,
-               color = color_value
+               colour = colour_value
   )
   p <- plotly::layout(p,
               xaxis = list(title = x_title),
               yaxis = list(title = y_title))
   p
 })
+
 ```
 
 ***
 
-```{r, eval=is_shiny}
-# selection field for x
-if ({{ env_id }}$x_selection){
-  selectInput("select_x_{{ env_id }}", label = "Select data for x axis:",
-            choices = names({{ env_id }}$x))
-}
-
-# selection field for y
-if ({{ env_id }}$y_selection){
-  selectInput("select_y_{{ env_id }}", label = "Select data for y axis:",
-            choices = names({{ env_id }}$y))
-}
-
-# selection field for color_by
-if ({{ env_id }}$color_selection){
-  selectInput("select_color_{{ env_id }}", label = "Select experimental factor for coloring:",
-            choices = names({{ env_id }}$color_by))
-}
-```
-
 Plot description:
 
 Sequencing is called *saturated* when generating more sequencing output from a cDNA library does not substantially increase the number of detected features in a sample. Since the number of detected features can act as a technical confounder, and thereby drive substructure in the data, it is advisable to aim for a saturated sequencing by either adding more sequencing output or decreasing the number of samples until saturation is achieved. [@zhang_one_2018] gives advise on how to choose the optimal cell number given a fixed sequencing budget
-

@@ -26,8 +26,8 @@ render_sequence_saturation <- function(object, x, y, colour_by = NULL, title = "
   env$colour_by_selection <- FALSE
 
   # Create lists if needed
-  if(!is.list(x)) x <- list(x)
-  if(!is.list(y)) y <- list(y)
+  if(!is.list(x)) x <- list(x = x)
+  if(!is.list(y)) y <- list(y = y)
   if(!is.list(colour_by)) colour_by <- list(colour_by)
 
   # Check validity

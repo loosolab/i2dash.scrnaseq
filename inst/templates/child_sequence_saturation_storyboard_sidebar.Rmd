@@ -1,0 +1,26 @@
+
+***
+
+```{r, eval=is_shiny}
+# selection field for x
+if ({{ env_id }}$x_selection){
+  selectInput("select_x_{{ env_id }}", label = "Select data for x axis:",
+            choices = names({{ env_id }}$x))
+}
+
+# selection field for y
+if ({{ env_id }}$y_selection){
+  selectInput("select_y_{{ env_id }}", label = "Select data for y axis:",
+            choices = names({{ env_id }}$y))
+}
+
+# selection field for color_by
+if ({{ env_id }}$color_selection){
+  selectInput("select_color_{{ env_id }}", label = "Select experimental factor for coloring:",
+            choices = names({{ env_id }}$color_by))
+}
+```
+
+Plot description:
+
+Sequencing is called *saturated* when generating more sequencing output from a cDNA library does not substantially increase the number of detected features in a sample. Since the number of detected features can act as a technical confounder, and thereby drive substructure in the data, it is advisable to aim for a saturated sequencing by either adding more sequencing output or decreasing the number of samples until saturation is achieved. [@zhang_one_2018] gives advise on how to choose the optimal cell number given a fixed sequencing budget
