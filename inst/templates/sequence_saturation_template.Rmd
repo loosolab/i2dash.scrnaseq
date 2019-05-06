@@ -1,7 +1,7 @@
 
 ### {{ title }}
 
-<!-- Component created on 2019-05-03 15:14:07 -->
+<!-- Component created on {{ date }} -->
 
 ```{r}
 {{ env_id }} = readRDS("envs/{{ env_id }}.rds")
@@ -104,3 +104,5 @@ output$plot_{{ env_id }} <- plotly::renderPlotly({
 Plot description:
 
 Sequencing is called *saturated* when generating more sequencing output from a cDNA library does not substantially increase the number of detected features in a sample. Since the number of detected features can act as a technical confounder, and thereby drive substructure in the data, it is advisable to aim for a saturated sequencing by either adding more sequencing output or decreasing the number of samples until saturation is achieved. [@zhang_one_2018] gives advise on how to choose the optimal cell number given a fixed sequencing budget
+
+

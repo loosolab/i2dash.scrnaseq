@@ -12,14 +12,14 @@ sequence_saturation <- function(object, x, y, colour_by = NULL, title = "Sequenc
   env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
 
   # validate input, create environment variables, save environment object
-  .validate_input(object@workdir, env_id, x, y, colour_by)
+  .validate_input_sequence_saturation(object@workdir, env_id, x, y, colour_by)
 
   timestamp <- Sys.time()
   expanded_component <- knitr::knit_expand(file = system.file("templates", "sequence_saturation_template.Rmd", package = "i2dash.scrnaseq"), title = title, env_id = env_id, date = timestamp)
   return(expanded_component)
 }
 
-.validate_input <- function(workdir, env_id, x, y, colour_by) {
+.validate_input_sequence_saturation <- function(workdir, env_id, x, y, colour_by) {
   env <- new.env()
   env$x_selection <- FALSE
   env$y_selection <- FALSE

@@ -10,14 +10,14 @@ features_by_factors <- function(object, x, y, title = "Features by factor") {
   env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
 
   # validate input, create environment variables, save environment object
-  .validate_input(object@workdir, env_id, x, y)
+  .validate_input_features_by_factors(object@workdir, env_id, x, y)
 
   timestamp <- Sys.time()
-  expanded_component <- knitr::knit_expand(file = system.file("templates", "features_by_factors_template.Rmd", package = "i2dash"), title = title, env_id = env_id, date = timestamp)
+  expanded_component <- knitr::knit_expand(file = system.file("templates", "features_by_factors_template.Rmd", package = "i2dash.scrnaseq"), title = title, env_id = env_id, date = timestamp)
   return(expanded_component)
 }
 
-.validate_input <- function(workdir, env_id, x, y) {
+.validate_input_features_by_factors <- function(workdir, env_id, x, y) {
   env <- new.env()
   env$x_selection <- FALSE
   env$y_selection <- FALSE
@@ -27,9 +27,8 @@ features_by_factors <- function(object, x, y, title = "Features by factor") {
   if(!is.list(y)) y <- list(y = y)
 
   # Check validity
-  if(!all(sapply(x, is.numeric))) stop("x should only contain numeric values.")
   if(!all(sapply(y, is.numeric))) stop("y should only contain numeric values.")
-  if(!all(sapply(x, is.factor))) stop("y should only contain factorial values.")
+  if(!all(sapply(x, is.factor))) stop("x should only contain factorial values.")
 
   # Add objects to env
   env$x <- x
