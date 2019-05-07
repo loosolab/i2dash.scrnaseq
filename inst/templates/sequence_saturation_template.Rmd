@@ -19,7 +19,22 @@ y_title <- names({{ env_id }}$y[1])
 
 if(!is.null({{ env_id }}$colour_by)) {
   colour_value <- {{ env_id }}$colour_by[[1]]
+  df <- data.frame({{ env_id }}$x, {{ env_id }}$y, {{ env_id }}$colour_by)
+} else {
+  df <- data.frame({{ env_id }}$x, {{ env_id }}$y)
 }
+
+# devtools::install_github('yihui/xfun')
+# embed_file() requires a few more packages
+xfun::pkg_load2(c('base64enc', 'htmltools', 'mime'))
+
+embed_var = function(x, ...) {
+  f = tempfile(fileext = '.csv')
+  write.csv(x, f)
+  xfun::embed_file(f, text = 'Download full data as .csv', ...)
+}
+# download_link
+embed_var(df)
 
 p <- plotly::plot_ly(data.frame(x_value, y_value, colour_value = I("black")),
              x = x_value,
