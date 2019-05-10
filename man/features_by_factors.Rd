@@ -7,11 +7,13 @@
 features_by_factors(object, x, y, title = "Features by factor")
 }
 \arguments{
+\item{object}{A \linkS4class{i2dash::i2dashboard} object.}
+
 \item{x}{A list with the x-axis values. If it is a nested list, a dropdown-field will be provided in the interactive mode.}
 
 \item{y}{A list with the y-axis values. If it is a nested list, a dropdown-field will be provided in the interactive mode.(Needs to be categorial. Horizontal violinplots are not possible.)}
 
-\item{plot_title}{The title of the Component}
+\item{title}{A title that will be displayed on top.}
 }
 \value{
 A string containing markdown code for the rendered textbox

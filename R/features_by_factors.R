@@ -1,6 +1,7 @@
 #' Renders a features by factor violin plot
 #'
-#' @param plot_title The title of the Component
+#' @param object A \linkS4class{i2dash::i2dashboard} object.
+#' @param title A title that will be displayed on top.
 #' @param x A list with the x-axis values. If it is a nested list, a dropdown-field will be provided in the interactive mode.
 #' @param y A list with the y-axis values. If it is a nested list, a dropdown-field will be provided in the interactive mode.(Needs to be categorial. Horizontal violinplots are not possible.)
 #'
@@ -39,4 +40,5 @@ features_by_factors <- function(object, x, y, title = "Features by factor") {
 
   # save environment as rds-object
   saveRDS(env, file = file.path(workdir, "envs", paste0(env_id, ".rds")))
+  print("validation TRUE")
 }
