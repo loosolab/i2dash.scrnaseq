@@ -40,13 +40,23 @@ sequence_saturation <- function(object, x, y, colour_by = NULL, labels = NULL, t
   if(is.null(names(colour_by)) & !is.null(colour_by)) colour_by %<>% magrittr::set_names("colour")
   if(is.null(names(labels)) & !is.null(labels)) labels %<>% magrittr::set_names("labels")
 
+  # Check existence of x and y
+  if(is.null(x)) stop("x is required.")
+  if(is.null(y)) stop("y is required.")
+
   # Check validity
   if(!all(sapply(x, is.numeric))) stop("x should only contain numeric values.")
   if(!all(sapply(y, is.numeric))) stop("y should only contain numeric values.")
 
-  # To Do: check if lengths in a list are the same and if x and y and label and color_by are the same length
+  # Check if lengths in a list are the same and if x and y and label and color_by are the same length
+  if(length(unique(sapply(x, length))) != 1) stop("list x should contain elements with the same length.")
+  if(length(unique(sapply(y, length))) != 1) stop("list y should contain elements with the same length.")
+  if(length(unique(sapply(colour_by, length))) != 1  & !is.null(colour_by)) stop("list colour_by should contain elements with the same length.")
+  if(length(unique(sapply(labels, length))) != 1  & !is.null(labels)) stop("list labels should contain elements with the same length.")
 
-
+  if(!identical(length(x[[1]]), length(y[[1]]))) stop("all arguments should be of the the same length.")
+  if(!identical(length(x[[1]]), length(colour_by[[1]])) & !is.null(colour_by)) stop("all arguments should be of the the same length.")
+  if(!identical(length(x[[1]]), length(labels[[1]])) & !is.null(labels)) stop("all arguments should be of the the same length.")
 
   # Add objects to env
   env$x <- x
