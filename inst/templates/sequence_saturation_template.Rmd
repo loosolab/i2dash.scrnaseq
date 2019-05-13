@@ -150,7 +150,6 @@ output$plot_{{ env_id }} <- plotly::renderPlotly({
   
   a <- NULL
   labels <- NULL
-  colour_value <- NULL
   
   if (!is.null({{ env_id }}$labels)) {
     if (input$checkbox_{{ env_id }}) {
