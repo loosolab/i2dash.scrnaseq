@@ -11,11 +11,11 @@ is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
 
 ```{r, eval=!is_shiny}
 
-x_value <- {{ env_id }}$x[[1]]
-x_title <- names({{ env_id }}$x[1])
-
-y_value <- {{ env_id }}$y[[1]]
-y_title <- names({{ env_id }}$y[1])
+# x_value <- {{ env_id }}$x[[1]]
+# x_title <- names({{ env_id }}$x[1])
+# 
+# y_value <- {{ env_id }}$y[[1]]
+# y_title <- names({{ env_id }}$y[1])
 
 # Create data.frame for download
 df_list <- list()
@@ -24,18 +24,8 @@ df_list <- rlist::list.append(df_list, c({{ env_id }}$x, {{ env_id }}$y))
 if (!is.null({{ env_id }}$colour_by)) df_list <- rlist::list.append(df_list, {{ env_id }}$colour_by)
 df <- do.call("data.frame", df_list)
 
-# devtools::install_github('yihui/xfun')
-# embed_file() requires a few more packages
-xfun::pkg_load2(c('base64enc', 'htmltools', 'mime'))
-
-embed_var = function(x, ...) {
-  f = tempfile(fileext = '.csv')
-  write.csv(x, f)
-  xfun::embed_file(f, text = 'Download full data as .csv', ...)
-}
-
 # download_link
-embed_var(df)
+i2dash::embed_var(df)
 
 # set variables
 x <- {{ env_id }}$x[1]
@@ -55,17 +45,6 @@ p
 ```{r, eval=is_shiny}
 
 ui_list <- list()
-
-# devtools::install_github('yihui/xfun')
-# embed_file() requires a few more packages
-xfun::pkg_load2(c('base64enc', 'htmltools', 'mime'))
-
-embed_var = function(x, ...) {
-  f = tempfile(fileext = '.csv')
-  write.csv(x, f)
-  xfun::embed_file(f, text = 'Download full data as .csv', ...)
-}
-
 
 # selection field for x
 if ({{ env_id }}$x_selection){
@@ -104,7 +83,7 @@ if (!is.null({{ env_id }}$colour_by)) df_list <- rlist::list.append(df_list, {{ 
 df <- do.call("data.frame", df_list)
 
 # download_link
-ui_list <- rlist::list.append(ui_list, embed_var(df))
+ui_list <- rlist::list.append(ui_list, i2dash::embed_var(df))
 
 fillCol(flex = c(NA, 1),
         do.call("inputPanel", ui_list),
