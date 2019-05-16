@@ -2,7 +2,7 @@
 % Please edit documentation in R/visualization_functions.R
 \name{.scatter_plot}
 \alias{.scatter_plot}
-\title{Renders a scatter plot}
+\title{Render a scatter plot}
 \usage{
 .scatter_plot(labels = NULL, x, y, colour_by = NULL,
   checkbox = FALSE, selected_label = NULL)
@@ -20,5 +20,5 @@
 A list with 1. the plotly object & 2. the data frame used in the plot
 }
 \description{
-Renders a scatter plot
+Render a scatter plot
 }

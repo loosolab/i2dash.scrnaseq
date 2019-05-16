@@ -2,7 +2,7 @@
 % Please edit documentation in R/visualization_functions.R
 \name{.bar_plot}
 \alias{.bar_plot}
-\title{Renders a bar plot}
+\title{Render a bar plot}
 \usage{
 .bar_plot(cluster, x = NULL)
 }
@@ -15,5 +15,5 @@
 A list with 1. the plotly object & 2. the data frame used in the plot
 }
 \description{
-Renders a bar plot
+Render a bar plot
 }
