@@ -1,0 +1,92 @@
+
+### {{ title }}
+
+<!-- Component created on {{ date }} -->
+
+```{r}
+{{ env_id }} = readRDS("envs/{{ env_id }}.rds")
+
+is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
+```
+
+```{r, eval=!is_shiny}
+
+# set variables
+x <- {{ env_id }}$x[1]
+cluster <- {{ env_id }}$cluster[1]
+
+# .bar_plot function
+lp <- i2dash.scrnaseq::.bar_plot(cluster = cluster, x = x)
+df <- lp$df
+
+# download_link
+i2dash::embed_var(df)
+
+# show plot
+p <- lp$p
+p
+```
+
+```{r, eval=is_shiny}
+
+ui_list <- list()
+
+# selection field for x
+if ({{ env_id }}$x_selection){
+  ui_list <- rlist::list.append(ui_list,
+  selectInput("select_x_{{ env_id }}", label = "Select data for cell fraction:",
+              choices = names({{ env_id }}$x)))
+}
+
+# selection field for cluster
+if ({{ env_id }}$cluster_selection){
+  ui_list <- rlist::list.append(ui_list,
+  selectInput("select_cluster_{{ env_id }}", label = "Select clustering data:",
+              choices = names({{ env_id }}$cluster)))
+}
+
+# download_link
+ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downloadData_{{ env_id }}', 'Download data')))
+
+output$plot_{{ env_id }} <- plotly::renderPlotly({
+  # set variables
+  if (!{{ env_id }}$x_selection) x <- {{ env_id }}$x[1] else x <- {{ env_id }}$x[input$select_x_{{ env_id }}]
+  if (!{{ env_id }}$cluster_selection) cluster <- {{ env_id }}$cluster[1] else cluster <- {{ env_id }}$cluster[input$select_cluster_{{ env_id }}]
+  
+  # .bar_plot function
+  lp <- i2dash.scrnaseq::.bar_plot(cluster = cluster, x = x)
+  p <- lp$p
+  p
+})
+
+datasetInput_{{ env_id }} <- reactive({
+  # set variables
+  if (!{{ env_id }}$x_selection) x <- {{ env_id }}$x[1] else x <- {{ env_id }}$x[input$select_x_{{ env_id }}]
+  if (!{{ env_id }}$cluster_selection) cluster <- {{ env_id }}$cluster[1] else cluster <- {{ env_id }}$cluster[input$select_cluster_{{ env_id }}]
+  
+  # datasetInput contains only the data.frame
+  df <- i2dash.scrnaseq::.bar_plot(cluster = cluster, x = x)$df
+})
+
+output$downloadData_{{ env_id }} <- downloadHandler(
+  filename = function() {
+    paste('data-', Sys.Date(), '.csv', sep='')
+  },
+  content = function(file) {
+    write.csv(datasetInput_{{ env_id }}(), file)
+  }
+)
+
+fillCol(flex = c(NA, 1),
+        do.call("inputPanel", ui_list),
+        plotly::plotlyOutput("plot_{{ env_id }}", height = "100%")
+)
+```
+
+***
+
+Plot description:
+
+Sequencing is called *saturated* when generating more sequencing output from a cDNA library does not substantially increase the number of detected features in a sample. Since the number of detected features can act as a technical confounder, and thereby drive substructure in the data, it is advisable to aim for a saturated sequencing by either adding more sequencing output or decreasing the number of samples until saturation is achieved. [@zhang_one_2018] gives advise on how to choose the optimal cell number given a fixed sequencing budget
+
+
