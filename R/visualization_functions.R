@@ -77,3 +77,54 @@
                       annotations = a)
   return(p)
 }
+
+#' Renders a bar plot
+#'
+#' @param cluster Values for the membership to clusters. In case of a nested list, a dropdown menu will be provided in the interactive mode.
+#' @param x Numeric values mapped to the x-axis. In case of a nested list, a dropdown menu will be provided in the interactive mode.
+#'
+#' @return A list with 1. the plotly object & 2. the data frame used in the plot
+#' @export
+
+.bar_plot <- function(cluster, x = NULL){
+
+  #if x = NULL -> plot for "Number of cells"
+  #if x != NULL -> plot for "Number of fractions"
+  if(is.null(x)){
+    tab <- table(cluster)
+    tab_df <- as.data.frame(tab)
+
+    # plotly
+    title <- "Number of cells"
+    p <- plotly::plot_ly(tab_df, x = tab_df[[2]], y = tab_df[[1]],
+                         name = names(tab_df[1]),
+                         type = "bar", orientation = "h", opacity = 0.7)
+    p <- plotly::layout(p,
+                        xaxis = list(title=title, showline = T),
+                        yaxis = list(title="Cluster", showline = T, showticklabels = T),
+
+                        showlegend = F
+    )
+    return(list("plot" = p, "df" = tab_df))
+  } else {
+    # create data.frame for plot
+    tab <- table(cluster[[1]],x[[1]])
+    ptab <- prop.table(tab,margin = 1)
+    ptab_df <- as.data.frame.matrix(ptab)
+
+    # plotly
+    title <- "Fraction of cells"
+    p <- plotly::plot_ly(ptab_df, type = "bar", orientation = "h", opacity = 0.7)
+    for(i in 1:length(names(ptab_df))){
+      p <- plotly::add_trace(p, x = ptab_df[[i]], y = row.names(ptab_df), name = names(ptab_df[i]))
+    }
+    p <- plotly::layout(p,
+                        xaxis = list(title=title, showline = T),
+                        yaxis = list(title="Cluster", showline = T, showticklabels = T),
+                        barmode = 'stack',
+                        showlegend = T
+    )
+    return(list("plot" = p, "df" = ptab_df))
+  }
+
+}
