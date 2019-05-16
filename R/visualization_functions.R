@@ -1,4 +1,4 @@
-#' Renders a scatter plot
+#' Render a scatter plot
 #'
 #' @param labels A list with sample names, that should be of the same length as x and y.
 #' @param x Numeric values mapped to the x-axis. In case of a nested list, a dropdown menu will be provided in the interactive mode.
@@ -7,7 +7,6 @@
 #'
 #' @return A list with 1. the plotly object & 2. the data frame used in the plot
 #' @export
-
 .scatter_plot <- function(labels = NULL, x, y, colour_by = NULL, checkbox = FALSE, selected_label = NULL){
   # create data.frame for plot (fill colour_by & labels with dummy data if NULL)
   dummy_values <- FALSE
@@ -78,14 +77,13 @@
   return(p)
 }
 
-#' Renders a bar plot
+#' Render a bar plot
 #'
 #' @param cluster Values for the membership to clusters. In case of a nested list, a dropdown menu will be provided in the interactive mode.
 #' @param x Numeric values mapped to the x-axis. In case of a nested list, a dropdown menu will be provided in the interactive mode.
 #'
 #' @return A list with 1. the plotly object & 2. the data frame used in the plot
 #' @export
-
 .bar_plot <- function(cluster, x = NULL){
 
   #if x = NULL -> plot for "Number of cells"
@@ -102,7 +100,6 @@
     p <- plotly::layout(p,
                         xaxis = list(title=title, showline = T),
                         yaxis = list(title="Cluster", showline = T, showticklabels = T),
-
                         showlegend = F
     )
     return(list("plot" = p, "df" = tab_df))
@@ -127,4 +124,25 @@
     return(list("plot" = p, "df" = ptab_df))
   }
 
+}
+
+#' Render a box plot
+#'
+#' @param cluster Values for the membership to clusters. In case of a nested list, a dropdown menu will be provided in the interactive mode.
+#' @param x Numeric values mapped to the x-axis. In case of a nested list, a dropdown menu will be provided in the interactive mode.
+#'
+#' @return A list with 1. the plotly object & 2. the data frame used in the plot
+#' @export
+.box_plot <- function(cluster, x){
+  df <- data.frame(cluster, x)
+
+  # plotly
+  title <- "Detected genes"
+  p <- plotly::plot_ly(df, y = df[[1]], x = df[[2]], type = "box", name = df[[1]])
+  p <- plotly::layout(p,
+                      xaxis = list(title=title, showline = T),
+                      yaxis = list(title="Cluster", showline = T, showticklabels = T),
+                      showlegend = T
+  )
+  return(list("plot" = p, "df" = df))
 }
