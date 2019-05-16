@@ -54,8 +54,7 @@ output$plot_{{ env_id }} <- plotly::renderPlotly({
   if (!{{ env_id }}$cluster_selection) cluster <- {{ env_id }}$cluster[1] else cluster <- {{ env_id }}$cluster[input$select_cluster_{{ env_id }}]
   
   # .bar_plot function
-  lp <- i2dash.scrnaseq::.bar_plot(cluster = cluster, x = x)
-  p <- lp$p
+  p <- i2dash.scrnaseq::.bar_plot(cluster = cluster, x = x)$p
   p
 })
 
