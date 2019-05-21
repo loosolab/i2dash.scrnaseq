@@ -1,58 +1,130 @@
 
-### {{plot_title}}
+### {{ title }}
 
 <!-- Component created on {{ date }} -->
+
 ```{r}
 {{ env_id }} = readRDS("envs/{{ env_id }}.rds")
-df <- data.frame({{ env_id }}$x, {{ env_id }}$y, {{ env_id }}$color_by)
-df.melted <- reshape::melt(df, id=c(names({{ env_id }}$y), names({{ env_id }}$color_by)))
 
-plotly::plotlyOutput("plot_{{ env_id }}")
+is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
+```
+
+```{r, eval=!is_shiny}
+
+if(!is.null({{ env_id }}$colour_by)) {
+  colour_value <- {{ env_id }}$colour_by[[1]]
+  df <- data.frame({{ env_id }}$x, {{ env_id }}$y, {{ env_id }}$colour_by)
+  df.melted <- reshape::melt(df, id=c(names({{ env_id }}$y), names({{ env_id }}$colour_by)))
+  
+  index_y <- match(names({{ env_id }}$y), names(df.melted))
+  index_colour <- match(names({{ env_id }}$colour_by), names(df.melted))
+  
+  g1 <- ggplot2::ggplot(df.melted, mapping = ggplot2::aes(y = value, x = df.melted[,index_y[1]], color = df.melted[,index_colour[1]])) +
+      ggplot2::geom_jitter() +
+      ggplot2::geom_violin(mapping = ggplot2::aes(y = value), scale = "count") +
+      ggplot2::facet_grid(. ~ variable, scales = "free_x") +
+      ggplot2::theme_bw() +
+      ggplot2::theme(panel.border = ggplot2::element_blank()) +
+      ggplot2::scale_colour_viridis_c() +
+      ggplot2::coord_flip() +
+      ggplot2::labs( y="Type", x="", color=names(df.melted)[index_colour])
+
+  plotly::ggplotly(g1)
+} else {
+  df <- data.frame({{ env_id }}$x, {{ env_id }}$y)
+  df.melted <- reshape::melt(df, id=c(names({{ env_id }}$y)))
+  
+  index_y <- match(names({{ env_id }}$y), names(df.melted))
+  
+  g1 <- ggplot2::ggplot(df.melted, mapping = ggplot2::aes(y = value, x = df.melted[,index_y[1]])) +
+      ggplot2::geom_jitter() +
+      ggplot2::geom_violin(mapping = ggplot2::aes(y = value), scale = "count") +
+      ggplot2::facet_grid(. ~ variable, scales = "free_x") +
+      ggplot2::theme_bw() +
+      ggplot2::theme(panel.border = ggplot2::element_blank()) +
+      ggplot2::coord_flip() +
+      ggplot2::labs( y="Type", x="")
+  
+  plotly::ggplotly(g1)
+}
+
+```
+
+```{r, eval=is_shiny}
+
+ui_list <- list()
+
+# selection field for y
+if ({{ env_id }}$y_selection){
+  ui_list <- rlist::list.append(ui_list,
+  selectInput("select_y_{{ env_id }}", label = "Select data for y axis:",
+          choices = names({{ env_id }}$y)))
+}
+
+# selection field for colour_by
+if ({{ env_id }}$colour_by_selection){
+  ui_list <- rlist::list.append(ui_list,
+  selectInput("select_colour_{{ env_id }}", label = "Select colouring:",
+          choices = names({{ env_id }}$colour_by)))
+}
+ # create dataframe
+if(!is.null({{ env_id }}$colour_by)) {
+  colour_value <- {{ env_id }}$colour_by[[1]]
+  df <- data.frame({{ env_id }}$x, {{ env_id }}$y, {{ env_id }}$colour_by)
+  df.melted <- reshape::melt(df, id=c(names({{ env_id }}$y), names({{ env_id }}$colour_by)))
+} else {
+  df <- data.frame({{ env_id }}$x, {{ env_id }}$y)
+  df.melted <- reshape::melt(df, id=c(names({{ env_id }}$y)))
+}
+#print(names(df.melted))
+fillCol(flex = c(NA, 1),
+        do.call("inputPanel", ui_list),
+        plotly::plotlyOutput("plot_{{ env_id }}", height = "100%"))
+
 output$plot_{{ env_id }} <- plotly::renderPlotly({
-
   if (!{{ env_id }}$y_selection){
     index_y <- match(names({{ env_id }}$y), names(df.melted))
   } else {
     index_y <- match(input$select_y_{{ env_id }}, names(df.melted))
   }
-
-  if (!{{ env_id }}$color_selection){
-    index_color <- match(names({{ env_id }}$color_by), names(df.melted))
-  } else {
-    index_color <- match(input$select_color_{{ env_id }}, names(df.melted))
-  }
   
-  g1 <- ggplot2::ggplot(df.melted, mapping = ggplot2::aes(y = value, x = df.melted[,index_y], color = df.melted[,index_color])) +
-    ggplot2::geom_jitter() +
-    ggplot2::geom_violin(mapping = ggplot2::aes(y = value), scale = "count") +
-    ggplot2::facet_grid(. ~ variable, scales = "free_x") +
-    ggplot2::theme_bw() +
-    ggplot2::theme(panel.border = ggplot2::element_blank()) +
-    ggplot2::scale_colour_viridis_c() +
-    ggplot2::coord_flip() +
-    ggplot2::labs( y="Type", x="", color=names(df.melted)[index_color])
+  if (is.null({{ env_id }}$colour_by)) {
+    g1 <- ggplot2::ggplot(df.melted, mapping = ggplot2::aes(y = value, x = df.melted[,index_y[1]])) +
+      ggplot2::geom_jitter() +
+      ggplot2::geom_violin(mapping = ggplot2::aes(y = value), scale = "count") +
+      ggplot2::facet_grid(. ~ variable, scales = "free_x") +
+      ggplot2::theme_bw() +
+      ggplot2::theme(panel.border = ggplot2::element_blank()) +
+      ggplot2::scale_colour_viridis_c() +
+      ggplot2::coord_flip() +
+      ggplot2::labs( y="Type", x="")
 
-  plotly::ggplotly(g1)
+    plotly::ggplotly(g1)
+  } else {
+    if (!{{ env_id }}$colour_by_selection){
+      index_colour <- match(names({{ env_id }}$colour_by), names(df.melted))
+    } else {
+      index_colour <- match(input$select_colour_{{ env_id }}, names(df.melted))
+    }
+    g1 <- ggplot2::ggplot(df.melted, mapping = ggplot2::aes(y = value, x = df.melted[,index_y[1]], color = df.melted[,index_colour[1]])) +
+      ggplot2::geom_jitter() +
+      ggplot2::geom_violin(mapping = ggplot2::aes(y = value), scale = "count") +
+      ggplot2::facet_grid(. ~ variable, scales = "free_x") +
+      ggplot2::theme_bw() +
+      ggplot2::theme(panel.border = ggplot2::element_blank()) +
+      ggplot2::scale_colour_viridis_c() +
+      ggplot2::coord_flip() +
+      ggplot2::labs( y="Type", x="", color=names(df.melted)[index_colour])
+
+    plotly::ggplotly(g1)
+  }
 })
 ```
 
 ***
 
-```{r}
-# selection field for y
-if ({{ env_id }}$y_selection){
-  selectInput("select_y_{{ env_id }}", label = "Select data for y axis:",
-            choices = names({{ env_id }}$y))
-}
-
-# selection field for color_by
-if ({{ env_id }}$color_selection){
-  selectInput("select_color_{{ env_id }}", label = "Select experimental factor for coloring:",
-            choices = names({{ env_id }}$color_by))
-}
-```
-
 Plot description:
 
 Sequencing is called *saturated* when generating more sequencing output from a cDNA library does not substantially increase the number of detected features in a sample. Since the number of detected features can act as a technical confounder, and thereby drive substructure in the data, it is advisable to aim for a saturated sequencing by either adding more sequencing output or decreasing the number of samples until saturation is achieved. [@zhang_one_2018] gives advise on how to choose the optimal cell number given a fixed sequencing budget
+
 
