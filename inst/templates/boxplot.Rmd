@@ -1,0 +1,76 @@
+
+### {{ title }}
+
+<!-- Component created on {{ date }} -->
+
+```{r}
+{{ env_id }} = readRDS("envs/{{ env_id }}.rds")
+
+is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
+```
+
+```{r, eval=!is_shiny}
+# set variables
+x <- {{ env_id }}$x[[1]]
+group_by <- {{ env_id }}$group_by[[1]]
+
+# Provide data download
+# data.frame(x, group_by) %>%
+#   i2dash::embed_var()
+
+# Render plot
+i2dash.scrnaseq::plotly_box_plot(x = x, group_by = group_by)
+```
+
+```{r, eval=is_shiny}
+ui_list <- list()
+
+# selection field for x
+if ({{ env_id }}$x_selection) {
+  ui_list <- rlist::list.append(ui_list,
+                                selectInput("select_x_{{ env_id }}", label = "Select observations:",
+                                            choices = names({{ env_id }}$x)))
+}
+
+# selection field for group_by
+if ({{ env_id }}$group_by_selection) {
+  ui_list <- rlist::list.append(ui_list,
+                                selectInput("select_group_by_{{ env_id }}", label = "Group observations by:",
+                                            choices = names({{ env_id }}$group_by)))
+}
+
+#
+# Handle inputs
+#
+if( !{{ env_id }}$x_selection ) {
+  x_{{ env_id }} <- shiny::reactive({
+    {{ env_id }}$x[[1]]
+  })
+} else {
+  x_{{ env_id }} <- shiny::reactive({
+    {{ env_id }}$x[[input$select_x_{{ env_id }}]]
+  })
+}
+
+if( !{{ env_id }}$group_by_selection ) {
+  group_by_{{ env_id }} <- shiny::reactive({
+    {{ env_id }}$group_by[[1]]
+  })
+} else {
+  group_by_{{ env_id }} <- shiny::reactive({
+    {{ env_id }}$group_by[[input$select_group_by_{{ env_id }}]]
+  })
+}
+
+#
+# Output
+#
+output$plot_{{ env_id }} <- plotly::renderPlotly(
+  i2dash.scrnaseq::plotly_box_plot(x = x_{{ env_id }}(), group_by = group_by_{{ env_id }}())
+)
+
+shiny::fillCol(flex = c(NA, 1),
+        do.call(shiny::inputPanel, ui_list),
+        plotly::plotlyOutput("plot_{{ env_id }}", height = "100%")
+)
+```

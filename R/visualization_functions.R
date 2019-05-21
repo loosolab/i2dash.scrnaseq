@@ -126,25 +126,20 @@
 
 }
 
-#' Render a box plot
+#' Render a box plot with plotly.
 #'
-#' @param cluster Values for the membership to clusters. In case of a nested list, a dropdown menu will be provided in the interactive mode.
-#' @param x Numeric values mapped to the x-axis. In case of a nested list, a dropdown menu will be provided in the interactive mode.
+#' @param x Numeric observations for the boxplot.
+#' @param group_by A factor, by which observations can optionally be grouped.
+#' @param title A title that describes the observations.
+#' @param group_by_title A title that describes the grouping factor.
 #'
-#' @return A list with 1. the plotly object & 2. the data frame used in the plot
+#' @return An object of class \code{plotly}.
 #' @export
-.box_plot <- function(cluster, x){
-  df <- data.frame(cluster, x)
-
-  # plotly
-  title <- "Detected genes"
-  p <- plotly::plot_ly(df, y = df[[1]], x = df[[2]], type = "box", name = df[[1]])
-  p <- plotly::layout(p,
-                      xaxis = list(title=title, showline = T),
-                      yaxis = list(title="Cluster", showline = T, showticklabels = T),
-                      showlegend = T
-  )
-  return(list("plot" = p, "df" = df))
+plotly_boxplot <- function(x, group_by = NULL, title = "", group_by_title = NULL){
+  plotly::plot_ly(x = x, y = group_by, type = "box", name = title) %>%
+    plotly::layout(xaxis = list(title = title, showline = T),
+                   yaxis = list(title = group_by_title, showline = T, showticklabels = T),
+                   showlegend = T)
 }
 
 #' Render a violin plot

@@ -26,10 +26,6 @@ sequence_saturation <- function(object, x, y, colour_by = NULL, labels = NULL, t
   env$y_selection <- FALSE
   env$colour_by_selection <- FALSE
 
-  # Check existence of x and y
-  if(is.null(x)) stop("x is required.")
-  if(is.null(y)) stop("y is required.")
-
   # Create lists if needed
   if(!is.list(x)) x <- list(x)
   if(!is.list(y)) y <- list(y)
