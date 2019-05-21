@@ -1,0 +1,123 @@
+
+### {{ title }}
+
+<!-- Component created on {{ date }} -->
+
+```{r}
+{{ env_id }} = readRDS("envs/{{ env_id }}.rds")
+
+is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
+```
+
+```{r, eval=!is_shiny}
+
+x_value <- {{ env_id }}$x[[1]]
+x_title <- names({{ env_id }}$x[1])
+
+y_value <- {{ env_id }}$y[[1]]
+y_title <- names({{ env_id }}$y[1])
+
+if(!is.null({{ env_id }}$colour_by)) {
+  colour_value <- {{ env_id }}$colour_by[[1]]
+  df <- data.frame({{ env_id }}$x, {{ env_id }}$y, {{ env_id }}$colour_by)
+} else {
+  df <- data.frame({{ env_id }}$x, {{ env_id }}$y)
+}
+
+# devtools::install_github('yihui/xfun')
+# embed_file() requires a few more packages
+xfun::pkg_load2(c('base64enc', 'htmltools', 'mime'))
+
+embed_var = function(x, ...) {
+  f = tempfile(fileext = '.csv')
+  write.csv(x, f)
+  xfun::embed_file(f, text = 'Download full data as .csv', ...)
+}
+# download_link
+embed_var(df)
+
+p <- plotly::plot_ly(data.frame(x_value, y_value, colour_value = I("black")),
+             x = x_value,
+             y = y_value,
+             color = colour_value
+)
+p <- plotly::layout(p,
+            xaxis = list(title = x_title),
+            yaxis = list(title = y_title))
+p
+
+```
+
+```{r, eval=is_shiny}
+
+ui_list <- list()
+# selection field for x
+if ({{ env_id }}$x_selection){
+  ui_list <- rlist::list.append(ui_list,
+  selectInput("select_x_{{ env_id }}", label = "Select data for x axis:",
+              choices = names({{ env_id }}$x)))
+}
+
+# selection field for y
+if ({{ env_id }}$y_selection){
+  ui_list <- rlist::list.append(ui_list,
+  selectInput("select_y_{{ env_id }}", label = "Select data for y axis:",
+              choices = names({{ env_id }}$y)))
+}
+
+# selection field for colour_by
+if ({{ env_id }}$colour_by_selection){
+  ui_list <- rlist::list.append(ui_list,
+  selectInput("select_colour_{{ env_id }}", label = "Select colouring:",
+              choices = names({{ env_id }}$colour_by)))
+}
+
+fillCol(flex = c(NA, 1),
+        do.call("inputPanel", ui_list),
+        plotly::plotlyOutput("plot_{{ env_id }}", height = "100%")
+        )
+
+output$plot_{{ env_id }} <- plotly::renderPlotly({
+
+  if (!{{ env_id }}$x_selection){
+    x_value <- {{ env_id }}$x[[1]]
+    x_title <- names({{ env_id }}$x)
+  } else {
+    x_value <- {{ env_id }}$x[[input$select_x_{{ env_id }}]]
+    x_title <- input$select_x_{{ env_id }}
+  }
+
+  if (!{{ env_id }}$y_selection){
+    y_value <- {{ env_id }}$y[[1]]
+    y_title <- names({{ env_id }}$y)
+  } else {
+    y_value <- {{ env_id }}$y[[input$select_y_{{ env_id }}]]
+    y_title <- input$select_y_{{ env_id }}
+  }
+
+  if (!{{ env_id }}$colour_by_selection){
+    colour_value <- {{ env_id }}$colour_by[[1]]
+  } else {
+    colour_value <- {{ env_id }}$colour_by[[input$select_colour_{{ env_id }}]]
+  }
+
+  p <- plotly::plot_ly(data.frame(x_value, y_value, colour_value = I("black")),
+               x = x_value,
+               y = y_value,
+               color = colour_value
+  )
+  p <- plotly::layout(p,
+              xaxis = list(title = x_title),
+              yaxis = list(title = y_title))
+  p
+})
+
+```
+
+***
+
+Plot description:
+
+Sequencing is called *saturated* when generating more sequencing output from a cDNA library does not substantially increase the number of detected features in a sample. Since the number of detected features can act as a technical confounder, and thereby drive substructure in the data, it is advisable to aim for a saturated sequencing by either adding more sequencing output or decreasing the number of samples until saturation is achieved. [@zhang_one_2018] gives advise on how to choose the optimal cell number given a fixed sequencing budget
+
+
