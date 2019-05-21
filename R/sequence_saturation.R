@@ -26,6 +26,10 @@ sequence_saturation <- function(object, x, y, colour_by = NULL, labels = NULL, t
   env$y_selection <- FALSE
   env$colour_by_selection <- FALSE
 
+  # Check existence of x and y
+  if(is.null(x)) stop("x is required.")
+  if(is.null(y)) stop("y is required.")
+
   # Create lists if needed
   if(!is.list(x)) x <- list(x)
   if(!is.list(y)) y <- list(y)
@@ -40,9 +44,7 @@ sequence_saturation <- function(object, x, y, colour_by = NULL, labels = NULL, t
   if(is.null(names(colour_by)) & !is.null(colour_by)) colour_by %<>% magrittr::set_names("colour")
   if(is.null(names(labels)) & !is.null(labels)) labels %<>% magrittr::set_names("labels")
 
-  # Check existence of x and y
-  if(is.null(x)) stop("x is required.")
-  if(is.null(y)) stop("y is required.")
+
 
   # Check validity
   if(!all(sapply(x, is.numeric))) stop("x should only contain numeric values.")
