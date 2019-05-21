@@ -23,9 +23,19 @@ features_by_factors <- function(object, x, y, title = "Features by factor") {
   env$x_selection <- FALSE
   env$y_selection <- FALSE
 
+  # Check existence of x and y
+  if(is.null(x)) stop("x is required.")
+  if(is.null(y)) stop("y is required.")
+
   # Create lists if needed
   if(!is.list(x)) x <- list(x = x)
   if(!is.list(y)) y <- list(y = y)
+
+  # should I use magrittr::%<>% ?
+  # name the lists
+  library(magrittr)
+  if(is.null(names(x))) x %<>% magrittr::set_names("x")
+  if(is.null(names(y))) y %<>% magrittr::set_names("y")
 
   # Check validity
   if(!all(sapply(y, is.numeric))) stop("y should only contain numeric values.")

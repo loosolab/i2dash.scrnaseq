@@ -146,3 +146,33 @@
   )
   return(list("plot" = p, "df" = df))
 }
+
+#' Render a violin plot
+#'
+#' @param x A list with the x-axis values. If it is a nested list, a dropdown-field will be provided in the interactive mode.
+#' @param y A list with the y-axis values. If it is a nested list, a dropdown-field will be provided in the interactive mode.(Needs to be categorial. Horizontal violinplots are not possible.)
+#'
+#' @return A list with 1. the plotly object & 2. the data frame used in the plot
+#' @export
+.violin_plot <- function(x, y){
+  df <- data.frame(x, y)
+
+  # plotly
+  p <- plotly::plot_ly(df,
+                       x = df[[1]],
+                       y = df[[2]],
+                       split = df[[1]],
+                       type = 'violin',
+                       box = list(
+                         visible = T
+                       ),
+                       meanline = list(
+                         visible = T
+                       )
+  )
+  p <- plotly::layout(p,
+                      xaxis = list(title = names(df[1])),
+                      yaxis = list(title = names(df[2])),
+                                   zeroline = F)
+  return(list("plot" = p, "df" = df))
+}

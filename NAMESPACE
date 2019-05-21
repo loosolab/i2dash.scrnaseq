@@ -3,3 +3,4 @@
 export(.bar_plot)
 export(.box_plot)
 export(.scatter_plot)
+export(.violin_plot)
