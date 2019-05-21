@@ -2,7 +2,7 @@
 % Please edit documentation in R/visualization_functions.R
 \name{.box_plot}
 \alias{.box_plot}
-\title{Render a bar plot}
+\title{Render a box plot}
 \usage{
 .box_plot(cluster, x)
 }
@@ -15,5 +15,5 @@
 A list with 1. the plotly object & 2. the data frame used in the plot
 }
 \description{
-Render a bar plot
+Render a box plot
 }
