@@ -2,7 +2,7 @@
 % Please edit documentation in R/visualization_functions.R
 \name{.violin_plot}
 \alias{.violin_plot}
-\title{Render a box plot}
+\title{Render a violin plot}
 \usage{
 .violin_plot(x, y)
 }
@@ -15,5 +15,5 @@
 A list with 1. the plotly object & 2. the data frame used in the plot
 }
 \description{
-Render a box plot
+Render a violin plot
 }

@@ -2,9 +2,10 @@
 % Please edit documentation in R/boxplot.R
 \name{boxplot}
 \alias{boxplot}
-\title{Renders a boxplot for cluster characterization}
+\title{Renders a boxplot}
 \usage{
-boxplot(object, x, group_by, title = NULL)
+boxplot(object, x, group_by = NULL, title = NULL, title_x = NULL,
+  title_group_by = NULL)
 }
 \arguments{
 \item{object}{A \linkS4class{i2dash::i2dashboard} object.}
@@ -19,5 +20,5 @@ boxplot(object, x, group_by, title = NULL)
 A string containing markdown code for the rendered component.
 }
 \description{
-Renders a boxplot for cluster characterization
+Renders a boxplot
 }

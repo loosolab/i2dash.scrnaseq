@@ -4,16 +4,17 @@
 \alias{plotly_boxplot}
 \title{Render a box plot with plotly.}
 \usage{
-plotly_boxplot(x, group_by = NULL, title = "", group_by_title = NULL)
+plotly_boxplot(df, group_by = NULL, title_x = NULL,
+  title_group_by = NULL)
 }
 \arguments{
-\item{x}{Numeric observations for the boxplot.}
+\item{df}{A dataframe containing the data fo the boxplot.}
 
 \item{group_by}{A factor, by which observations can optionally be grouped.}
 
-\item{title}{A title that describes the observations.}
+\item{title_x}{A title that describes the observations.}
 
-\item{group_by_title}{A title that describes the grouping factor.}
+\item{title_group_by}{A title that describes the grouping factor.}
 }
 \value{
 An object of class \code{plotly}.

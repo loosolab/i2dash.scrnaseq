@@ -4,16 +4,16 @@
 \alias{multiplot}
 \title{Renders a Sequence saturation plot}
 \usage{
-multiplot(object, plot_title, x, y, color_by)
+multiplot(object, x, y, title = "Multiplot", colour_by = NULL)
 }
 \arguments{
-\item{plot_title}{The title of the Component}
-
 \item{x}{A list with the x-axis values. If it is a nested list, a dropdown-field will be provided in the interactive mode.}
 
 \item{y}{A list with the y-axis values. If it is a nested list, a dropdown-field will be provided in the interactive mode.}
 
-\item{color_by}{A list with the color_by values. If it is a nested list, a dropdown-field will be provided in the interactive mode.}
+\item{colour_by}{A list with the color_by values. If it is a nested list, a dropdown-field will be provided in the interactive mode.}
+
+\item{plot_title}{The title of the Component}
 }
 \value{
 A string containing markdown code for the rendered textbox
