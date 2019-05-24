@@ -16,4 +16,5 @@ Imports:
     stringi,
     plotly,
     shiny,
-    knitr
+    knitr,
+    magrittr
