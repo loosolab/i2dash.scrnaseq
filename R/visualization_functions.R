@@ -77,53 +77,24 @@
   return(p)
 }
 
-#' Render a bar plot
+#' Render a bar plot with plotly.
 #'
-#' @param cluster Values for the membership to clusters. In case of a nested list, a dropdown menu will be provided in the interactive mode.
-#' @param x Numeric values mapped to the x-axis. In case of a nested list, a dropdown menu will be provided in the interactive mode.
+#' @param x Numeric observations for the boxplot.
+#' @param group_by A factor, by which observations can optionally be grouped.
+#' @param title_x A title that describes the observations.
+#' @param title_group_by A title that describes the grouping factor.
+#' @param showlegend Boolean that describes if the legend is shown
+#' @param names Names of the observationable categories
 #'
-#' @return A list with 1. the plotly object & 2. the data frame used in the plot
+#' @return An object of class \code{plotly}.
 #' @export
-.bar_plot <- function(cluster, x = NULL){
-
-  #if x = NULL -> plot for "Number of cells"
-  #if x != NULL -> plot for "Number of fractions"
-  if(is.null(x)){
-    tab <- table(cluster)
-    tab_df <- as.data.frame(tab)
-
-    # plotly
-    title <- "Number of cells"
-    p <- plotly::plot_ly(tab_df, x = tab_df[[2]], y = tab_df[[1]],
-                         name = names(tab_df[1]),
-                         type = "bar", orientation = "h", opacity = 0.7)
-    p <- plotly::layout(p,
-                        xaxis = list(title=title, showline = T),
-                        yaxis = list(title="Cluster", showline = T, showticklabels = T),
-                        showlegend = F
-    )
-    return(list("plot" = p, "df" = tab_df))
-  } else {
-    # create data.frame for plot
-    tab <- table(cluster[[1]],x[[1]])
-    ptab <- prop.table(tab,margin = 1)
-    ptab_df <- as.data.frame.matrix(ptab)
-
-    # plotly
-    title <- "Fraction of cells"
-    p <- plotly::plot_ly(ptab_df, type = "bar", orientation = "h", opacity = 0.7)
-    for(i in 1:length(names(ptab_df))){
-      p <- plotly::add_trace(p, x = ptab_df[[i]], y = row.names(ptab_df), name = names(ptab_df[i]))
-    }
-    p <- plotly::layout(p,
-                        xaxis = list(title=title, showline = T),
-                        yaxis = list(title="Cluster", showline = T, showticklabels = T),
-                        barmode = 'stack',
-                        showlegend = T
-    )
-    return(list("plot" = p, "df" = ptab_df))
-  }
-
+plotly_barplot <- function(group_by, x = NULL, names = NULL, showlegend = NULL, title_x = NULL, title_group_by = NULL){
+  p <- plotly::plot_ly(type = "bar", orientation = "h", opacity = 0.7, x = x, y = group_by, name = names) %>%
+    plotly::layout(xaxis = list(title = title_x, showline = T),
+                   yaxis = list(title = title_group_by, showline = T, showticklabels = T),
+                   barmode = 'stack',
+                   showlegend = showlegend)
+  p
 }
 
 #' Render a box plot with plotly.
