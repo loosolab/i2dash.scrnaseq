@@ -67,8 +67,8 @@ ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downl
   if(is.null(x)){
       tab <- table(group_by)
       df <- as.data.frame(tab)
-      x <- df[[2]]
-      y <- df[[1]]
+      x <- df[2]
+      y <- df[1]
       names <- NULL
       showlegend <- F
       return(list("df" = df, "x" = x, "y" = y, "names" = names, "showlegend" = showlegend))
@@ -77,9 +77,9 @@ ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downl
       tab <- table(group_by, x)
       ptab <- prop.table(tab, margin = 1)
       df <- as.data.frame(ptab)
-      x <- df[[3]]
-      y <- df[[1]]
-      names <- df[[2]]
+      x <- df[3]
+      y <- df[1]
+      names <- df[2]
       showlegend <- T
       return(list("df" = df, "x" = x, "y" = y, "names" = names, "showlegend" = showlegend))
     }
@@ -125,3 +125,4 @@ shiny::fillCol(flex = c(NA, 1),
         plotly::plotlyOutput("plot_{{ env_id }}", height = "100%")
 )
 ```
+

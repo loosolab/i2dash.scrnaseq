@@ -1,8 +1,10 @@
-#' Renders a barplot
+#' Renders a horizontal barplot
 #'
 #' @param object A \linkS4class{i2dash::i2dashboard} object.
 #' @param group_by A factor, by which observations are grouped. In case of a named list, a dropdown menu will be provided in the interactive mode.
 #' @param x Numeric observations for the boxplot. In case of a named list, a dropdown menu will be provided in the interactive mode.
+#' @param title_x A title of the y-axis that describes the observations. In case of a named list this parameter is not needed because the names of the list will be used as title of the y axis.
+#' @param title_group_by A title of the x-axis that describes the grouping factor. In case of a named list this parameter is not needed because the names of the list will be used as title of the x axis.
 #' @param title The title of the components junk.
 #'
 #' @return A string containing markdown code for the rendered textbox

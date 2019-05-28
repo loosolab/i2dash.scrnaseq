@@ -2,7 +2,7 @@
 % Please edit documentation in R/barplot.R
 \name{barplot}
 \alias{barplot}
-\title{Renders a barplot}
+\title{Renders a horizontal barplot}
 \usage{
 barplot(object, group_by, x = NULL, title = NULL,
   title_group_by = NULL, title_x = NULL)
@@ -15,10 +15,14 @@ barplot(object, group_by, x = NULL, title = NULL,
 \item{x}{Numeric observations for the boxplot. In case of a named list, a dropdown menu will be provided in the interactive mode.}
 
 \item{title}{The title of the components junk.}
+
+\item{title_group_by}{A title of the x-axis that describes the grouping factor. In case of a named list this parameter is not needed because the names of the list will be used as title of the x axis.}
+
+\item{title_x}{A title of the y-axis that describes the observations. In case of a named list this parameter is not needed because the names of the list will be used as title of the y axis.}
 }
 \value{
 A string containing markdown code for the rendered textbox
 }
 \description{
-Renders a barplot
+Renders a horizontal barplot
 }

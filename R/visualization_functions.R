@@ -89,7 +89,7 @@
 #' @return An object of class \code{plotly}.
 #' @export
 plotly_barplot <- function(group_by, x = NULL, names = NULL, showlegend = NULL, title_x = NULL, title_group_by = NULL){
-  p <- plotly::plot_ly(type = "bar", orientation = "h", opacity = 0.7, x = x, y = group_by, name = names) %>%
+  p <- plotly::plot_ly(type = "bar", orientation = "h", opacity = 0.7, x = x[[1]], y = group_by[[1]], name = names[[1]]) %>%
     plotly::layout(xaxis = list(title = title_x, showline = T),
                    yaxis = list(title = title_group_by, showline = T, showticklabels = T),
                    barmode = 'stack',
