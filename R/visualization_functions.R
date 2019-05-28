@@ -141,3 +141,36 @@ plotly_boxplot <- function(x, group_by = NULL, title = "", group_by_title = NULL
                    yaxis = list(title = group_by_title, showline = T, showticklabels = T),
                    showlegend = T)
 }
+
+#' Render a vertical violin plot with plotly.
+#'
+#' @param df A dataframe containing the data for the violinplot.
+#' @param group_by A factor, by which observations can be grouped. In case of a named list, a dropdown menu will be provided in the interactive mode.
+#' @param title_y A title of the y-axis that describes the observations. In case of a named list this parameter is not needed because the names of the list will be used as title of the y axis.
+#' @param title_group_by A title of the x-axis that describes the grouping factor. In case of a named list this parameter is not needed because the names of the list will be used as title of the x axis.
+#'
+#' @return An object of class \code{plotly}.
+#' @export
+plotly_violinplot <- function(df, group_by = NULL, title_y = NULL, title_group_by = NULL){
+  # manage the titles of axis
+  if(is.null(title_y)) title_y <- names(df[1]) else title_y <- title_y
+  if(is.null(title_group_by) & !is.null(group_by)) title_group_by <- names(df[2]) else title_group_by <- title_group_by
+
+  # set variables in dependence of 'group_by'
+  if (is.null(group_by)) {
+    x <- NULL
+    showlegend <- F
+  } else {
+    x <- df[[2]]
+    showlegend <- T
+  }
+  y <- df[[1]]
+
+  plotly::plot_ly(x = x, y = y, split = x, type = 'violin',
+                  box = list(visible = T),
+                  meanline = list(visible = T)) %>%
+    plotly::layout(xaxis = list(title = title_group_by, showline = T),
+                   yaxis = list(title = title_y, showline = T),
+                   showlegend = showlegend)
+}
+
