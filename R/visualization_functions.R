@@ -37,9 +37,9 @@ plotly_scatterplot <- function(df, labels = NULL, colour_by = NULL, checkbox = F
   #   labels <- NULL
   # }
 
-  # if(is.null(checkbox)) {
-  #   checkbox <- FALSE
-  # }
+  if(is.null(checkbox)) {
+    checkbox <- FALSE
+  }
 
   # find point for annotation
   a <- NULL
