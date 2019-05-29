@@ -2,7 +2,7 @@
 % Please edit documentation in R/scatterplot.R
 \name{scatterplot}
 \alias{scatterplot}
-\title{Renders a Sequence saturation plot}
+\title{Renders a scatter plot}
 \usage{
 scatterplot(object, x, y, colour_by = NULL, labels = NULL,
   title = NULL)
@@ -10,19 +10,19 @@ scatterplot(object, x, y, colour_by = NULL, labels = NULL,
 \arguments{
 \item{object}{A \linkS4class{i2dash::i2dashboard} object.}
 
-\item{x}{Numeric values mapped to the x-axis. In case of a nested list, a dropdown menu will be provided in the interactive mode.}
+\item{x}{A vector with numerical values or a named list will be mapped to the x-axis. In case of a named list, a dropdown menu will be provided in the interactive mode. Note: The length of vectors x and y should be the same as well as the length of all vectors in case of a named list.}
 
-\item{y}{Numeric values mapped to the y-axis. In case of a nested list, a dropdown menu will be provided in the interactive mode.}
+\item{y}{A vector with numerical values or a named list will be mapped to the y-axis. In case of a named list, a dropdown menu will be provided in the interactive mode. Note: The length of vectors x and y should be the same as well as the length of all vectors in case of a named list.}
 
-\item{colour_by}{A factor that will be mapped to colours. In case of a nested list, a dropdown menu will be provided in the interactive mode.}
+\item{colour_by}{(Optional) A vector with factorial values or a named list will be used for colouring. In case of a named list, a dropdown menu will be provided in the interactive mode. Note: The length of the vector should be of the same length as x and y as well as the length of all vectors in case of a named list.}
 
-\item{labels}{A list with sample names It should be of the same length as x and y. A dropdown menu for colouring by label will be provided.}
+\item{labels}{(Optional) A vector or list with sample names (numeric or characters). A dropdown menu for colouring by label will be provided. Note: The length of the vector should be of the same length as x and y.}
 
-\item{title}{A title that will be displayed on top.}
+\item{title}{(Optional) The title of the components junk.}
 }
 \value{
 A string containing markdown code for the rendered textbox
 }
 \description{
-Renders a Sequence saturation plot
+Renders a scatter plot
 }

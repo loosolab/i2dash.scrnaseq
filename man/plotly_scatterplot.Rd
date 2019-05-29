@@ -8,16 +8,18 @@ plotly_scatterplot(df, labels = NULL, colour_by = NULL,
   checkbox = FALSE, selected_label = NULL)
 }
 \arguments{
-\item{labels}{A list with sample names, that should be of the same length as x and y.}
+\item{df}{A dataframe containing the data for the boxplot}
 
-\item{colour_by}{A factor that will be mapped to colours. In case of a nested list, a dropdown menu will be provided in the interactive mode.}
+\item{labels}{A list with sample names, which should be of the same length as x and y.}
 
-\item{x}{Numeric values mapped to the x-axis. In case of a nested list, a dropdown menu will be provided in the interactive mode.}
+\item{colour_by}{A list containing factorial values that will be used for colouring. In case of a named list, a dropdown menu will be provided in the interactive mode. Note: The length of all vectors in case of a named list should be of the same length as x and y.}
 
-\item{y}{Numeric values mapped to the y-axis. In case of a nested list, a dropdown menu will be provided in the interactive mode.}
+\item{checkbox}{A boolean value as indicator for colouring by labels.}
+
+\item{selected_label}{The label (character) selected by the user.}
 }
 \value{
-A list with 1. the plotly object & 2. the data frame used in the plot
+An object of class \code{plotly}.
 }
 \description{
 Renders a scatter plot

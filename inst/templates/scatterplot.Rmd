@@ -62,7 +62,7 @@ if (!is.null({{ env_id }}$labels)) {
   ))
 }
 
-# download_link
+# Download link
 ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downloadData_{{ env_id }}', 'Download data')))
 
 #
