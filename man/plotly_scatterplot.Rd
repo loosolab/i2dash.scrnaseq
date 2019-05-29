@@ -5,7 +5,8 @@
 \title{Renders a scatter plot}
 \usage{
 plotly_scatterplot(df, labels = NULL, colour_by = NULL,
-  checkbox = FALSE, selected_label = NULL)
+  expression = NULL, checkbox = FALSE, expr_checkbox = FALSE,
+  selected_label = NULL)
 }
 \arguments{
 \item{df}{A dataframe containing the data for the boxplot}

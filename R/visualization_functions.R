@@ -8,19 +8,19 @@
 #'
 #' @return An object of class \code{plotly}.
 #' @export
-plotly_scatterplot <- function(df, labels = NULL, colour_by = NULL, checkbox = FALSE, selected_label = NULL){
+plotly_scatterplot <- function(df, labels = NULL, colour_by = NULL, expression = NULL, checkbox = FALSE, expr_checkbox = FALSE, selected_label = NULL){
+
+  if(is.null(checkbox)) checkbox <- FALSE
+  if(is.null(expr_checkbox)) expr_checkbox <- FALSE
 
   # assign variables
   if(!is.null(labels)) labels <- df[[1]]
   x_value <- df[[2]]
   y_value <- df[[3]]
+  if(!is.null(expression) & expr_checkbox) colour_by <- df[[4]]
   if(!is.null(colour_by)) colour_by <- df[[4]]
   x_title <- names(df[2])
   y_title <- names(df[3])
-
-  if(is.null(checkbox)) {
-    checkbox <- FALSE
-  }
 
   # find point for annotation
   a <- NULL

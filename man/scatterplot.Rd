@@ -5,7 +5,7 @@
 \title{Renders a scatter plot}
 \usage{
 scatterplot(object, x, y, colour_by = NULL, labels = NULL,
-  title = NULL)
+  expression = NULL, title = NULL)
 }
 \arguments{
 \item{object}{A \linkS4class{i2dash::i2dashboard} object.}
@@ -17,6 +17,8 @@ scatterplot(object, x, y, colour_by = NULL, labels = NULL,
 \item{colour_by}{(Optional) A vector with factorial values or a named list will be used for colouring. In case of a named list, a dropdown menu will be provided in the interactive mode. Note: The length of the vector should be of the same length as x and y as well as the length of all vectors in case of a named list.}
 
 \item{labels}{(Optional) A vector or list with sample names (numeric or characters). A dropdown menu for colouring by label will be provided. Note: The length of the vector should be of the same length as x and y.}
+
+\item{expression}{(Optional) A matrix or dataframe with the same length of columns as 'x'. The sequence of the columns should be equal to the sequence in 'x'. The rownames represent the feature i.e. gene names and the values represent the expression level.}
 
 \item{title}{(Optional) The title of the components junk.}
 }
