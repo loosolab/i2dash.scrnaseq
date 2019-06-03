@@ -77,19 +77,45 @@
   return(p)
 }
 
+# Function to create a dataframe for plotly_barplot.
+
+#' @param group_by A list with factorial values, by which observations can optionally be grouped.
+#' @param x (Optional) A named list with the observations for the barplot.
+#'
+#' @return An object of class \code{list} containig the dataframe 'df', the vector 'x' with values for the x-axis, the vector 'y' with values for the y-axis, the vector 'names' (can be NULL), the boolean value 'showlegend'.
+#' @export
+create_barplot_df <- function(group_by, x = NULL){
+  if(is.null(x)){
+    tab <- table(group_by)
+    df <- as.data.frame(tab)
+    x <- df[2]
+    y <- df[1]
+    names <- NULL
+    showlegend <- F
+    return(list("df" = df, "x" = x, "y" = y, "names" = names, "showlegend" = showlegend))
+  } else {
+    tab <- table(group_by, x)
+    ptab <- prop.table(tab, margin = 1)
+    df <- as.data.frame(ptab)
+    x <- df[3]
+    y <- df[1]
+    names <- df[2]
+    showlegend <- T
+    return(list("df" = df, "x" = x, "y" = y, "names" = names, "showlegend" = showlegend))
+  }
+}
+
 #' Render a bar plot with plotly.
 #'
-#' @param x Numeric observations for the boxplot.
-#' @param group_by A factor, by which observations can optionally be grouped.
+#' @param ... these arguments are of either the form value or tag = value and should be valid for the 'plotly::plot_ly()' method.
+#' @param showlegend Boolean value that describes if the legend should be shown.
 #' @param title_x A title that describes the observations.
 #' @param title_group_by A title that describes the grouping factor.
-#' @param showlegend Boolean that describes if the legend is shown
-#' @param names Names of the observationable categories
 #'
 #' @return An object of class \code{plotly}.
 #' @export
-plotly_barplot <- function(group_by, x = NULL, names = NULL, showlegend = NULL, title_x = NULL, title_group_by = NULL){
-  p <- plotly::plot_ly(type = "bar", orientation = "h", opacity = 0.7, x = x[[1]], y = group_by[[1]], name = names[[1]]) %>%
+plotly_barplot <- function(..., showlegend = NULL, title_x = NULL, title_group_by = NULL){
+  p <- plotly::plot_ly(..., type = "bar", orientation = "h", opacity = 0.7) %>%
     plotly::layout(xaxis = list(title = title_x, showline = T),
                    yaxis = list(title = title_group_by, showline = T, showticklabels = T),
                    barmode = 'stack',

@@ -4,21 +4,19 @@
 \alias{plotly_barplot}
 \title{Render a bar plot with plotly.}
 \usage{
-plotly_barplot(group_by, x = NULL, names = NULL, showlegend = NULL,
-  title_x = NULL, title_group_by = NULL)
+plotly_barplot(..., showlegend = NULL, title_x = NULL,
+  title_group_by = NULL)
 }
 \arguments{
-\item{group_by}{A factor, by which observations can optionally be grouped.}
-
-\item{x}{Numeric observations for the boxplot.}
-
-\item{names}{Names of the observationable categories}
-
 \item{showlegend}{Boolean that describes if the legend is shown}
 
 \item{title_x}{A title that describes the observations.}
 
 \item{title_group_by}{A title that describes the grouping factor.}
+
+\item{group_by}{A factor, by which observations can optionally be grouped.}
+
+\item{x}{Numeric observations for the boxplot.}
 }
 \value{
 An object of class \code{plotly}.

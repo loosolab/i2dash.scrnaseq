@@ -10,36 +10,14 @@ is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
 ```
 
 ```{r, eval=!is_shiny}
-
 # Function to create a dataframe for bar plot
-.create_barplot_df <- function(group_by, x = NULL){
-  if(is.null(x)){
-      tab <- table(group_by)
-      df <- as.data.frame(tab)
-      x <- df[[2]]
-      y <- df[[1]]
-      names <- NULL
-      showlegend <- F
-      return(list("df" = df, "x" = x, "y" = y, "names" = names, "showlegend" = showlegend))
-      
-      } else {
-      tab <- table(group_by, x)
-      ptab <- prop.table(tab, margin = 1)
-      df <- as.data.frame(ptab)
-      x <- df[[3]]
-      y <- df[[1]]
-      names <- df[[2]]
-      showlegend <- T
-      return(list("df" = df, "x" = x, "y" = y, "names" = names, "showlegend" = showlegend))
-    }
-}
+output_list <- i2dash.scrnaseq::create_barplot_df(group_by = {{ env_id }}$group_by[[1]], x = {{ env_id }}$x[[1]])
 
-output_list <- .create_barplot_df(group_by = {{ env_id }}$group_by[[1]], x = {{ env_id }}$x[[1]])
-
+# Provide data download
 i2dash::embed_var(output_list$df)
 
 # Render plot
-i2dash.scrnaseq::plotly_barplot(x = output_list$x, group_by = output_list$y, names = output_list$names, showlegend = output_list$showlegend, title_x = {{ env_id }}$title_x, title_group_by = {{ env_id }}$title_group_by)
+i2dash.scrnaseq::plotly_barplot(x = df_{{ env_id }}()$x[[1]], y = df_{{ env_id }}()$y[[1]], name = df_{{ env_id }}()$names[[1]], showlegend = df_{{ env_id }}()$showlegend, title_x = {{ env_id }}$title_x, title_group_by = {{ env_id }}$title_group_by)
 ```
 
 ```{r, eval=is_shiny}
@@ -62,45 +40,23 @@ if ({{ env_id }}$group_by_selection){
 # download_link
 ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downloadData_{{ env_id }}', 'Download data')))
 
-# Function to create a dataframe for bar plot
-.create_barplot_df <- function(group_by, x = NULL){
-  if(is.null(x)){
-      tab <- table(group_by)
-      df <- as.data.frame(tab)
-      x <- df[2]
-      y <- df[1]
-      names <- NULL
-      showlegend <- F
-      return(list("df" = df, "x" = x, "y" = y, "names" = names, "showlegend" = showlegend))
-      
-    } else {
-      tab <- table(group_by, x)
-      ptab <- prop.table(tab, margin = 1)
-      df <- as.data.frame(ptab)
-      x <- df[3]
-      y <- df[1]
-      names <- df[2]
-      showlegend <- T
-      return(list("df" = df, "x" = x, "y" = y, "names" = names, "showlegend" = showlegend))
-    }
-}
-
 #
 # Create reactive dataframe
 #
 df_{{ env_id }} <- shiny::reactive({
-  if({{ env_id }}$group_by_selection & {{ env_id }}$x_selection){
-    .create_barplot_df(group_by = {{ env_id }}$group_by[[input$select_group_by_{{ env_id }}]], x = {{ env_id }}$x[[input$select_x_{{ env_id }}]])
-    
-  } else if (!{{ env_id }}$group_by_selection & {{ env_id }}$x_selection){
-    .create_barplot_df(group_by = {{ env_id }}$group_by[[1]], x = {{ env_id }}$x[[input$select_x_{{ env_id }}]])
-    
-  } else if ({{ env_id }}$group_by_selection & !{{ env_id }}$x_selection){
-    .create_barplot_df(group_by = {{ env_id }}$group_by[[input$select_group_by_{{ env_id }}]], x = {{ env_id }}$x[[1]])
-    
-  } else if (!{{ env_id }}$group_by_selection & !{{ env_id }}$x_selection){
-    .create_barplot_df(group_by = {{ env_id }}$group_by[[1]], x = {{ env_id }}$x[[1]])
+  
+  if(!{{ env_id }}$group_by_selection){
+    group_by = {{ env_id }}$group_by[[1]]
+  } else {
+    group_by = {{ env_id }}$group_by[[input$select_group_by_{{ env_id }}]]
   }
+  
+  if(!{{ env_id }}$x_selection){
+    x = {{ env_id }}$x[[1]]
+  } else {
+    x = {{ env_id }}$x[[input$select_x_{{ env_id }}]]
+  }
+  return(i2dash.scrnaseq::create_barplot_df(group_by = group_by, x = x))
 })
 
 #
@@ -117,7 +73,7 @@ output$downloadData_{{ env_id }} <- downloadHandler(
 # Output
 #
 output$plot_{{ env_id }} <- plotly::renderPlotly({
-  i2dash.scrnaseq::plotly_barplot(x = df_{{ env_id }}()$x, group_by = df_{{ env_id }}()$y, names = df_{{ env_id }}()$names, showlegend = df_{{ env_id }}()$showlegend, title_x = {{ env_id }}$title_x, title_group_by = {{ env_id }}$title_group_by)
+  i2dash.scrnaseq::plotly_barplot(x = df_{{ env_id }}()$x[[1]], y = df_{{ env_id }}()$y[[1]], name = df_{{ env_id }}()$names[[1]], showlegend = df_{{ env_id }}()$showlegend, title_x = {{ env_id }}$title_x, title_group_by = {{ env_id }}$title_group_by)
 })
 
 shiny::fillCol(flex = c(NA, 1),

@@ -1,15 +1,15 @@
 #' Renders a horizontal barplot
 #'
 #' @param object A \linkS4class{i2dash::i2dashboard} object.
-#' @param group_by A factor, by which observations are grouped. In case of a named list, a dropdown menu will be provided in the interactive mode.
-#' @param x Numeric observations for the boxplot. In case of a named list, a dropdown menu will be provided in the interactive mode.
-#' @param title_x A title of the y-axis that describes the observations. In case of a named list this parameter is not needed because the names of the list will be used as title of the y axis.
-#' @param title_group_by A title of the x-axis that describes the grouping factor. In case of a named list this parameter is not needed because the names of the list will be used as title of the x axis.
-#' @param title The title of the components junk.
+#' @param group_by A vector with factorial values or characters or a named list, which will be used for grouping the observations. In case of a named list, a dropdown menu will be provided in the interactive mode. Note: If parameter 'x' is not provided (NULL), a barplot with the number of each 'level' is used as observation.
+#' @param x (Optional) A vector with numerical values or a named list, which represents the observations for the horizontal barplot (x-axis). In case of a named list, a dropdown menu will be provided in the interactive mode.
+#' @param title (Optional) The title of the components junk.
+#' @param title_x (Optional) The title of the x-axis.
+#' @param title_group_by (Optional) The title of the y-axis.
 #'
-#' @return A string containing markdown code for the rendered textbox
+#' @return A string containing markdown code for the rendered component.
 #' @export
-barplot <- function(object, group_by, x = NULL, title = NULL, title_group_by = NULL, title_x = NULL) {
+barplot <- function(object, group_by, x = NULL, title = NULL, title_x = NULL, title_group_by = NULL) {
   # Create random env id
   env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
 
@@ -22,6 +22,12 @@ barplot <- function(object, group_by, x = NULL, title = NULL, title_group_by = N
   if(is.null(names(x)) & !is.null(x)) x %<>% magrittr::set_names("values")
 
   # Validate input
+  if(any(sapply(group_by, is.character))){
+    clust_names <- names(group_by[sapply(group_by, class) == 'character'])
+    for (name in clust_names){
+      group_by[[name]] <- as.factor(group_by[[name]])
+    }
+  }
   if(!all(sapply(group_by, is.factor))) stop("'group_by' should only contain factorial values.")
   if(!all(sapply(x, is.factor)) & !is.null(x)) stop("'x' should only contain factorial values.")
 

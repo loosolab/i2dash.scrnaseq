@@ -4,24 +4,24 @@
 \alias{barplot}
 \title{Renders a horizontal barplot}
 \usage{
-barplot(object, group_by, x = NULL, title = NULL,
-  title_group_by = NULL, title_x = NULL)
+barplot(object, group_by, x = NULL, title = NULL, title_x = NULL,
+  title_group_by = NULL)
 }
 \arguments{
 \item{object}{A \linkS4class{i2dash::i2dashboard} object.}
 
-\item{group_by}{A factor, by which observations are grouped. In case of a named list, a dropdown menu will be provided in the interactive mode.}
+\item{group_by}{A vector with factorial values or characters or a named list, which will be used for grouping the observations. In case of a named list, a dropdown menu will be provided in the interactive mode. Note: If parameter 'x' is not provided (NULL), a barplot with the number of each 'level' is used as observation.}
 
-\item{x}{Numeric observations for the boxplot. In case of a named list, a dropdown menu will be provided in the interactive mode.}
+\item{x}{(Optional) A vector with numerical values or a named list, which represents the observations for the horizontal barplot (x-axis). In case of a named list, a dropdown menu will be provided in the interactive mode.}
 
-\item{title}{The title of the components junk.}
+\item{title}{(Optional) The title of the components junk.}
 
-\item{title_group_by}{A title of the x-axis that describes the grouping factor. In case of a named list this parameter is not needed because the names of the list will be used as title of the x axis.}
+\item{title_x}{(Optional) The title of the x-axis.}
 
-\item{title_x}{A title of the y-axis that describes the observations. In case of a named list this parameter is not needed because the names of the list will be used as title of the y axis.}
+\item{title_group_by}{(Optional) The title of the y-axis.}
 }
 \value{
-A string containing markdown code for the rendered textbox
+A string containing markdown code for the rendered component.
 }
 \description{
 Renders a horizontal barplot
