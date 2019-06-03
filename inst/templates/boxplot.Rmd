@@ -23,7 +23,11 @@ if(is.null(group_by)){
 i2dash::embed_var(df)
 
 # Render plot
-i2dash.scrnaseq::plotly_boxplot(df = df, group_by = {{ env_id }}$group_by, title_x = {{ env_id }}$title_x, title_group_by = {{ env_id }}$title_group_by)
+if(is.null(group_by)){
+  i2dash.scrnaseq::plotly_boxplot(df = df, x = df[[1]], y = NULL, name = names(df[1]), title_x = {{ env_id }}$title_x, title_group_by = {{ env_id }}$title_group_by)
+} else {
+  i2dash.scrnaseq::plotly_boxplot(df = df, x = df[[1]], y = df[[2]], name = names(df[1]), title_x = {{ env_id }}$title_x, title_group_by = {{ env_id }}$title_group_by)
+}
 ```
 
 ```{r, eval=is_shiny}
@@ -85,7 +89,11 @@ output$downloadData_{{ env_id }} <- downloadHandler(
 # Output
 #
 output$plot_{{ env_id }} <- plotly::renderPlotly(
-  i2dash.scrnaseq::plotly_boxplot(df = df_{{ env_id }}(), group_by = {{ env_id }}$group_by, title_x = {{ env_id }}$title_x, title_group_by = {{ env_id }}$title_group_by)
+  if(is.null({{ env_id }}$group_by)){
+    i2dash.scrnaseq::plotly_boxplot(df = df_{{ env_id }}(), x = df_{{ env_id }}()[[1]], y = NULL, name = names(df_{{ env_id }}()[1]), title_x = {{ env_id }}$title_x, title_group_by = {{ env_id }}$title_group_by)
+  } else {
+    i2dash.scrnaseq::plotly_boxplot(df = df_{{ env_id }}(), x = df_{{ env_id }}()[[1]], y = df_{{ env_id }}()[[2]], name = names(df_{{ env_id }}()[1]), title_x = {{ env_id }}$title_x, title_group_by = {{ env_id }}$title_group_by)
+  }
 )
 
 shiny::fillCol(flex = c(NA, 1),
@@ -93,3 +101,5 @@ shiny::fillCol(flex = c(NA, 1),
         plotly::plotlyOutput("plot_{{ env_id }}", height = "100%")
 )
 ```
+
+

@@ -1,9 +1,11 @@
 #' Renders a boxplot
 #'
 #' @param object A \linkS4class{i2dash::i2dashboard} object.
-#' @param x Numeric observations for the boxplot. In case of a named list, a dropdown menu will be provided in the interactive mode.
-#' @param group_by A factor, by which observations can optionally be grouped. In case of a named list, a dropdown menu will be provided in the interactive mode.
-#' @param title The title of the components junk.
+#' @param x A vector with numerical values or a named list, which represents the observations for the boxplot (x-axis). In case of a named list, a dropdown menu will be provided in the interactive mode.
+#' @param group_by (Optional) A vector with factorial values or a named list, which will be used for grouping the observations. In case of a named list, a dropdown menu will be provided in the interactive mode.
+#' @param title (Optional) The title of the components junk.
+#' @param title_x (Optional) The title of the x-axis.
+#' @param title_group_by (Optional) The title of the y-axis.
 #'
 #' @return A string containing markdown code for the rendered component.
 #' @export
