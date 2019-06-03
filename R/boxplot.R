@@ -2,7 +2,7 @@
 #'
 #' @param object A \linkS4class{i2dash::i2dashboard} object.
 #' @param x A vector with numerical values or a named list, which represents the observations for the boxplot (x-axis). In case of a named list, a dropdown menu will be provided in the interactive mode.
-#' @param group_by (Optional) A vector with factorial values or a named list, which will be used for grouping the observations. In case of a named list, a dropdown menu will be provided in the interactive mode.
+#' @param group_by (Optional) A vector with factorial values or characters or a named list, which will be used for grouping the observations. In case of a named list, a dropdown menu will be provided in the interactive mode.
 #' @param title (Optional) The title of the components junk.
 #' @param title_x (Optional) The title of the x-axis.
 #' @param title_group_by (Optional) The title of the y-axis.
@@ -23,6 +23,13 @@ boxplot <- function(object, x, group_by = NULL, title = NULL, title_x = NULL, ti
 
   # Validate input
   if(!all(sapply(x, is.numeric))) stop("'x' should only contain numerical values.")
+
+  if(any(sapply(group_by, is.character)) & !is.null(group_by)){
+    clust_names <- names(group_by[sapply(group_by, class) == 'character'])
+    for (name in clust_names){
+      group_by[[name]] <- as.factor(group_by[[name]])
+    }
+  }
   if(!all(sapply(group_by, is.factor)) & !is.null(group_by)) stop("'group_by' should only contain factorial values.")
 
   # Create component environment

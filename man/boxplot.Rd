@@ -12,7 +12,7 @@ boxplot(object, x, group_by = NULL, title = NULL, title_x = NULL,
 
 \item{x}{A vector with numerical values or a named list, which represents the observations for the boxplot (x-axis). In case of a named list, a dropdown menu will be provided in the interactive mode.}
 
-\item{group_by}{(Optional) A vector with factorial values or a named list, which will be used for grouping the observations. In case of a named list, a dropdown menu will be provided in the interactive mode.}
+\item{group_by}{(Optional) A vector with factorial values or characters or a named list, which will be used for grouping the observations. In case of a named list, a dropdown menu will be provided in the interactive mode.}
 
 \item{title}{(Optional) The title of the components junk.}
 
