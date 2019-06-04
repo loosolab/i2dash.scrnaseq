@@ -77,7 +77,7 @@
   return(p)
 }
 
-# Function to create a dataframe for plotly_barplot.
+#' Function to create a dataframe for plotly_barplot.
 
 #' @param group_by A list with factorial values, by which observations can optionally be grouped.
 #' @param x (Optional) A named list with the observations for the barplot.
@@ -108,9 +108,9 @@ create_barplot_df <- function(group_by, x = NULL){
 #' Render a bar plot with plotly.
 #'
 #' @param ... these arguments are of either the form value or tag = value and should be valid for the 'plotly::plot_ly()' method.
-#' @param showlegend Boolean value that describes if the legend should be shown.
-#' @param title_x A title that describes the observations.
-#' @param title_group_by A title that describes the grouping factor.
+#' @param showlegend (Optional) Boolean value that describes if the legend should be shown.
+#' @param title_x (Optional) A title that describes the observations.
+#' @param title_group_by (Optional) A title that describes the grouping factor.
 #'
 #' @return An object of class \code{plotly}.
 #' @export

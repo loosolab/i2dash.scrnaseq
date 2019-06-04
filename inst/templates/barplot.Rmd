@@ -17,7 +17,7 @@ output_list <- i2dash.scrnaseq::create_barplot_df(group_by = {{ env_id }}$group_
 i2dash::embed_var(output_list$df)
 
 # Render plot
-i2dash.scrnaseq::plotly_barplot(x = df_{{ env_id }}()$x[[1]], y = df_{{ env_id }}()$y[[1]], name = df_{{ env_id }}()$names[[1]], showlegend = df_{{ env_id }}()$showlegend, title_x = {{ env_id }}$title_x, title_group_by = {{ env_id }}$title_group_by)
+i2dash.scrnaseq::plotly_barplot(x = output_list$x[[1]], y = output_list$y[[1]], name = output_list$names[[1]], showlegend = output_list$showlegend, title_x = {{ env_id }}$title_x, title_group_by = {{ env_id }}$title_group_by)
 ```
 
 ```{r, eval=is_shiny}
