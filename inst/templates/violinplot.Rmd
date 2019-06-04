@@ -10,20 +10,14 @@ is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
 ```
 
 ```{r, eval=!is_shiny}
-# set variables
-y <- {{ env_id }}$y[1]
-group_by <- {{ env_id }}$group_by[1]
-if(is.null(group_by)){
-  df <- data.frame(y)
-} else {
-  df <- data.frame(y, group_by)
-}
+# Function to create a dataframe for bar plot
+output_list <- i2dash.scrnaseq::create_violinplot_df(y = {{ env_id }}$y[1], group_by = {{ env_id }}$group_by[1], title_y = {{ env_id }}$title_y, title_group_by = {{ env_id }}$title_group_by)
 
 # Provide data download
-i2dash::embed_var(df)
+i2dash::embed_var(output_list$df)
 
 # Render plot
-i2dash.scrnaseq::plotly_violinplot(df = df, group_by = {{ env_id }}$group_by, title_y = {{ env_id }}$title_y, title_group_by = {{ env_id }}$title_group_by)
+i2dash.scrnaseq::plotly_violinplot(x = output_list$x, y = output_list$y, split = output_list$split, showlegend = output_list$showlegend, title_y = output_list$title_y, title_group_by = output_list$title_group_by)
 ```
 
 ```{r, eval=is_shiny}
@@ -37,7 +31,7 @@ if ({{ env_id }}$y_selection){
 }
 
 # selection field for group_by
-if ({{ env_id }}$y_selection){
+if ({{ env_id }}$group_by_selection){
   ui_list <- rlist::list.append(ui_list,
                                 selectInput("select_group_by_{{ env_id }}", label = "Group observations by:",
                                             choices = names({{ env_id }}$group_by)))
@@ -47,7 +41,7 @@ if ({{ env_id }}$y_selection){
 ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downloadData_{{ env_id }}', 'Download data')))
 
 #
-# Create reactive dataframe
+# Create reactive method
 #
 df_{{ env_id }} <- shiny::reactive({
   
@@ -62,15 +56,9 @@ df_{{ env_id }} <- shiny::reactive({
   } else {
     group_by <- {{ env_id }}$group_by[input$select_group_by_{{ env_id }}]
   }
-
-  if(is.null(group_by)){
-    df <- data.frame(y)
-  } else {
-    df <- data.frame(y, group_by)
-  }
-  #print(head(df))
-  return(df)
-  })
+  
+  return(i2dash.scrnaseq::create_violinplot_df(y = y, group_by = group_by, title_y = {{ env_id }}$title_y, title_group_by = {{ env_id }}$title_group_by))
+})
 
 #
 # Download
@@ -78,7 +66,7 @@ df_{{ env_id }} <- shiny::reactive({
 output$downloadData_{{ env_id }} <- downloadHandler(
   filename =  paste('data-', Sys.Date(), '.csv', sep=''),
   content = function(file) {
-    write.csv(df_{{ env_id }}(), file)
+    write.csv(df_{{ env_id }}()$df, file)
   }
 )
 
@@ -86,9 +74,12 @@ output$downloadData_{{ env_id }} <- downloadHandler(
 # Output
 #
 output$plot_{{ env_id }} <- plotly::renderPlotly(
-  i2dash.scrnaseq::plotly_violinplot(df = df_{{ env_id }}(), group_by = {{ env_id }}$group_by, title_y = {{ env_id }}$title_y, title_group_by = {{ env_id }}$title_group_by)
+  i2dash.scrnaseq::plotly_violinplot(x = df_{{ env_id }}()$x, y = df_{{ env_id }}()$y, split = df_{{ env_id }}()$split, showlegend = df_{{ env_id }}()$showlegend, title_y = df_{{ env_id }}()$title_y, title_group_by = df_{{ env_id }}()$title_group_by)
 )
 
+#
+# Layout of component junk
+#
 shiny::fillCol(flex = c(NA, 1),
         do.call(shiny::inputPanel, ui_list),
         plotly::plotlyOutput("plot_{{ env_id }}", height = "100%")

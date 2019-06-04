@@ -10,15 +10,15 @@ violinplot(object, y, group_by = NULL, title = NULL, title_y = NULL,
 \arguments{
 \item{object}{A \linkS4class{i2dash::i2dashboard} object.}
 
-\item{y}{Numeric observations for the violinplot. In case of a named list, a dropdown menu will be provided in the interactive mode.}
+\item{y}{A vector with numerical values or a named list, which represents the observations for the vertical violinplot (y-axis). In case of a named list, a dropdown menu will be provided in the interactive mode.}
 
-\item{group_by}{A factor, by which observations can be grouped. In case of a named list, a dropdown menu will be provided in the interactive mode.}
+\item{group_by}{(Optional) A vector with factorial values or characters or a named list, which will be used for grouping the observations. In case of a named list, a dropdown menu will be provided in the interactive mode.}
 
-\item{title}{The title of the components junk.}
+\item{title}{(Optional) The title of the components junk.}
 
-\item{title_y}{A title of the y-axis that describes the observations. In case of a named list this parameter is not needed because the names of the list will be used as title of the y axis.}
+\item{title_y}{(Optional) The title of the y-axis that describes the observations. In case of a named list this parameter is not needed because the names of the list will be used as title of the y axis.}
 
-\item{title_group_by}{A title of the x-axis that describes the grouping factor. In case of a named list this parameter is not needed because the names of the list will be used as title of the x axis.}
+\item{title_group_by}{(Optional) The title of the x-axis that describes the grouping factor. In case of a named list this parameter is not needed because the names of the list will be used as title of the x axis.}
 }
 \value{
 A string containing markdown code for the rendered component
