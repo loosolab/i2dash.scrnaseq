@@ -125,16 +125,24 @@ plotly_barplot <- function(..., showlegend = NULL, title_x = NULL, title_group_b
 
 #' Render a box plot with plotly.
 #'
-#' @param x Numeric observations for the boxplot.
-#' @param group_by A factor, by which observations can optionally be grouped.
-#' @param title A title that describes the observations.
-#' @param group_by_title A title that describes the grouping factor.
+#' @param df A dataframe containing the data fo the boxplot.
+#' @param ... these arguments are of either the form value or tag = value and should be valid for the 'plotly::plot_ly()'
+#' @param title_x A title that describes the observations.
+#' @param title_group_by A title that describes the grouping factor.
 #'
 #' @return An object of class \code{plotly}.
 #' @export
-plotly_boxplot <- function(x, group_by = NULL, title = "", group_by_title = NULL){
-  plotly::plot_ly(x = x, y = group_by, type = "box", name = title) %>%
-    plotly::layout(xaxis = list(title = title, showline = T),
-                   yaxis = list(title = group_by_title, showline = T, showticklabels = T),
-                   showlegend = T)
+plotly_boxplot <- function(df, ..., title_x = NULL, title_group_by = NULL){
+  # if (is.null(group_by)) {
+  #   y <- NULL
+  # } else {
+  #   y <- group_by[[1]]
+  # }
+  # x <- x[[1]]
+
+  plotly::plot_ly(..., type = "box") %>%
+    plotly::layout(xaxis = list(title = title_x, showline = T),
+                   yaxis = list(title = title_group_by, showline = T, showticklabels = T),
+                   showlegend = F)
 }
+

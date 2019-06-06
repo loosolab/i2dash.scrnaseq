@@ -2,22 +2,27 @@
 % Please edit documentation in R/boxplot.R
 \name{boxplot}
 \alias{boxplot}
-\title{Renders a boxplot for cluster characterization}
+\title{Renders a boxplot}
 \usage{
-boxplot(object, x, group_by, title = NULL)
+boxplot(object, x, group_by = NULL, title = NULL, title_x = NULL,
+  title_group_by = NULL)
 }
 \arguments{
 \item{object}{A \linkS4class{i2dash::i2dashboard} object.}
 
-\item{x}{Numeric observations for the boxplot. In case of a named list, a dropdown menu will be provided in the interactive mode.}
+\item{x}{A vector with numerical values or a named list, which represents the observations for the boxplot (x-axis). In case of a named list, a dropdown menu will be provided in the interactive mode.}
 
-\item{group_by}{A factor, by which observations can optionally be grouped. In case of a named list, a dropdown menu will be provided in the interactive mode.}
+\item{group_by}{(Optional) A vector with factorial values or characters or a named list, which will be used for grouping the observations. In case of a named list, a dropdown menu will be provided in the interactive mode.}
 
-\item{title}{The title of the components junk.}
+\item{title}{(Optional) The title of the components junk.}
+
+\item{title_x}{(Optional) The title of the x-axis.}
+
+\item{title_group_by}{(Optional) The title of the y-axis.}
 }
 \value{
 A string containing markdown code for the rendered component.
 }
 \description{
-Renders a boxplot for cluster characterization
+Renders a boxplot
 }
