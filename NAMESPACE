@@ -2,10 +2,6 @@
 
 export("%<>%")
 export("%>%")
-<<<<<<< HEAD
-=======
-export(.bar_plot)
->>>>>>> new_boxplot_2
 export(.scatter_plot)
 export(barplot)
 export(boxplot)
