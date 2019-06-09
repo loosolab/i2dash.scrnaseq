@@ -8,6 +8,7 @@
 #' @param title_group_by (Optional) The title of the x-axis that describes the grouping factor. In case of a named list this parameter is not needed because the names of the list will be used as title of the x axis.
 #'
 #' @return A string containing markdown code for the rendered component
+#' @export
 violinplot <- function(object, y, group_by = NULL,  title = NULL, title_y = NULL, title_group_by = NULL) {
   # Create random env id
   env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))

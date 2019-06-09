@@ -9,13 +9,11 @@ plotly_boxplot(df, ..., title_x = NULL, title_group_by = NULL)
 \arguments{
 \item{df}{A dataframe containing the data fo the boxplot.}
 
+\item{...}{these arguments are of either the form value or tag = value and should be valid for the 'plotly::plot_ly()'}
+
 \item{title_x}{A title that describes the observations.}
 
 \item{title_group_by}{A title that describes the grouping factor.}
-
-\item{x}{A named list with the observations for the boxplot.}
-
-\item{group_by}{A list with factorial values, by which observations can optionally be grouped.}
 }
 \value{
 An object of class \code{plotly}.
