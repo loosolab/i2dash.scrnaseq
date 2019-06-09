@@ -9,6 +9,7 @@
 #' @param title (Optional) The title of the components junk.
 #'
 #' @return A string containing markdown code for the rendered textbox
+#' @export
 scatterplot <- function(object, x, y, colour_by = NULL, labels = NULL, expression = NULL, title = NULL) {
   # Create random env id
   env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))

@@ -90,7 +90,7 @@ df_{{ env_id }} <- shiny::reactive({
   }
   # Set values for 'y'
   if( !{{ env_id }}$y_selection ) {
-    y <- {{ env_id }}y[1]
+    y <- {{ env_id }}$y[1]
   } else {
     y <- {{ env_id }}$y[input$select_y_{{ env_id }}]
   }
