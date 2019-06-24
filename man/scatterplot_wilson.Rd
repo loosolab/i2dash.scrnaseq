@@ -19,6 +19,8 @@ scatterplot_wilson(object, x, y, colour_by = NULL, expression = NULL,
 \item{expression}{(Optional) A matrix or dataframe with the same length of columns as 'x'. The sequence and number of the columns should be equal to the sequence and length of 'x'. The rownames represent the feature i.e. gene names and the values represent the expression level. Note: This feature is not compatible with the statical mode (parameter '"interactive" = TRUE'). Alternatively you can provide a vector as colour_by.}
 
 \item{title}{(Optional) The title of the components junk.}
+
+\item{(...)}{Further parameters which are compatible with wilsons create_scatterplot() method. See \code{\link[wilson::create_scatterplot()]{wilson}}.}
 }
 \value{
 A string containing markdown code for the rendered textbox
