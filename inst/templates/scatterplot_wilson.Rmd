@@ -14,10 +14,9 @@ is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
 "%ni%" <- Negate("%in%")
 additional_arguments <- {{ env_id }}$additional_arguments
 
-# todo provide color for categorial and sequential data
-if("data.method" %ni% names(additional_arguments)){
-  additional_arguments$plot.method <- "static"
-}
+# force interctive parameter
+additional_arguments$plot.method <- "interactive"
+
 if("density" %ni% names(additional_arguments)){
   additional_arguments$density <- F
 }
@@ -87,9 +86,12 @@ i2dash::embed_var(dt)
 # Render plot
 output_list <- do.call(wilson::create_scatterplot, additional_arguments)
 gg <- output_list$plot
-    
+gg$x$layout$height <- 0
+gg$x$layout$width <- 0
+
+gg
 # convert to plotly object for automatic resizing
-plotly::ggplotly(gg)
+#plotly::ggplotly(gg)
 ```
 
 ```{r, eval=is_shiny}
@@ -132,14 +134,12 @@ ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downl
 df_{{ env_id }} <- shiny::reactive({
   
   # Parameters for wilson::create_scatterplot
-  # params <- list()
   "%ni%" <- Negate("%in%")
   additional_arguments <- {{ env_id }}$additional_arguments
   
-  # todo provide color for categorial and sequential data
-  if("data.method" %ni% names(additional_arguments)){
-    additional_arguments$plot.method <- "static"
-  }
+  # force to use interactive parameter
+  additional_arguments$plot.method <- "interactive"
+  
   if("density" %ni% names(additional_arguments)){
     additional_arguments$density <- F
   }
@@ -254,7 +254,10 @@ output$plot_{{ env_id }} <- plotly::renderPlotly({
     gg <- output_list$plot
     
     # convert to plotly object for automatic resizing
-    plotly::ggplotly(gg)
+    gg$x$layout$height <- 0
+    gg$x$layout$width <- 0
+
+    gg
 })
 
 #

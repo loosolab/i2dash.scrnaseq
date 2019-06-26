@@ -3,7 +3,7 @@
 #' @param object A \linkS4class{i2dash::i2dashboard} object.
 #' @param x A vector with numerical values or a named list will be mapped to the x-axis. In case of a named list, a dropdown menu will be provided in the interactive mode. Note: The length of vectors x and y should be the same as well as the length of all vectors in case of a named list.
 #' @param y A vector with numerical values or a named list will be mapped to the y-axis. In case of a named list, a dropdown menu will be provided in the interactive mode. Note: The length of vectors x and y should be the same as well as the length of all vectors in case of a named list.
-#' @param colour_by (Optional) A vector with factorial (categorical coloring), numerical (sequential colouring; can be forced to use categorical colouring by providing the parameter '"categorized" = TRUE') or character (categorical colouring) values or a named list that will be used for colouring. In case of a named list, a dropdown menu will be provided in the interactive mode. Note: The length of the vector should be of the same length as x and y as well as the length of all vectors in case of a named list.
+#' @param colour_by (Optional) A vector with factorial (= categorical coloring), numerical (= sequential colouring; can be forced to use categorical colouring by providing the parameter '"categorized" = TRUE') or character (= categorical colouring) values or a named list that will be used for colouring. In case of a named list, a dropdown menu will be provided in the interactive mode. Note: The length of the vector should be of the same length as x and y as well as the length of all vectors in case of a named list.
 #' @param expression (Optional) A matrix or dataframe with the same length of columns as 'x'. The sequence and number of the columns should be equal to the sequence and length of 'x'. The rownames represent the feature i.e. gene names and the values represent the expression level. Note: This feature is not compatible with the statical mode (parameter '"interactive" = TRUE'). Alternatively you can provide a vector as colour_by.
 #' @param title (Optional) The title of the components junk.
 #' @param (...) Further parameters which are compatible with wilsons create_scatterplot() method. See \code{\link[wilson::create_scatterplot()]{wilson}}.
@@ -43,7 +43,8 @@ scatterplot_wilson <- function(object, x, y, colour_by = NULL, expression = NULL
   if(!identical(ncol(expression), length(x[[1]])) & !is.null(expression)) stop("The number of columns in 'expression' should be equal to the length of the vector 'x'.")
 
   additional_arguments <- list(...)
-  if("data.table" %in% names(additional_arguments)) warning("The parameters 'x' and 'y' will be used instead of 'data.table'")
+  if("data" %in% names(additional_arguments)) warning("The parameters 'x' and 'y' will be used instead of 'data.table'")
+  if("plot.method" %in% names(additional_arguments)) warning("This parameter will be ignored and 'plot.method' = 'interactive' will be used.")
   valid_arguments <- names(as.list(args(wilson::create_scatterplot)))
   invalid_args <- setdiff(names(additional_arguments), valid_arguments)
   if(length(invalid_args) != 0) stop(paste0(" The following parameter is not a valid parameter of 'Wilson::create_scatterplot': ", invalid_args))
