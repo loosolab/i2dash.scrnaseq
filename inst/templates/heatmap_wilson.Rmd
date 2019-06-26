@@ -210,8 +210,6 @@ output$plot_{{ env_id }} <- plotly::renderPlotly({
   heatmap$x$layout$height <- 0
   heatmap$x$layout$width <- 0
   heatmap
-  
-    
 })
 
 #
