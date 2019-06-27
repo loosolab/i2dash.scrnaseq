@@ -3,4 +3,5 @@
 export(.bar_plot)
 export(.scatter_plot)
 export(boxplot)
+export(geneview_wilson)
 export(plotly_boxplot)
