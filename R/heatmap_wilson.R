@@ -1,4 +1,4 @@
-#' Renders a scatter plot from 'wilson' package
+#' Renders a heatmap plot from 'wilson' package
 #'
 #' @param object A \linkS4class{i2dash::i2dashboard} object.
 #' @param countTable A matrix with features as rows and observations as columns. The rownames and columnnames should be provided and are used in buiding the heatmap.
@@ -36,7 +36,7 @@ heatmap_wilson <- function(object, countTable, group_by, title = NULL, ...) {
   if("data" %in% names(additional_arguments)) warning("The parameters 'countTable' and 'group_by' will be used instead of 'data.table'")
   valid_arguments <- names(as.list(args(wilson::create_scatterplot)))
   invalid_args <- setdiff(names(additional_arguments), valid_arguments)
-  if(length(invalid_args) != 0) stop(paste0(" The following parameter is not a valid parameter of 'Wilson::create_scatterplot': ", invalid_args))
+  if(length(invalid_args) != 0) stop(paste0(" The following parameter is not a valid parameter of 'Wilson::create_heatmap': ", invalid_args))
   #if(length(additional_arguments) == 0) additional_arguments <- NULL
 
   # Create component environment
