@@ -3,4 +3,5 @@
 export(.bar_plot)
 export(.scatter_plot)
 export(boxplot)
+export(pca_wilson)
 export(plotly_boxplot)
