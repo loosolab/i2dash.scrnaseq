@@ -4,11 +4,13 @@
 \alias{scatterplot_wilson}
 \title{Renders a scatter plot from 'wilson' package}
 \usage{
-scatterplot_wilson(object, x, y, colour_by = NULL, expression = NULL,
-  title = NULL, ...)
+scatterplot_wilson(object, compId = NULL, x, y, colour_by = NULL,
+  expression = NULL, title = NULL, ...)
 }
 \arguments{
 \item{object}{A \linkS4class{i2dash::i2dashboard} object.}
+
+\item{compId}{(Optional) The component ID provided through add_component.}
 
 \item{x}{A vector with numerical values or a named list will be mapped to the x-axis. In case of a named list, a dropdown menu will be provided in the interactive mode. Note: The length of vectors x and y should be the same as well as the length of all vectors in case of a named list.}
 

@@ -1,6 +1,7 @@
 #' Renders a scatter plot from 'wilson' package
 #'
 #' @param object A \linkS4class{i2dash::i2dashboard} object.
+#' @param compId (Optional) The component ID provided through add_component.
 #' @param x A vector with numerical values or a named list will be mapped to the x-axis. In case of a named list, a dropdown menu will be provided in the interactive mode. Note: The length of vectors x and y should be the same as well as the length of all vectors in case of a named list.
 #' @param y A vector with numerical values or a named list will be mapped to the y-axis. In case of a named list, a dropdown menu will be provided in the interactive mode. Note: The length of vectors x and y should be the same as well as the length of all vectors in case of a named list.
 #' @param colour_by (Optional) A vector with factorial (= categorical coloring), numerical (= sequential colouring; can be forced to use categorical colouring by providing the parameter '"categorized" = TRUE') or character (= categorical colouring) values or a named list that will be used for colouring. In case of a named list, a dropdown menu will be provided in the interactive mode. Note: The length of the vector should be of the same length as x and y as well as the length of all vectors in case of a named list.
@@ -10,21 +11,23 @@
 #'
 #' @return A string containing markdown code for the rendered textbox
 #' @export
-scatterplot_wilson <- function(object, x, y, colour_by = NULL, expression = NULL, title = NULL, ...) {
-  # Create random env id
-  env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
+scatterplot_wilson <- function(object, compId = NULL, x, y, colour_by = NULL, expression = NULL, title = NULL, ...) {
+  # Create env id
+  if(is.null(compId)){
+    env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
+  } else {
+    env_id <- paste0("env_", compId)
+  }
 
   # Create list if element is not a list already
   if(!is.list(x)) x <- list(x)
   if(!is.list(y)) y <- list(y)
   if(!is.list(colour_by) & !is.null(colour_by)) colour_by <- list(colour_by)
-  #if(!is.list(labels) & !is.null(labels)) labels <- list(labels)
 
   # Name the lists
   if(is.null(names(x))) x %<>% magrittr::set_names("x")
   if(is.null(names(y))) y %<>% magrittr::set_names("y")
   if(is.null(names(colour_by)) & !is.null(colour_by)) colour_by %<>% magrittr::set_names("colour")
-  #if(is.null(names(labels)) & !is.null(labels)) labels %<>% magrittr::set_names("labels")
 
   # Validate input
   if(!all(sapply(x, is.numeric))) stop("'x' should only contain numerical values.")
@@ -35,11 +38,9 @@ scatterplot_wilson <- function(object, x, y, colour_by = NULL, expression = NULL
   if(length(unique(sapply(x, length))) != 1) stop("The list 'x' should contain elements with the same length.")
   if(length(unique(sapply(y, length))) != 1) stop("The list 'y' should contain elements with the same length.")
   if(length(unique(sapply(colour_by, length))) != 1  & !is.null(colour_by)) stop("The list 'colour_by' should contain elements with the same length.")
-  #if(length(unique(sapply(labels, length))) != 1  & !is.null(labels)) stop("The list 'labels' should contain elements with the same length.")
 
   if(!identical(length(x[[1]]), length(y[[1]]))) stop("All arguments should be of the the same length.")
   if(!identical(length(x[[1]]), length(colour_by[[1]])) & !is.null(colour_by)) stop("All arguments should be of the the same length.")
-  #if(!identical(length(x[[1]]), length(labels[[1]])) & !is.null(labels)) stop("All arguments should be of the the same length.")
   if(!identical(ncol(expression), length(x[[1]])) & !is.null(expression)) stop("The number of columns in 'expression' should be equal to the length of the vector 'x'.")
 
   additional_arguments <- list(...)
@@ -48,10 +49,14 @@ scatterplot_wilson <- function(object, x, y, colour_by = NULL, expression = NULL
   valid_arguments <- names(as.list(args(wilson::create_scatterplot)))
   invalid_args <- setdiff(names(additional_arguments), valid_arguments)
   if(length(invalid_args) != 0) stop(paste0(" The following parameter is not a valid parameter of 'Wilson::create_scatterplot': ", invalid_args))
-  #if(length(additional_arguments) == 0) additional_arguments <- NULL
 
   # Create component environment
   env <- new.env()
+
+  env$x_selection <- F
+  env$y_selection <- F
+  env$colour_by_selection <- F
+
   env$x <- x
   env$x_selection <- length(env$x) > 1
 
@@ -61,11 +66,11 @@ scatterplot_wilson <- function(object, x, y, colour_by = NULL, expression = NULL
   env$colour_by <- colour_by
   env$colour_by_selection <- length(env$colour_by) > 1
 
-  #env$labels <- labels
-
   env$expression <- expression
 
   env$additional_arguments <- additional_arguments
+
+  env$compId <- compId
 
   # Save environment object
   saveRDS(env, file = file.path(object@workdir, "envs", paste0(env_id, ".rds")))
