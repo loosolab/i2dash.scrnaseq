@@ -145,7 +145,7 @@ if(!is.null({{ env_id }}$compId) & {{ env_id }}$compId %in% edgeTable$reciever){
   df_{{ env_id }} <- shiny::reactive({
     # set parameters for wilson::create_scatterplot()
     "%ni%" <- Negate("%in%")
-    additional_arguments <- env_compa$additional_arguments
+    additional_arguments <- {{ env_id }}$additional_arguments
     additional_arguments$plot.method <- "static"
     
     if("density" %ni% names(additional_arguments)){
