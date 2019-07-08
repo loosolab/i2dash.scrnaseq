@@ -4,7 +4,7 @@
 <!-- Component created on {{ date }} -->
 
 ```{r}
-{{ env_id }} = readRDS("envs/{{ env_id }}.rds")
+{{ env_id }} <- readRDS("envs/{{ env_id }}.rds")
 
 is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
 ```
@@ -102,6 +102,12 @@ ui_list <- rlist::list.append(ui_list,
                                   choices = rownames({{ env_id }}$countTable),
                                   multiple = TRUE)
                               )
+# select columns
+ui_list <- rlist::list.append(ui_list,
+                                uiOutput("select_columns_{{ env_id }}")
+                              )
+
+
 # select clustering
 ui_list <- rlist::list.append(ui_list,
                                 selectInput("select_clustering_{{ env_id }}",
@@ -129,11 +135,29 @@ ui_list <- rlist::list.append(ui_list,
 # Download link
 ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downloadData_{{ env_id }}', 'Download data')))
 
+# create dynamic uiElement
+output$select_columns_{{ env_id }} <- renderUI({
+  # if (is.null(input$select_group_by_{{ env_id }}))
+  #   return()
+  # ui_list <- rlist::list.append(ui_list, selectInput("select_col_dyn_{{ env_id }}",
+  #                                 label = "Select columns:",
+  #                                 choices = unique({{ env_id }}$group_by[[input$select_group_by_{{ env_id }}]]),
+  #                                 multiple = TRUE)
+  # )
+  selectInput("select_col_dyn_{{ env_id }}",
+                                  label = "Select columns:",
+                                  choices = unique({{ env_id }}$group_by[[input$select_group_by_{{ env_id }}]]),
+                                  multiple = TRUE)
+  
+})
+
+
+
 #
 # Create reactive data table
 #
 df_{{ env_id }} <- shiny::reactive({
-  
+  #print(unique({{ env_id }}$group_by[[input$select_group_by_{{ env_id }}]]))
   # Parameters for wilson::create_scatterplot
   # params <- list()
   "%ni%" <- Negate("%in%")
@@ -173,7 +197,15 @@ df_{{ env_id }} <- shiny::reactive({
   
   # create data.table
   dt <- create_data.table('matrix' = countTable, 'group_by' = group_by[[1]])
-
+  #print(dt)
+  
+  # subset group_by by chosen grouping
+  if(!is.null(input$select_col_dyn_{{ env_id }})){
+    column_vector <- c(c("gene"), input$select_col_dyn_{{ env_id }})
+    dt <- dt[,..column_vector,]
+  }
+  
+  
   # sequential (one-sided) color palette
   if("color" %ni% names({{ env_id }}$additional_arguments)){
     color <- RColorBrewer::brewer.pal(9, "YlOrRd")
@@ -216,7 +248,7 @@ output$plot_{{ env_id }} <- plotly::renderPlotly({
 # Layout of component
 #
 shiny::fillRow(flex = c(NA, 1),
-        dropdownButton(do.call(shiny::inputPanel, ui_list),
+        dropdownButton(div(style='max-height: 350px; overflow-x: auto;',do.call(shiny::inputPanel, ui_list)),
                        circle = TRUE, status = "danger", icon = icon("gear"), width = "300px",
                        tooltip = tooltipOptions(title = "Click, to change plot settings:")),
         plotly::plotlyOutput("plot_{{ env_id }}", width = "100%", height = "400px")

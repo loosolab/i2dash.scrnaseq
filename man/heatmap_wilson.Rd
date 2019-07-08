@@ -2,7 +2,7 @@
 % Please edit documentation in R/heatmap_wilson.R
 \name{heatmap_wilson}
 \alias{heatmap_wilson}
-\title{Renders a scatter plot from 'wilson' package}
+\title{Renders a heatmap plot from 'wilson' package}
 \usage{
 heatmap_wilson(object, countTable, group_by, title = NULL, ...)
 }
@@ -21,5 +21,5 @@ heatmap_wilson(object, countTable, group_by, title = NULL, ...)
 A string containing markdown code for the rendered textbox
 }
 \description{
-Renders a scatter plot from 'wilson' package
+Renders a heatmap plot from 'wilson' package
 }
