@@ -135,7 +135,7 @@ ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downl
 ################# Server ####################
 
 # if compId exists and component is a reciever
-if(!is.null({{ env_id }}$compId) & {{ env_id }}$compId %in% edgeTable$reciever){
+if({{ env_id }}$compId %in% edgeTable$reciever){
   
   # set variables
   reciever_{{ env_id }} <- {{ env_id }}$compId

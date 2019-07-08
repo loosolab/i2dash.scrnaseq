@@ -14,7 +14,8 @@
 scatterplot_wilson <- function(object, compId = NULL, x, y, colour_by = NULL, expression = NULL, title = NULL, ...) {
   # Create env id
   if(is.null(compId)){
-    env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
+    compId <- stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]") #this compId is for the check in the Rmd file and is not saved in object@compIds
+    env_id <- paste0("env_", compId)
   } else {
     env_id <- paste0("env_", compId)
   }
