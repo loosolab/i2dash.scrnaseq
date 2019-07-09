@@ -8,9 +8,15 @@
 #'
 #' @return A string containing markdown code for the rendered textbox
 #' @export
-heatmap_wilson <- function(object, compId = NULL,countTable, group_by, title = NULL, ...) {
-  # Create random env id
-  env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
+heatmap_wilson <- function(object, compId = NULL, countTable, group_by, title = NULL, ...) {
+  # Create env id
+  if(is.null(compId)){
+    compId <- stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]") #this compId is for the check in the Rmd file and is not saved in object@compIds
+    env_id <- paste0("env_", compId)
+  } else {
+    env_id <- paste0("env_", compId)
+  }
+
 
   # Create list if element is not a list already
   if(!is.list(group_by)) group_by <- list(group_by)
@@ -48,6 +54,8 @@ heatmap_wilson <- function(object, compId = NULL,countTable, group_by, title = N
   env$group_by_selection <- length(env$group_by) > 1
 
   env$additional_arguments <- additional_arguments
+
+  env$compId <- compId
 
   # Save environment object
   saveRDS(env, file = file.path(object@workdir, "envs", paste0(env_id, ".rds")))
