@@ -8,7 +8,7 @@
 #'
 #' @return A string containing markdown code for the rendered textbox
 #' @export
-heatmap_wilson <- function(object, countTable, group_by, title = NULL, ...) {
+heatmap_wilson <- function(object, compId = NULL,countTable, group_by, title = NULL, ...) {
   # Create random env id
   env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
 
