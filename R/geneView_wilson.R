@@ -1,6 +1,7 @@
 #' Method for geneView creation from 'wilson' package
 #'
 #' @param object A \linkS4class{i2dash::i2dashboard} object.
+#' @param compId (Optional) The component ID provided through add_component and used for linking components together.
 #' @param countTable A matrix with features as rows and observations as columns. The rownames and columnnames should be provided and are used in buiding the heatmap.
 #' @param group_by A vector with values or a named list will be mapped to the y-axis. In case of a named list, a dropdown menu will be provided in the interactive mode. Note: The length of vectors x and y should be the same as well as the length of all vectors in case of a named list.
 #' @param title (Optional) The title of the components junk.
@@ -8,9 +9,14 @@
 #'
 #' @return A string containing markdown code for the rendered textbox
 #' @export
-geneview_wilson <- function(object, countTable, group_by, title = NULL, ...) {
-  # Create random env id
-  env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
+geneview_wilson <- function(object, compId = NULL, countTable, group_by, title = NULL, ...) {
+  # Create env id
+  if(is.null(compId)){
+    compId <- stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]") #this compId is for the check in the Rmd file and is not saved in object@compIds
+    env_id <- paste0("env_", compId)
+  } else {
+    env_id <- paste0("env_", compId)
+  }
 
   # Create list if element is not a list already
   if(!is.list(group_by)) group_by <- list(group_by)
@@ -39,6 +45,8 @@ geneview_wilson <- function(object, countTable, group_by, title = NULL, ...) {
   env$group_by_selection <- length(env$group_by) > 1
 
   env$additional_arguments <- additional_arguments
+
+  env$compId <- compId
 
   # Save environment object
   saveRDS(env, file = file.path(object@workdir, "envs", paste0(env_id, ".rds")))
