@@ -129,14 +129,21 @@ if (!is.null({{ env_id }}$expression)) {
   ))
 }
 
+if ({{ env_id }}$compId %in% edgeTable$transmitter) {
+  ui_list <- rlist::list.append(ui_list,
+                                tags$div(radioButtons("linking_mode_{{ env_id }}", label = "Select linking mode: ",
+                                         choices = list("Subsetting", "Highlighting"),
+                                         selected = "Subsetting")))
+  ui_list <- rlist::list.append(ui_list,
+                                tags$div(colourpicker::colourInput("col_{{ env_id }}", "Select colour for highlighting:", "red")))
+}
+
 # Download link
 ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downloadData_{{ env_id }}', 'Download data')))
 
 ################# Server ####################
-
 # if compId exists and component is a reciever
 if({{ env_id }}$compId %in% edgeTable$reciever){
-  
   # set variables
   reciever_{{ env_id }} <- {{ env_id }}$compId
   transmitter_to_{{ env_id }} <- edgeTable[reciever=={{ env_id }}$compId]$transmitter
@@ -242,24 +249,34 @@ if({{ env_id }}$compId %in% edgeTable$reciever){
     # Create data.table from data.frame
     dt <- data.table::setDT(df)
     
+    if("data.labels" %in% names(additional_arguments)){
+      dt[[1]] <- additional_arguments$data.labels
+    }
+    
     # get all and selected keys from transmitter
     plot_transmitter_string <- paste0("plot_env_", transmitter_to_{{ env_id }})
     keys_transmitter_string <- paste0("df_env_", transmitter_to_{{ env_id }}, "()$key")
+    color_transmitter_string <- paste0("input$col_env_", transmitter_to_{{ env_id }})
+    color_transmitter <- eval(parse(text = color_transmitter_string))
+    linking_mode_transmitter_string <- paste0("input$linking_mode_env_", transmitter_to_{{ env_id }})
+    linking_mode_transmitter <- eval(parse(text = linking_mode_transmitter_string))
     all_keys_transmitter <- eval(parse(text = keys_transmitter_string))
     selection_transmitter <- plotly::event_data("plotly_selected", source = plot_transmitter_string)$key
-    if (is.null(selection_transmitter)) {
-      selection_transmitter <- all_keys_transmitter 
-    } else {
-      selection_transmitter
+    if (!is.null(selection_transmitter)) {
+      m <- match(selection_transmitter, dt[[1]])
+      if(linking_mode_transmitter == "Subsetting"){
+        dt <- dt[na.omit(m), ]
+      } else if (linking_mode_transmitter == "Highlighting") {
+        additional_arguments$highlight.data <- dt[na.omit(m), ]
+        additional_arguments$highlight.color <- color_transmitter
+      }
     }
-    # subset dataset 
-    m <- match(selection_transmitter, dt[[1]])
-    subset <- dt[na.omit(m), ]
-    additional_arguments$data <- subset
+    
+    additional_arguments$data <- dt
     
     key <- NULL
     
-    return(list("params" = additional_arguments, "data" = subset, "key" = key))
+    return(list("params" = additional_arguments, "data" = dt, "key" = key))
   })
 # if compId doesn't exists
 } else {
@@ -373,7 +390,15 @@ if({{ env_id }}$compId %in% edgeTable$reciever){
     return(list("params" = additional_arguments, "data" = dt, "key" = key))
   })
 }
-  
+
+# Download
+output$downloadData_{{ env_id }} <- downloadHandler(
+  filename =  paste('data-', Sys.Date(), '.csv', sep=''),
+  content = function(file) {
+    write.csv(df_{{ env_id }}()$data, file)
+  }
+)
+
 # create plot with wilson
 output$plot_{{ env_id }} <- plotly::renderPlotly({
     output_list <- do.call(wilson::create_scatterplot, df_{{ env_id }}()$params)
