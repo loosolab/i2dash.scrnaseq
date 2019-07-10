@@ -1,6 +1,7 @@
 #' Renders a heatmap plot from 'wilson' package
 #'
 #' @param object A \linkS4class{i2dash::i2dashboard} object.
+#' @param compId (Optional) The component ID provided through add_component and used for linking components together.
 #' @param countTable A matrix with features as rows and observations as columns. The rownames and columnnames should be provided and are used in buiding the heatmap.
 #' @param group_by A vector with numerical values or a named list will be mapped to the y-axis. In case of a named list, a dropdown menu will be provided in the interactive mode. Note: The length of vectors x and y should be the same as well as the length of all vectors in case of a named list.
 #' @param title (Optional) The title of the components junk.
@@ -20,15 +21,9 @@ heatmap_wilson <- function(object, compId = NULL, countTable, group_by, title = 
 
   # Create list if element is not a list already
   if(!is.list(group_by)) group_by <- list(group_by)
-  #if(!is.list(y)) y <- list(y)
-  #if(!is.list(colour_by) & !is.null(colour_by)) colour_by <- list(colour_by)
-  #if(!is.list(labels) & !is.null(labels)) labels <- list(labels)
 
   # Name the lists
   if(is.null(names(group_by))) group_by %<>% magrittr::set_names("grouping")
-  #if(is.null(names(y))) y %<>% magrittr::set_names("y")
-  #if(is.null(names(colour_by)) & !is.null(colour_by)) colour_by %<>% magrittr::set_names("colour")
-  #if(is.null(names(labels)) & !is.null(labels)) labels %<>% magrittr::set_names("labels")
 
   # Validate input
   if((!is.matrix(countTable) & !is.data.frame(countTable))) stop("'countTable' should be a class of 'matrix' or 'data.frame'.")

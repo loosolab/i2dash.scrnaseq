@@ -12,7 +12,6 @@ is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
 ```{r}
 ######
 library(magrittr)
-library(shinyWidgets)
 #####
 #
 # Method for creating a data.table required by create_heatmap() method from wilson.
@@ -307,9 +306,9 @@ output$plot_{{ env_id }} <- plotly::renderPlotly({
 
 # Layout of component
 shiny::fillRow(flex = c(NA, 1),
-        dropdownButton(div(style='max-height: 350px; overflow-x: auto;',do.call(shiny::inputPanel, ui_list)),
+        shinyWidgets::dropdownButton(div(style='max-height: 350px; overflow-x: auto;',do.call(shiny::inputPanel, ui_list)),
                        circle = TRUE, status = "danger", icon = icon("gear"), width = "300px",
-                       tooltip = tooltipOptions(title = "Click, to change plot settings:")),
+                       tooltip = shinyWidgets::tooltipOptions(title = "Click, to change plot settings:")),
         plotly::plotlyOutput("plot_{{ env_id }}", width = "100%", height = "400px")
 )
 ```
