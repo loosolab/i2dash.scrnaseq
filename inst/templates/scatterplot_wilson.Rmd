@@ -378,7 +378,7 @@ if({{ env_id }}$compId %in% edgeTable$reciever){
 output$plot_{{ env_id }} <- plotly::renderPlotly({
     output_list <- do.call(wilson::create_scatterplot, df_{{ env_id }}()$params)
     gg <- output_list$plot #ggplot object
-    gg$mapping$key <- gg$data[[1]]
+    gg$mapping$key <- df_{{ env_id }}()$key
     gg$label <- "key"
     # convert to plotly object for automatic resizing
     p <- plotly::ggplotly(gg)
