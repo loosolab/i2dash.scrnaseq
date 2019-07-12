@@ -4,8 +4,12 @@
 <!-- Component created on {{ date }} -->
 
 ```{r}
-{{ env_id }} <- readRDS("envs/{{ env_id }}.rds")
+#{{ env_id }} <- readRDS("envs/{{ env_id }}.rds")
 
+{{ env_id }} <- rhdf5::h5read("i2dashboard.h5", "envs/{{ env_id }}")$params
+#{{ env_id }} <- {{ env_id }}_group$params
+# print(sapply({{ env_id }}, class))
+# print(colnames({{ env_id }}$expression))
 is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
 ```
 
@@ -101,21 +105,21 @@ library(magrittr)
 ################# UI ####################
 ui_list <- list()
 # selection field for x
-if ({{ env_id }}$x_selection){
+if ({{ env_id }}$x_selection[[1]]){
   ui_list <- rlist::list.append(ui_list,
                                 selectInput("select_x_{{ env_id }}", label = "Select data for x axis:",
                                             choices = names({{ env_id }}$x)))
 }
 
 # selection field for y
-if ({{ env_id }}$y_selection){
+if ({{ env_id }}$y_selection[[1]]){
   ui_list <- rlist::list.append(ui_list,
                                 selectInput("select_y_{{ env_id }}", label = "Select data for y axis:",
                                             choices = names({{ env_id }}$y)))
 }
 
 # selection field for colour_by
-if ({{ env_id }}$colour_by_selection){
+if ({{ env_id }}$colour_by_selection[[1]]){
   ui_list <- rlist::list.append(ui_list,
                                 selectInput("select_colour_{{ env_id }}", label = "Select colouring:",
                                             choices = names({{ env_id }}$colour_by)))
@@ -129,7 +133,7 @@ if (!is.null({{ env_id }}$expression)) {
   ))
 }
 
-if ({{ env_id }}$compId %in% edgeTable$transmitter) {
+if ({{ env_id }}$compId[[1]] %in% edgeTable$transmitter) {
   ui_list <- rlist::list.append(ui_list,
                                 tags$div(radioButtons("linking_mode_{{ env_id }}", label = "Select linking mode: ",
                                          choices = list("Subsetting", "Highlighting"),
@@ -143,10 +147,10 @@ ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downl
 
 ################# Server ####################
 # if compId exists and component is a reciever
-if({{ env_id }}$compId %in% edgeTable$reciever){
+if({{ env_id }}$compId[[1]] %in% edgeTable$reciever){
   # set variables
-  reciever_{{ env_id }} <- {{ env_id }}$compId
-  transmitter_to_{{ env_id }} <- edgeTable[reciever=={{ env_id }}$compId]$transmitter
+  reciever_{{ env_id }} <- {{ env_id }}$compId[[1]]
+  transmitter_to_{{ env_id }} <- edgeTable[reciever=={{ env_id }}$compId[[1]]]$transmitter
   
   # Create reactive data table
   df_{{ env_id }} <- shiny::reactive({
@@ -165,19 +169,19 @@ if({{ env_id }}$compId %in% edgeTable$reciever){
       additional_arguments$categorized <- F
     }
     # Set values for 'x'
-    if( !{{ env_id }}$x_selection ) {
+    if( !{{ env_id }}$x_selection[[1]] ) {
       x <- {{ env_id }}$x[1]
     } else {
       x <- {{ env_id }}$x[input$select_x_{{ env_id }}]
     }
     # Set values for 'y'
-    if( !{{ env_id }}$y_selection ) {
+    if( !{{ env_id }}$y_selection[[1]] ) {
       y <- {{ env_id }}$y[1]
     } else {
       y <- {{ env_id }}$y[input$select_y_{{ env_id }}]
     }
     # Set values for 'colour_by'
-    if (!{{ env_id }}$colour_by_selection){
+    if (!{{ env_id }}$colour_by_selection[[1]]){
       colour_by <- {{ env_id }}$colour_by[1]
     } else {
       colour_by <- {{ env_id }}$colour_by[input$select_colour_{{ env_id }}]
@@ -297,19 +301,19 @@ if({{ env_id }}$compId %in% edgeTable$reciever){
       additional_arguments$categorized <- F
     }
     # Set values for 'x'
-    if( !{{ env_id }}$x_selection ) {
+    if( !{{ env_id }}$x_selection[[1]] ) {
       x <- {{ env_id }}$x[1]
     } else {
       x <- {{ env_id }}$x[input$select_x_{{ env_id }}]
     }
     # Set values for 'y'
-    if( !{{ env_id }}$y_selection ) {
+    if( !{{ env_id }}$y_selection[[1]] ) {
       y <- {{ env_id }}$y[1]
     } else {
       y <- {{ env_id }}$y[input$select_y_{{ env_id }}]
     }
     # Set values for 'colour_by'
-    if (!{{ env_id }}$colour_by_selection){
+    if (!{{ env_id }}$colour_by_selection[[1]]){
       colour_by <- {{ env_id }}$colour_by[1]
     } else {
       colour_by <- {{ env_id }}$colour_by[input$select_colour_{{ env_id }}]

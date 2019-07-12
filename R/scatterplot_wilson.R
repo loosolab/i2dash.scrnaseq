@@ -33,6 +33,13 @@ scatterplot_wilson <- function(object, compId = NULL, x, y, colour_by = NULL, ex
   # Validate input
   if(!all(sapply(x, is.numeric))) stop("'x' should only contain numerical values.")
   if(!all(sapply(y, is.numeric))) stop("'y' should only contain numerical values.")
+  if(any(sapply(colour_by, is.factor))){
+    for(i in names(colour_by)){
+      if(is.factor(colour_by[[i]])){
+        colour_by[[i]] <- as.character(colour_by[[i]])
+      }
+    }
+  }
   if((!is.matrix(expression) & !is.data.frame(expression)) & !is.null(expression)) stop("'expression' should be a class of 'matrix' or 'data.frame'.")
 
   # Check, if lengths in a list are the same and if x and y and label and color_by are the same length
@@ -52,29 +59,55 @@ scatterplot_wilson <- function(object, compId = NULL, x, y, colour_by = NULL, ex
   if(length(invalid_args) != 0) stop(paste0(" The following parameter is not a valid parameter of 'Wilson::create_scatterplot': ", invalid_args))
 
   # Create component environment
-  env <- new.env()
+  # env <- new.env()
+  #
+  # env$x_selection <- F
+  # env$y_selection <- F
+  # env$colour_by_selection <- F
+  #
+  # env$x <- x
+  # env$x_selection <- length(env$x) > 1
+  #
+  # env$y <- y
+  # env$y_selection <- length(env$y) > 1
+  #
+  # env$colour_by <- colour_by
+  # env$colour_by_selection <- length(env$colour_by) > 1
+  #
+  # env$expression <- expression
+  #
+  # env$additional_arguments <- additional_arguments
+  #
+  # env$compId <- compId
+  #
+  # # Save environment object
+  # saveRDS(env, file = file.path(object@workdir, "envs", paste0(env_id, ".rds")))
 
-  env$x_selection <- F
-  env$y_selection <- F
-  env$colour_by_selection <- F
+  params <- list()
+  params$x_selection <- F
+  params$y_selection <- F
+  params$colour_by_selection <- F
 
-  env$x <- x
-  env$x_selection <- length(env$x) > 1
+  params$x <- x
+  params$x_selection <- length(params$x) > 1
 
-  env$y <- y
-  env$y_selection <- length(env$y) > 1
+  params$y <- y
+  params$y_selection <- length(params$y) > 1
 
-  env$colour_by <- colour_by
-  env$colour_by_selection <- length(env$colour_by) > 1
+  params$colour_by <- colour_by
+  params$colour_by_selection <- length(params$colour_by) > 1
 
-  env$expression <- expression
+  params$expression <- as.data.frame(expression)
 
-  env$additional_arguments <- additional_arguments
+  params$additional_arguments <- additional_arguments
 
-  env$compId <- compId
-
-  # Save environment object
-  saveRDS(env, file = file.path(object@workdir, "envs", paste0(env_id, ".rds")))
+  params$compId <- compId
+  rhdf5_path_file <- file.path(object@workdir, "i2dashboard.h5")
+  h5f = rhdf5::H5Fopen(rhdf5_path_file)
+  group_id <- file.path("envs", env_id)
+  rhdf5::h5createGroup(rhdf5_path_file, group_id)
+  rhdf5::h5write(params, h5f, file.path(group_id, "params"))
+  rhdf5::H5close()
 
   # Expand component
   timestamp <- Sys.time()
