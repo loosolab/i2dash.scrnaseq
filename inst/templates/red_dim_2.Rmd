@@ -1,0 +1,20 @@
+
+### Number of cells per grouing
+
+<!-- Component created on {{ date }} -->
+
+```{r, eval=!is_shiny}
+sp_bars <- plotly::plot_ly(sd_{{ env_id }}, colors = "Set1", x = df_{{ env_id }}[[highlight]], color = df_{{ env_id }}[[highlight]]) %>%
+  plotly::layout(
+    xaxis = list(title = names(df_{{ env_id }}[highlight])),
+    yaxis = list(title = "Number of observations"),
+    barmode = "overlay",
+    showlegend = FALSE
+  ) %>%
+  plotly::highlight("plotly_selected")
+sp_bars
+```
+
+```{r, eval=is_shiny}
+```
+

@@ -1,0 +1,34 @@
+
+###
+
+<!-- Component created on {{ date }} -->
+
+```{r, eval=!is_shiny}
+if(is.factor(df_{{ env_id }}[["{{ meta_column }}"]])){
+  bars_{{ meta_column }} <- plotly::plot_ly(sd_{{ env_id }}, colors = "Set1", x = df_{{ env_id }}[["{{ meta_column }}"]], color = df_{{ env_id }}[["{{ meta_column }}"]]) %>%
+  plotly::layout(
+    xaxis = list(title = names(df_{{ env_id }}["{{ meta_column }}"])),
+    yaxis = list(title = "Number of observations"),
+    barmode = "overlay",
+    showlegend = FALSE
+  ) %>%
+  plotly::highlight("plotly_selected")
+  bars_{{ meta_column }}
+} else {
+  boxs_{{ meta_column }} <- plotly::plot_ly(sd_{{ env_id }}, colors = "Set1", x = df_{{ env_id }}[[highlight]], y = df_{{ env_id }}[["{{ meta_column }}"]], color = df_{{ env_id }}[[highlight]]) %>%
+  plotly::add_boxplot() %>%
+  plotly::layout(
+    xaxis = list(title = names(df_{{ env_id }}["{{ meta_column }}"])),
+    yaxis = list(title = "Distribution per cluster"),
+    showlegend = FALSE
+  ) %>%
+  plotly::highlight("plotly_selected")
+  boxs_{{ meta_column }}
+}
+
+
+```
+
+```{r, eval=is_shiny}
+```
+

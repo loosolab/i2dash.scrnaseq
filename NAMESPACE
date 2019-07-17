@@ -2,5 +2,6 @@
 
 export(.bar_plot)
 export(.scatter_plot)
+export(add_dim_reduction_page)
 export(boxplot)
 export(plotly_boxplot)
