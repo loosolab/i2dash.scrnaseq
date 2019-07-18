@@ -5,8 +5,8 @@
 ```{r}
 {{ env_id }} = readRDS("envs/{{ env_id }}.rds")
 
-#is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
-is_shiny <- F
+is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
+
 ########
 library(dplyr)
 ########
@@ -14,11 +14,12 @@ reduced_dim <- {{ env_id }}$reduced_dim
 count_table <- {{ env_id }}$count_table
 metadata <- {{ env_id }}$metadata
 grouping <- {{ env_id }}$grouping
+labels <- {{ env_id }}$labels
 
 # Create data.frame for linked plots
 genexpr_df_{{ env_id }} <- data.frame("x" = reduced_dim[,1], "y" = reduced_dim[,2], "grouping" = as.factor(metadata[[grouping]]), t(count_table))
 genexpr_df_long_{{ env_id }} <- tidyr::gather(genexpr_df_{{ env_id }}, key = "gene", value = "expression", -x, -y, -grouping)
-#genexpr_df$cluster <- paste0("cl_",genexpr_df$cluster)
+row.names(genexpr_df_long_{{ env_id }}) <- c()
 
 sd_{{ env_id }} <- plotly::highlight_key(genexpr_df_long_{{ env_id }})
 ```
@@ -26,7 +27,7 @@ sd_{{ env_id }} <- plotly::highlight_key(genexpr_df_long_{{ env_id }})
 ```{r, eval=!is_shiny}
 base <- plotly::plot_ly(sd_{{ env_id }}, colors = "Set1", color = ~grouping) %>%
   plotly::group_by(grouping) %>%
-  plotly::add_markers(x = ~x, y = ~y, hoverinfo = "x+y+text", text = ~grouping) %>%
+  plotly::add_markers(x = ~x, y = ~y, hoverinfo = "x+y+text", text = ~paste("grouping: ", grouping,"</br> label: ", labels)) %>%
   plotly::layout(
     xaxis = list(title = "Dim 1"),
     yaxis = list(title = "Dim 2"),
