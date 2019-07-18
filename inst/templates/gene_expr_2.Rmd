@@ -1,0 +1,19 @@
+###
+
+<!-- Component created on {{ date }} -->
+
+```{r, eval=!is_shiny}
+boxs <- plotly::plot_ly(sd_{{ env_id }}, colors = "Set1", x = ~grouping, y = ~expression, color = ~grouping) %>%
+    plotly::add_boxplot() %>%
+    plotly::layout(
+      xaxis = list(title = grouping),
+      yaxis = list(title = "Expression per cluster"),
+      showlegend = FALSE
+
+    )
+boxs
+```
+
+```{r, eval=is_shiny}
+```
+
