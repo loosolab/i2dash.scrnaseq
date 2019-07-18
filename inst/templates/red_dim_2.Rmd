@@ -4,9 +4,9 @@
 <!-- Component created on {{ date }} -->
 
 ```{r, eval=!is_shiny}
-sp_bars <- plotly::plot_ly(sd_{{ env_id }}, colors = "Set1", x = df_{{ env_id }}[[highlight]], color = df_{{ env_id }}[[highlight]]) %>%
+sp_bars <- plotly::plot_ly(sd_{{ env_id }}, colors = "Set1", x = df_{{ env_id }}[[grouping]], color = df_{{ env_id }}[[grouping]]) %>%
   plotly::layout(
-    xaxis = list(title = names(df_{{ env_id }}[highlight])),
+    xaxis = list(title = names(df_{{ env_id }}[grouping])),
     yaxis = list(title = "Number of observations"),
     barmode = "overlay",
     showlegend = FALSE

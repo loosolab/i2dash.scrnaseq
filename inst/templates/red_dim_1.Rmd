@@ -6,28 +6,26 @@
 ```{r}
 {{ env_id }} = readRDS("envs/{{ env_id }}.rds")
 
-#is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
-is_shiny <- F
+is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
+
 ########
 library(dplyr)
 ########
 reduced_dim <- {{ env_id }}$reduced_dim
 metadata <- {{ env_id }}$metadata
-highlight <- {{ env_id }}$highlight
-
+grouping <- {{ env_id }}$grouping
+labels <- {{ env_id }}$labels
 # Create data.frame for linked plots
+
 df_{{ env_id }} <- data.frame("x" = reduced_dim[,1], "y" = reduced_dim[,2], metadata)
-sd_{{ env_id }} <- plotly::highlight_key(df_{{ env_id }})
+row.names(df_{{ env_id }}) <- c()
 
-# Create data.frame for linked plots
-# test_df <- data.frame("x" = mtcars$wt, "y" = mtcars$mpg, "group1" = as.factor(mtcars$cyl), "group2" = mtcars$hp, "group3" = as.factor(mtcars$carb))
-# d <- plotly::highlight_key(test_df)
-# comp_nr <- 4
+sd_{{ env_id }} <- plotly::highlight_key(df_{{ env_id }})
 
 ```
 
 ```{r, eval=!is_shiny}
-dots <- plotly::plot_ly(sd_{{ env_id }}, colors = "Set1", color = df_{{ env_id }}[[highlight]], x = ~x, y = ~y, mode = "markers", textposition = "top", hoverinfo = "x+y+text", text = df_{{ env_id }}[[highlight]]) %>%
+dots <- plotly::plot_ly(sd_{{ env_id }}, colors = "Set1", color = df_{{ env_id }}[[grouping]], x = ~x, y = ~y, mode = "markers", textposition = "top", hoverinfo = "x+y+text", text = paste("grouping: ", df_{{ env_id }}[[grouping]],"</br> label: ", labels )) %>%
   plotly::layout(
     xaxis = list(title = "Dim 1"),
     yaxis = list(title = "Dim 2"),

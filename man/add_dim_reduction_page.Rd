@@ -4,24 +4,24 @@
 \alias{add_dim_reduction_page}
 \title{Renders a dimension reduction page}
 \usage{
-add_dim_reduction_page(object, reduced_dim, metadata, highlight, title,
-  labels = NULL, barplot_highlight = TRUE, menu = NULL,
-  sidebar = NULL)
+add_dim_reduction_page(object, reduced_dim, metadata, grouping,
+  title = NULL, labels = NULL, barplot_grouping = TRUE,
+  menu = NULL, sidebar = NULL)
 }
 \arguments{
 \item{object}{A \linkS4class{i2dash::i2dashboard} object.}
 
-\item{reduced_dim}{A data.frame or matrix containing two columns for the x and y coordinates. The rownames are used as labels.}
+\item{reduced_dim}{A data.frame or matrix containing two columns for the x and y coordinates.}
 
 \item{metadata}{A data.frame or matrix containing a maximum of four columns with cell metadata (e.g. cluster, timepoint, number of genes, etc). Should have the same rownumber as 'reduced_dim'. Note: Factorial metadata needs to be of class factor in the data.frame.}
 
-\item{highlight}{A character string identical to one of the column names in 'metadata'.}
+\item{grouping}{A character string identical to one of the column names in 'metadata'.}
 
 \item{title}{The title of the page.}
 
 \item{labels}{(Optional) A vector with labels. Should be of the same length as the rownumber of 'reduced_dim'.}
 
-\item{barplot_highlight}{(Default: TRUE) A barplot with the number of observations in 'highlight' will be created.}
+\item{barplot_grouping}{(Default: TRUE) A logical value. If TRUE, a barplot with the number of observations from 'grouping' will be created.}
 
 \item{menu}{(Optional) The name of the menu, under which the page should appear.}
 
