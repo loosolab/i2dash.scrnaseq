@@ -6,7 +6,7 @@
 \usage{
 add_dim_reduction_page(object, reduced_dim, metadata, grouping,
   title = NULL, labels = NULL, barplot_grouping = TRUE,
-  menu = NULL, sidebar = NULL)
+  silhouette_plot = FALSE, menu = NULL, sidebar = NULL)
 }
 \arguments{
 \item{object}{A \linkS4class{i2dash::i2dashboard} object.}
@@ -21,9 +21,11 @@ add_dim_reduction_page(object, reduced_dim, metadata, grouping,
 
 \item{labels}{(Optional) A vector with labels. Should be of the same length as the rownumber of 'reduced_dim'.}
 
-\item{barplot_grouping}{(Default: TRUE) A logical value. If TRUE, a barplot with the number of observations from 'grouping' will be created.}
+\item{barplot_grouping}{(Default: TRUE) A logical value. (Default: TRUE) If TRUE, a barplot with the number of observations from 'grouping' will be created.}
 
-\item{menu}{(Optional) The name of the menu, under which the page should appear.}
+\item{silhouette_plot}{(Optional) A logical value. (Default: FALSE) If TRUE, a silhouette plot will be created.}
+
+\item{menu}{(Optional) The name of the menu, under which the page should appear in the navigation.}
 
 \item{sidebar}{(Optional) The page layout (see below).}
 }

@@ -11,30 +11,126 @@ is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
 ########
 library(dplyr)
 ########
-reduced_dim <- {{ env_id }}$reduced_dim
-metadata <- {{ env_id }}$metadata
-grouping <- {{ env_id }}$grouping
-labels <- {{ env_id }}$labels
-# Create data.frame for linked plots
 
-df_{{ env_id }} <- data.frame("x" = reduced_dim[,1], "y" = reduced_dim[,2], metadata)
-row.names(df_{{ env_id }}) <- c()
-
-sd_{{ env_id }} <- plotly::highlight_key(df_{{ env_id }})
-
+# function to create a data.frame
+create_df <- function(reduced_dim, metadata, grouping){
+  
+  # Create data.frame for linked plots
+  # 1 Create df1 
+  df1 <- data.frame("x" = reduced_dim[,1], "y" = reduced_dim[,2], metadata)
+  
+  # 2 create silhouette object
+  sil <- cluster::silhouette(as.integer(metadata[[grouping]]), dist(reduced_dim))
+  
+  # 3 create df2 for silhoutte
+  df2 <- data.frame(cell = factor(rownames(reduced_dim), levels = rownames(reduced_dim)), silhouette = sil[,"sil_width"], cluster = factor(sil[,"cluster"], levels = unique(as.numeric(metadata[[grouping]])[order(as.numeric(metadata[[grouping]]))]), ordered = T))
+  df2$cell <- factor(df2$cell, levels = df2$cell[order(df2$cluster, df2$silhouette)])
+  
+  # 4 sort df1 according to the cell column of df2
+  # combine both data.frames in df3
+  df3 <- df1[order(match(rownames(df1), df2["cell"])),]
+  df3$cell <- df2$cell
+  df3$silhouette <- df2$silhouette
+  
+  row.names(df3) <- c()
+  
+  return(df3)
+}
 ```
 
 ```{r, eval=!is_shiny}
-dots <- plotly::plot_ly(sd_{{ env_id }}, colors = "Set1", color = df_{{ env_id }}[[grouping]], x = ~x, y = ~y, mode = "markers", textposition = "top", hoverinfo = "x+y+text", text = paste("grouping: ", df_{{ env_id }}[[grouping]],"</br> label: ", labels )) %>%
+grouping <- {{ env_id }}$grouping
+labels <- {{ env_id }}$labels
+
+df_{{ env_id }} <- create_df(reduced_dim = {{ env_id }}$reduced_dim, metadata = {{ env_id }}$metadata, grouping = {{ env_id }}$grouping)
+
+sd_{{ env_id }} <- plotly::highlight_key(df_{{ env_id }})
+
+dots <- plotly::plot_ly(sd_{{ env_id }}, colors = "Set1", color = df_{{ env_id }}[[grouping]], x = ~x, y = ~y, mode = "markers", textposition = "top", hoverinfo = "x+y+text", text = paste("grouping: ", df_{{ env_id }}[[grouping]], "</br> label: ", labels)) %>%
   plotly::layout(
     xaxis = list(title = "Dim 1"),
     yaxis = list(title = "Dim 2"),
     showlegend = FALSE
   ) %>%
   plotly::highlight("plotly_selected")
-dots
+htmltools::div(style="display:block;float:left;width:100%;height:90%;",
+  htmltools::tags$button(i2dash::embed_var(df_{{ env_id }})), dots
+)
 ```
 
 ```{r, eval=is_shiny}
+labels <- {{ env_id }}$labels
+metadata <- {{ env_id }}$metadata
+grouping <- {{ env_id }}$grouping
+
+# filter all factorial metadata columns
+factors <- c()
+for (name in colnames(metadata)){
+  if(is.factor(metadata[[name]])){
+    factors <- c(factors, name)
+  }
+}
+ui_list <- list()
+
+# selection field for x
+if ({{ env_id }}$multiple_meta){
+  ui_list <- rlist::list.append(ui_list,
+                                selectInput("select_grouping_{{ env_id }}", label = "Select column for grouping:",
+                                            choices = factors, selected = grouping))
+}
+
+
+
+# Download link
+ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downloadData_{{ env_id }}', 'Download data')))
+
+#
+# Create reactive data table
+#
+df_{{ env_id }} <- shiny::reactive({
+  if (!{{ env_id }}$multiple_meta){
+    grouping <- {{ env_id }}$grouping
+  } else {
+    grouping <- input$select_grouping_{{ env_id }}
+  }
+  df_{{ env_id }} <- create_df(reduced_dim = {{ env_id }}$reduced_dim, metadata = {{ env_id }}$metadata, grouping = grouping)
+
+  sd_{{ env_id }} <- plotly::highlight_key(df_{{ env_id }})
+  return(list("sd" = sd_{{ env_id }}, "df" = df_{{ env_id }}, "grouping" = grouping))
+})
+
+#
+# Download
+#
+output$downloadData_{{ env_id }}<- downloadHandler(
+  filename =  paste('data-', Sys.Date(), '.csv', sep=''),
+  content = function(file) {
+    write.csv(df_{{ env_id }}()$df, file)
+  }
+)
+
+#
+# Output
+#
+output$plot_scatter_{{ env_id }} <- plotly::renderPlotly({
+  dots <- plotly::plot_ly(df_{{ env_id }}()$sd, colors = "Set1", color = df_{{ env_id }}()$df[[df_{{ env_id }}()$grouping]], x = ~x, y = ~y, mode = "markers", textposition = "top", hoverinfo = "x+y+text", text = paste("grouping: ", df_{{ env_id }}()$df[[df_{{ env_id }}()$grouping]], "</br> label: ", labels)) %>%
+  plotly::layout(
+    xaxis = list(title = "Dim 1"),
+    yaxis = list(title = "Dim 2"),
+    showlegend = FALSE
+  ) %>%
+  plotly::highlight("plotly_selected")
+  dots
+})
+
+#
+# Layout of component
+#
+shiny::fillRow(flex = c(NA, 1),
+      shinyWidgets::dropdownButton(div(style='max-height: 350px; overflow-x: auto;',do.call(shiny::inputPanel, ui_list)),
+                       circle = TRUE, status = "danger", icon = icon("gear"), width = "300px",
+                       tooltip = shinyWidgets::tooltipOptions(title = "Click, to change plot settings:")),
+      plotly::plotlyOutput("plot_scatter_{{ env_id }}", height = "100%")
+)
 ```
 

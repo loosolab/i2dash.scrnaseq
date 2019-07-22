@@ -6,13 +6,14 @@
 #' @param grouping A character string identical to one of the column names in 'metadata'.
 #' @param title The title of the page.
 #' @param labels (Optional) A vector with labels. Should be of the same length as the rownumber of 'reduced_dim'.
-#' @param barplot_grouping (Default: TRUE) A logical value. If TRUE, a barplot with the number of observations from 'grouping' will be created.
-#' @param menu (Optional) The name of the menu, under which the page should appear.
+#' @param barplot_grouping (Default: TRUE) A logical value. (Default: TRUE) If TRUE, a barplot with the number of observations from 'grouping' will be created.
+#' @param silhouette_plot (Optional) A logical value. (Default: FALSE) If TRUE, a silhouette plot will be created.
+#' @param menu (Optional) The name of the menu, under which the page should appear in the navigation.
 #' @param sidebar (Optional) The page layout (see below).
 #'
 #' @return A string containing markdown code for the rendered page.
 #' @export
-add_dim_reduction_page <- function(object, reduced_dim, metadata, grouping, title = NULL, labels = NULL, barplot_grouping = TRUE, menu = NULL, sidebar = NULL) {
+add_dim_reduction_page <- function(object, reduced_dim, metadata, grouping, title = NULL, labels = NULL, barplot_grouping = TRUE, silhouette_plot = FALSE, menu = NULL, sidebar = NULL) {
 
   # Create random env id
   env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
@@ -38,7 +39,7 @@ add_dim_reduction_page <- function(object, reduced_dim, metadata, grouping, titl
   env$metadata <- metadata
   env$grouping <- grouping
   env$labels <- labels
-  #env$barplot_grouping <- barplot_grouping
+  env$multiple_meta <- if(comp_nr > 1) TRUE else FALSE
 
   # save environment object
   saveRDS(env, file = file.path(object@workdir, "envs", paste0(env_id, ".rds")))
@@ -54,6 +55,12 @@ add_dim_reduction_page <- function(object, reduced_dim, metadata, grouping, titl
   if(barplot_grouping){
     barplot_grouping_component <- knitr::knit_expand(file = system.file("templates", "red_dim_2.Rmd", package = "i2dash.scrnaseq"), env_id = env_id, date = timestamp)
     expanded_components <- append(expanded_components, barplot_grouping_component)
+    max_comp <- max_comp + 1
+  }
+
+  if(silhouette_plot){
+    silhouette_plot_component <- knitr::knit_expand(file = system.file("templates", "red_dim_4.Rmd", package = "i2dash.scrnaseq"), env_id = env_id, date = timestamp)
+    expanded_components <- append(expanded_components, silhouette_plot_component)
     max_comp <- max_comp + 1
   }
 
@@ -73,5 +80,4 @@ add_dim_reduction_page <- function(object, reduced_dim, metadata, grouping, titl
   object@pages[["dim_reduction_page"]] <- list(title = title, layout = "2x2_grid", menu = menu, components = expanded_components, max_components = 4, sidebar = sidebar)
   return(object)
   #return(list("title" = title, "layout" = "2x2_grid", menu = NULL, components = expanded_components))
-
 }
