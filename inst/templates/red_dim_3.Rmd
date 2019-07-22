@@ -61,3 +61,4 @@ output$plot_box_bar_{{ env_id }} <- plotly::renderPlotly({
 plotly::plotlyOutput("plot_box_bar_{{ env_id }}", height = "100%")
 ```
 
+

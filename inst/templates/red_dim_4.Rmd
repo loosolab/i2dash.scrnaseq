@@ -29,3 +29,4 @@ output$plot_sil_{{ env_id }} <- plotly::renderPlotly({
 plotly::plotlyOutput("plot_sil_{{ env_id }}", height = "100%")
 ```
 
+
