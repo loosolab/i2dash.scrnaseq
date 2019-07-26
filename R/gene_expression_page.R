@@ -36,7 +36,7 @@ add_gene_expression_page <- function(object, reduced_dim, count_table, metadata,
   env$metadata <- metadata
   env$grouping <- grouping
   env$labels <- labels
-  env$multiple_meta <- if(dim(metadata)[[2]] > 1) TRUE else FALSE
+  env$multiple_meta <- ncol(metadata) > 1
 
   # save environment object
   saveRDS(env, file = file.path(object@workdir, "envs", paste0(env_id, ".rds")))
