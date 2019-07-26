@@ -23,7 +23,7 @@ add_gene_expression_page <- function(object, reduced_dim, count_table, metadata,
   if(!is.data.frame(count_table) & !is.matrix(count_table)) stop("'count_table' should be of class 'data.frame' or 'matrix'.")
   if(!is.data.frame(metadata) & !is.matrix(metadata)) stop("'metadata' should be of class 'data.frame' or 'matrix'.")
   if(is.null(colnames(metadata))) stop("'metadata' should contain colnames.")
-  if(dim(metadata)[[1]] != dim(reduced_dim)[[1]]) stop("'metadata' and 'reduced_dim' should contain the same number of rows.")
+  if(nrow(metadata) != nrow(reduced_dim)) stop("'metadata' and 'reduced_dim' should contain the same number of rows.")
   if(!grouping %in% colnames(metadata)) stop("'metadata' does not contain a column with this name.")
   if(!is.null(title) & !is.character(title)) stop("'title' should be a character vector.")
   if(!is.null(labels) & length(labels) != dim(reduced_dim)[[1]]) stop("The length of the vector 'labels' should be equal to the number of rows in 'reduced_dim'.")
