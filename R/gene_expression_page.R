@@ -31,7 +31,7 @@ add_gene_expression_page <- function(object, reduced_dim, count_table, metadata,
   # Create component environment
   env <- new.env()
 
-  env$reduced_dim <- reduced_dim
+  env$reduced_dim <- reduced_dim[, 1:2]
   env$count_table <- count_table
   env$metadata <- metadata
   env$grouping <- grouping
