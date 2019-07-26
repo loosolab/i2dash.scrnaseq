@@ -9,11 +9,52 @@ boxs <- plotly::plot_ly(sd_{{ env_id }}, colors = "Set1", x = ~grouping, y = ~ex
       xaxis = list(title = grouping),
       yaxis = list(title = "Expression per cluster"),
       showlegend = FALSE
-
     )
 boxs
 ```
 
 ```{r, eval=is_shiny}
+df2_{{ env_id }} <- shiny::reactive({
+  keys <- plotly::event_data("plotly_selected", source = "scatter_{{ env_id }}")$key
+  df <- df_{{ env_id }}()$df
+  if(!is.null(keys)) df <- df[keys,]
+  return(df)
+})
+
+output$plot_box_{{ env_id }} <- plotly::renderPlotly({
+  m <- df2_{{ env_id }}()[which.max(df2_{{ env_id }}()$expression),]
+  a1 = list(x = ~unique(grouping), y = m$expression, text = ~filter_count, showarrow = F, yanchor = "bottom", yshift = 15)
+  a2 = list(x = ~unique(grouping), y = m$expression, text = ~paste(rounded, "%"), showarrow = F, yanchor = "bottom")
+  a1_desc = list(x = 0, y = m$expression, text = "<b>No. of pos. expression (>0):</b>", showarrow = F, xanchor = "left", yanchor = "bottom", yshift = 30, xshift = -30)
+
+  boxs <- plotly::plot_ly(df2_{{ env_id }}(), colors = "Set1", x = ~grouping, y = ~expression, color = ~grouping) %>%
+    plotly::add_boxplot() %>%
+    plotly::layout(
+      xaxis = list(title = grouping),
+      yaxis = list(title = "Expression per cluster"),
+      showlegend = FALSE)
+
+  df2_{{ env_id }}() %>%
+    dplyr::group_by(grouping) %>%
+    dplyr::summarise(total_count = n()) -> df1_summarized
+
+  df2_{{ env_id }}() %>%
+    dplyr::group_by(grouping) %>%
+    dplyr::filter(expression > 0, .preserve = T) %>%
+    dplyr::summarise(filter_count = n()) -> df2_summarized
+
+  df1_summarized$filter_count <-  df2_summarized$filter_count
+  df1_summarized %>%
+    mutate(freq = filter_count * 100/ total_count) -> df_combined
+  df_combined %<>%
+    mutate(rounded = round(freq, 2))
+
+  boxs %<>% plotly::layout(data = df2_summarized, annotations = a1)
+  boxs %<>% plotly::layout(data = df_combined, annotations = a2)
+  boxs %<>% plotly::layout(annotations = a1_desc)
+  boxs
+})
+plotly::plotlyOutput("plot_box_{{ env_id }}", height = "100%")
 ```
+
 
