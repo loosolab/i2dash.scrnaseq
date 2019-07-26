@@ -2,7 +2,7 @@
 #'
 #' @param object A \linkS4class{i2dash::i2dashboard} object.
 #' @param reduced_dim A data.frame or matrix containing coordinates of the reduced dimensions. Rownames are used as labels.
-#' @param count_table A data.frame or matrix containing the genes of interest as rownames and cells/ samples as columnnamens.
+#' @param expression A data.frame or matrix containing expression data of features of interest in rows and samples in columns.
 #' @param metadata A data.frame or matrix with factorial cell metadata or a vector with values (e.g. cluster, timepoint, etc.). Should have the same rownumber as 'reduced_dim'.
 #' @param grouping A character string identical to one of the column names in 'metadata'.
 #' @param title The title of the page.
