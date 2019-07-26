@@ -12,7 +12,7 @@ library(dplyr)
 library(magrittr)
 ########
 reduced_dim <- {{ env_id }}$reduced_dim
-count_table <- {{ env_id }}$count_table
+count_table <- {{ env_id }}$expression
 metadata <- {{ env_id }}$metadata
 grouping <- {{ env_id }}$grouping
 labels <- {{ env_id }}$labels

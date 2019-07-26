@@ -1,4 +1,4 @@
-#' Renders a linked gene expression page.
+#' Renders a page with two linked components. The first component is a scatterplot, showing samples in along coordinates from \code{reduced_dim}. The second component is a violin plot, that shows expression values from \code{expression} by groups defined in \code{grouping}.
 #'
 #' @param object A \linkS4class{i2dash::i2dashboard} object.
 #' @param reduced_dim A data.frame or matrix containing coordinates of the reduced dimensions. Rownames are used as labels.
@@ -12,7 +12,7 @@
 #'
 #' @return A string containing markdown code for the rendered page.
 #' @export
-add_gene_expression_page <- function(object, reduced_dim, count_table, metadata, grouping, title = NULL, labels = NULL, menu = NULL, sidebar = NULL) {
+add_gene_expression_page <- function(object, reduced_dim, expression, metadata, grouping, title = NULL, labels = NULL, menu = NULL, sidebar = NULL) {
 
   # Create random env id
   env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
@@ -20,7 +20,7 @@ add_gene_expression_page <- function(object, reduced_dim, count_table, metadata,
   # Validate input
   if(!is.data.frame(reduced_dim) & !is.matrix(reduced_dim)) stop("'reduced_dim' should should be of class 'data.frame' or 'matrix'.")
   if(ncol(reduced_dim) < 2 ) stop("'reduced_dim' should contain at least two columns.")
-  if(!is.data.frame(count_table) & !is.matrix(count_table)) stop("'count_table' should be of class 'data.frame' or 'matrix'.")
+  if(!is.data.frame(expression) & !is.matrix(expression)) stop("'expression' should be of class 'data.frame' or 'matrix'.")
   if(!is.data.frame(metadata) & !is.matrix(metadata)) stop("'metadata' should be of class 'data.frame' or 'matrix'.")
   if(is.null(colnames(metadata))) stop("'metadata' should contain colnames.")
   if(nrow(metadata) != nrow(reduced_dim)) stop("'metadata' and 'reduced_dim' should contain the same number of rows.")
@@ -32,7 +32,7 @@ add_gene_expression_page <- function(object, reduced_dim, count_table, metadata,
   env <- new.env()
 
   env$reduced_dim <- reduced_dim[, 1:2]
-  env$count_table <- count_table
+  env$expression <- expression
   env$metadata <- metadata
   env$grouping <- grouping
   env$labels <- labels
@@ -45,10 +45,10 @@ add_gene_expression_page <- function(object, reduced_dim, count_table, metadata,
   timestamp <- Sys.time()
 
   # fill list "expanded_components" with components
-  scatterplot_component <- knitr::knit_expand(file = system.file("templates", "gene_expr_1.Rmd", package = "i2dash.scrnaseq"), env_id = env_id, date = timestamp)
+  scatterplot_component <- knitr::knit_expand(file = system.file("templates", "gene_expression_dimred.Rmd", package = "i2dash.scrnaseq"), env_id = env_id, date = timestamp)
   expanded_components <- append(expanded_components, scatterplot_component)
 
-  boxplot_component<- knitr::knit_expand(file = system.file("templates", "gene_expr_2.Rmd", package = "i2dash.scrnaseq"), env_id = env_id, date = timestamp)
+  boxplot_component<- knitr::knit_expand(file = system.file("templates", "gene_expression_violin.Rmd", package = "i2dash.scrnaseq"), env_id = env_id, date = timestamp)
   expanded_components <- append(expanded_components, boxplot_component)
 
   # Expand component
