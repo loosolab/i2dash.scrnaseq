@@ -3,14 +3,13 @@
 <!-- Component created on {{ date }} -->
 
 ```{r, eval=!is_shiny}
-boxs <- plotly::plot_ly(sd_{{ env_id }}, colors = "Set1", x = ~grouping, y = ~expression, color = ~grouping) %>%
-    plotly::add_boxplot() %>%
+boxs <- plotly::plot_ly(sd_{{ env_id }}, colors = "Set1", x = ~grouping, y = ~expression, color = ~grouping, type = "violin", box = list(visible = T), meanline = list(visible = T), points = "all", jitter = 0) %>%
     plotly::layout(
       xaxis = list(title = grouping),
       yaxis = list(title = "Expression per cluster"),
       showlegend = FALSE
     )
-boxs
+boxs  %>% plotly::highlight(on = "plotly_selected", dynamic = F, selectize = F)
 ```
 
 ```{r, eval=is_shiny}
@@ -27,8 +26,7 @@ output$plot_box_{{ env_id }} <- plotly::renderPlotly({
   a2 = list(x = ~unique(grouping), y = m$expression, text = ~paste(rounded, "%"), showarrow = F, yanchor = "bottom")
   a1_desc = list(x = 0, y = m$expression, text = "<b>No. of pos. expression (>0):</b>", showarrow = F, xanchor = "left", yanchor = "bottom", yshift = 30, xshift = -30)
 
-  boxs <- plotly::plot_ly(df2_{{ env_id }}(), colors = "Set1", x = ~grouping, y = ~expression, color = ~grouping) %>%
-    plotly::add_boxplot() %>%
+  boxs <- plotly::plot_ly(df2_{{ env_id }}(), colors = "Set1", x = ~grouping, y = ~expression, color = ~grouping, type = "violin", box = list(visible = T), meanline = list(visible = T), points = "all", jitter = 0) %>%
     plotly::layout(
       xaxis = list(title = grouping),
       yaxis = list(title = "Expression per cluster"),
