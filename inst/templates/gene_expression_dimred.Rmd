@@ -30,7 +30,7 @@ create_df <- function(reduced_dim, metadata, grouping){
 ```
 
 ```{r, eval=!is_shiny}
-df_{{ env_id }} <- create_df(reduced_dim, metadata, grouping)
+df_{{ env_id }} <- create_df(reduced_dim, metadata, grouping, count_table)
 sd_{{ env_id }} <- plotly::highlight_key(df_{{ env_id }})
 base <- plotly::plot_ly(sd_{{ env_id }}, colors = "Set1", color = ~grouping) %>%
   plotly::group_by(grouping) %>%
