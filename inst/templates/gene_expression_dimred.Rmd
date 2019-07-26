@@ -18,7 +18,7 @@ grouping <- {{ env_id }}$grouping
 labels <- {{ env_id }}$labels
 
 # function to create a data.frame
-create_df <- function(reduced_dim, metadata, grouping){
+create_df <- function(reduced_dim, metadata, grouping, count_table){
 # Create data.frame for linked plots
   df <- data.frame("x" = reduced_dim[,1], "y" = reduced_dim[,2], "grouping" = as.factor(metadata[[grouping]]), t(count_table))
   if(!is.null(labels)) df$labels <- labels
