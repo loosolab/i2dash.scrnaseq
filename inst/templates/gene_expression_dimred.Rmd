@@ -76,7 +76,7 @@ df_{{ env_id }} <- shiny::reactive({
     grouping <- input$select_grouping_{{ env_id }}
   }
   gene_name <- input$select_gene_{{ env_id }}
-  df <- create_df(reduced_dim = reduced_dim, metadata = metadata, grouping = grouping)
+  df <- create_df(reduced_dim = reduced_dim, metadata = metadata, grouping = grouping, count_table = count_table)
 
   df %<>% dplyr::filter(gene == gene_name)
 
