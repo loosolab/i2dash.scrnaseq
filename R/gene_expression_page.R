@@ -19,7 +19,7 @@ add_gene_expression_page <- function(object, reduced_dim, count_table, metadata,
 
   # Validate input
   if(!is.data.frame(reduced_dim) & !is.matrix(reduced_dim)) stop("'reduced_dim' should should be of class 'data.frame' or 'matrix'.")
-  if(!dim(reduced_dim)[[2]] == 2 ) stop("'reduced_dim' should contain two columns.")
+  if(ncol(reduced_dim) < 2 ) stop("'reduced_dim' should contain at least two columns.")
   if(!is.data.frame(count_table) & !is.matrix(count_table)) stop("'count_table' should be of class 'data.frame' or 'matrix'.")
   if(!is.data.frame(metadata) & !is.matrix(metadata)) stop("'metadata' should be of class 'data.frame' or 'matrix'.")
   if(is.null(colnames(metadata))) stop("'metadata' should contain colnames.")
