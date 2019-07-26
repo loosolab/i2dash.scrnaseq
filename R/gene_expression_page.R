@@ -1,7 +1,7 @@
 #' Renders a linked gene expression page.
 #'
 #' @param object A \linkS4class{i2dash::i2dashboard} object.
-#' @param reduced_dim A data.frame or matrix containing two columns for the x and y coordinates. The rownames are used as labels.
+#' @param reduced_dim A data.frame or matrix containing coordinates of the reduced dimensions. Rownames are used as labels.
 #' @param count_table A data.frame or matrix containing the genes of interest as rownames and cells/ samples as columnnamens.
 #' @param metadata A data.frame or matrix with factorial cell metadata or a vector with values (e.g. cluster, timepoint, etc.). Should have the same rownumber as 'reduced_dim'.
 #' @param grouping A character string identical to one of the column names in 'metadata'.
