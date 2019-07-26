@@ -3,7 +3,7 @@
 #' @param object A \linkS4class{i2dash::i2dashboard} object.
 #' @param reduced_dim A data.frame or matrix containing coordinates of the reduced dimensions. Rownames are used as labels.
 #' @param expression A data.frame or matrix containing expression data of features of interest in rows and samples in columns.
-#' @param metadata A data.frame or matrix with factorial cell metadata or a vector with values (e.g. cluster, timepoint, etc.). Should have the same rownumber as 'reduced_dim'.
+#' @param metadata A data.frame with sample metadata or a factor. Should have the same number of rows/length as \code{reduced_dim}.
 #' @param grouping A character string identical to one of the column names in 'metadata'.
 #' @param title The title of the page.
 #' @param labels (Optional) A vector with labels. Should be of the same length as the rownumber of 'reduced_dim'.
