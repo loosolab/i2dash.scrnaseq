@@ -31,7 +31,7 @@ if(is.factor(df_{{ env_id }}[["{{ meta_column }}"]])){
 #
 # Output
 #
-output$plot_box_bar_{{ env_id }} <- plotly::renderPlotly({
+output$plot_box_bar_{{ meta_column }}_{{ env_id }} <- plotly::renderPlotly({
   if(is.factor(df_{{ env_id }}()$df[["{{ meta_column }}"]])){
   bars <- plotly::plot_ly(df_{{ env_id }}()$sd, colors = "Set1", x = df_{{ env_id }}()$df[["{{ meta_column }}"]], color = df_{{ env_id }}()$df[["{{ meta_column }}"]]) %>%
   plotly::layout(

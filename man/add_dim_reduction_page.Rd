@@ -2,7 +2,7 @@
 % Please edit documentation in R/dimension_reduction_page.R
 \name{add_dim_reduction_page}
 \alias{add_dim_reduction_page}
-\title{Renders a dimension reduction page}
+\title{Renders a page with four linked components at maximum. The first component is a scatterplot, showing samples in along coordinates from \code{reduced_dim}. If \code{barplot_grouping} is \code{TRUE} the second component will be a bar plot, that shows the number of observations by groups defined in \code{grouping}. If \code{silhouette_plot} is \code{TRUE} the third component will be a silhoutte plot, that shows how well each observation has been classified. Therefore the Euclidean distance is applied to the coordinates from \code{reduced_dim} and grouped by the groups defined in \code{grouping}. The remaining component slots are filled with bar or boxplots, that visualize one of the columns from \code{metadata} by groups defined in \code{grouping}.}
 \usage{
 add_dim_reduction_page(object, reduced_dim, metadata, grouping,
   title = NULL, labels = NULL, barplot_grouping = TRUE,
@@ -11,15 +11,15 @@ add_dim_reduction_page(object, reduced_dim, metadata, grouping,
 \arguments{
 \item{object}{A \linkS4class{i2dash::i2dashboard} object.}
 
-\item{reduced_dim}{A data.frame or matrix containing two columns for the x and y coordinates.}
+\item{reduced_dim}{A data.frame or matrix containing coordinates of the reduced dimensions. Rownames are used as labels.}
 
-\item{metadata}{A data.frame or matrix containing a maximum of four columns with cell metadata (e.g. cluster, timepoint, number of genes, etc). Should have the same rownumber as 'reduced_dim'. Note: Factorial metadata needs to be of class factor in the data.frame.}
+\item{metadata}{A data.frame or matrix containing a maximum of four columns with cell metadata (e.g. cluster, timepoint, number of genes, etc). Should have the same number of rows/length as \code{reduced_dim}. Note: Factorial metadata needs to be of class factor in the data.frame.}
 
-\item{grouping}{A character string identical to one of the column names in 'metadata'.}
+\item{grouping}{A character string identical to one of the column names in \code{metadata}.}
 
 \item{title}{The title of the page.}
 
-\item{labels}{(Optional) A vector with labels. Should be of the same length as the rownumber of 'reduced_dim'.}
+\item{labels}{(Optional) A vector with labels. Should be of the same length as the rownumber of \code{reduced_dim}.}
 
 \item{barplot_grouping}{(Default: TRUE) A logical value. (Default: TRUE) If TRUE, a barplot with the number of observations from 'grouping' will be created.}
 
@@ -33,5 +33,5 @@ add_dim_reduction_page(object, reduced_dim, metadata, grouping,
 A string containing markdown code for the rendered page.
 }
 \description{
-Renders a dimension reduction page
+Renders a page with four linked components at maximum. The first component is a scatterplot, showing samples in along coordinates from \code{reduced_dim}. If \code{barplot_grouping} is \code{TRUE} the second component will be a bar plot, that shows the number of observations by groups defined in \code{grouping}. If \code{silhouette_plot} is \code{TRUE} the third component will be a silhoutte plot, that shows how well each observation has been classified. Therefore the Euclidean distance is applied to the coordinates from \code{reduced_dim} and grouped by the groups defined in \code{grouping}. The remaining component slots are filled with bar or boxplots, that visualize one of the columns from \code{metadata} by groups defined in \code{grouping}.
 }
