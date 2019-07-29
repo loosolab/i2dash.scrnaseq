@@ -35,7 +35,7 @@ add_dim_reduction_page <- function(object, reduced_dim, metadata, grouping, titl
   # Create component environment
   env <- new.env()
 
-  env$reduced_dim <- reduced_dim
+  env$reduced_dim <- reduced_dim[, 1:2]
   env$metadata <- metadata
   env$grouping <- grouping
   env$labels <- labels
