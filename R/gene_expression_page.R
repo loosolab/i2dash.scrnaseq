@@ -45,10 +45,10 @@ add_gene_expression_page <- function(object, reduced_dim, count_table, metadata,
   timestamp <- Sys.time()
 
   # fill list "expanded_components" with components
-  scatterplot_component <- knitr::knit_expand(file = system.file("templates", "gene_expr_1.Rmd", package = "i2dash.scrnaseq"), env_id = env_id, date = timestamp)
+  scatterplot_component <- knitr::knit_expand(file = system.file("templates", "gene_expr_page_scatterplot.Rmd", package = "i2dash.scrnaseq"), env_id = env_id, date = timestamp)
   expanded_components <- append(expanded_components, scatterplot_component)
 
-  boxplot_component<- knitr::knit_expand(file = system.file("templates", "gene_expr_2.Rmd", package = "i2dash.scrnaseq"), env_id = env_id, date = timestamp)
+  boxplot_component<- knitr::knit_expand(file = system.file("templates", "gene_expr_page_violin_table.Rmd", package = "i2dash.scrnaseq"), env_id = env_id, date = timestamp)
   expanded_components <- append(expanded_components, boxplot_component)
 
   # Expand component
