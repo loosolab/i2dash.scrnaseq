@@ -12,15 +12,19 @@ library(dplyr)
 library(magrittr)
 ########
 reduced_dim <- {{ env_id }}$reduced_dim
-expression <- {{ env_id }}$expression
+count_table <- {{ env_id }}$expression
 metadata <- {{ env_id }}$metadata
 grouping <- {{ env_id }}$grouping
 labels <- {{ env_id }}$labels
 
 # function to create a data.frame
-create_df <- function(reduced_dim, metadata, grouping){
+create_df <- function(reduced_dim, metadata, grouping, count_table){
 # Create data.frame for linked plots
-  df <- data.frame("x" = reduced_dim[,1], "y" = reduced_dim[,2], "grouping" = as.factor(metadata[[grouping]]), t(count_table))
+  if(is.factor(metadata)){
+    df <- data.frame("x" = reduced_dim[,1], "y" = reduced_dim[,2], "grouping" = metadata, t(count_table))
+  } else {
+    df <- data.frame("x" = reduced_dim[,1], "y" = reduced_dim[,2], "grouping" = as.factor(metadata[[grouping]]), t(count_table))
+  }
   if(!is.null(labels)) df$labels <- labels
   if(!is.null(labels)) df_long <- tidyr::gather(df, key = "gene", value = "expression", -x, -y, -grouping, -labels) else df_long <- tidyr::gather(df, key = "gene", value = "expression", -x, -y, -grouping)
   row.names(df_long) <- c()
@@ -30,7 +34,7 @@ create_df <- function(reduced_dim, metadata, grouping){
 ```
 
 ```{r, eval=!is_shiny}
-df_{{ env_id }} <- create_df(reduced_dim, metadata, grouping)
+df_{{ env_id }} <- create_df(reduced_dim, metadata, grouping, count_table = count_table)
 sd_{{ env_id }} <- plotly::highlight_key(df_{{ env_id }})
 base <- plotly::plot_ly(sd_{{ env_id }}, colors = "Set1", color = ~grouping) %>%
   plotly::group_by(grouping) %>%
@@ -76,7 +80,7 @@ df_{{ env_id }} <- shiny::reactive({
     grouping <- input$select_grouping_{{ env_id }}
   }
   gene_name <- input$select_gene_{{ env_id }}
-  df <- create_df(reduced_dim = reduced_dim, metadata = metadata, grouping = grouping)
+  df <- create_df(reduced_dim = reduced_dim, metadata = metadata, grouping = grouping, count_table = count_table)
 
   df_filtered <- df %>% dplyr::filter(gene == gene_name) 
 
@@ -115,7 +119,6 @@ shiny::fillRow(flex = c(NA, 1),
       shinyWidgets::dropdownButton(div(style='max-height: 350px; overflow-x: auto;',do.call(shiny::inputPanel, ui_list)),
                        circle = TRUE, status = "danger", icon = icon("gear"), width = "300px",
                        tooltip = shinyWidgets::tooltipOptions(title = "Click, to change plot settings:")),
-      #verbatimTextOutput("value")
       plotly::plotlyOutput("plot_scatter_{{ env_id }}", height = "100%")
 )
 ```

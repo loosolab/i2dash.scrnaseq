@@ -2,22 +2,22 @@
 % Please edit documentation in R/gene_expression_page.R
 \name{add_gene_expression_page}
 \alias{add_gene_expression_page}
-\title{Renders a linked gene expression page.}
+\title{Renders a page with two linked components. The first component is a scatterplot, showing samples in along coordinates from \code{reduced_dim}. The second component is a violin plot, that shows expression values from \code{expression} by groups defined in \code{grouping}.}
 \usage{
-add_gene_expression_page(object, reduced_dim, count_table, metadata,
+add_gene_expression_page(object, reduced_dim, expression, metadata,
   grouping, title = NULL, labels = NULL, menu = NULL,
   sidebar = NULL)
 }
 \arguments{
 \item{object}{A \linkS4class{i2dash::i2dashboard} object.}
 
-\item{reduced_dim}{A data.frame or matrix containing two columns for the x and y coordinates. The rownames are used as labels.}
+\item{reduced_dim}{A data.frame or matrix containing coordinates of the reduced dimensions. Rownames are used as labels.}
 
-\item{count_table}{A data.frame or matrix containing the genes of interest as rownames and cells/ samples as columnnamens.}
+\item{expression}{A data.frame or matrix containing expression data of features of interest in rows and samples in columns.}
 
-\item{metadata}{A data.frame or matrix with factorial cell metadata or a vector with values (e.g. cluster, timepoint, etc.). Should have the same rownumber as 'reduced_dim'.}
+\item{metadata}{A data.frame with sample metadata or a factor. Should have the same number of rows/length as \code{reduced_dim}.}
 
-\item{grouping}{A character string identical to one of the column names in 'metadata'.}
+\item{grouping}{A character string identical to one of the column names in \code{metadata} used for expression grouping.}
 
 \item{title}{The title of the page.}
 
@@ -31,5 +31,5 @@ add_gene_expression_page(object, reduced_dim, count_table, metadata,
 A string containing markdown code for the rendered page.
 }
 \description{
-Renders a linked gene expression page.
+Renders a page with two linked components. The first component is a scatterplot, showing samples in along coordinates from \code{reduced_dim}. The second component is a violin plot, that shows expression values from \code{expression} by groups defined in \code{grouping}.
 }
