@@ -23,7 +23,7 @@ add_dim_reduction_page <- function(object, reduced_dim, metadata, grouping, titl
   if(ncol(reduced_dim) < 2 ) stop("'reduced_dim' should contain at least two columns.")
   if(!is.data.frame(metadata) & !is.matrix(metadata)) stop("'metadata' should be of class 'data.frame' or 'matrix'.")
   if(is.null(colnames(metadata))) stop("'metadata' should contain colnames.")
-  if(!dim(metadata)[[2]] < 5 ) stop("'metadata' should contain 4 columns at maximum.")
+  if(ncol(metadata) < 5 ) stop("'metadata' should contain 4 columns at maximum.")
   if(dim(metadata)[[1]] != dim(reduced_dim)[[1]]) stop("'metadata' and 'reduced_dim' should contain the same number of rows.")
   if(!grouping %in% colnames(metadata)) stop("'metadata' does not contain a column with this name.")
   if(is.factor(metadata$grouping)) stop("'grouping' in 'metadata' should contain factors and be of class 'factor'.")
