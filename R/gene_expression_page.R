@@ -18,7 +18,7 @@ add_gene_expression_page <- function(object, reduced_dim, expression, metadata, 
   env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
 
   # Validate input
-  if(!is.data.frame(reduced_dim) & !is.matrix(reduced_dim)) stop("'reduced_dim' should should be of class 'data.frame' or 'matrix'.")
+  if(!is.data.frame(reduced_dim) & !is.matrix(reduced_dim)) stop("'reduced_dim' should be of class 'data.frame' or 'matrix'.")
   if(ncol(reduced_dim) < 2 ) stop("'reduced_dim' should contain at least two columns.")
   if(!is.data.frame(expression) & !is.matrix(expression)) stop("'expression' should be of class 'data.frame' or 'matrix'.")
   if(!is.data.frame(metadata) & !is.matrix(metadata) & !is.factor(metadata)) stop("'metadata' should be of class 'data.frame' or 'matrix' or a factor.")
