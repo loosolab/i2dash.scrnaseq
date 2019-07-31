@@ -1,0 +1,180 @@
+<!-- Component created on  {{ date }}  -->
+
+Inputs {.sidebar}
+-------------------------------------
+    
+###
+
+
+```{r}
+{{ env_id }} = readRDS("envs/{{ env_id }}.rds")
+
+is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
+
+########
+library(magrittr)
+########
+
+reduced_dim <- {{ env_id }}$reduced_dim
+count_table <- {{ env_id }}$expression
+```
+
+```{r}
+# function to generate plots for a list of genes
+plot_function <- function(gene, df){
+  dimred <- ggplot2::ggplot(df, ggplot2::aes(x=x, y=y, colour = df[[gene]])) +
+    ggplot2::geom_point() +
+    ggplot2::geom_rug() +
+    ggplot2::labs(colour = "Expression", x = "Dim1", y = "Dim2", title = gene) +
+    ggplot2::theme(plot.title=ggplot2::element_text( hjust=0.5, vjust=0.5))
+  return(dimred)
+}
+
+# function to fill the panels
+add_to_panel <- function(gg, panel){
+  panel %<>% multipanelfigure::fill_panel(gg, scaling = "fit")
+  return(panel)
+}
+```
+
+
+```{r, eval=!is_shiny}
+```
+
+```{r, eval=is_shiny}
+# selection field for gene
+if({{ env_id }}$selection_reduced_dim){
+  selectInput("select_dimred_{{ env_id }}", label = "Select dimension reduction:", choices = names(reduced_dim))
+}
+# selection field for gene
+selectInput("select_gene_{{ env_id }}", label = "Select genes:", choices = rownames(count_table), multiple = TRUE)
+
+# selection field for columns
+uiOutput("select_columns_{{ env_id }}")
+
+# selection field for rows
+#numericInput("rows_{{ env_id }}", label = "Number of rows:", value = 1, min = 1)
+
+```
+
+The following **width** and **height** selections are applied only to the downloadable png file of the figure. These selections are **optional**. If the values are `0` the figure will be saved as shown on the display.
+
+```{r, eval=is_shiny}
+# selection field for image width
+numericInput("width_{{ env_id }}", label = "Choose width (cm):", value = 0, min = 0)
+
+# selection field for image height
+numericInput("height_{{ env_id }}", label = "Choose height (cm):", value = 0, min = 0)
+
+# checkbox for preview
+checkboxInput("checkbox_{{ env_id }}", label = "Preview with customized size", value = FALSE)
+
+# action button
+actionButton("generate_{{ env_id }}", label = "Generate figure")
+
+# Download image
+htmltools::div(style="display:block;float:left;margin-top:20px",
+               downloadButton("download_figure_{{ env_id }}", "Download figure"))
+htmltools::div(style="display:block;float:left;margin-top:20px",
+               downloadButton("download_data_{{ env_id }}", "Download data"))
+
+# create dynamic uiElement
+output$select_columns_{{ env_id }} <- renderUI({
+   if(!is.null(input$select_gene_{{ env_id }})){
+    numericInput("columns_{{ env_id }}", label = HTML("(Please select genes first) <br/> Number of columns:"), value = 1, min = 1, max = length(input$select_gene_{{ env_id }}))
+  } else {
+    numericInput("columns_{{ env_id }}", label = HTML("(Please select genes first) <br/> Number of columns:"), value = 1, min = 1, max = 1)
+  }
+})
+
+
+```
+
+
+Column
+-------------------------------------
+    
+### Multi gene expression panel
+
+```{r, eval=!is_shiny}
+
+```
+
+```{r, eval=is_shiny}
+reactive_{{ env_id }} <- eventReactive(input$generate_{{ env_id }}, {
+  # validate if genes are selected
+  validate(
+      need(input$select_gene_{{ env_id }} != "", "Please select some genes.")
+  )
+  if({{ env_id }}$selection_reduced_dim){
+    red_dim <- reduced_dim[[input$select_dimred_{{ env_id }}]]
+  } else {
+    red_dim <- reduced_dim[[1]]
+  }
+  gene_list <- input$select_gene_{{ env_id }}
+  df <- data.frame(x = red_dim[,1], y = red_dim[,2], t(count_table))
+  
+  # create 2 multi_panels: first with autosizing of the component, second with custom size
+  cols = input$columns_{{ env_id }}
+  rows = ceiling(length(gene_list)/input$columns_{{ env_id }})
+  
+  figure_autosize <- multipanelfigure::multi_panel_figure(
+    width = "auto",
+    columns = cols,
+    height = "auto",
+    rows = rows)
+  
+  if(input$width_{{ env_id }} > 0 & input$height_{{ env_id }} > 0) {
+    figure_customsize <- multipanelfigure::multi_panel_figure(
+      width = input$width_{{ env_id }},
+      columns = cols,
+      height = input$height_{{ env_id }},
+      rows = rows,
+      unit = "cm")
+  } else {
+    figure_customsize <- NULL
+  }
+
+  # create a list with plots for each gene
+  plot_list <- lapply(gene_list, plot_function, df = df)
+  
+  for(plot in plot_list){
+    figure_autosize <- add_to_panel(gg = plot,  panel = figure_autosize)
+    if(!is.null(figure_customsize)) figure_customsize <- add_to_panel(gg = plot,  panel = figure_customsize)
+  }
+  
+  return(list("figure_auto" = figure_autosize, "figure_custom" = figure_customsize, "df" = df))
+  
+})
+
+# create plot with wilson
+output$plot_{{ env_id }} <- renderPlot({
+  if(input$checkbox_{{ env_id }} & !is.null(reactive_{{ env_id }}()$figure_custom)){
+    reactive_{{ env_id }}()$figure_custom
+  } else {
+    reactive_{{ env_id }}()$figure_auto
+  }
+})
+
+plotOutput("plot_{{ env_id }}")
+
+# prepare download 
+output$download_figure_{{ env_id }} <- downloadHandler(
+  filename = function() { paste('figure-', Sys.Date(), '.png', sep='') },
+  content = function(file) {
+    if(!is.null(reactive_{{ env_id }}()$figure_custom)){
+      multipanelfigure::save_multi_panel_figure(figure = reactive_{{ env_id }}()$figure_custom, filename = file, dpi = 300, device = "png")
+    } else {
+      multipanelfigure::save_multi_panel_figure(figure = reactive_{{ env_id }}()$figure_auto, filename = file, dpi = 300, device = "png")
+    }
+  }
+)
+
+output$download_data_{{ env_id }} <- downloadHandler(
+  filename =  paste('data-', Sys.Date(), '.csv', sep=''),
+  content = function(file) {
+    write.csv(reactive_{{ env_id }}()$df, file)
+  }
+)
+```
+
