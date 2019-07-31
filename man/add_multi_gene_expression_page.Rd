@@ -2,7 +2,7 @@
 % Please edit documentation in R/multi_gene_expression_page.R
 \name{add_multi_gene_expression_page}
 \alias{add_multi_gene_expression_page}
-\title{Renders a page with two linked components. The first component is a scatterplot, showing samples in along coordinates from \code{reduced_dim}. The second component is a violin plot, that shows expression values from \code{expression} by groups defined in \code{grouping}.}
+\title{Renders a page, where the user first can select the dimension reduction from \code{reduced_dim} (if a list is given). Then several features from \code{expression} can be selected and also the number of columns to render scatter plots along coordinates from \code{reduced_dim} for each selected feature and coloured by its expression values from \code{expression}.}
 \usage{
 add_multi_gene_expression_page(object, reduced_dim, expression,
   title = NULL, menu = NULL)
@@ -22,5 +22,5 @@ add_multi_gene_expression_page(object, reduced_dim, expression,
 A string containing markdown code for the rendered page.
 }
 \description{
-Renders a page with two linked components. The first component is a scatterplot, showing samples in along coordinates from \code{reduced_dim}. The second component is a violin plot, that shows expression values from \code{expression} by groups defined in \code{grouping}.
+Renders a page, where the user first can select the dimension reduction from \code{reduced_dim} (if a list is given). Then several features from \code{expression} can be selected and also the number of columns to render scatter plots along coordinates from \code{reduced_dim} for each selected feature and coloured by its expression values from \code{expression}.
 }

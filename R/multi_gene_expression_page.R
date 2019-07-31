@@ -1,4 +1,4 @@
-#' Renders a page with two linked components. The first component is a scatterplot, showing samples in along coordinates from \code{reduced_dim}. The second component is a violin plot, that shows expression values from \code{expression} by groups defined in \code{grouping}.
+#' Renders a page, where the user first can select the dimension reduction from \code{reduced_dim} (if a list is given). Then several features from \code{expression} can be selected and also the number of columns to render scatter plots along coordinates from \code{reduced_dim} for each selected feature and coloured by its expression values from \code{expression}.
 #'
 #' @param object A \linkS4class{i2dash::i2dashboard} object.
 #' @param reduced_dim A named list of data.frames or matrices or a single data.frame or matrix containing coordinates of the reduced dimensions.
