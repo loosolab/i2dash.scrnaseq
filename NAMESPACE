@@ -3,6 +3,7 @@
 export(.bar_plot)
 export(.scatter_plot)
 export(add_multi_gene_expression_page)
+export(add_gene_expression_page)
 export(boxplot)
 export(plotly_boxplot)
 exportMethods(add_gene_expression_page)

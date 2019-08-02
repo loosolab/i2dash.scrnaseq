@@ -28,7 +28,7 @@ output$plot_violin_{{ env_id }} <- plotly::renderPlotly({
 
   violins <- plotly::plot_ly(df2_{{ env_id }}(), colors = "Set1", x = ~grouping, y = ~expression, color = ~grouping, type = "violin", box = list(visible = T), meanline = list(visible = T), points = "all", jitter = 0) %>%
     plotly::layout(
-      xaxis = list(title = df_{{ env_id }}()$grouping),
+      xaxis = list(title = grouping),
       yaxis = list(title = "Expression per grouping"),
       showlegend = FALSE)
 
