@@ -11,7 +11,7 @@
 add_multi_gene_expression_page <- function(object, reduced_dim, expression, title = NULL, menu = NULL) {
 
   # validate if interactive mode is used
-  if(!object@interactive) stop("This page can only be used with the shiny based interactive mode. Consider setting the 'interactive' argument during creation of the 'i2dashboard' object to 'TRUE'.")
+  if(!object@interactive) warning("This page can only be used with the shiny based interactive mode. Consider setting the 'interactive' argument during creation of the 'i2dashboard' object to 'TRUE'.")
 
   # Create random env id
   env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))

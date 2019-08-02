@@ -97,7 +97,9 @@ Column
 ### Multi gene expression panel
 
 ```{r, eval=!is_shiny}
-
+htmltools::HTML("<div class='alert alert-warning' role='alert'>
+  <h4>This page can only be used with the shiny-based interactive mode.</h4>
+</div>")
 ```
 
 ```{r, eval=is_shiny}
