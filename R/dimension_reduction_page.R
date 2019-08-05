@@ -102,7 +102,6 @@ setMethod("add_dim_reduction_page",
 setMethod("add_dim_reduction_page",
           signature = signature(object = "i2dashboard", sc_object = "SingleCellExperiment"),
           function(object, sc_object, reduced_dim, metadata, grouping, title = NULL, labels = NULL, barplot_grouping = TRUE, silhouette_plot = FALSE, menu = NULL, sidebar = NULL) {
-            beginning <- Sys.time()
             # validate and extract metadata
             if(!is.character(metadata) & !is.list(metadata)) stop("'metadata' should be a character or a list.")
             if(!all(metadata %in% names(colData(sc_object)))) stop("'colData' slot of the SingleCellExperiment object does not contain the column names from 'metadata'.")
@@ -178,8 +177,6 @@ setMethod("add_dim_reduction_page",
             timestamp <- Sys.time()
 
             object@pages[["dim_reduction_page"]] <- list(title = title, layout = "2x2_grid", menu = menu, components = expanded_components, max_components = 4, sidebar = sidebar)
-            end <- Sys.time()
-            print(end - beginning)
             return(object)
             # object <- add_dim_reduction_page(object = object,
             #                                    reduced_dim = reduced_dim,
