@@ -206,7 +206,7 @@ setMethod("add_gene_expression_page",
             # validate and extract metadata
             if(!is.character(metadata) & !is.list(metadata)) stop("'metadata' should be a character or a list.")
             if(!all(metadata %in% names(sc_object@meta.data))) stop("'meta.data' slot of the Seurat object does not contain the column names from 'metadata'.")
-            metadata <- seu@meta.data[metadata]
+            metadata <- sc_object@meta.data[metadata]
 
             # validate input and extract dimension reduction
             if(!is.character(reduced_dim) | length(reduced_dim) > 1) stop("'reduced_dim' should be a character of length 1.")
