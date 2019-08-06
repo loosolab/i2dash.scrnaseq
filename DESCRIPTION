@@ -16,4 +16,8 @@ Imports:
     stringi,
     plotly,
     shiny,
-    knitr
+    knitr,
+    tidyr,
+    dplyr,
+    SummarizedExperiment,
+    SingleCellExperiment
