@@ -75,7 +75,7 @@ setMethod("add_gene_expression_page",
 #' @param expression A character of length 1 representing the name of an \code{assay}.
 #' @param metadata A character or list representing the names of  columns of \code{colData}.
 #' @param grouping A character of length 1 representing the name of columns of \code{colData} and used for expression grouping.
-#' @param genes (Optional) A character or list of genes of interest that are present in row names.
+#' @param genes A character or list of genes of interest that are present in row names of the \code{reduced_dim}.
 #' @param title The title of the page.
 #' @param menu (Optional) The name of the menu, under which the page should appear.
 #' @param sidebar (Optional) The page layout (see below).
@@ -143,7 +143,7 @@ setMethod("add_gene_expression_page",
 #' @param grouping A character of length 1 representing the name of a column in the slot \code{meta.data} in the \linkS4class{Seurat::Seurat} and used for expression grouping.
 #' @param assay A character of length 1 representing the name of a \linkS4class{Seurat::Assay} object present in the slot \code{assays} of the \linkS4class{Seurat::Seurat} object.
 #' @param assay_slot (Default value: "data") A character of length 1 representing the name of a slot in the \linkS4class{Seurat::Assay} object provided in \code{assay}.
-#' @param genes A character or list of genes of interest that are present in row names.
+#' @param genes A character or list of genes of interest that are present in row names of the provided \code{'assay_slot'}.
 #' @param title The title of the page.
 #' @param menu (Optional) The name of the menu, under which the page should appear.
 #' @param sidebar (Optional) The page layout (see below).
