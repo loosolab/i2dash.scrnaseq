@@ -8,8 +8,8 @@
 
   \S4method{add_dim_reduction_page}{i2dashboard,SingleCellExperiment}(object,
   sc_object, reduced_dim, metadata, grouping, title = NULL,
-  labels = NULL, barplot_grouping = TRUE, silhouette_plot = FALSE,
-  menu = NULL, sidebar = NULL)
+  barplot_grouping = TRUE, silhouette_plot = FALSE, menu = NULL,
+  sidebar = NULL)
 }
 \arguments{
 \item{object}{A \linkS4class{i2dash::i2dashboard} object.}
@@ -23,8 +23,6 @@
 \item{grouping}{A character of length 1 representing the name of columns of \code{colData} and used for expression grouping.}
 
 \item{title}{The title of the page.}
-
-\item{labels}{(Optional) A vector with labels. Should be of the same length as the rownumber of \code{reduced_dim}.}
 
 \item{barplot_grouping}{(Optional) A logical value. (Default: TRUE) If TRUE, a barplot with the number of observations from 'grouping' will be created.}
 
