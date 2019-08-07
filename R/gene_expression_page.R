@@ -86,15 +86,10 @@ setMethod("add_gene_expression_page",
           signature = signature(object = "i2dashboard", sc_object = "SingleCellExperiment"),
           function(object, sc_object, reduced_dim, expression, metadata, grouping, genes = NULL, title = NULL, menu = NULL, sidebar = NULL) {
 
-            # function for extracting colData
-            # extract_colData <- function(name, x){
-            #   return(colData(x)[[name]])
-            # }
-
             # validate and extract metadata
             if(!is.character(metadata) & !is.list(metadata)) stop("'metadata' should be a character or a list.")
             if(!all(metadata %in% names(colData(sc_object)))) stop("'colData' slot of the SingleCellExperiment object does not contain the column names from 'metadata'.")
-            metadata <- sc_object@colData[metadata]
+            metadata <- as.data.frame(sc_object@colData[metadata])
             # metadata <- sapply(metadata, extract_colData, x = sc_object)
             # metadata <- as.data.frame(metadata)
 
@@ -118,6 +113,8 @@ setMethod("add_gene_expression_page",
                 stop("'genes' contains invalid names.")
               }
               expression <- expression[genes,]
+            } else {
+              stop("Please provide a vector with genes/ features of interest. The names should match with the row names of the 'assay' slot of the SingleCellExperiment object.")
             }
 
             # validate grouping
@@ -125,62 +122,16 @@ setMethod("add_gene_expression_page",
 
             labels <- colnames(sc_object)
 
-            # Create random env id
-            env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
-
-            # # Validate input
-            # if(!is.data.frame(reduced_dim) & !is.matrix(reduced_dim)) stop("'reduced_dim' should should be of class 'data.frame' or 'matrix'.")
-            # if(ncol(reduced_dim) < 2 ) stop("'reduced_dim' should contain at least two columns.")
-            # if(!is.data.frame(expression) & !is.matrix(expression)) stop("'expression' should be of class 'data.frame' or 'matrix'.")
-            # if(!is.data.frame(metadata) & !is.matrix(metadata) & !is.factor(metadata)) stop("'metadata' should be of class 'data.frame' or 'matrix' or a factor.")
-            # if(!is.factor(metadata)){
-            #   if(is.null(colnames(metadata))) stop("'metadata' should contain colnames.")
-            #   if(nrow(metadata) != nrow(reduced_dim)) stop("'metadata' and 'reduced_dim' should contain the same number of rows.")
-            #   if(!grouping %in% colnames(metadata)) stop("'metadata' does not contain a column with this name.")
-            # } else {
-            #   if(length(metadata) != nrow(reduced_dim)) stop("'metadata' should have the same length as the number of rows of 'reduced_dim'.")
-            # }
-            # if(!is.null(title) & !is.character(title)) stop("'title' should be a character vector.")
-            # if(!is.null(labels) & length(labels) != nrow(reduced_dim)) stop("The length of the vector 'labels' should be equal to the number of rows in 'reduced_dim'.")
-
-            # Create component environment
-            env <- new.env()
-
-            env$reduced_dim <- reduced_dim[, 1:2]
-            env$expression <- expression
-            env$metadata <- metadata
-            env$grouping <- grouping
-            env$labels <- labels
-            env$multiple_meta <- ncol(metadata) > 1
-
-            # save environment object
-            saveRDS(env, file = file.path(object@workdir, "envs", paste0(env_id, ".rds")))
-
-            expanded_components <- list()
-            timestamp <- Sys.time()
-
-            # fill list "expanded_components" with components
-            scatterplot_component <- knitr::knit_expand(file = system.file("templates", "gene_expression_dimred.Rmd", package = "i2dash.scrnaseq"), env_id = env_id, date = timestamp)
-            expanded_components <- append(expanded_components, scatterplot_component)
-
-            violinplot_component<- knitr::knit_expand(file = system.file("templates", "gene_expression_violin_table.Rmd", package = "i2dash.scrnaseq"), env_id = env_id, date = timestamp)
-            expanded_components <- append(expanded_components, violinplot_component)
-
-            # Expand component
-            timestamp <- Sys.time()
-
-            object@pages[["gene_expression_page"]] <- list(title = title, layout = "2x2_grid", menu = menu, components = expanded_components, max_components = 2, sidebar = sidebar)
+            object <- add_gene_expression_page(object = object,
+                                               reduced_dim = reduced_dim,
+                                               expression = expression,
+                                               metadata = metadata,
+                                               grouping = grouping,
+                                               title = title,
+                                               labels = labels,
+                                               menu = menu,
+                                               sidebar = sidebar)
             return(object)
-            # object <- add_gene_expression_page(object = object,
-            #                                    reduced_dim = reduced_dim_m,
-            #                                    expression = expression_m,
-            #                                    metadata = metadata_df,
-            #                                    grouping = grouping,
-            #                                    title = title,
-            #                                    labels = labels,
-            #                                    menu = menu,
-            #                                    sidebar = sidebar)
-            # return(object)
           })
 
 #' Renders a page with two linked components. The first component is a scatterplot, showing samples in along coordinates from \code{reduced_dim}. The second component is a violin plot, that shows expression values from \code{expression} by groups defined in \code{grouping}.
@@ -192,7 +143,7 @@ setMethod("add_gene_expression_page",
 #' @param grouping A character of length 1 representing the name of a column in the slot \code{meta.data} in the \linkS4class{Seurat::Seurat} and used for expression grouping.
 #' @param assay A character of length 1 representing the name of a \linkS4class{Seurat::Assay} object present in the slot \code{assays} of the \linkS4class{Seurat::Seurat} object.
 #' @param assay_slot (Default value: "data") A character of length 1 representing the name of a slot in the \linkS4class{Seurat::Assay} object provided in \code{assay}.
-#' @param genes (Optional) A character or list of genes of interest that are present in row names.
+#' @param genes A character or list of genes of interest that are present in row names.
 #' @param title The title of the page.
 #' @param menu (Optional) The name of the menu, under which the page should appear.
 #' @param sidebar (Optional) The page layout (see below).
@@ -233,6 +184,8 @@ setMethod("add_gene_expression_page",
                 stop("'genes' contains invalid names.")
               }
               expression <- expression[genes,]
+            } else {
+              stop("Please provide a vector with genes/ features of interest. The names should match with the row names of the provided 'assay_slot'.")
             }
 
             # validate grouping
@@ -240,60 +193,14 @@ setMethod("add_gene_expression_page",
 
             labels <- colnames(expression)
 
-            # Create random env id
-            env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
-
-            # # Validate input
-            # if(!is.data.frame(reduced_dim) & !is.matrix(reduced_dim)) stop("'reduced_dim' should should be of class 'data.frame' or 'matrix'.")
-            # if(ncol(reduced_dim) < 2 ) stop("'reduced_dim' should contain at least two columns.")
-            # if(!is.data.frame(expression) & !is.matrix(expression)) stop("'expression' should be of class 'data.frame' or 'matrix'.")
-            # if(!is.data.frame(metadata) & !is.matrix(metadata) & !is.factor(metadata)) stop("'metadata' should be of class 'data.frame' or 'matrix' or a factor.")
-            # if(!is.factor(metadata)){
-            #   if(is.null(colnames(metadata))) stop("'metadata' should contain colnames.")
-            #   if(nrow(metadata) != nrow(reduced_dim)) stop("'metadata' and 'reduced_dim' should contain the same number of rows.")
-            #   if(!grouping %in% colnames(metadata)) stop("'metadata' does not contain a column with this name.")
-            # } else {
-            #   if(length(metadata) != nrow(reduced_dim)) stop("'metadata' should have the same length as the number of rows of 'reduced_dim'.")
-            # }
-            # if(!is.null(title) & !is.character(title)) stop("'title' should be a character vector.")
-            # if(!is.null(labels) & length(labels) != nrow(reduced_dim)) stop("The length of the vector 'labels' should be equal to the number of rows in 'reduced_dim'.")
-
-            # Create component environment
-            env <- new.env()
-
-            env$reduced_dim <- reduced_dim
-            env$expression <- expression
-            env$metadata <- metadata
-            env$grouping <- grouping
-            env$labels <- labels
-            env$multiple_meta <- ncol(metadata) > 1
-
-            # save environment object
-            saveRDS(env, file = file.path(object@workdir, "envs", paste0(env_id, ".rds")))
-
-            expanded_components <- list()
-            timestamp <- Sys.time()
-
-            # fill list "expanded_components" with components
-            scatterplot_component <- knitr::knit_expand(file = system.file("templates", "gene_expression_dimred.Rmd", package = "i2dash.scrnaseq"), env_id = env_id, date = timestamp)
-            expanded_components <- append(expanded_components, scatterplot_component)
-
-            violinplot_component<- knitr::knit_expand(file = system.file("templates", "gene_expression_violin_table.Rmd", package = "i2dash.scrnaseq"), env_id = env_id, date = timestamp)
-            expanded_components <- append(expanded_components, violinplot_component)
-
-            # Expand component
-            timestamp <- Sys.time()
-
-            object@pages[["gene_expression_page"]] <- list(title = title, layout = "2x2_grid", menu = menu, components = expanded_components, max_components = 2, sidebar = sidebar)
+            object <- add_gene_expression_page(object = object,
+                                               reduced_dim = reduced_dim,
+                                               expression = expression,
+                                               metadata = metadata,
+                                               grouping = grouping,
+                                               title = title,
+                                               labels = labels,
+                                               menu = menu,
+                                               sidebar = sidebar)
             return(object)
-            # object <- add_gene_expression_page(object = object,
-            #                                    reduced_dim = reduced_dim_m,
-            #                                    expression = expression_m,
-            #                                    metadata = metadata_df,
-            #                                    grouping = grouping,
-            #                                    title = title,
-            #                                    labels = labels,
-            #                                    menu = menu,
-            #                                    sidebar = sidebar)
-            # return(object)
           })

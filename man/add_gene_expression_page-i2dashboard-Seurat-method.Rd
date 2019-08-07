@@ -24,7 +24,7 @@
 
 \item{assay_slot}{(Default value: "data") A character of length 1 representing the name of a slot in the \linkS4class{Seurat::Assay} object provided in \code{assay}.}
 
-\item{genes}{(Optional) A character or list of genes of interest that are present in row names.}
+\item{genes}{A character or list of genes of interest that are present in row names.}
 
 \item{title}{The title of the page.}
 
