@@ -84,14 +84,12 @@ setMethod("add_gene_expression_page",
 #' @export
 setMethod("add_gene_expression_page",
           signature = signature(object = "i2dashboard", sc_object = "SingleCellExperiment"),
-          function(object, sc_object, reduced_dim, expression, metadata, grouping, genes = NULL, title = NULL, menu = NULL, sidebar = NULL) {
+          function(object, sc_object, reduced_dim, expression, metadata, grouping, genes, title = NULL, menu = NULL, sidebar = NULL) {
 
             # validate and extract metadata
             if(!is.character(metadata) & !is.list(metadata)) stop("'metadata' should be a character or a list.")
             if(!all(metadata %in% names(colData(sc_object)))) stop("'colData' slot of the SingleCellExperiment object does not contain the column names from 'metadata'.")
             metadata <- as.data.frame(sc_object@colData[metadata])
-            # metadata <- sapply(metadata, extract_colData, x = sc_object)
-            # metadata <- as.data.frame(metadata)
 
             # validate input and extract dimension reduction
             if(!is.character(reduced_dim) | length(reduced_dim) > 1) stop("'reduced_dim' should be a character of length 1.")
@@ -103,7 +101,7 @@ setMethod("add_gene_expression_page",
             if(!expression %in% assayNames(sc_object)) stop("'assay' slot of the SingleCellExperiment object does not contain the name provided in 'expression'.")
             expression <- assay(sc_object, expression)
 
-            # validate genes of intereset and subset expression
+            # validate genes of interest and subset expression
             if(!is.null(genes)){
               if(!is.character(genes) & !is.list(genes)) stop("'genes' should be a character or a list.")
               if(!all(genes %in% rownames(expression))){
@@ -113,8 +111,6 @@ setMethod("add_gene_expression_page",
                 stop("'genes' contains invalid names.")
               }
               expression <- expression[genes,]
-            } else {
-              stop("Please provide a vector with genes/ features of interest. The names should match with the row names of the 'assay' slot of the SingleCellExperiment object.")
             }
 
             # validate grouping
@@ -152,7 +148,7 @@ setMethod("add_gene_expression_page",
 #' @export
 setMethod("add_gene_expression_page",
           signature = signature(object = "i2dashboard", sc_object = "Seurat"),
-          function(object, sc_object, reduced_dim, metadata, grouping, assay, assay_slot = "data", genes = NULL, title = NULL, menu = NULL, sidebar = NULL) {
+          function(object, sc_object, reduced_dim, metadata, grouping, assay, assay_slot = "data", genes, title = NULL, menu = NULL, sidebar = NULL) {
 
             # validate and extract metadata
             if(!is.character(metadata) & !is.list(metadata)) stop("'metadata' should be a character or a list.")
@@ -172,9 +168,9 @@ setMethod("add_gene_expression_page",
             if(!assay_slot %in% slotNames(assay_obj)) stop(paste0("A slot with the name '", assay_slot, "' is not present in the Assay object '", assay, "'of the Seurat object."))
             expression <- Seurat::GetAssayData(object = assay_obj, slot = assay_slot)
             if(nrow(reduced_dim) != ncol(expression)) stop("The number of rows in 'reduced_dim' should be equal to the number of columns of the 'assay_slot'")
-            expression <- as.matrix(expression) # covert dgCMatrix to regular matrix
+            expression <- as.matrix(expression) # convert dgCMatrix to regular matrix
 
-            # validate genes of intereset and subset expression
+            # validate genes of interest and subset expression
             if(!is.null(genes)){
               if(!is.character(genes) & !is.list(genes)) stop("'genes' should be a character or a list.")
               if(!all(genes %in% rownames(expression))){
@@ -184,8 +180,6 @@ setMethod("add_gene_expression_page",
                 stop("'genes' contains invalid names.")
               }
               expression <- expression[genes,]
-            } else {
-              stop("Please provide a vector with genes/ features of interest. The names should match with the row names of the provided 'assay_slot'.")
             }
 
             # validate grouping
