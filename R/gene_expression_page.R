@@ -1,5 +1,5 @@
-setGeneric("add_gene_expression_page", function(object, sc_object, ...) standardGeneric("add_gene_expression_page"))
 
+setGeneric("add_gene_expression_page", function(object, sc_object, ...) standardGeneric("add_gene_expression_page"))
 
 #' Renders a page with two linked components. The first component is a scatterplot, showing samples in along coordinates from \code{reduced_dim}. The second component is a violin plot, that shows expression values from \code{expression} by groups defined in \code{grouping}.
 #'
