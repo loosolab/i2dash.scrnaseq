@@ -7,7 +7,7 @@
 \usage{
 
   \S4method{add_gene_expression_page}{i2dashboard,SingleCellExperiment}(object,
-  sc_object, reduced_dim, expression, metadata, grouping, genes = NULL,
+  sc_object, reduced_dim, expression, metadata, grouping, genes,
   title = NULL, menu = NULL, sidebar = NULL)
 }
 \arguments{
@@ -23,7 +23,7 @@
 
 \item{grouping}{A character of length 1 representing the name of columns of \code{colData} and used for expression grouping.}
 
-\item{genes}{(Optional) A character or list of genes of interest that are present in row names.}
+\item{genes}{A character or list of genes of interest that are present in row names of the \code{reduced_dim}.}
 
 \item{title}{The title of the page.}
 

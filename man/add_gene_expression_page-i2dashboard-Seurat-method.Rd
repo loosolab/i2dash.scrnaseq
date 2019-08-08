@@ -6,8 +6,8 @@
 \title{Renders a page with two linked components. The first component is a scatterplot, showing samples in along coordinates from \code{reduced_dim}. The second component is a violin plot, that shows expression values from \code{expression} by groups defined in \code{grouping}.}
 \usage{
 \S4method{add_gene_expression_page}{i2dashboard,Seurat}(object, sc_object,
-  reduced_dim, metadata, grouping, assay, assay_slot = "data",
-  genes = NULL, title = NULL, menu = NULL, sidebar = NULL)
+  reduced_dim, metadata, grouping, assay, assay_slot = "data", genes,
+  title = NULL, menu = NULL, sidebar = NULL)
 }
 \arguments{
 \item{object}{A \linkS4class{i2dash::i2dashboard} object.}
@@ -24,7 +24,7 @@
 
 \item{assay_slot}{(Default value: "data") A character of length 1 representing the name of a slot in the \linkS4class{Seurat::Assay} object provided in \code{assay}.}
 
-\item{genes}{A character or list of genes of interest that are present in row names.}
+\item{genes}{A character or list of genes of interest that are present in row names of the provided \code{'assay_slot'}.}
 
 \item{title}{The title of the page.}
 
