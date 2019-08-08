@@ -101,11 +101,11 @@ setMethod("add_gene_grid_page",
               expression <- expression[genes,]
             }
 
-            object <- add_multi_gene_expression_page(object = object,
-                                                     reduced_dim = reduced_dim_list,
-                                                     expression = expression,
-                                                     title = title,
-                                                     menu = menu)
+            object <- add_gene_grid_page(object = object,
+                                         reduced_dim = reduced_dim_list,
+                                         expression = expression,
+                                         title = title,
+                                         menu = menu)
             return(object)
 
           })
@@ -160,11 +160,11 @@ setMethod("add_gene_grid_page",
               expression <- expression[genes,]
             }
 
-            object <- add_multi_gene_expression_page(object = object,
-                                                     reduced_dim = reduced_dim_list,
-                                                     expression = expression,
-                                                     title = title,
-                                                     menu = menu)
+            object <- add_gene_grid_page(object = object,
+                                         reduced_dim = reduced_dim_list,
+                                         expression = expression,
+                                         title = title,
+                                         menu = menu)
             return(object)
 
           })
