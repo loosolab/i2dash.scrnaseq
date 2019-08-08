@@ -57,7 +57,7 @@ setMethod("add_gene_grid_page",
             # Expand component
             timestamp <- Sys.time()
 
-            object@pages[["multi_gene_expression_page"]] <- list(title = title, layout = "empty", menu = menu, components = multi_gene_expr_component, max_components = 1, sidebar = NULL)
+            object@pages[["gene_grid_page"]] <- list(title = title, layout = "empty", menu = menu, components = multi_gene_expr_component, max_components = 1, sidebar = NULL)
             return(object)
           })
 

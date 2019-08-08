@@ -15,8 +15,8 @@ is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
 library(magrittr)
 ########
 
-reduced_dim <- {{ env_id }}$reduced_dim
-count_table <- {{ env_id }}$expression
+reduced_dim_{{ env_id }} <- {{ env_id }}$reduced_dim
+count_table_{{ env_id }} <- {{ env_id }}$expression
 ```
 
 ```{r}
@@ -44,10 +44,10 @@ add_to_panel <- function(gg, panel){
 ```{r, eval=is_shiny}
 # selection field for gene
 if({{ env_id }}$selection_reduced_dim){
-  selectInput("select_dimred_{{ env_id }}", label = "Select dimension reduction:", choices = names(reduced_dim))
+  selectInput("select_dimred_{{ env_id }}", label = "Select dimension reduction:", choices = names(reduced_dim_{{ env_id }}))
 }
 # selection field for gene
-selectInput("select_gene_{{ env_id }}", label = "Select genes:", choices = rownames(count_table), multiple = TRUE)
+selectInput("select_gene_{{ env_id }}", label = "Select genes:", choices = rownames(count_table_{{ env_id }}), multiple = TRUE)
 
 # selection field for columns
 uiOutput("select_columns_{{ env_id }}")
@@ -109,12 +109,12 @@ reactive_{{ env_id }} <- eventReactive(input$generate_{{ env_id }}, {
       need(input$select_gene_{{ env_id }} != "", "Please select some genes.")
   )
   if({{ env_id }}$selection_reduced_dim){
-    red_dim <- reduced_dim[[input$select_dimred_{{ env_id }}]]
+    red_dim <- reduced_dim_{{ env_id }}[[input$select_dimred_{{ env_id }}]]
   } else {
-    red_dim <- reduced_dim[[1]]
+    red_dim <- reduced_dim_{{ env_id }}[[1]]
   }
   gene_list <- input$select_gene_{{ env_id }}
-  df <- data.frame(x = red_dim[,1], y = red_dim[,2], t(count_table))
+  df <- data.frame(x = red_dim[,1], y = red_dim[,2], t(count_table_{{ env_id }}))
   
   # create 2 multi_panels: first with autosizing of the component, second with custom size
   cols = input$columns_{{ env_id }}
