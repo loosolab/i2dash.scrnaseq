@@ -15,7 +15,7 @@ if(is.factor(df_{{ env_id }}[["{{ meta_column }}"]])){
   plotly::highlight("plotly_selected")
   bars_{{ meta_column }}
 } else {
-  boxs_{{ meta_column }} <- plotly::plot_ly(sd_{{ env_id }}, colors = "Set1", x = df_{{ env_id }}[[grouping]], y = df_{{ env_id }}[["{{ meta_column }}"]], color = df_{{ env_id }}[[grouping]]) %>%
+  boxs_{{ meta_column }} <- plotly::plot_ly(sd_{{ env_id }}, colors = "Set1", x = df_{{ env_id }}[[grouping_{{ env_id }}]], y = df_{{ env_id }}[["{{ meta_column }}"]], color = df_{{ env_id }}[[grouping_{{ env_id }}]]) %>%
   plotly::add_boxplot() %>%
   plotly::layout(
     xaxis = list(title = names(df_{{ env_id }}["{{ meta_column }}"])),
