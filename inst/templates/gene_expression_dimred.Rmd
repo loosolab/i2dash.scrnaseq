@@ -11,14 +11,14 @@ is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
 library(dplyr)
 library(magrittr)
 ########
-reduced_dim <- {{ env_id }}$reduced_dim
-count_table <- {{ env_id }}$expression
-metadata <- {{ env_id }}$metadata
-grouping <- {{ env_id }}$grouping
-labels <- {{ env_id }}$labels
+reduced_dim_{{ env_id }} <- {{ env_id }}$reduced_dim
+count_table_{{ env_id }} <- {{ env_id }}$expression
+metadata_{{ env_id }} <- {{ env_id }}$metadata
+grouping_{{ env_id }} <- {{ env_id }}$grouping
+labels_{{ env_id }} <- {{ env_id }}$labels
 
 # function to create a data.frame
-create_df <- function(reduced_dim, metadata, grouping, count_table){
+create_df_{{ env_id }} <- function(reduced_dim, metadata, grouping, count_table, labels){
 # Create data.frame for linked plots
   if(is.factor(metadata)){
     df <- data.frame("x" = reduced_dim[,1], "y" = reduced_dim[,2], "grouping" = metadata, t(count_table))
@@ -34,7 +34,7 @@ create_df <- function(reduced_dim, metadata, grouping, count_table){
 ```
 
 ```{r, eval=!is_shiny}
-df_{{ env_id }} <- create_df(reduced_dim, metadata, grouping, count_table = count_table)
+df_{{ env_id }} <- create_df_{{ env_id }}(reduced_dim_{{ env_id }}, metadata_{{ env_id }}, grouping_{{ env_id }}, count_table = count_table_{{ env_id }}, labels = labels_{{ env_id }})
 sd_{{ env_id }} <- plotly::highlight_key(df_{{ env_id }})
 base <- plotly::plot_ly(sd_{{ env_id }}, colors = "Set1", color = ~grouping) %>%
   plotly::group_by(grouping) %>%
@@ -58,13 +58,13 @@ ui_list <- list()
 if ({{ env_id }}$multiple_meta){
   ui_list <- rlist::list.append(ui_list,
                                 selectInput("select_grouping_{{ env_id }}", label = "Select column for grouping:",
-                                            choices = colnames(metadata), selected = grouping))
+                                            choices = colnames(metadata_{{ env_id }}), selected = grouping_{{ env_id }}))
 }
 
 # selection field for gene
 ui_list <- rlist::list.append(ui_list,
                               selectInput("select_gene_{{ env_id }}", label = "Select a gene:",
-                                          choices = rownames(count_table)))
+                                          choices = rownames(count_table_{{ env_id }})))
 
 
 # Download link
@@ -75,12 +75,12 @@ ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downl
 #
 df_{{ env_id }} <- shiny::reactive({
   if (!{{ env_id }}$multiple_meta){
-    grouping <- {{ env_id }}$grouping
+    grouping <- grouping_{{ env_id }}
   } else {
     grouping <- input$select_grouping_{{ env_id }}
   }
   gene_name <- input$select_gene_{{ env_id }}
-  df <- create_df(reduced_dim = reduced_dim, metadata = metadata, grouping = grouping, count_table = count_table)
+  df <- create_df_{{ env_id }}(reduced_dim = reduced_dim_{{ env_id }}, metadata = metadata_{{ env_id }}, grouping = grouping, count_table = count_table_{{ env_id }}, labels = labels_{{ env_id }})
 
   df_filtered <- df %>% dplyr::filter(gene == gene_name) 
 

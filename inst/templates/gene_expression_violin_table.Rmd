@@ -5,7 +5,7 @@
 ```{r, eval=!is_shiny}
 violins <- plotly::plot_ly(sd_{{ env_id }}, colors = "Set1", x = ~grouping, y = ~expression, color = ~grouping, type = "violin", box = list(visible = T), meanline = list(visible = T), points = "all", jitter = 0) %>%
     plotly::layout(
-      xaxis = list(title = grouping),
+      xaxis = list(title = grouping_{{ env_id }}),
       yaxis = list(title = "Expression per cluster"),
       showlegend = FALSE
     )
