@@ -38,7 +38,7 @@ df_{{ env_id }} <- create_df_{{ env_id }}(reduced_dim_{{ env_id }}, metadata_{{ 
 sd_{{ env_id }} <- plotly::highlight_key(df_{{ env_id }})
 base <- plotly::plot_ly(sd_{{ env_id }}, colors = "Set1", color = ~grouping) %>%
   plotly::group_by(grouping) %>%
-  plotly::add_markers(x = ~x, y = ~y, hoverinfo = "x+y+text", text = ~paste("grouping: ", grouping,"</br> label: ", labels)) %>%
+  plotly::add_markers(x = ~x, y = ~y, hoverinfo = "x+y+text", text = ~paste("grouping: ", grouping,"</br> label: ", labels), type = "scattergl") %>%
   plotly::layout(
     xaxis = list(title = "Dim 1"),
     yaxis = list(title = "Dim 2"),
@@ -101,7 +101,7 @@ output$downloadData_{{ env_id }}<- downloadHandler(
 # Output
 #
 output$plot_scatter_{{ env_id }} <- plotly::renderPlotly({
-  base <- plotly::plot_ly(df_{{ env_id }}()$df, colors = "Set1", color = ~grouping, source = "scatter_{{ env_id }}", key = rownames(df_{{ env_id }}()$df)) %>%
+  base <- plotly::plot_ly(df_{{ env_id }}()$df, colors = "YlOrRd", color = ~expression, source = "scatter_{{ env_id }}", key = rownames(df_{{ env_id }}()$df), type = "scattergl") %>%
   plotly::add_markers(x = ~x, y = ~y, hoverinfo = "x+y+text", text = ~paste("grouping: ", grouping,"</br> label: ", labels)) %>%
   plotly::layout(
     xaxis = list(title = "Dim 1"),
