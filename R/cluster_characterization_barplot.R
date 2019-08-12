@@ -11,7 +11,7 @@ cluster_characterization_barplot <- function(object, x, cluster, title = "Charac
   env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
 
   # validate input, create environment variables, save environment object
-  .validate_input_cluster_characterizatio_barplot(object@workdir, env_id, x, cluster)
+  .validate_input_cluster_characterizatio_barplot(object@datadir, x, cluster)
 
   timestamp <- Sys.time()
   expanded_component <- knitr::knit_expand(file = system.file("templates", "cluster_characterization_barplot_template.Rmd", package = "i2dash.scrnaseq"), title = title, env_id = env_id, date = timestamp)

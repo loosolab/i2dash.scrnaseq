@@ -4,7 +4,7 @@
 <!-- Component created on {{ date }} -->
 
 ```{r}
-{{ env_id }} = readRDS("envs/{{ env_id }}.rds")
+{{ env_id }} = readRDS(file.path(datadir, "{{ env_id }}.rds"))
 
 is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
 ```

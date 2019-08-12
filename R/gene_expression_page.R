@@ -43,7 +43,7 @@ add_gene_expression_page <- function(object, reduced_dim, expression, metadata, 
   if(!is.factor(metadata)) env$multiple_meta <- ncol(metadata) > 1 else env$multiple_meta <- FALSE
 
   # save environment object
-  saveRDS(env, file = file.path(object@workdir, "envs", paste0(env_id, ".rds")))
+  saveRDS(env, file = file.path(object@datadir, paste0(env_id, ".rds")))
 
   expanded_components <- list()
   timestamp <- Sys.time()
