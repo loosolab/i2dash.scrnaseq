@@ -13,7 +13,7 @@ sequence_saturation <- function(object, x, y, colour_by = NULL, labels = NULL, t
   env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
 
   # validate input, create environment variables, save environment object
-  .validate_input_sequence_saturation(object@workdir, env_id, x, y, colour_by, labels)
+  .validate_input_sequence_saturation(object@datadir, env_id, x, y, colour_by, labels)
 
   timestamp <- Sys.time()
   expanded_component <- knitr::knit_expand(file = system.file("templates", "sequence_saturation_template.Rmd", package = "i2dash.scrnaseq"), title = title, env_id = env_id, date = timestamp)
@@ -71,6 +71,6 @@ sequence_saturation <- function(object, x, y, colour_by = NULL, labels = NULL, t
   env$labels <- labels
 
   # save environment as rds-object
-  saveRDS(env, file = file.path(workdir, "envs", paste0(env_id, ".rds")))
+  saveRDS(env, file = file.path(workdir, paste0(env_id, ".rds")))
   print("validation TRUE")
 }
