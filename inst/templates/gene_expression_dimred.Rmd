@@ -7,46 +7,31 @@
 
 is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
 
-########
 library(dplyr)
 library(magrittr)
-########
-reduced_dim_{{ env_id }} <- {{ env_id }}$reduced_dim
-count_table_{{ env_id }} <- {{ env_id }}$expression
-metadata_{{ env_id }} <- {{ env_id }}$metadata
-grouping_{{ env_id }} <- {{ env_id }}$grouping
-labels_{{ env_id }} <- {{ env_id }}$labels
 
-# function to create a data.frame
-create_df_{{ env_id }} <- function(reduced_dim, metadata, grouping, count_table, labels){
-# Create data.frame for linked plots
-  if(is.factor(metadata)){
-    df <- data.frame("x" = reduced_dim[,1], "y" = reduced_dim[,2], "grouping" = metadata, t(count_table))
-  } else {
-    df <- data.frame("x" = reduced_dim[,1], "y" = reduced_dim[,2], "grouping" = as.factor(metadata[[grouping]]), t(count_table))
-  }
-  if(!is.null(labels)) df$labels <- labels
-  if(!is.null(labels)) df_long <- tidyr::gather(df, key = "gene", value = "expression", -x, -y, -grouping, -labels) else df_long <- tidyr::gather(df, key = "gene", value = "expression", -x, -y, -grouping)
-  row.names(df_long) <- c()
-  
-  return(df_long)
-}
+data_{{ env_id }} <- {{ env_id }}$data
+group_filter_{{ env_id }} <- {{ env_id }}$group_filter
 ```
 
 ```{r, eval=!is_shiny}
-df_{{ env_id }} <- create_df_{{ env_id }}(reduced_dim_{{ env_id }}, metadata_{{ env_id }}, grouping_{{ env_id }}, count_table = count_table_{{ env_id }}, labels = labels_{{ env_id }})
-sd_{{ env_id }} <- plotly::highlight_key(df_{{ env_id }})
-base <- plotly::plot_ly(sd_{{ env_id }}, colors = "Set1", color = ~grouping) %>%
-  plotly::group_by(grouping) %>%
-  plotly::add_markers(x = ~x, y = ~y, hoverinfo = "x+y+text", text = ~paste("grouping: ", grouping,"</br> label: ", labels), type = "scattergl") %>%
+# Create shared crosstalk object
+data_{{ env_id }} %>%
+  dplyr::filter(group_by == !!group_filter_{{ env_id }}) %>%
+  plotly::highlight_key() -> ct_{{ env_id }}
+
+ct_{{ env_id }} %>%
+  plotly::plot_ly(colors = "Set1", color = ~level) %>%
+  plotly::group_by(level) %>%
+  plotly::add_markers(x = ~x, y = ~y, hoverinfo = "x+y+text", text = ~paste(label, "<br />Group: ", level), type = "scattergl") %>%
   plotly::layout(
-    xaxis = list(title = "Dim 1"),
-    yaxis = list(title = "Dim 2"),
+    xaxis = list(title = "Dimension 1"),
+    yaxis = list(title = "Dimension 2"),
     showlegend = FALSE
-  ) %>% plotly::highlight(on = "plotly_selected", dynamic = F, selectize = F)
+  ) %>% plotly::highlight(on = "plotly_selected", dynamic = F, selectize = F) -> base
 
 htmltools::div(style="display:block;float:left;width:100%;height:75%;",
-  crosstalk::filter_select("id2", "Select a gene:", sd_{{ env_id }}, ~gene, multiple = F),
+  crosstalk::filter_select("id2", "Select a gene:", ct_{{ env_id }}, ~feature, multiple = F),
   base
   )
 ```
@@ -55,16 +40,14 @@ htmltools::div(style="display:block;float:left;width:100%;height:75%;",
 ui_list <- list()
 
 # selection field for grouping
-if ({{ env_id }}$multiple_meta){
-  ui_list <- rlist::list.append(ui_list,
+ui_list <- rlist::list.append(ui_list,
                                 selectInput("select_grouping_{{ env_id }}", label = "Select column for grouping:",
-                                            choices = colnames(metadata_{{ env_id }}), selected = grouping_{{ env_id }}))
-}
+                                            choices = unique(data_{{ env_id }}$group_by), selected = group_filter_{{ env_id }}))
 
 # selection field for gene
 ui_list <- rlist::list.append(ui_list,
-                              selectInput("select_gene_{{ env_id }}", label = "Select a gene:",
-                                          choices = rownames(count_table_{{ env_id }})))
+                              selectInput("select_feature_{{ env_id }}", label = "Select a feature:",
+                                          choices = unique(data_{{ env_id }}$feature)))
 
 
 # Download link
@@ -74,17 +57,11 @@ ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downl
 # Create reactive data table
 #
 df_{{ env_id }} <- shiny::reactive({
-  if (!{{ env_id }}$multiple_meta){
-    grouping <- grouping_{{ env_id }}
-  } else {
-    grouping <- input$select_grouping_{{ env_id }}
-  }
-  gene_name <- input$select_gene_{{ env_id }}
-  df <- create_df_{{ env_id }}(reduced_dim = reduced_dim_{{ env_id }}, metadata = metadata_{{ env_id }}, grouping = grouping, count_table = count_table_{{ env_id }}, labels = labels_{{ env_id }})
+  selected_group <- input$select_grouping_{{ env_id }}
+  selected_feature <- input$select_feature_{{ env_id }}
 
-  df_filtered <- df %>% dplyr::filter(gene == gene_name) 
-
-  return(list("df" = df_filtered, "grouping" = grouping, "table_df" = df))
+  data_{{ env_id }} %>%
+    dplyr::filter(feature == !!selected_feature, group_by == !!selected_group) 
 })
 
 #
@@ -93,7 +70,7 @@ df_{{ env_id }} <- shiny::reactive({
 output$downloadData_{{ env_id }}<- downloadHandler(
   filename =  paste('data-', Sys.Date(), '.csv', sep=''),
   content = function(file) {
-    write.csv(df_{{ env_id }}()$df, file)
+    write.csv(df_{{ env_id }}(), file)
   }
 )
 
@@ -101,14 +78,15 @@ output$downloadData_{{ env_id }}<- downloadHandler(
 # Output
 #
 output$plot_scatter_{{ env_id }} <- plotly::renderPlotly({
-  base <- plotly::plot_ly(df_{{ env_id }}()$df, colors = "YlOrRd", color = ~expression, source = "scatter_{{ env_id }}", key = rownames(df_{{ env_id }}()$df), type = "scattergl") %>%
-  plotly::add_markers(x = ~x, y = ~y, hoverinfo = "x+y+text", text = ~paste("grouping: ", grouping,"</br> label: ", labels)) %>%
-  plotly::layout(
-    xaxis = list(title = "Dim 1"),
-    yaxis = list(title = "Dim 2"),
-    showlegend = FALSE
-  ) %>%
-  plotly::event_register("plotly_selected")
+  df_{{ env_id }}() %>%
+    plotly::plot_ly(colors = "Set1", color = ~level) %>%
+    plotly::group_by(level) %>%
+    plotly::add_markers(x = ~x, y = ~y, hoverinfo = "x+y+text", text = ~paste(label, "<br />Group: ", level), type = "scattergl") %>%
+    plotly::layout(
+      xaxis = list(title = "Dimension 1"),
+      yaxis = list(title = "Dimension 2"),
+      showlegend = FALSE) %>% 
+    plotly::event_register("plotly_selected") -> base
   base
 })
 
@@ -122,5 +100,3 @@ shiny::fillRow(flex = c(NA, 1),
       plotly::plotlyOutput("plot_scatter_{{ env_id }}", height = "100%")
 )
 ```
-
-

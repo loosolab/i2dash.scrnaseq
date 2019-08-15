@@ -5,14 +5,14 @@
 \alias{add_gene_expression_page,i2dashboard,Seurat-method}
 \title{Renders a page with two linked components. The first component is a scatterplot, showing samples in along coordinates from \code{reduced_dim}. The second component is a violin plot, that shows expression values from \code{expression} by groups defined in \code{grouping}.}
 \usage{
-\S4method{add_gene_expression_page}{i2dashboard,Seurat}(object, sc_object,
-  reduced_dim, metadata, grouping, assay, assay_slot = "data", genes,
-  title = NULL, menu = NULL, sidebar = NULL)
+\S4method{add_gene_expression_page}{i2dashboard,Seurat}(report, object,
+  reduced_dim, metadata, grouping, assay, assay_slot = "data",
+  genes = NULL, title = NULL, menu = NULL, sidebar = NULL)
 }
 \arguments{
-\item{object}{A \linkS4class{i2dash::i2dashboard} object.}
+\item{report}{An object of class \linkS4class{i2dash::i2dashboard}.}
 
-\item{sc_object}{A valid \linkS4class{Seurat::Seurat} object}
+\item{object}{A valid \linkS4class{Seurat::Seurat} object.}
 
 \item{reduced_dim}{A character of length 1 representing the name of a \linkS4class{Seurat::DimReduc} object present in the slot \code{reductions} of the \linkS4class{Seurat::Seurat} object.}
 
