@@ -79,7 +79,7 @@ output$downloadData_{{ env_id }}<- downloadHandler(
 #
 output$plot_scatter_{{ env_id }} <- plotly::renderPlotly({
   df_{{ env_id }}() %>%
-    plotly::plot_ly(colors = "Set1", color = ~level) %>%
+    plotly::plot_ly(colors = "Set1", color = ~level, source = "scatter_{{ env_id }}", key = rownames(df_{{ env_id }}())) %>%
     plotly::group_by(level) %>%
     plotly::add_markers(x = ~x, y = ~y, hoverinfo = "x+y+text", text = ~paste(label, "<br />Group: ", level), type = "scattergl") %>%
     plotly::layout(
