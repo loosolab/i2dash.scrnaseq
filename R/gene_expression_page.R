@@ -59,20 +59,20 @@ setMethod("add_gene_expression_page",
             env <- new.env()
             env$data <- data
             env$group_filter <- colnames(group_by)[1]
+            env$exprs_values <- exprs_values
+            env$use_dimred <- use_dimred
+            env$group_by <- group_by
             saveRDS(env, file = file.path(report@datadir, paste0(env_id, ".rds")))
 
             expanded_components <- list()
             timestamp <- Sys.time()
 
             # fill list "expanded_components" with components
-            scatterplot_component <- knitr::knit_expand(file = system.file("templates", "gene_expression_dimred.Rmd", package = "i2dash.scrnaseq"), env_id = env_id, date = timestamp)
-            expanded_components <- append(expanded_components, scatterplot_component)
+            datatable_component <- knitr::knit_expand(file = system.file("templates", "gene_expression_table.Rmd", package = "i2dash.scrnaseq"), env_id = env_id, date = timestamp)
+            expanded_components <- append(expanded_components, datatable_component)
 
-            violinplot_component<- knitr::knit_expand(file = system.file("templates", "gene_expression_violin_table.Rmd", package = "i2dash.scrnaseq"), env_id = env_id, date = timestamp)
-            expanded_components <- append(expanded_components, violinplot_component)
-
-            # Expand component
-            timestamp <- Sys.time()
+            violin_dimred_component<- knitr::knit_expand(file = system.file("templates", "gene_expression_violin_dimred.Rmd", package = "i2dash.scrnaseq"), env_id = env_id, date = timestamp)
+            expanded_components <- append(expanded_components, violin_dimred_component)
 
             report@pages[["gene_expression_page"]] <- list(title = title, layout = "2x2_grid", menu = menu, components = expanded_components, max_components = 2, sidebar = NULL)
             return(report)

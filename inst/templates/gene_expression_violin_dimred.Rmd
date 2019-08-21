@@ -1,0 +1,183 @@
+###
+
+<!-- Component created on {{ date }} -->
+
+```{r, eval=!is_shiny}
+if(is.character(group_by_{{ env_id }})){
+  minimal_df <- data.frame("x" = group_by_{{ env_id }}, "y" = exprs_values_{{ env_id }}[1,])
+} else {
+  minimal_df <- data.frame("x" = group_by_{{ env_id }}[,1], "y" = exprs_values_{{ env_id }}[1,])
+}
+
+minimal_df %>%
+  plotly::plot_ly(colors = "Set1", x = ~x, y = ~y, color = ~x, type = "violin", box = list(visible = T), meanline = list(visible = T), points = "all", jitter = 0) %>%
+    plotly::layout(
+      title = row.names(exprs_values_{{ env_id }})[1],
+      xaxis = list(title = "Grouping"),
+      yaxis = list(title = "Expression per cluster")
+    ) -> violin_{{ env_id }}
+violin_{{ env_id }}$elementId <- "violin_{{ env_id }}"
+violin_{{ env_id }}
+
+```
+  
+```{r, eval=is_shiny}
+df2_{{ env_id }} <- shiny::reactive({
+  keys <- plotly::event_data("plotly_selected", source = "scatter_{{ env_id }}")$key
+  if(!is.null(keys)) {
+    return(df_{{ env_id }}()[keys, ])
+  }
+  return(df_{{ env_id }}())
+})
+
+output$plot_violin_{{ env_id }} <- plotly::renderPlotly({
+  violins <- plotly::plot_ly(df2_{{ env_id }}(), colors = "Set1", x = ~level, y = ~expression, color = ~level, type = "violin", box = list(visible = T), meanline = list(visible = T), points = "all", jitter = 0) %>%
+    plotly::layout(
+      xaxis = list(title = df_{{ env_id }}()$group_by),
+      yaxis = list(title = "Expression"),
+      title = input$select_feature_{{ env_id }})
+})
+plotly::plotlyOutput("plot_violin_{{ env_id }}", height = "100%")
+```
+
+### Select points to recalculate the violin plot according to selection:
+
+```{r, eval=!is_shiny}
+reduced_dim_{{ env_id }} %>%
+  plotly::plot_ly(x = ~x , y= ~y, hoverinfo = "x+y+text", text = row.names(reduced_dim_{{ env_id }}), colors = "YlOrRd", color = exprs_values_{{ env_id }}[1,], type = "scattergl") %>%
+  plotly::layout(
+    title = row.names(exprs_values_{{ env_id }})[1],
+    xaxis = list(title = "Dimension 1"),
+    yaxis = list(title = "Dimension 2")
+  ) %>% htmlwidgets::onRender("function(el) {
+                                var id_violin = 'violin_{{ env_id }}';
+                                var violin_div = document.getElementById(id_violin);
+
+                                var div_group_by = document.getElementById('div_group_by_{{ env_id }}');
+                                var group_str = div_group_by.getAttribute('data-grouping');
+                                var group = group_str.split(';');
+
+                                level_indices = {}
+                                for (i = 0; i < violin_div.data.length; i++){
+                                  level_name = violin_div.data[i].name;
+                                  level_indices[i] = getAllIndexes(group, level_name);
+                                }
+
+                                el.on('plotly_selected', function(eventData){
+                                  if(eventData == undefined){
+                                    console.log('Nothing is selected');
+                                  } else {
+                                    feature_name = el.layout.title.text;
+                                    var div_exprs = document.getElementById(feature_name);
+                                    var exprs_str = div_exprs.getAttribute('data-expression');
+                                    var expr = exprs_str.split(';').map(function(item){return parseFloat(item);});
+
+                                    // get the array of the selected points
+                                    var selection = eventData.points[0].data.selectedpoints;
+
+                                    // create dict with subsetted trace indexes
+                                    updated_dict = {}
+                                    for (var key in level_indices){
+                                      updated_dict[key] = selection.filter(value => -1 !== level_indices[key].indexOf(value))
+                                    }
+
+                                    // restyle each trace of the violinplot according to the indexes
+                                    traces_exprs = []
+                                    for (var key in updated_dict){
+                                      if (updated_dict[key].length === 0){
+                                        var exprs_of_level = [0];
+                                        traces_exprs.push(exprs_of_level);
+                                      } else {
+                                        var exprs_of_level = updated_dict[key].map(key => expr[key]);
+                                        traces_exprs.push(exprs_of_level);
+                                      }
+                                    }
+                                    var violin_update = {
+                                      y: traces_exprs
+                                    }
+
+                                    Plotly.restyle(id_violin, violin_update);
+                                    console.log(updated_dict)
+
+                                    var violin_layout_update = {'xaxis.type': 'category'};
+                                    Plotly.relayout(id_violin, violin_layout_update);
+
+                                    // when deselected the violin plot is restyled with the old values
+                                    el.on('plotly_deselect', function(eventData){
+                                      feature_name = el.layout.title.text;
+                                      var div_exprs = document.getElementById(feature_name);
+                                      var exprs_str = div_exprs.getAttribute('data-expression');
+                                      var expr = exprs_str.split(';').map(function(item){return parseFloat(item);});
+
+                                      traces_exprs = [];
+                                      // restyle each trace of the violinplot according to the indexes
+                                      for (var key in level_indices){
+                                        var exprs_of_level = level_indices[key].map(key => expr[key]);
+                                        traces_exprs.push(exprs_of_level);
+                                      };
+                                      var violin_update = {
+                                        y: traces_exprs
+                                      };
+                                      // all_traces = [...range(0, violin_div.data.length - 1)];
+                                      Plotly.restyle(id_violin, violin_update);
+
+                                      var violin_layout_update = {'xaxis.type': 'category'};
+                                      Plotly.relayout(id_violin, violin_layout_update);
+                                    })
+                                  }
+                                });
+
+                                // function to get indexes
+                                function getAllIndexes(arr, val) {
+                                  var indexes = [], i;
+                                  for(i = 0; i < arr.length; i++)
+                                    if (arr[i] === val)
+                                      indexes.push(i);
+                                  return indexes;
+                                }
+
+                              }") -> scatter_{{ env_id }}
+scatter_{{ env_id }}$elementId <- "scatter_{{ env_id }}"
+scatter_{{ env_id }}
+```
+
+```{r, eval=is_shiny}
+#
+# Create reactive data table
+#
+df_{{ env_id }} <- shiny::reactive({
+  selected_group <- input$select_grouping_{{ env_id }}
+  selected_feature <- input$select_feature_{{ env_id }}
+
+  data_{{ env_id }} %>%
+    dplyr::filter(feature == !!selected_feature, group_by == !!selected_group) 
+})
+
+#
+# Download
+#
+output$downloadData_{{ env_id }}<- downloadHandler(
+  filename =  paste('data-', Sys.Date(), '.csv', sep=''),
+  content = function(file) {
+    write.csv(df_{{ env_id }}(), file)
+  }
+)
+
+#
+# Output
+#
+output$plot_scatter_{{ env_id }} <- plotly::renderPlotly({
+  df_{{ env_id }}() %>%
+    plotly::plot_ly(colors = "YlOrRd", color = ~expression, source = "scatter_{{ env_id }}", key = rownames(df_{{ env_id }}())) %>%
+    plotly::group_by(level) %>%
+    plotly::add_markers(x = ~x, y = ~y, hoverinfo = "x+y+text", text = ~paste(label, "<br />Group: ", level), type = "scattergl") %>%
+    plotly::layout(
+      xaxis = list(title = "Dimension 1"),
+      yaxis = list(title = "Dimension 2"),
+      title = input$select_feature_{{ env_id }}) %>% 
+    plotly::event_register("plotly_selected") -> base
+  base
+})
+
+plotly::plotlyOutput("plot_scatter_{{ env_id }}", height = "100%")
+```
