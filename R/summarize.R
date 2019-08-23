@@ -32,6 +32,21 @@ setMethod("summarize_features",
               dplyr::mutate(group = "Features")
           })
 
+setMethod("summarize_samples",
+          signature = signature(object = "Seurat"),
+          definition = function(object, ...) {
+            summarize_data_(data = SummarizedExperiment::colData(object), ...) %>%
+              dplyr::mutate(group = "Samples")
+          })
+
+setMethod("summarize_features",
+          signature = signature(object = "Seurat"),
+          definition = function(object, ...) {
+            summarize_data_(data = SummarizedExperiment::rowData(object), ...) %>%
+              dplyr::mutate(group = "Features")
+          })
+
+
 #' Summarizes columns of \code{data} using \code{FUNS}.
 #'
 #' @param data A data.frame.
@@ -40,19 +55,29 @@ setMethod("summarize_features",
 #'
 #' @return A \code{data.frame} that contains summary statistics.
 summarize_data_ <- function(data, columns, FUNS = c("mean" = "mean", "median" = "median")) {
-  separate_regex <- paste0("_(?=[",paste0(summary_functions, collapse = "|"),"])")
+  separate_regex <- paste0("_(?=[",paste0(FUNS, collapse = "|"),"])")
 
   if(!assertive.properties::has_names(FUNS)) {
     names(FUNS) <- FUNS
   }
 
-  data %>%
-    dplyr::select_(.dots = columns) %>%
-    dplyr::summarise_if(is.numeric, .funs = FUNS) %>%
-    tidyr::gather() %>%
-    dplyr::mutate(key = correct_name(key, columns)) %>%
-    tidyr::separate(col = key, into = c("variable", "stat"), sep = separate_regex) %>%
-    tidyr::spread(key = stat, value = value)
+  if(length(columns) > 1) {
+    data %>%
+      as.data.frame() %>%
+      dplyr::select(.dots = columns) %>%
+      dplyr::summarise_if(is.numeric, .funs = FUNS) %>%
+      tidyr::gather() %>%
+      dplyr::mutate(key = correct_name(key, columns)) %>%
+      tidyr::separate(col = key, into = c("variable", "stat"), sep = separate_regex) %>%
+      tidyr::spread(key = stat, value = value) %>%
+      dplyr::mutate(variable = columns)
+  } else {
+    data %>%
+      as.data.frame() %>%
+      dplyr::select(.dots = columns) %>%
+      dplyr::summarise_if(is.numeric, .funs = FUNS) -> stats_table
+    cbind("Variable" = columns, stats_table)
+  }
 }
 
 #' Helper function to correct column names
