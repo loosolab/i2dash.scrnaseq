@@ -204,10 +204,12 @@ violin_{{ env_id }}
 ```{r, eval=is_shiny}
 df2_{{ env_id }} <- shiny::reactive({
   keys <- plotly::event_data("plotly_selected", source = "scatter_{{ env_id }}")$key
+  df <- as.data.frame(df_env_QOWhSS())
+  df$level <- as.factor(df$level)
   if(!is.null(keys)) {
-    return(df_{{ env_id }}()[keys, ])
+    return(df[keys, ])
   }
-  return(df_{{ env_id }}())
+  return(df)
 })
 
 output$plot_violin_{{ env_id }} <- plotly::renderPlotly({
