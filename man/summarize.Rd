@@ -16,9 +16,11 @@ summarize_features(object, ...)
 \item{columns}{The metadata columns to summarize.}
 
 \item{FUNS}{A named vector indicating summary functions.}
+
+\item{group_by}{(Optional) A vector, which is used for grouping.}
 }
 \value{
-A \code{data.frame} with one row for each \code{columns} and one column for each \code{FUNS}, containing the desired summary. An additional column \code{group} is added which indicates whether values from \emph{Samples} or \emph{Features} were summarized.
+A \code{kableExtra} object with one row for each \code{columns} and one column for each \code{FUNS}, containing the desired summary. Optionaly \code{group_by} can be provided. In this case for each level in \code{group_by} a column is created with the summerized values for each \code{FUNS}.
 }
 \description{
 Summarize samples or features of objects containing data from single-cell experiments.

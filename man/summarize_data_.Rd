@@ -2,10 +2,9 @@
 % Please edit documentation in R/summarize.R
 \name{summarize_data_}
 \alias{summarize_data_}
-\title{Summarizes columns of \code{data} using \code{FUNS}.}
+\title{Summarizes columns of \code{data} using \code{FUNS} and can be grouped by \code{group_by}.}
 \usage{
-summarize_data_(data, columns, FUNS = c(mean = "mean", median =
-  "median"))
+summarize_data_(data, columns, FUNS, group_by = NULL)
 }
 \arguments{
 \item{data}{A data.frame.}
@@ -18,5 +17,5 @@ summarize_data_(data, columns, FUNS = c(mean = "mean", median =
 A \code{data.frame} that contains summary statistics.
 }
 \description{
-Summarizes columns of \code{data} using \code{FUNS}.
+Summarizes columns of \code{data} using \code{FUNS} and can be grouped by \code{group_by}.
 }
