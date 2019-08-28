@@ -11,31 +11,37 @@ is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
 library(magrittr)
 
 reduced_dim_{{ env_id }} <- {{ env_id }}$reduced_dim
-count_table_{{ env_id }} <- {{ env_id }}$expression
+expression_{{ env_id }} <- {{ env_id }}$expression
 metadata_{{ env_id }} <- {{ env_id }}$metadata
-featurenames <- row.names(count_table_{{ env_id }})
+featurenames <- rownames(expression_{{ env_id }})
+```
 
-row.names(metadata_{{ env_id }}) <- c()
-string_counts_{{ env_id }} <- apply(count_table_{{ env_id }}, 1, paste0, collapse = ";")
-df_couns_stats_{{ env_id }} <- cbind("expressions" = string_counts_{{ env_id }}, "featurenames" = featurenames, metadata_{{ env_id }})
-row.names(df_couns_stats_{{ env_id }}) <- c()
+```{r, eval=!is_shiny, results='asis'}
+#
+# Store expression data in <div> elements
+#
+data_divs <- lapply(featurenames, function(feature) {
+  e <- expression_{{ env_id }}[feature, ]
+  htmltools::div(id = paste0("expression-", feature), `data-feature` = feature, `data-expression` = caTools::base64encode(e), `data-min` = min(e), `data-max` = max(e))
+})
+htmltools::div(data_divs)
 ```
 
 ```{r, eval=!is_shiny}
+default_expression <- as.numeric(expression_{{ env_id }}[1, ])
+
 reduced_dim_{{ env_id }} %>%
-  plotly::plot_ly(x = ~x , y= ~y, hoverinfo = "x+y+text", text = row.names(reduced_dim_{{ env_id }}), colors = "YlOrRd", color = count_table_{{ env_id }}[1,], type = "scattergl") %>% 
+  plotly::plot_ly(x = ~x , y= ~y, hoverinfo = "x+y+text", text = row.names(reduced_dim_{{ env_id }}), colors = "YlOrRd", color = default_expression, type = "scattergl") %>% 
   plotly::layout(
-    title = row.names(count_table_{{ env_id }})[1],
+    title = featurenames[1],
     xaxis = list(title = "Dimension 1"),
     yaxis = list(title = "Dimension 2")
   ) -> plot_{{ env_id }}
 plot_{{ env_id }}$elementId <- "plot_{{ env_id }}"
 
-htmltools::div(style="display:block;float:left;width:100%;height:90%;", 
-               htmltools::div(
-                 htmltools::tags$button(style="display:inline-block;", i2dash::embed_var(reduced_dim_{{ env_id }})),
-                 htmltools::HTML("<p style='display:inline-block;'>Please select a feature in the left table to show its expression values.</p>")), plot_{{ env_id }}
-)
+htmltools::div(style="display:block;float:left;width:100%;height:90%;",
+               plot_{{ env_id }},
+               htmltools::div(htmltools::tags$button(style="display:inline-block;", i2dash::embed_var(reduced_dim_{{ env_id }}))))
 ```
 
 ```{r, eval=is_shiny}
@@ -47,11 +53,11 @@ ui_list <- list()
 df_{{ env_id }} <- shiny::reactive({
   selected_gene <- input$tbl_{{ env_id }}_row_last_clicked
   if(is.null(selected_gene)){
-    expression <- count_table_{{ env_id }}[1,] 
-    featurename <- row.names(count_table_{{ env_id }})[1]
+    expression <- expression_{{ env_id }}[1,] 
+    featurename <- featurenames[1]
   } else {
-    expression <- count_table_{{ env_id }}[selected_gene,]
-    featurename <- row.names(count_table_{{ env_id }})[selected_gene]
+    expression <- expression_{{ env_id }}[selected_gene,]
+    featurename <- featurenames[selected_gene]
   }
 
   df <- data.frame("x" = reduced_dim_{{ env_id }}[,1], "y" = reduced_dim_{{ env_id }}[,2], "label" = row.names(reduced_dim_{{ env_id }}), "expression" = expression)
@@ -60,12 +66,12 @@ df_{{ env_id }} <- shiny::reactive({
 })
 
 # Download link
-ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downloadData_{{ env_id }}', 'Download data')))
+ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), shiny::downloadButton('downloadData_{{ env_id }}', 'Download data')))
 
 #
 # Download
 #
-output$downloadData_{{ env_id }}<- downloadHandler(
+output$downloadData_{{ env_id }}<- shiny::downloadHandler(
   filename =  paste('data-', Sys.Date(), '.csv', sep=''),
   content = function(file) {
     write.csv(df_{{ env_id }}()$df, file)
@@ -96,4 +102,29 @@ shiny::fillRow(flex = c(NA, 1),
       htmltools::div(style="display:block;float:left;width:100%;height:85%;padding-left:15px", htmltools::HTML("<p>Please select a feature in the left table to show its expression values.</p>"), plotly::plotlyOutput("plot_scatter_{{ env_id }}", height = "100%"))
 )
 ```
+
+Column
+----------------------------------------------------
+
+###
+
+```{r, eval=!is_shiny}
+cbind("featurenames" = featurenames, metadata_{{ env_id }}) %>%
+  DT::datatable(filter = 'top', selection = list(mode = 'single', target = 'row'), 
+              options = list(
+    columnDefs = list(list(visible = FALSE, targets = 1))),
+    callback = DT::JS("table.on('click.dt', 'tr', function() {
+    // Insert Code here
+    })"))
+```
+
+```{r, eval=is_shiny}
+output$tbl_{{ env_id }} <- DT::renderDataTable({
+  options(DT.options = list(scrollY="400px",scrollX="300px", pageLength = 50, autoWidth = TRUE))
+  DT::datatable(metadata_{{ env_id }}, filter = 'top', selection = list(mode = 'single', selected = 1, target = 'row'))
+})
+
+DT::dataTableOutput('tbl_{{ env_id }}')
+```
+
 
