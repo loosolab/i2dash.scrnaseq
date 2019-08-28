@@ -14,24 +14,53 @@ reduced_dim_{{ env_id }} <- {{ env_id }}$reduced_dim
 expression_{{ env_id }} <- {{ env_id }}$expression
 metadata_{{ env_id }} <- {{ env_id }}$metadata
 featurenames <- rownames(expression_{{ env_id }})
+expr_str_{{ env_id }} <- apply(expression_{{ env_id }}, 1, paste0, collapse = ";")
+names(expr_str_{{ env_id }}) <- rownames(expression_{{ env_id }})
+```
+
+```{js}
+/*
+Function to link a div-container with a plotly scatterplot
+*/
+function linking_plotly_scatter(plot_id, div_id, color_by_tag, title) {
+
+  color_by = document.getElementById(div_id).getAttribute(color_by_tag);
+  
+  // (decode the data) or split the datastring
+  var color_by = color_by.split(';').map(function(item){return parseFloat(item);});
+
+  // get min and max values from expression
+  var min = Math.min(...color_by);
+  var max = Math.max(...color_by);
+  
+  // update scatterplot data
+  var scatter_update_0 = {
+  'marker.color': [color_by],
+  'marker.cmax': max,
+  'marker.cmin': min,
+  'marker.line.cmax': max,
+  'marker.line.cmin': min,
+  'marker.line.color': [color_by]};
+
+  var scatter_update_1 = {
+  'marker.color': [min, max],
+  'marker.cmax': max,
+  'marker.cmin': min};
+
+  // update scatterplot layout
+  var scatter_layout_update = {title: title};
+  
+  // restyle and relayout of the scatterplot
+  Plotly.restyle(plot_id, scatter_update_0, [0]);
+  Plotly.restyle(plot_id, scatter_update_1, [1]);
+  Plotly.relayout(plot_id, scatter_layout_update);
+}
 ```
 
 ```{r, eval=!is_shiny, results='asis'}
-#
-# Store expression data in <div> elements
-#
-data_divs <- lapply(featurenames, function(feature) {
-  e <- expression_{{ env_id }}[feature, ]
-  htmltools::div(id = paste0("expression-", feature), `data-feature` = feature, `data-expression` = caTools::base64encode(e), `data-min` = min(e), `data-max` = max(e))
-})
-htmltools::div(data_divs)
-```
-
-```{r, eval=!is_shiny}
 default_expression <- as.numeric(expression_{{ env_id }}[1, ])
-
 reduced_dim_{{ env_id }} %>%
-  plotly::plot_ly(x = ~x , y= ~y, hoverinfo = "x+y+text", text = row.names(reduced_dim_{{ env_id }}), colors = "YlOrRd", color = default_expression, type = "scattergl") %>% 
+  plotly::plot_ly(x = ~x , y= ~y, hoverinfo = "x+y+text", text = row.names(reduced_dim_{{ env_id }}), colors = "YlOrRd", color = default_expression, type = "scattergl") %>%
   plotly::layout(
     title = featurenames[1],
     xaxis = list(title = "Dimension 1"),
@@ -39,9 +68,21 @@ reduced_dim_{{ env_id }} %>%
   ) -> plot_{{ env_id }}
 plot_{{ env_id }}$elementId <- "plot_{{ env_id }}"
 
-htmltools::div(style="display:block;float:left;width:100%;height:90%;",
-               plot_{{ env_id }},
-               htmltools::div(htmltools::tags$button(style="display:inline-block;", i2dash::embed_var(reduced_dim_{{ env_id }}))))
+htmltools::div(style="display:block;float:left;width:100%;height:90%;padding-left:15px", htmltools::HTML("<p>Please select a feature in the left table to show its expression values.</p>"),plot_{{ env_id }})
+```
+
+```{r, eval=!is_shiny}
+default_expression <- expression_{{ env_id }}[1, ]
+reduced_dim_{{ env_id }} %>%
+  plotly::plot_ly(x = ~x , y= ~y, hoverinfo = "x+y+text", text = row.names(reduced_dim_{{ env_id }}), colors = "YlOrRd", color = default_expression, type = "scattergl") %>%
+  plotly::layout(
+    title = featurenames[1],
+    xaxis = list(title = "Dimension 1"),
+    yaxis = list(title = "Dimension 2")
+  ) -> plot_{{ env_id }}
+plot_{{ env_id }}$elementId <- "plot_{{ env_id }}"
+
+htmltools::div(style="display:block;float:left;width:100%;height:90%;padding-left:15px", htmltools::HTML("<p>Please select a feature in the left table to show its expression values.</p>"),plot_{{ env_id }})
 ```
 
 ```{r, eval=is_shiny}
@@ -109,12 +150,24 @@ Column
 ###
 
 ```{r, eval=!is_shiny}
-cbind("featurenames" = featurenames, metadata_{{ env_id }}) %>%
-  DT::datatable(filter = 'top', selection = list(mode = 'single', target = 'row'), 
-              options = list(
-    columnDefs = list(list(visible = FALSE, targets = 1))),
+cbind(metadata_{{ env_id }}) %>%
+  DT::datatable(filter = 'top', selection = list(mode = 'single', target = 'row'),
     callback = DT::JS("table.on('click.dt', 'tr', function() {
-    // Insert Code here
+
+    var id_scatter = 'plot_{{ env_id }}',
+    feature_name = table.row(this).data()[0],
+    feature_div_id = 'expression-'.concat(feature_name);
+
+    linking_plotly_scatter(plot_id = id_scatter, div_id = feature_div_id, color_by_tag = 'data-expression', title = feature_name);
+    
+    // highlight selected row of the table
+    if ( $(this).hasClass('selected') ) {
+        $(this).removeClass('selected');
+    }
+    else {
+        table.$('tr.selected').removeClass('selected');
+        $(this).addClass('selected');
+    }
     })"))
 ```
 
