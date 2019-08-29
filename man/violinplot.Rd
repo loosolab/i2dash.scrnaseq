@@ -7,30 +7,26 @@
 \alias{violinplot,i2dashboard,SingleCellExperiment-method}
 \title{Renders a component containing a vertical violin plot}
 \usage{
-violinplot(object, sc_object, ...)
+violinplot(report, object, ...)
 
-\S4method{violinplot}{i2dashboard,missing}(object, y, group_by = NULL,
+\S4method{violinplot}{i2dashboard,missing}(report, y, group_by = NULL,
   title = NULL)
 
-\S4method{violinplot}{i2dashboard,SingleCellExperiment}(object, sc_object,
+\S4method{violinplot}{i2dashboard,SingleCellExperiment}(report, object,
   use = "colData", y = NULL, group_by = NULL, title = NULL)
 }
 \arguments{
-\item{object}{An object of class \linkS4class{i2dash::i2dashboard}.}
+\item{report}{An object of class \linkS4class{i2dash::i2dashboard}.}
 
-\item{sc_object}{A valid \linkS4class{SingleCellExperiment::SingleCellExperiment} object.}
+\item{object}{A valid \linkS4class{SingleCellExperiment::SingleCellExperiment} object.}
 
-\item{y}{A data.frame or matrix with columns containing numeric observations for the vertical violinplot (y-axis).}
+\item{y}{A data.frame (matrix) containing numeric observations for the vertical axis, or a character vector indicating column names of \code{colData(object)}, \code{rowData(object)}.}
 
-\item{group_by}{(Optional) A data.frame or matrix with columns conatining factors for grouping the observations.}
+\item{group_by}{An optional data.frame (matrix) with columns containing grouping factors for the horizontal axis.}
 
-\item{title}{(Optional) The title of the components junk.}
+\item{title}{The title of the component.}
 
-\item{use}{A character specifying where to obtain the data from. Valid input: "colData" or "rowData".}
-
-\item{y}{A character vector with column names to use for observations.}
-
-\item{group_by}{A character vector with column names to use for grouping the observations.}
+\item{use}{A character specifying where to obtain the data from. One of \code{"colData"} or \code{"rowData"}.}
 }
 \value{
 A string containing markdown code for the rendered component
