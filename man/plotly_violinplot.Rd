@@ -4,17 +4,10 @@
 \alias{plotly_violinplot}
 \title{Render a vertical violin plot with plotly.}
 \usage{
-plotly_violinplot(..., showlegend = F, title_y = NULL,
-  title_group_by = NULL)
+plotly_violinplot(df)
 }
 \arguments{
-\item{...}{these arguments are of either the form value or tag = value and should be valid for the 'plotly::plot_ly()' method.}
-
-\item{showlegend}{Boolean value that describes if the legend should be shown.}
-
-\item{title_y}{(Optional) The title of the y-axis that describes the observations.}
-
-\item{title_group_by}{(Optional) The title of the x-axis that describes the grouping factor.}
+\item{df}{A data.frame containing in the first column numerical values for the y axis and optionally factor in the second column for grouping the observations along the x axis.}
 }
 \value{
 An object of class \code{plotly}.

@@ -2,11 +2,8 @@
 
 export("%<>%")
 export("%>%")
-export(.bar_plot)
-export(.scatter_plot)
 export(boxplot)
-export(create_violinplot_df)
-export(plotly_boxplot)
 export(plotly_violinplot)
+exportMethods(violinplot)
 importFrom(magrittr,"%<>%")
 importFrom(magrittr,"%>%")

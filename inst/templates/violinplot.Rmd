@@ -4,85 +4,86 @@
 <!-- Component created on {{ date }} -->
 
 ```{r}
-{{ env_id }} = readRDS("envs/{{ env_id }}.rds")
-
+{{ env_id }} <- readRDS(file.path(datadir, "{{ env_id }}.rds"))
 is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
 ```
 
 ```{r, eval=!is_shiny}
 # Function to create a dataframe for bar plot
-output_list <- i2dash.scrnaseq::create_violinplot_df(y = {{ env_id }}$y[1], group_by = {{ env_id }}$group_by[1], title_y = {{ env_id }}$title_y, title_group_by = {{ env_id }}$title_group_by)
-
-# Provide data download
-i2dash::embed_var(output_list$df)
+if(!is.null({{ env_id }}$group_by)) df_{{ env_id }} <- cbind({{ env_id }}$y[,1], {{ env_id }}$group_by[,1]) else df_{{ env_id }} <- {{ env_id }}$y[1] 
 
 # Render plot
-i2dash.scrnaseq::plotly_violinplot(x = output_list$x, y = output_list$y, split = output_list$split, showlegend = output_list$showlegend, title_y = output_list$title_y, title_group_by = output_list$title_group_by)
+plot_{{ env_id }} <- i2dash.scrnaseq::plotly_violinplot(df_{{ env_id }})
+
+# Provide data download
+htmltools::div(style="display:block;float:left;width:100%;height:90%;",
+  htmltools::tags$button(i2dash::embed_var(df_{{ env_id }})), plot_{{ env_id }}
+)
 ```
 
 ```{r, eval=is_shiny}
 ui_list <- list()
 
-# selection field for y
+#
+# shiny input widget for y
+#
 if ({{ env_id }}$y_selection){
   ui_list <- rlist::list.append(ui_list,
                                 selectInput("select_y_{{ env_id }}", label = "Select observations:",
-                                            choices = names({{ env_id }}$y)))
+                                            choices = colnames({{ env_id }}$y[lapply({{ env_id }}$y,class) =="numeric" | lapply({{ env_id }}$y,class) =="integer"])))
 }
 
-# selection field for group_by
+#
+# shiny input widget for group_by
+#
 if ({{ env_id }}$group_by_selection){
   ui_list <- rlist::list.append(ui_list,
                                 selectInput("select_group_by_{{ env_id }}", label = "Group observations by:",
-                                            choices = names({{ env_id }}$group_by)))
+                                            choices = colnames({{ env_id }}$group_by[lapply({{ env_id }}$group_by,class) =="factor"])))
 }
-
-# download_link
+#
+# shiny download button
+#
 ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downloadData_{{ env_id }}', 'Download data')))
 
 #
 # Create reactive method
 #
 df_{{ env_id }} <- shiny::reactive({
-  
-  if( !{{ env_id }}$y_selection ) {
-    y <- {{ env_id }}$y[1]
+  if(!is.null({{ env_id }}$group_by)){
+    if(!{{ env_id }}$y_selection) col_y <- {{ env_id }}$y[1] else col_y <- {{ env_id }}$y[input$select_y_{{ env_id }}]
+    if(!{{ env_id }}$group_by_selection) col_group_by <- {{ env_id }}$group_by[1] else col_group_by <- {{ env_id }}$group_by[input$select_group_by_{{ env_id }}]
+    cbind(col_y, col_group_by)
   } else {
-    y <- {{ env_id }}$y[input$select_y_{{ env_id }}]
+    if(!{{ env_id }}$y_selection) col_y <- {{ env_id }}$y[1] else col_y <- {{ env_id }}$y[input$select_y_{{ env_id }}]
   }
-
-  if( !{{ env_id }}$group_by_selection ) {
-    group_by <- {{ env_id }}$group_by[1]
-  } else {
-    group_by <- {{ env_id }}$group_by[input$select_group_by_{{ env_id }}]
-  }
-  
-  return(i2dash.scrnaseq::create_violinplot_df(y = y, group_by = group_by, title_y = {{ env_id }}$title_y, title_group_by = {{ env_id }}$title_group_by))
 })
 
 #
-# Download
+# Download data.frame
 #
 output$downloadData_{{ env_id }} <- downloadHandler(
   filename =  paste('data-', Sys.Date(), '.csv', sep=''),
   content = function(file) {
-    write.csv(df_{{ env_id }}()$df, file)
+    write.csv(df_{{ env_id }}(), file)
   }
 )
 
 #
-# Output
+# Output plot
 #
 output$plot_{{ env_id }} <- plotly::renderPlotly(
-  i2dash.scrnaseq::plotly_violinplot(x = df_{{ env_id }}()$x, y = df_{{ env_id }}()$y, split = df_{{ env_id }}()$split, showlegend = df_{{ env_id }}()$showlegend, title_y = df_{{ env_id }}()$title_y, title_group_by = df_{{ env_id }}()$title_group_by)
+  i2dash.scrnaseq::plotly_violinplot(df_{{ env_id }}())
 )
 
 #
-# Layout of component junk
+# Layout of component
 #
-shiny::fillCol(flex = c(NA, 1),
-        do.call(shiny::inputPanel, ui_list),
-        plotly::plotlyOutput("plot_{{ env_id }}", height = "100%")
+shiny::fillRow(flex = c(NA, 1),
+      shinyWidgets::dropdownButton(div(style='max-height: 350px; overflow-x: auto;',do.call(shiny::inputPanel, ui_list)),
+                       circle = TRUE, status = "danger", icon = icon("gear"), width = "300px",
+                       tooltip = shinyWidgets::tooltipOptions(title = "Click, to change plot settings:")),
+      plotly::plotlyOutput("plot_{{ env_id }}", height = "100%")
 )
 ```
 
