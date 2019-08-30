@@ -1,0 +1,182 @@
+<!-- Component created on  {{ date }}  -->
+
+```{r}
+{{ env_id }} = readRDS(file.path(datadir, "{{ env_id }}.rds"))
+
+is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
+
+library(magrittr)
+
+use_dimred_{{ env_id }} <- {{ env_id }}$use_dimred
+exprs_values_{{ env_id }} <- {{ env_id }}$exprs_values
+
+#
+# Helper functions for generating figures
+#
+create_feature_figure <- function(feature, data, mapping = viridis::scale_color_viridis()){
+  data %>%
+    ggplot2::ggplot(ggplot2::aes_string(x = "dim1", y = "dim2", color = feature)) +
+    ggplot2::geom_point() +
+    mapping +
+    ggplot2::labs(color = feature, x = "", y = "", title = "") +
+    ggplot2::theme_minimal()
+}
+```
+
+UI elements {.sidebar}
+-------------------------------------
+    
+###
+
+```{r, eval=is_shiny}
+#
+# Render UI elements for the selection of the dimension reduction, features and number of columns
+#
+if(length(use_dimred_{{ env_id }}) > 1){
+  selectInput("select_dimred_{{ env_id }}", label = "Select dimension reduction:", choices = names(use_dimred_{{ env_id }}))
+}
+
+selectInput("selected_features_{{ env_id }}", label = "Select features:", choices = rownames(exprs_values_{{ env_id }}), multiple = TRUE)
+
+# Maximum number of columns depends on selected features
+output$select_columns_{{ env_id }} <- renderUI({
+  max_columns <- max(length(input$selected_features_{{ env_id }}), 1)
+  numericInput("columns_{{ env_id }}",
+               label = HTML("(Please select features first) <br/> Number of columns:"),
+               value = 1,
+               min = 1,
+               max = max_columns)
+})
+uiOutput("select_columns_{{ env_id }}")
+
+#
+# Render a button to preview the figure
+#
+actionButton("preview_figure_{{ env_id }}", label = "Preview figure")
+
+```
+
+The following **width** and **height** selections are applied only to the downloadable png file of the figure. These selections are **optional**. If the values are `0` the figure will be saved as shown on the display.
+
+```{r, eval=is_shiny}
+#
+# Render UI elements for the selection of figure width and height
+#
+numericInput("width_{{ env_id }}", label = "Choose width (cm):", value = 0, min = 0)
+numericInput("height_{{ env_id }}", label = "Choose height (cm):", value = 0, min = 0)
+
+# Add a checkbox to preview with selected figure width and height
+checkboxInput("checkbox_{{ env_id }}", label = "Preview with customized size", value = FALSE)
+
+#
+# Render buttons for figure and data download
+#
+htmltools::div(style="display:block;float:left;margin-top:20px",
+               downloadButton("download_figure_{{ env_id }}", "Download figure"))
+htmltools::div(style="display:block;float:left;margin-top:20px",
+               downloadButton("download_data_{{ env_id }}", "Download data"))
+```
+
+Column
+-------------------------------------
+    
+### Feature grid
+
+```{r, eval=!is_shiny}
+htmltools::HTML("<div class='alert alert-warning' role='alert'>
+  <h4>This page can only be used with the shiny-based interactive mode.</h4>
+</div>")
+```
+
+```{r, eval=is_shiny}
+reactive_{{ env_id }} <- eventReactive(input$preview_figure_{{ env_id }}, {
+  # validate if at least a feature is selected
+  validate(
+      need(input$selected_features_{{ env_id }} != "", "Please select at least one feature.")
+  )
+  
+  if(length(use_dimred_{{ env_id }}) > 1){
+    red_dim <- use_dimred_{{ env_id }}[[input$select_dimred_{{ env_id }}]]
+  } else {
+    red_dim <- use_dimred_{{ env_id }}[[1]]
+  }
+  
+  #
+  # Create data for the figure from selected features
+  #
+  selected_features <- input$selected_features_{{ env_id }}
+  data <- data.frame(dim1 = red_dim[, 1],
+                     dim2 = red_dim[, 2],
+                     t(exprs_values_{{ env_id }}[selected_features, ]))
+  
+  #
+  # Create figures
+  #
+  figure_columns <- input$columns_{{ env_id }}
+  
+  # Calculate number of rows
+  figure_rows <- ceiling(length(selected_features)/input$columns_{{ env_id }})
+  
+  figure_autosize <- multipanelfigure::multi_panel_figure(
+    width = "auto",
+    columns = figure_columns,
+    height = "auto",
+    rows = figure_rows)
+  
+  figure_customsize <- NULL
+  if(input$width_{{ env_id }} > 0 & input$height_{{ env_id }} > 0) {
+    figure_customsize <- multipanelfigure::multi_panel_figure(
+      width = input$width_{{ env_id }},
+      columns = figure_columns,
+      height = input$height_{{ env_id }},
+      rows = figure_rows,
+      unit = "cm")
+  }
+  
+  #
+  # Create a list of plots for selected features
+  #
+  feature_plot_list <- lapply(selected_features, create_feature_figure, data = data)
+  
+  for(feature_plot in feature_plot_list){
+    figure_autosize <- multipanelfigure::fill_panel(figure_autosize, feature_plot, scaling = "fit")
+    if(!is.null(figure_customsize)) figure_customsize <- multipanelfigure::fill_panel(figure_customsize, feature_plot, scaling = "fit")
+  }
+  
+  return(list("figure_auto" = figure_autosize, "figure_custom" = figure_customsize, "data" = data))
+})
+
+#
+# Render output and prepare downloads
+#
+output$plot_{{ env_id }} <- renderPlot({
+  if(input$checkbox_{{ env_id }} & !is.null(reactive_{{ env_id }}()$figure_custom)){
+    reactive_{{ env_id }}()$figure_custom
+  } else {
+    reactive_{{ env_id }}()$figure_auto
+  }
+})
+
+plotOutput("plot_{{ env_id }}")
+
+# Download figure
+output$download_figure_{{ env_id }} <- downloadHandler(
+  filename = function() { paste("feature_grid_", Sys.Date(), ".png", sep="") },
+  content = function(file) {
+    if(!is.null(reactive_{{ env_id }}()$figure_custom)){
+      multipanelfigure::save_multi_panel_figure(figure = reactive_{{ env_id }}()$figure_custom, filename = file, dpi = 300, device = "png")
+    } else {
+      multipanelfigure::save_multi_panel_figure(figure = reactive_{{ env_id }}()$figure_auto, filename = file, dpi = 300, device = "png")
+    }
+  }
+)
+
+# Download data
+output$download_data_{{ env_id }} <- downloadHandler(
+  filename =  paste("feature_grid_", Sys.Date(), ".csv", sep = ""),
+  content = function(file) {
+    write.csv(reactive_{{ env_id }}()$df, file)
+  }
+)
+```
+
