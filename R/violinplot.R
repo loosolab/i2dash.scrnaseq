@@ -6,6 +6,8 @@
 #' @param group_by An optional data.frame (matrix) with columns containing grouping factors for the horizontal axis.
 #' @param use A character specifying where to obtain the data from. One of \code{"colData"} or \code{"rowData"}.
 #' @param title The title of the component.
+#' @param y_title The title of the y-axis.
+#' @param group_by_title The title of the x-axis.
 #'
 #' @name violinplot
 #' @rdname violinplot
@@ -16,7 +18,7 @@ setGeneric("violinplot", function(report, object, ...) standardGeneric("violinpl
 #' @return A string containing markdown code for the rendered component
 setMethod("violinplot",
           signature = signature(report = "i2dashboard", object = "missing"),
-          function(report, y, group_by = NULL,  title = NULL) {
+          function(report, y, group_by = NULL,  title = NULL, y_title = NULL, group_by_title = NULL) {
             # Create random env id
             env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
 
@@ -39,6 +41,9 @@ setMethod("violinplot",
             env$group_by <- group_by
             env$group_by_selection <- length(group_by) > 1
 
+            env$y_title <- y_title
+            env$group_by_title <- group_by_title
+
             # save environment report
             saveRDS(env, file = file.path(report@datadir, paste0(env_id, ".rds")))
 
@@ -53,7 +58,7 @@ setMethod("violinplot",
 #' @export
 setMethod("violinplot",
           signature = signature(report = "i2dashboard", object = "SingleCellExperiment"),
-          function(report, object, use = "colData", y = NULL, group_by = NULL,  title = NULL) {
+          function(report, object, use = "colData", y = NULL, group_by = NULL,  title = NULL, y_title = NULL, group_by_title = NULL) {
 
             if(use == "colData") {
               if(!is.null(y)) {
@@ -91,6 +96,8 @@ setMethod("violinplot",
             violinplot(report,
                        y = y,
                        group_by = group_by,
-                       title = title)
+                       title = title,
+                       y_title = y_title,
+                       group_by_title = group_by_title)
           })
 
