@@ -10,10 +10,11 @@
 violinplot(report, object, ...)
 
 \S4method{violinplot}{i2dashboard,missing}(report, y, group_by = NULL,
-  title = NULL)
+  title = NULL, y_title = NULL, group_by_title = NULL)
 
 \S4method{violinplot}{i2dashboard,SingleCellExperiment}(report, object,
-  use = "colData", y = NULL, group_by = NULL, title = NULL)
+  use = "colData", y = NULL, group_by = NULL, title = NULL,
+  y_title = NULL, group_by_title = NULL)
 }
 \arguments{
 \item{report}{An object of class \linkS4class{i2dash::i2dashboard}.}
@@ -25,6 +26,10 @@ violinplot(report, object, ...)
 \item{group_by}{An optional data.frame (matrix) with columns containing grouping factors for the horizontal axis.}
 
 \item{title}{The title of the component.}
+
+\item{y_title}{The title of the y-axis.}
+
+\item{group_by_title}{The title of the x-axis.}
 
 \item{use}{A character specifying where to obtain the data from. One of \code{"colData"} or \code{"rowData"}.}
 }
