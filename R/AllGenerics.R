@@ -47,4 +47,4 @@ setGeneric("summarize_features", function(object, ...) standardGeneric("summariz
 #' @name add_gene_expression_page
 #' @rdname add_gene_expression_page
 #' @exportMethod add_gene_expression_page
-setGeneric("add_gene_expression_page", function(report, object, ...) standardGeneric("add_gene_expression_page"))
+setGeneric("add_gene_expression_page", function(dashboard, object, ...) standardGeneric("add_gene_expression_page"))
