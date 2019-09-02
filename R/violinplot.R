@@ -1,6 +1,6 @@
 #' Renders a component containing a vertical violin plot
 #'
-#' @param report An object of class \linkS4class{i2dash::i2dashboard}.
+#' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
 #' @param y A data.frame (matrix) containing numeric observations for the vertical axis, or a character vector indicating column names of \code{colData(object)}, \code{rowData(object)}.
 #' @param object A valid \linkS4class{SingleCellExperiment::SingleCellExperiment} object.
 #' @param group_by An optional data.frame (matrix) with columns containing grouping factors for the horizontal axis.
@@ -12,13 +12,13 @@
 #' @name violinplot
 #' @rdname violinplot
 #' @exportMethod violinplot
-setGeneric("violinplot", function(report, object, ...) standardGeneric("violinplot"))
+setGeneric("violinplot", function(dashboard, object, ...) standardGeneric("violinplot"))
 
 #' @rdname violinplot
 #' @return A string containing markdown code for the rendered component
 setMethod("violinplot",
-          signature = signature(report = "i2dashboard", object = "missing"),
-          function(report, y, group_by = NULL,  title = NULL, y_title = NULL, group_by_title = NULL) {
+          signature = signature(dashboard = "i2dashboard", object = "missing"),
+          function(dashboard, y, group_by = NULL,  title = NULL, y_title = NULL, group_by_title = NULL) {
             # Create random env id
             env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
 
@@ -44,8 +44,8 @@ setMethod("violinplot",
             env$y_title <- y_title
             env$group_by_title <- group_by_title
 
-            # save environment report
-            saveRDS(env, file = file.path(report@datadir, paste0(env_id, ".rds")))
+            # save environment
+            saveRDS(env, file = file.path(dashboard@datadir, paste0(env_id, ".rds")))
 
             # Expand component
             timestamp <- Sys.time()
@@ -57,8 +57,8 @@ setMethod("violinplot",
 #' @return An object of class \linkS4class{i2dash::i2dashboard}.
 #' @export
 setMethod("violinplot",
-          signature = signature(report = "i2dashboard", object = "SingleCellExperiment"),
-          function(report, object, use = "colData", y = NULL, group_by = NULL,  title = NULL, y_title = NULL, group_by_title = NULL) {
+          signature = signature(dashboard = "i2dashboard", object = "SingleCellExperiment"),
+          function(dashboard, object, use = "colData", y = NULL, group_by = NULL,  title = NULL, y_title = NULL, group_by_title = NULL) {
 
             if(use == "colData") {
               if(!is.null(y)) {
@@ -93,7 +93,7 @@ setMethod("violinplot",
                   dplyr::select(!!group_by) -> group_by
               }
             }
-            violinplot(report,
+            violinplot(dashboard,
                        y = y,
                        group_by = group_by,
                        title = title,

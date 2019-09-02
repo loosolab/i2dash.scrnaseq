@@ -7,17 +7,17 @@
 \alias{violinplot,i2dashboard,SingleCellExperiment-method}
 \title{Renders a component containing a vertical violin plot}
 \usage{
-violinplot(report, object, ...)
+violinplot(dashboard, object, ...)
 
-\S4method{violinplot}{i2dashboard,missing}(report, y, group_by = NULL,
+\S4method{violinplot}{i2dashboard,missing}(dashboard, y, group_by = NULL,
   title = NULL, y_title = NULL, group_by_title = NULL)
 
-\S4method{violinplot}{i2dashboard,SingleCellExperiment}(report, object,
+\S4method{violinplot}{i2dashboard,SingleCellExperiment}(dashboard, object,
   use = "colData", y = NULL, group_by = NULL, title = NULL,
   y_title = NULL, group_by_title = NULL)
 }
 \arguments{
-\item{report}{An object of class \linkS4class{i2dash::i2dashboard}.}
+\item{dashboard}{An object of class \linkS4class{i2dash::i2dashboard}.}
 
 \item{object}{A valid \linkS4class{SingleCellExperiment::SingleCellExperiment} object.}
 

@@ -6,18 +6,38 @@
 ```{r}
 {{ env_id }} <- readRDS(file.path(datadir, "{{ env_id }}.rds"))
 is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
+library(magrittr)
 ```
 
 ```{r, eval=!is_shiny}
-# set title variables
-if(!is.null({{ env_id }}$y_title)) y_title_{{ env_id }} <- {{ env_id }}$y_title else y_title_{{ env_id }} <- colnames({{ env_id }}$y)[1]
-if(!is.null({{ env_id }}$group_by_title)) group_by_title_{{ env_id }} <- {{ env_id }}$group_by_title else group_by_title_{{ env_id }} <- colnames({{ env_id }}$group_by)[1]
+# selecting the first numeric and factor column for object wrapper 
+{{ env_id }}$y %>%
+  as.data.frame() %>%
+  dplyr::select_if(function(col) is.integer(col) | is.numeric(col)) %>%
+  dplyr::select(1) -> y_{{ env_id }}
 
-plot_{{ env_id }} <- i2dash.scrnaseq::plotly_violinplot(y = {{ env_id }}$y[,1], group_by = {{ env_id }}$group_by[,1], y_title = y_title_{{ env_id }}, group_by_title = group_by_title_{{ env_id }})
+if(!is.null({{ env_id }}$group_by)){
+  {{ env_id }}$group_by %>%
+    as.data.frame() %>%
+    dplyr::select_if(is.factor) %>%
+    dplyr::select(1) -> group_by_{{ env_id }}
+  group_by_title_{{ env_id }} <- colnames(group_by_{{ env_id }})
+} else {
+  group_by_title_{{ env_id }} <- NULL
+  group_by_{{ env_id }} <- NULL
+}
+
+# set title variables
+if(!is.null({{ env_id }}$y_title)) y_title_{{ env_id }} <- {{ env_id }}$y_title else y_title_{{ env_id }} <- colnames(y_{{ env_id }})
+if(!is.null({{ env_id }}$group_by_title)) group_by_title_{{ env_id }} <- {{ env_id }}$group_by_title
+
+# creating the plot object
+plot_{{ env_id }} <- i2dash.scrnaseq::plotly_violinplot(y = y_{{ env_id }}[,1], group_by = group_by_{{ env_id }}[,1], y_title = y_title_{{ env_id }}, group_by_title = group_by_title_{{ env_id }})
 
 # Provide data for download
+if(!is.null({{ env_id }}$group_by)) download_df <- data.frame(y_{{ env_id }}, group_by_{{ env_id }}) else download_df <- data.frame(y_{{ env_id }})
 htmltools::div(style="display:block;float:left;width:100%;height:90%;",
-  htmltools::tags$button(i2dash::embed_var(data.frame({{ env_id }}$y[,1], {{ env_id }}$group_by[,1]))), plot_{{ env_id }}
+  htmltools::tags$button(i2dash::embed_var(download_df)), plot_{{ env_id }}
 )
 ```
 
