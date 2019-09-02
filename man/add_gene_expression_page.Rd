@@ -8,24 +8,24 @@
 \alias{add_gene_expression_page,i2dashboard,Seurat-method}
 \title{Add a gene expression page.}
 \usage{
-add_gene_expression_page(report, object, ...)
+add_gene_expression_page(dashboard, object, ...)
 
-\S4method{add_gene_expression_page}{i2dashboard,missing}(report,
+\S4method{add_gene_expression_page}{i2dashboard,missing}(dashboard,
   use_dimred, exprs_values, group_by = NULL,
   labels = rownames(use_dimred), title = "Gene expression",
   menu = NULL)
 
 
-  \S4method{add_gene_expression_page}{i2dashboard,SingleCellExperiment}(report,
+  \S4method{add_gene_expression_page}{i2dashboard,SingleCellExperiment}(dashboard,
   object, dimred, exprs_values, metadata_columns = NULL,
   subset_row = NULL, title = "Gene expression", menu = NULL)
 
-\S4method{add_gene_expression_page}{i2dashboard,Seurat}(report, object,
+\S4method{add_gene_expression_page}{i2dashboard,Seurat}(dashboard, object,
   dimred, assay, metadata_columns, assay_slot = "data",
   subset_row = NULL, title = NULL, menu = NULL)
 }
 \arguments{
-\item{report}{An object of class \linkS4class{i2dash::i2dashboard}.}
+\item{dashboard}{An object of class \linkS4class{i2dash::i2dashboard}.}
 
 \item{object}{A valid \linkS4class{SingleCellExperiment::SingleCellExperiment} object.}
 

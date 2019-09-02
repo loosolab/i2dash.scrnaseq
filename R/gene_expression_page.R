@@ -1,8 +1,8 @@
 #' @rdname add_gene_expression_page
 #' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
-#' @param use_dimred A data.frame or matrix containing coordinates of the reduced dimensions.
-#' @param exprs_values A data.frame or matrix containing expression data of features of interest in rows and samples in columns.
-#' @param group_by A factor or data.frame along rows of \code{use_dimred} that is used for grouping expression values in the violin plot.
+#' @param use_dimred A data.frame (matrix) containing coordinates of the reduced dimensions.
+#' @param exprs_values A data.frame (matrix) containing expression data of features of interest in rows and samples in columns.
+#' @param group_by A data.frame (matrix) along rows of \code{use_dimred} that is used for grouping expression values in the violin plot.
 #' @param labels A vector with optional sample labels that are used instead of \code{rownames(use_dimred)}.
 #' @param title The title of the page.
 #' @param menu (Optional) The name of the menu, under which the page should appear.
@@ -76,9 +76,9 @@ setMethod("add_gene_expression_page",
 #' @export
 setMethod("add_gene_expression_page",
           signature = signature(dashboard = "i2dashboard", object = "SingleCellExperiment"),
-          function(dashboard, object, dimred, exprs_values, metadata_columns = NULL, subset_row = NULL, title = "Gene expression", menu = NULL) {
+          function(dashboard, object, use_dimred, exprs_values, metadata_columns = NULL, subset_row = NULL, title = "Gene expression", menu = NULL) {
 
-            assertive.sets::assert_is_subset(dimred, SingleCellExperiment::reducedDimNames(object))
+            assertive.sets::assert_is_subset(use_dimred, SingleCellExperiment::reducedDimNames(object))
             assertive.sets::assert_is_subset(exprs_values, SummarizedExperiment::assayNames(object))
             assertive.sets::assert_is_subset(metadata_columns, colnames(SummarizedExperiment::colData(object)))
 
@@ -114,9 +114,9 @@ setMethod("add_gene_expression_page",
 #' @export
 setMethod("add_gene_expression_page",
           signature = signature(dashboard = "i2dashboard", object = "Seurat"),
-          function(dashboard, object, dimred, assay, metadata_columns, assay_slot = "data", subset_row = NULL, title = NULL, menu = NULL) {
+          function(dashboard, object, use_dimred, assay, metadata_columns, assay_slot = "data", subset_row = NULL, title = NULL, menu = NULL) {
 
-            assertive.sets::assert_is_subset(dimred, names(object@reductions))
+            assertive.sets::assert_is_subset(use_dimred, names(object@reductions))
             assertive.sets::assert_is_subset(assay, names(object@assays))
             assertive.sets::assert_is_subset(metadata_columns, names(object@meta.data))
 
