@@ -17,11 +17,11 @@ add_gene_expression_page(dashboard, object, ...)
 
 
   \S4method{add_gene_expression_page}{i2dashboard,SingleCellExperiment}(dashboard,
-  object, dimred, exprs_values, metadata_columns = NULL,
+  object, use_dimred, exprs_values, metadata_columns = NULL,
   subset_row = NULL, title = "Gene expression", menu = NULL)
 
 \S4method{add_gene_expression_page}{i2dashboard,Seurat}(dashboard, object,
-  dimred, assay, metadata_columns, assay_slot = "data",
+  use_dimred, assay, metadata_columns, assay_slot = "data",
   subset_row = NULL, title = NULL, menu = NULL)
 }
 \arguments{
@@ -29,11 +29,11 @@ add_gene_expression_page(dashboard, object, ...)
 
 \item{object}{A valid \linkS4class{SingleCellExperiment::SingleCellExperiment} object.}
 
-\item{use_dimred}{A data.frame or matrix containing coordinates of the reduced dimensions.}
+\item{use_dimred}{A data.frame (matrix) containing coordinates of the reduced dimensions.}
 
-\item{exprs_values}{A data.frame or matrix containing expression data of features of interest in rows and samples in columns.}
+\item{exprs_values}{A data.frame (matrix) containing expression data of features of interest in rows and samples in columns.}
 
-\item{group_by}{A factor or data.frame along rows of \code{use_dimred} that is used for grouping expression values in the violin plot.}
+\item{group_by}{A data.frame (matrix) along rows of \code{use_dimred} that is used for grouping expression values in the violin plot.}
 
 \item{labels}{A vector with optional sample labels that are used instead of \code{rownames(use_dimred)}.}
 
@@ -41,13 +41,13 @@ add_gene_expression_page(dashboard, object, ...)
 
 \item{menu}{(Optional) The name of the menu, under which the page should appear.}
 
-\item{dimred}{A string or integer scalar indicating the reduced dimension result in \code{reducedDims(object)}.}
-
 \item{metadata_columns}{A character vector with column names of \code{colData(object)} to use for cell grouping.}
 
 \item{subset_row}{A character vector (of feature names), a logical vector or numeric vector (of indices) specifying the features to use. The default of NULL will use all features.}
 
 \item{assay}{A character vector specifying which assay from \code{object@assays} to obtain expression values from.}
+
+\item{dimred}{A string or integer scalar indicating the reduced dimension result in \code{reducedDims(object)}.}
 
 \item{exprs_values}{A string or integer scalar specifying which assay to obtain expression values from.}
 
