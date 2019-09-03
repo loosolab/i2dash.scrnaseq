@@ -31,7 +31,7 @@ boxplot <- function(object, x, group_by, title = NULL) {
   env$group_by_selection <- length(env$group_by) > 1
 
   # save environment object
-  saveRDS(env, file = file.path(object@workdir, "envs", paste0(env_id, ".rds")))
+  saveRDS(env, file = file.path(object@datadir, paste0(env_id, ".rds")))
 
   # Expand component
   timestamp <- Sys.time()
