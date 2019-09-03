@@ -264,9 +264,7 @@ df2_env_blHKgM <- shiny::reactive({
 #
 output$violin_env_blHKgM <- plotly::renderPlotly({
   i2dash.scrnaseq::plotly_violinplot(y = df2_env_blHKgM()$expression, group_by = df2_env_blHKgM()$level, y_title = "Expression per cluster", group_by_title = "Grouping") %>%
-  plotly::layout(
-    title = input$select_feature_env_blHKgM
-  ) -> violin
+  plotly::layout(title = df_env_blHKgM()$feature) -> violin
 })
 plotly::plotlyOutput("violin_env_blHKgM", height = "100%")
 ```
