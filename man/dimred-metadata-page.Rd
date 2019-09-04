@@ -6,23 +6,23 @@
 \alias{add_dimred_metadata_page}
 \title{View a dimension reduction side-by-side with feature metadata}
 \usage{
-add_dimred_metadata_page(report, object, ...)
+add_dimred_metadata_page(dashboard, object, ...)
 
-\S4method{add_dimred_metadata_page}{i2dashboard,missing}(report,
+\S4method{add_dimred_metadata_page}{i2dashboard,missing}(dashboard,
   use_dimred, exprs_values, feature_metadata,
   title = "Marker gene expression", menu = NULL)
 
 
-  \S4method{add_dimred_metadata_page}{i2dashboard,SingleCellExperiment}(report,
+  \S4method{add_dimred_metadata_page}{i2dashboard,SingleCellExperiment}(dashboard,
   object, use_dimred, exprs_values, feature_metadata, subset_row,
   title = "Marker gene expression", menu = NULL)
 
-\S4method{add_dimred_metadata_page}{i2dashboard,Seurat}(report, object,
+\S4method{add_dimred_metadata_page}{i2dashboard,Seurat}(dashboard, object,
   use_dimred, exprs_values, feature_metadata, subset_row, assay,
   assay_slot = "data", title = "Marker gene expression", menu = NULL)
 }
 \arguments{
-\item{report}{An object of class \linkS4class{i2dash::i2dashboard}.}
+\item{dashboard}{An object of class \linkS4class{i2dash::i2dashboard}.}
 
 \item{object}{A \linkS4class{SingleCellExperiment::SingleCellExperiment} object or a \linkS4class{Seurat::Seurat} object.}
 

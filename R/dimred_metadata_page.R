@@ -3,8 +3,8 @@
 #' @aliases add_dimred_metadata_page
 #' @export
 setMethod("add_dimred_metadata_page",
-          signature = signature(report = "i2dashboard", object = "missing"),
-          function(report, use_dimred, exprs_values, feature_metadata, title = "Marker gene expression", menu = NULL) {
+          signature = signature(dashboard = "i2dashboard", object = "missing"),
+          function(dashboard, use_dimred, exprs_values, feature_metadata, title = "Marker gene expression", menu = NULL) {
 
             # Create random env id
             env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
@@ -27,15 +27,15 @@ setMethod("add_dimred_metadata_page",
             env$expression <- round(exprs_values, 3)
             env$metadata <- feature_metadata
 
-            saveRDS(env, file = file.path(report@datadir, paste0(env_id, ".rds")))
+            saveRDS(env, file = file.path(dashboard@datadir, paste0(env_id, ".rds")))
 
             # Render component
             timestamp <- Sys.time()
 
             component <- knitr::knit_expand(file = system.file("templates", "dimred_metadata.Rmd", package = "i2dash.scrnaseq"), env_id = env_id, date = timestamp)
 
-            report@pages[["dimred_metadata_page"]] <- list(title = title, layout = "default", menu = menu, components = component, max_components = 1)
-            return(report)
+            dashboard@pages[["dimred_metadata_page"]] <- list(title = title, layout = "default", menu = menu, components = component, max_components = 1)
+            return(dashboard)
           })
 
 
@@ -43,8 +43,8 @@ setMethod("add_dimred_metadata_page",
 #' @rdname dimred-metadata-page
 #' @export
 setMethod("add_dimred_metadata_page",
-          signature = signature(report = "i2dashboard", object = "SingleCellExperiment"),
-          function(report, object, use_dimred, exprs_values, feature_metadata, subset_row, title = "Marker gene expression", menu = NULL) {
+          signature = signature(dashboard = "i2dashboard", object = "SingleCellExperiment"),
+          function(dashboard, object, use_dimred, exprs_values, feature_metadata, subset_row, title = "Marker gene expression", menu = NULL) {
 
             assertive.sets::assert_is_subset(use_dimred, SingleCellExperiment::reducedDimNames(object))
             assertive.sets::assert_is_subset(exprs_values, SummarizedExperiment:assay(object))
@@ -62,21 +62,21 @@ setMethod("add_dimred_metadata_page",
               metadata <- metadata[subset_row, ]
             }
 
-            report <- add_dimred_metadata_page(report = report,
+            dashboard <- add_dimred_metadata_page(dashboard = dashboard,
                                                use_dimred = use_dimred,
                                                exprs_values = exprs_values,
                                                metadata = metadata,
                                                title = title,
                                                menu = menu)
-            return(report)
+            return(dashboard)
           })
 
 #' @name dimred-metadata-page
 #' @rdname dimred-metadata-page
 #' @export
 setMethod("add_dimred_metadata_page",
-          signature = signature(report = "i2dashboard", object = "Seurat"),
-          function(report, object, use_dimred, exprs_values, feature_metadata, subset_row, assay, assay_slot = "data", title = "Marker gene expression", menu = NULL) {
+          signature = signature(dashboard = "i2dashboard", object = "Seurat"),
+          function(dashboard, object, use_dimred, exprs_values, feature_metadata, subset_row, assay, assay_slot = "data", title = "Marker gene expression", menu = NULL) {
 
             assertive.sets::assert_is_subset(use_dimred, names(object@reductions))
             assertive.sets::assert_is_subset(assay, names(object@assays))
@@ -95,11 +95,11 @@ setMethod("add_dimred_metadata_page",
               Seurat::Embeddings(object, reduction = dimred)[, 1:2]
             })
 
-            report <- add_dimred_metadata_page(report = report,
+            dashboard <- add_dimred_metadata_page(dashboard = dashboard,
                                                use_dimred = use_dimred,
                                                exprs_values = expression,
                                                metadata = metadata,
                                                title = title,
                                                menu = menu)
-            return(report)
+            return(dashboard)
           })

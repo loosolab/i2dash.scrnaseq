@@ -18,14 +18,30 @@ expr_str_{{ env_id }} <- apply(expression_{{ env_id }}, 1, paste0, collapse = ";
 names(expr_str_{{ env_id }}) <- rownames(expression_{{ env_id }})
 ```
 
-```{js}
-/*
-Function to link a div-container with a plotly scatterplot
-*/
-function linking_plotly_scatter(plot_id, div_id, color_by_tag, title) {
+```{r, eval=!is_shiny, results='asis'}
+#
+# Store expression data in div containers
+#
+data_divs <- lapply(featurenames, function(feature) {
+  e <- expr_str_{{ env_id }}[[feature]]
+  htmltools::div(id = paste0("expression-", feature), `data-feature` = feature, `data-expression` = e)
+})
+htmltools::div(data_divs)
+```
+
+
+```{js, eval=!is_shiny}
+/**
+ * Function to link a div-container with a plotly scatterplot (needs to have only two traces), change the color values and the title of the plot.
+ * @param {string} plot_id The id of the scatterplot that should be changed.
+ * @param {string} div_id The id of the div container.
+ * @param {string} color_by_tag The tag of the div container containing the values for the colorchange (currently as a semicolon separated string).
+ * @param {string} title The new title of the scatterplot.
+ */
+function linking_plotly_scatter(plot_id, div_id, color_by_tag, title = "") {
 
   color_by = document.getElementById(div_id).getAttribute(color_by_tag);
-  
+
   // (decode the data) or split the datastring
   var color_by = color_by.split(';').map(function(item){return parseFloat(item);});
 
@@ -46,7 +62,6 @@ function linking_plotly_scatter(plot_id, div_id, color_by_tag, title) {
   'marker.color': [min, max],
   'marker.cmax': max,
   'marker.cmin': min};
-
   // update scatterplot layout
   var scatter_layout_update = {title: title};
   
@@ -55,20 +70,6 @@ function linking_plotly_scatter(plot_id, div_id, color_by_tag, title) {
   Plotly.restyle(plot_id, scatter_update_1, [1]);
   Plotly.relayout(plot_id, scatter_layout_update);
 }
-```
-
-```{r, eval=!is_shiny, results='asis'}
-default_expression <- as.numeric(expression_{{ env_id }}[1, ])
-reduced_dim_{{ env_id }} %>%
-  plotly::plot_ly(x = ~x , y= ~y, hoverinfo = "x+y+text", text = row.names(reduced_dim_{{ env_id }}), colors = "YlOrRd", color = default_expression, type = "scattergl") %>%
-  plotly::layout(
-    title = featurenames[1],
-    xaxis = list(title = "Dimension 1"),
-    yaxis = list(title = "Dimension 2")
-  ) -> plot_{{ env_id }}
-plot_{{ env_id }}$elementId <- "plot_{{ env_id }}"
-
-htmltools::div(style="display:block;float:left;width:100%;height:90%;padding-left:15px", htmltools::HTML("<p>Please select a feature in the left table to show its expression values.</p>"),plot_{{ env_id }})
 ```
 
 ```{r, eval=!is_shiny}
@@ -179,5 +180,4 @@ output$tbl_{{ env_id }} <- DT::renderDataTable({
 
 DT::dataTableOutput('tbl_{{ env_id }}')
 ```
-
 

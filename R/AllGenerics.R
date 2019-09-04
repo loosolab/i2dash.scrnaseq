@@ -26,7 +26,7 @@ setGeneric("add_feature_grid_page", function(report, object, ...) standardGeneri
 #'
 #' The dimension reduction plot is colored by feature expression and updated if the users clicks feature rows in the metadata table.
 #'
-#' @param report An object of class \linkS4class{i2dash::i2dashboard}.
+#' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
 #' @param object A \linkS4class{SingleCellExperiment::SingleCellExperiment} object or a \linkS4class{Seurat::Seurat} object.
 #' @param use_dimred A list of data.frames (matrices) or a single data.frame (matrix) containing coordinates of the reduced dimensions, a character vector representing valid \code{reducedDim} slots of \code{object} or names of the \linkS4class{Seurat::DimReduc} object in \code{object@reductions}.
 #' @param exprs_values A data.frame (matrix) containing expression data of features of interest in rows and samples in columns, or a string representing the name of an \code{assay} of \code{object}.
@@ -39,4 +39,4 @@ setGeneric("add_feature_grid_page", function(report, object, ...) standardGeneri
 #' @name dimred-metadata-page
 #' @rdname dimred-metadata-page
 #' @exportMethod add_dimred_metadata_page
-setGeneric("add_dimred_metadata_page", function(report, object, ...) standardGeneric("add_dimred_metadata_page"))
+setGeneric("add_dimred_metadata_page", function(dashboard, object, ...) standardGeneric("add_dimred_metadata_page"))
