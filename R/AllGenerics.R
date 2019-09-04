@@ -40,3 +40,21 @@ setGeneric("add_feature_grid_page", function(report, object, ...) standardGeneri
 #' @rdname dimred-metadata-page
 #' @exportMethod add_dimred_metadata_page
 setGeneric("add_dimred_metadata_page", function(dashboard, object, ...) standardGeneric("add_dimred_metadata_page"))
+
+#' Summarize samples or features of objects containing data from single-cell experiments.
+#'
+#' @param object A SingleCellExperiment or Seurat object.
+#' @param columns The metadata columns to summarize.
+#' @param FUNS A named vector indicating summary functions.
+#' @param group_by (Optional) A vector, which is used for grouping.
+#'
+#' @return A \code{kableExtra} object with one row for each \code{columns} and one column for each \code{FUNS}, containing the desired summary. Optionaly \code{group_by} can be provided. In this case for each level in \code{group_by} a column is created with the summerized values for each \code{FUNS}.
+#'
+#' @name summarize
+#' @rdname summarize
+#' @exportMethod summarize_samples
+setGeneric("summarize_samples", function(object, ...) standardGeneric("summarize_samples"))
+
+#' @rdname summarize
+#' @exportMethod summarize_features
+setGeneric("summarize_features", function(object, ...) standardGeneric("summarize_features"))
