@@ -218,8 +218,3 @@ setMethod("scatterplot",
                         colour_by = colour_by,
                         ...)
           })
-
-
-SingleCellExperiment::colData(sce) %>%
-  as.data.frame() %>%
-  dplyr::select(1)
