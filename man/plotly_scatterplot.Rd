@@ -2,11 +2,9 @@
 % Please edit documentation in R/visualization_functions.R
 \name{plotly_scatterplot}
 \alias{plotly_scatterplot}
-\title{Renders a scatter plot}
+\title{Creates a plotly scatterplot}
 \usage{
-plotly_scatterplot(df, labels = NULL, colour_by = NULL,
-  expression = NULL, checkbox = FALSE, expr_checkbox = FALSE,
-  selected_label = NULL)
+plotly_scatterplot(..., y_title = NULL, x_title = NULL)
 }
 \arguments{
 \item{df}{A dataframe containing the data for the boxplot}
@@ -23,5 +21,5 @@ plotly_scatterplot(df, labels = NULL, colour_by = NULL,
 An object of class \code{plotly}.
 }
 \description{
-Renders a scatter plot
+Creates a plotly scatterplot
 }

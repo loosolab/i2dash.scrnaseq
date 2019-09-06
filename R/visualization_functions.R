@@ -1,4 +1,4 @@
-#' Renders a scatter plot
+#' Creates a plotly scatterplot
 #'
 #' @param df A dataframe containing the data for the boxplot
 #' @param labels A list with sample names, which should be of the same length as x and y.
@@ -8,46 +8,11 @@
 #'
 #' @return An object of class \code{plotly}.
 #' @export
-plotly_scatterplot <- function(df, labels = NULL, colour_by = NULL, expression = NULL, checkbox = FALSE, expr_checkbox = FALSE, selected_label = NULL){
-
-  if(is.null(checkbox)) checkbox <- FALSE
-  if(is.null(expr_checkbox)) expr_checkbox <- FALSE
-
-  # assign variables
-  if(!is.null(labels)) labels <- df[[1]]
-  x_value <- df[[2]]
-  y_value <- df[[3]]
-  if(!is.null(expression) & expr_checkbox) colour_by <- df[[4]]
-  if(!is.null(colour_by)) colour_by <- df[[4]]
-  x_title <- names(df[2])
-  y_title <- names(df[3])
-
-  # find point for annotation
-  a <- NULL
-  if (checkbox) {
-    colour_by <- NULL
-    point_index <- match(selected_label, df[[1]])
-    point <- df[point_index,]
-    a <- list(
-      x = point[,2],
-      y = point[,3],
-      text = point[,1],
-      xref = "x",
-      yref = "y",
-      showarrow = T,
-      arrowhead = 7,
-      arrowcolor = "red",
-      ax = 20,
-      ay = -40
-    )
-  }
-
-  # plotly
-  plotly::plot_ly(df, x = x_value, y = y_value, color = colour_by, text = labels) %>%
-    plotly::add_markers() %>%
+plotly_scatterplot <- function(..., y_title = NULL, x_title = NULL){
+  plotly::plot_ly(...) %>%
     plotly::layout(xaxis = list(title = x_title),
-                   yaxis = list(title = y_title),
-                   annotations = a)
+                   yaxis = list(title = y_title)
+    )
 }
 
 #' Render a bar plot
