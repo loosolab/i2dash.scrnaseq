@@ -192,15 +192,15 @@ ui_list <- list()
 
 # selection field for grouping
 ui_list <- rlist::list.append(ui_list,
-                                selectInput("select_grouping_env_blHKgM", label = "Select column for grouping:",
-                                            choices = unique(data_env_blHKgM$group_by), selected = group_filter_env_blHKgM))
+                                selectInput("select_grouping_{{ env_id }}", label = "Select column for grouping:",
+                                            choices = unique(data_{{ env_id }}$group_by), selected = group_filter_{{ env_id }}))
 #
 # subsetting data according to the selected grouping column
 #
-df_table_env_blHKgM <- shiny::reactive({
-  selected_group <- input$select_grouping_env_blHKgM
+df_table_{{ env_id }} <- shiny::reactive({
+  selected_group <- input$select_grouping_{{ env_id }}
 
-  data_env_blHKgM %>%
+  data_{{ env_id }} %>%
     dplyr::filter(group_by == !!selected_group) 
 })
 
@@ -213,9 +213,9 @@ shinyWidgets::dropdownButton(div(style='height: 300px; overflow-x: auto;',do.cal
 #
 # DT::datatable with calculated statistic
 #
-output$tbl_env_blHKgM <- DT::renderDataTable({
+output$tbl_{{ env_id }} <- DT::renderDataTable({
   options(DT.options = list(scrollY="400px",scrollX="300px", pageLength = 10, autoWidth = TRUE))
-  df_table_env_blHKgM() %>%
+  df_table_{{ env_id }}() %>%
     dplyr::group_by(level, feature) %>%
     dplyr::mutate(is_non_zero_exprs = expression > 0) %>%
     dplyr::summarise(n_samples = dplyr::n(), n_nonzero = sum(is_non_zero_exprs)) %>%
@@ -223,10 +223,10 @@ output$tbl_env_blHKgM <- DT::renderDataTable({
     dplyr::mutate(info = paste0(n_nonzero, " / ", n_samples, " (", freq, "%)")) %>%
     dplyr::select(level, feature, info) %>%
     tidyr::spread(level, info) %>%
-    dplyr::mutate(feature = row.names(exprs_values_env_blHKgM)) %>%
+    dplyr::mutate(feature = row.names(exprs_values_{{ env_id }})) %>%
     DT::datatable(filter = 'top', selection = list(mode = 'single', selected = 1, target = 'row'))
 })
-DT::dataTableOutput('tbl_env_blHKgM')
+DT::dataTableOutput('tbl_{{ env_id }}')
 ```
 
 Column
@@ -240,8 +240,9 @@ Column
 i2dash.scrnaseq::plotly_violinplot(y = exprs_values_{{ env_id }}[1,], group_by = group_by_{{ env_id }}[,1], y_title = "Expression per cluster", group_by_title = "Grouping") %>%
   plotly::layout(
     title = row.names(exprs_values_{{ env_id }})[1]
-  ) %>%
-  plotly::config(fillFrame = TRUE) -> violin_{{ env_id }}
+  ) -> violin_{{ env_id }}
+# %>%
+  # plotly::config(fillFrame = TRUE) -> violin_{{ env_id }}
 violin_{{ env_id }}$elementId <- "violin_{{ env_id }}"
 violin_{{ env_id }}
 ```
@@ -250,9 +251,9 @@ violin_{{ env_id }}
 #
 # subsetting the data.frame for the violinplot according to the transmitted keys from scatterplot
 #
-df2_env_blHKgM <- shiny::reactive({
-  keys <- plotly::event_data("plotly_selected", source = "scatter_env_blHKgM")$key
-  df <- data.frame(df_env_blHKgM()$df, "level" = as.factor(group_by_env_blHKgM[[input$select_grouping_env_blHKgM]]))
+df2_{{ env_id }} <- shiny::reactive({
+  keys <- plotly::event_data("plotly_selected", source = "scatter_{{ env_id }}")$key
+  df <- data.frame(df_{{ env_id }}()$df, "level" = as.factor(group_by_{{ env_id }}[[input$select_grouping_{{ env_id }}]]))
   if(!is.null(keys)) {
     return(df[keys, ])
   }
@@ -262,21 +263,19 @@ df2_env_blHKgM <- shiny::reactive({
 #
 # creating a violinplot with the primitive function of i2dash.scrnaseq::plotly_violinplot
 #
-output$violin_env_blHKgM <- plotly::renderPlotly({
-  i2dash.scrnaseq::plotly_violinplot(y = df2_env_blHKgM()$expression, group_by = df2_env_blHKgM()$level, y_title = "Expression per cluster", group_by_title = "Grouping") %>%
-  plotly::layout(title = df_env_blHKgM()$feature) -> violin
+output$violin_{{ env_id }} <- plotly::renderPlotly({
+  i2dash.scrnaseq::plotly_violinplot(y = df2_{{ env_id }}()$expression, group_by = df2_{{ env_id }}()$level, y_title = "Expression per cluster", group_by_title = "Grouping") %>%
+  plotly::layout(title = df_{{ env_id }}()$feature) -> violin
 })
-plotly::plotlyOutput("violin_env_blHKgM", height = "100%")
+plotly::plotlyOutput("violin_{{ env_id }}", height = "100%")
 ```
 
 ### Select points to recalculate the violin plot according to selection:
 
 ```{r, eval=!is_shiny}
-plotly::plot_ly(x = reduced_dim_{{ env_id }}[,1] , y= reduced_dim_{{ env_id }}[,2], hoverinfo = "x+y+text", text = row.names(reduced_dim_{{ env_id }}), colors = "YlOrRd", color = exprs_values_{{ env_id }}[1,], type = "scattergl") %>%
+i2dash.scrnaseq::plotly_scatterplot(x =reduced_dim_{{ env_id }}[,1], y = reduced_dim_{{ env_id }}[,2], color = exprs_values_{{ env_id }}[1,], colors = "YlOrRd", text = row.names(reduced_dim_{{ env_id }}), hoverinfo = "x+y+text", y_title = "Dimension 2", x_title = "Dimension 1") %>%
   plotly::layout(
-    title = row.names(exprs_values_{{ env_id }})[1],
-    xaxis = list(title = "Dimension 1"),
-    yaxis = list(title = "Dimension 2")
+    title = row.names(exprs_values_{{ env_id }})[1]
   ) %>%
   htmlwidgets::onRender("function(el) {
     var id_violin = 'violin_{{ env_id }}';
@@ -355,8 +354,7 @@ plotly::plot_ly(x = reduced_dim_{{ env_id }}[,1] , y= reduced_dim_{{ env_id }}[,
         })
       }
     });
-  }") %>%
-  plotly::config(fillFrame = TRUE) -> scatter_{{ env_id }}
+  }")  -> scatter_{{ env_id }}
 
 # %>%
 #   plotly::config(fillFrame = TRUE) -> scatter_{{ env_id }}
@@ -369,32 +367,30 @@ scatter_{{ env_id }}
 #
 # Create reactive data table for the scatterplot according to the selected feature
 #
-df_env_blHKgM <- shiny::reactive({
-  selected_gene <- input$tbl_env_blHKgM_row_last_clicked
+df_{{ env_id }} <- shiny::reactive({
+  selected_gene <- input$tbl_{{ env_id }}_row_last_clicked
   if(is.null(selected_gene)){
-    expression <- exprs_values_env_blHKgM[1,] 
+    expression <- exprs_values_{{ env_id }}[1,] 
     featurename <- featurenames[1]
   } else {
-    expression <- exprs_values_env_blHKgM[selected_gene,]
+    expression <- exprs_values_{{ env_id }}[selected_gene,]
     featurename <- featurenames[selected_gene]
   }
-  df <- data.frame("x" = reduced_dim_env_blHKgM[,1], "y" = reduced_dim_env_blHKgM[,2], "expression" = expression)
+  df <- data.frame("x" = reduced_dim_{{ env_id }}[,1], "y" = reduced_dim_{{ env_id }}[,2], "expression" = expression)
   return(list("df" = df, "feature" = featurename))
 })
 
 #
 # Output
 #
-output$scatter_env_blHKgM <- plotly::renderPlotly({
-  df_env_blHKgM()$df %>%
-    plotly::plot_ly(x = ~x, y = ~y, hoverinfo = "x+y+text", text = rownames(df_env_blHKgM()$df), colors = "YlOrRd", color = ~expression, source = "scatter_env_blHKgM", key = rownames(df_env_blHKgM()$df)) %>%
+output$scatter_{{ env_id }} <- plotly::renderPlotly({
+  i2dash.scrnaseq::plotly_scatterplot(x = df_{{ env_id }}()$df$x, y = df_{{ env_id }}()$df$y, color = df_{{ env_id }}()$df$expression, colors = "YlOrRd", text = rownames(df_{{ env_id }}()$df), hoverinfo = "x+y+text", source = "scatter_{{ env_id }}", key = rownames(df_{{ env_id }}()$df), y_title = "Dimension 2", x_title = "Dimension 1") %>%
     plotly::layout(
-      xaxis = list(title = "Dimension 1"),
-      yaxis = list(title = "Dimension 2"),
-      title = df_env_blHKgM()$feature) %>% 
+      title = df_{{ env_id }}()$feature
+    ) %>% 
     plotly::event_register("plotly_selected") -> plot
   plot
 })
-plotly::plotlyOutput("scatter_env_blHKgM", height = "100%")
+plotly::plotlyOutput("scatter_{{ env_id }}", height = "100%")
 ```
 
