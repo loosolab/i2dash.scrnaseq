@@ -281,7 +281,7 @@ i2dash.scrnaseq::plotly_scatterplot(x =reduced_dim_{{ env_id }}[,1], y = reduced
     var id_violin = 'violin_{{ env_id }}';
     var violin_div = document.getElementById(id_violin);
 
-    var div_group_by = document.getElementById('div_group_by_{{ env_id }}');
+    var div_group_by = document.getElementById('group_by_{{ env_id }}');
     var group_str = div_group_by.getAttribute('data-grouping');
     var group = group_str.split(';');
 
@@ -296,7 +296,7 @@ i2dash.scrnaseq::plotly_scatterplot(x =reduced_dim_{{ env_id }}[,1], y = reduced
         console.log('Nothing is selected');
       } else {
         feature_name = el.layout.title.text;
-        var div_exprs = document.getElementById(feature_name);
+        var div_exprs = document.getElementById('expression-'.concat(feature_name));
         var exprs_str = div_exprs.getAttribute('data-expression');
         var expr = exprs_str.split(';').map(function(item){return parseFloat(item);});
 
@@ -325,7 +325,6 @@ i2dash.scrnaseq::plotly_scatterplot(x =reduced_dim_{{ env_id }}[,1], y = reduced
         }
 
         Plotly.restyle(id_violin, violin_update);
-        console.log(updated_dict)
 
         var violin_layout_update = {'xaxis.type': 'category'};
         Plotly.relayout(id_violin, violin_layout_update);
