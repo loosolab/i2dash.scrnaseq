@@ -332,7 +332,7 @@ i2dash.scrnaseq::plotly_scatterplot(x =reduced_dim_{{ env_id }}[,1], y = reduced
         // when deselected the violin plot is restyled with the old values
         el.on('plotly_deselect', function(eventData){
           feature_name = el.layout.title.text;
-          var div_exprs = document.getElementById(feature_name);
+          var div_exprs = document.getElementById('expression-'.concat(feature_name));
           var exprs_str = div_exprs.getAttribute('data-expression');
           var expr = exprs_str.split(';').map(function(item){return parseFloat(item);});
 
