@@ -1,30 +1,33 @@
 ---
-title: "Creating a single cell RNA-Seq report with i2dash.scrnaseq"
+title: "Creating a single cell RNA-Seq dashboard with i2dash.scrnaseq"
 author:
-- name: Arsenij Ustjanzew
-  affiliation: 
-  email: arsenij.ustjanzew@mpi-bn.mpg.de
 - name: Jens Preussner
   affiliation: 
   email: jens.preussner@mpi-bn.mpg.de
+- name: Arsenij Ustjanzew
+  affiliation: 
+  email: arsenij.ustjanzew@mpi-bn.mpg.de
 date: "`r BiocStyle::doc_date()`"
-package: "`r BiocStyle::pkg_ver('i2dash')`"
+package: "`r BiocStyle::pkg_ver('i2dash.scrnaseq')`"
 output: 
   BiocStyle::html_document:
-    toc: true
     toc_float: true
 vignette: >
-  %\VignetteIndexEntry{1. Creating a single cell RNA-Seq report with i2dash.scrnaseq}
-  %\VignettePackage{i2dash}
+  %\VignetteIndexEntry{1. Creating a single cell RNA-Seq dashboard with i2dash.scrnaseq}
+  %\VignettePackage{i2dash.scrnaseq}
   %\VignetteEngine{knitr::rmarkdown}
-  %\usepackage[utf8]{inputenc}
+  %\VignetteEncoding{UTF-8}
 ---
 
 **Compiled date**: `r Sys.Date()`
 
-**Last edited**: 26.08.2019
+**Last edited**: 23.09.2019
 
-**License**: `r packageDescription("i2dash")[["LICENSE"]]`
+**License**: `r packageDescription("i2dash.scrnaseq")[["LICENSE"]]`
+
+```{r style, echo = FALSE, results = 'asis'}
+  BiocStyle::markdown()
+```
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
@@ -39,25 +42,163 @@ htmltools::tagList(rmarkdown::html_dependency_font_awesome())
 ```
 
 ```{r, echo=FALSE, out.width='50%', fig.align='center'}
-knitr::include_graphics(path = system.file(package="i2dash", "/www/logo-placeholder.png", mustWork=TRUE))
+#knitr::include_graphics(path = system.file(package="i2dash", "/www/logo-placeholder.png", mustWork=TRUE))
 ```
 
 
 # Introduction 
 
+The rapid development of Next-Generation Sequencing (NGS) technologies enables the investigation of the transcriptome of thousands of cells in a single experiment. Single-cell RNA sequencing (scRNA-seq) allows to identify rare cell types and populations, to uncover gene regulatory networks, and to track the trajectories of distinct cell lineages in development. The potential of this technology leds to the development of a range of analysis workflows and pipelines. The visualisation, presentation and a compfortable sharing of the analysis results is often not the focus of these pipelines even though it is an important part of the scientific work.
 
-# Setting up the data
+The i2dash R package enables the flexible and customised creation of dashboards for presenting and sharing the analysis results and provides a simple implementation in the workflow of analysis pipelines. The visual evaluation of the data after specific steps in an analysis pipeline is especially necessery in Single-cell workflows to provide a good quality controll, data correction, feature selection and dimensionality reduction. i2dash allows the assembly of the dashboard at each timepoint after new content is added to the i2dashboard object and thus the opportunity to check the visualized results after the keysteps. With the Shiny widgets and outputs you can provide controlled options for an efficient data exploration to the end-user of your dashboards.
 
-The `allen` data set contains expression values for 379 cells from the mouse visual cortex [@tasic2016adult], and can be loaded directly by calling `ReprocessedAllenData()` and specifying the value for the `assays` parameter. 
-To begin with, we assign the output of this call to an `sce` object and inspect it.
+```{r, eval = FALSE}
+# For more details see the introduction vignette of i2dash (../doc/basic.html): 
+vignette("An introduction to i2dash", package = "i2dash")
+```
+  
+The i2dash.scrnaseq R package is an extension for the core i2dash package, which supplies several plotting methods embedded in components and pre-defined pages with linked components. The components provide different shiny based input possibilities (e.g. drop down selection boxes for changing the values plotted along the axes) and enables an enhanced user interactivity. All of the provided functions in the i2dash.scrnaseq package have wrapper for `r BiocStyle::Biocpkg("SingleCellExperiment")` and `r BiocStyle::Biocpkg("Seurat")` objects and enable the direct loading of these objects (even though it is worth mentioning that the loading speed of whole single cell objects is significantly slower).
 
-## Load an example data set - 1k Brain cells
+# Exploring the i2dash.scrnaseq capabilities
 
-Throughout this vignette, you'll use the 1k Brain Cells dataset from [10xgenomics.com](https://support.10xgenomics.com/single-cell-gene-expression/datasets/3.0.0/neuron_1k_v3) which contains expression values for 1301 brain cells from an E18 mouse. It ships with `singlecellutils` and is already preprocessed as a `SingleCellExperiment` data object from the `r BiocStyle::Biocpkg("SingleCellExperiment")` package. We can inspect the dataset with:
+## Setting up the data
 
+Throughout this vignette, we'll use the aztekin2019identification dataset from [scRNAseq](http://bioconductor.org/packages/devel/data/experiment/html/scRNAseq.html) which contains expression values for 13199 cells from Xenopus tail. With the `r BiocStyle::Biocpkg("scater")` package we add some metadata to the SingleCellExperiment object.
 
 ```{r allen-dataset}
-data("neuron_1k_v3", package = "singlecellutils")
-neuron_1k_v3
+# LTLA/scRNAseq: Collection of Public Single-Cell RNA-Seq Datasets
+# install.packages("remotes")
+# remotes::install_github("LTLA/scRNAseq")
+
+library(scRNAseq)
+library(SingleCellExperiment)
+library(scater)
+
+sce <- AztekinTailData()
+
+# Convert some columns to factors
+cols <- c("sample", "DevelopmentalStage", "DaysPostAmputation", "cluster", "CellCyclePhase", "Lane", "Condition", "batch")
+colData(sce)[cols] <- lapply(colData(sce)[cols], as.factor)
+
+# Normalize the expression values
+sce <- logNormCounts(sce, exprs_values="counts")
+
+# Calculating QC metrics
+sce <- addQCPerCell(sce)
+sce <- addQCPerFeature(sce)
 ```
+
+## Creating an i2dashboard object
+
+At first, we create a new i2dashboard object: 
+
+```{r}
+library(i2dash)
+library(i2dash.scrnaseq)
+
+dashboard <- new("i2dashboard",
+                  title = "scRNA-Seq Analysis",
+                  author = "i2dash team",
+                  interactive = TRUE,
+                  theme = "yeti",
+                  datadir = "/datadir",
+                  file = "MyDashboard.Rmd"
+             )
+```
+
+## Components overview
+
+In the following, the provided componenets from i2dash.scrnaseq will be introduced.
+
+### Scatter plot
+
+For the demonstration, we add a new page "Scatter plot" with the default layout to the dashboard:
+
+```{r}
+dashboard <- i2dash::add_page(dashboard, page = "scatter", title = "Scatter plot", layout = "default")
+```
+
+The scatter plot component shows a simple scatter plot. The required arguments are `x` and `y`. They accept a data.frame (matrix) with numeric columns and define the values mapped along the x- and y-axis. In the interactive mode dropdown menues for the x- and y-axis are provided where the user can select the column of the data.frame that should be used for plotting (the column names are used in the dropdown menu). In the statical mode always the first column is used.
+
+```{r}
+# basic scatter plot:
+x_df <- data.frame("total_counts" = colData(sce)$total_counts, 
+                   "log10_total_counts" = colData(sce)$log10_total_counts)
+y_df <- data.frame("Features" = colData(sce)$total_features_by_counts, 
+                   "log10_Features" = colData(sce)$log10_total_features_by_counts)
+
+dashboard <- i2dash::add_component(dashboard = dashboard,
+                                component = "i2dash.scrnaseq::scatterplot",
+                                page = "scatter",
+                                x = x_df,
+                                y = y_df,
+                                title = "Basic scatter plot")
+```
+
+The scatter plot component provides three different options for colouring. With the `colour_by` argument, which accepts a data.frame (matrix) with numerical or factor columns, the scatter plot can be coloured by the values in the columns. You can also provide a vector with labels for the points in the scatter plot. If `labels` is provided, you can select a label and this cell will be highlighted. The third option is to provide a count table containing the genes of interest with the `exprs_values` argument. The cells will be coloured by the expression values of the selected feature.
+
+```{r}
+# scatter plot with all colouring options:
+colour_df <- data.frame("sample" = colData(sce)$sample,
+                        "CellCyclePhase" = colData(sce)$CellCyclePhase,
+                        "Lane" = colData(sce)$Lane,
+                        "DaysPostAmputation" = colData(sce)$DaysPostAmputation,
+                        "Condition" = colData(sce)$Condition,)
+
+dashboard <- i2dash::add_component(dashboard = dashboard,
+                                component = "i2dash.scrnaseq::scatterplot",
+                                page = "scatter",
+                                x = x_df,
+                                y = y_df,
+                                colour_by = colour_df,
+                                labels = colnames(sce),
+                                exprs_values = as.matrix(counts(sce)[1:20,]), # seecting the first 20 genes as features of interest
+                                title = "Scatter plot with colouring options"
+)
+```
+
+We can provide our own axis titles, that do not change according to the selected columns.
+
+```{r}
+# with custom titles
+dashboard <- i2dash::add_component(dashboard = dashboard,
+                                component = "i2dash.scrnaseq::scatterplot",
+                                page = "scatter",
+                                x = x_df,
+                                y = y_df,
+                                title = "Scatter plot with unchangeable titles",
+                                x_title = "Custom X title",
+                                y_title = "Custom Y title"
+)
+```
+
+Use the wrapper for loading the whole SingleCellExperiment or Seurat object. 
+
+```{r, eval=FALSE}
+dashboard <- i2dash::add_component(dashboard = dashboard,
+                                component = "i2dash.scrnaseq::scatterplot",
+                                page = "scatter",
+                                object = sce,
+                                use = "colData",
+                                title = "sce wrapper"
+)
+```
+
+### Violinplot
+
+
+
+
+## Assemble the dashboard
+
+Finally, we assemble the dashboard:
+
+```{r}
+dashboard
+i2dash::assemble(dashboard = dashboard,
+                 file = "MyDashboard.Rmd",
+                 pages = "scatter")
+```
+
+
 
