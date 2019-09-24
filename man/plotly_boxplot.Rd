@@ -2,16 +2,17 @@
 % Please edit documentation in R/visualization_functions.R
 \name{plotly_boxplot}
 \alias{plotly_boxplot}
-\title{Render a box plot with plotly.}
+\title{Render a boxplot with plotly.}
 \usage{
-plotly_boxplot(x, group_by = NULL, title = "", group_by_title = NULL)
+plotly_boxplot(x, group_by = NULL, x_title = NULL,
+  group_by_title = NULL)
 }
 \arguments{
 \item{x}{Numeric observations for the boxplot.}
 
 \item{group_by}{A factor, by which observations can optionally be grouped.}
 
-\item{title}{A title that describes the observations.}
+\item{x_title}{A title that describes the observations.}
 
 \item{group_by_title}{A title that describes the grouping factor.}
 }
@@ -19,5 +20,5 @@ plotly_boxplot(x, group_by = NULL, title = "", group_by_title = NULL)
 An object of class \code{plotly}.
 }
 \description{
-Render a box plot with plotly.
+Render a boxplot with plotly.
 }
