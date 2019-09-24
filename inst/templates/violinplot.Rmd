@@ -1,0 +1,139 @@
+
+### {{ title }}
+
+<!-- Component created on {{ date }} -->
+
+```{r}
+{{ env_id }} <- readRDS(file.path(datadir, "{{ env_id }}.rds"))
+is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
+library(magrittr)
+```
+
+```{r, eval=!is_shiny}
+# selecting the first numeric and factor column for object wrapper 
+{{ env_id }}$y %>%
+  as.data.frame() %>%
+  dplyr::select_if(function(col) is.integer(col) | is.numeric(col)) %>%
+  dplyr::select(1) -> y_{{ env_id }}
+
+if(!is.null({{ env_id }}$group_by)){
+  {{ env_id }}$group_by %>%
+    as.data.frame() %>%
+    dplyr::select_if(is.factor) %>%
+    dplyr::select(1) -> group_by_{{ env_id }}
+  group_by_title_{{ env_id }} <- colnames(group_by_{{ env_id }})
+} else {
+  group_by_title_{{ env_id }} <- NULL
+  group_by_{{ env_id }} <- NULL
+}
+
+# set title variables
+if(!is.null({{ env_id }}$y_title)) y_title_{{ env_id }} <- {{ env_id }}$y_title else y_title_{{ env_id }} <- colnames(y_{{ env_id }})
+if(!is.null({{ env_id }}$group_by_title)) group_by_title_{{ env_id }} <- {{ env_id }}$group_by_title
+
+# creating the plot object
+plot_{{ env_id }} <- i2dash.scrnaseq::plotly_violinplot(y = y_{{ env_id }}[,1], group_by = group_by_{{ env_id }}[,1], y_title = y_title_{{ env_id }}, group_by_title = group_by_title_{{ env_id }})
+
+# Provide data for download
+if(!is.null({{ env_id }}$group_by)) download_df <- data.frame(y_{{ env_id }}, group_by_{{ env_id }}) else download_df <- data.frame(y_{{ env_id }})
+htmltools::div(style="display:block;float:left;width:100%;height:90%;",
+  htmltools::tags$button(i2dash::embed_var(download_df)), plot_{{ env_id }}
+)
+```
+
+```{r, eval=is_shiny}
+ui_list <- list()
+
+#
+# shiny input widget for y
+#
+if ({{ env_id }}$y_selection){
+  ui_list <- rlist::list.append(ui_list,
+                                selectInput("select_y_{{ env_id }}", label = "Select observations:",
+                                            choices = colnames({{ env_id }}$y[lapply({{ env_id }}$y,class) =="numeric" | lapply({{ env_id }}$y,class) =="integer"])))
+}
+
+#
+# shiny input widget for group_by
+#
+if ({{ env_id }}$group_by_selection){
+  ui_list <- rlist::list.append(ui_list,
+                                selectInput("select_group_by_{{ env_id }}", label = "Group observations by:",
+                                            choices = colnames({{ env_id }}$group_by[lapply({{ env_id }}$group_by,class) =="factor"])))
+}
+#
+# shiny download button
+#
+ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downloadData_{{ env_id }}', 'Download data')))
+
+#
+# Handle inputs
+#
+if( !{{ env_id }}$y_selection){
+  y_{{ env_id }} <- shiny::reactive({
+    data <- {{ env_id }}$y[[1]]
+    title <- colnames({{ env_id }}$y)[1]
+    return(list(data = data, title = title))
+  })
+} else {
+  y_{{ env_id }} <- shiny::reactive({
+    data <- {{ env_id }}$y[[input$select_y_{{ env_id }}]]
+    title <- input$select_y_{{ env_id }}
+    return(list(data = data, title = title))
+  })
+}
+
+if( !{{ env_id }}$group_by_selection ) {
+  group_by_{{ env_id }} <- shiny::reactive({
+    data <- {{ env_id }}$group_by[[1]]
+    title <- colnames({{ env_id }}$group_by)[1]
+    return(list(data = data, title = title))
+  })
+} else {
+  group_by_{{ env_id }} <- shiny::reactive({
+    data <- {{ env_id }}$group_by[[input$select_group_by_{{ env_id }}]]
+    title <- input$select_group_by_{{ env_id }}
+    return(list(data = data, title = title))
+  })
+}
+
+#
+# Download data.frame
+#
+output$downloadData_{{ env_id }} <- downloadHandler(
+  filename =  paste('data-', Sys.Date(), '.csv', sep=''),
+  content = function(file) {
+    write.csv(data.frame(y_{{ env_id }}()$data, group_by_{{ env_id }}()$data), file)
+  }
+)
+
+#
+# reactive for plot creation
+#
+output$plot_{{ env_id }} <- plotly::renderPlotly({
+  if(!is.null({{ env_id }}$y_title)){
+    y_title <- {{ env_id }}$y_title
+  } else {
+    y_title <- y_{{ env_id }}()$title
+  }
+  if(!is.null({{ env_id }}$group_by_title)){
+    group_by_title <- {{ env_id }}$group_by_title
+  } else {
+    group_by_title <- group_by_{{ env_id }}()$title
+  }
+  
+  i2dash.scrnaseq::plotly_violinplot(y = y_{{ env_id }}()$data, group_by = group_by_{{ env_id }}()$data, y_title = y_title, group_by_title = group_by_title)
+})
+
+#
+# Layout of component
+#
+shiny::fillRow(flex = c(NA, 1),
+      shinyWidgets::dropdownButton(div(style='max-height: 350px; overflow-x: auto;',do.call(shiny::inputPanel, ui_list)),
+                       circle = TRUE, status = "danger", icon = icon("gear"), width = "300px",
+                       tooltip = shinyWidgets::tooltipOptions(title = "Click, to change plot settings:")),
+      plotly::plotlyOutput("plot_{{ env_id }}", height = "100%")
+)
+```
+
+
