@@ -1,0 +1,177 @@
+    
+### 
+
+<!-- Component created on 2019-08-08 15:09:49 -->
+
+```{r}
+{{ env_id }} = readRDS(file.path(datadir, "{{ env_id }}.rds"))
+
+is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
+
+library(magrittr)
+
+reduced_dim_{{ env_id }} <- {{ env_id }}$reduced_dim
+expression_{{ env_id }} <- {{ env_id }}$expression
+metadata_{{ env_id }} <- {{ env_id }}$metadata
+featurenames <- rownames(expression_{{ env_id }})
+expr_str_{{ env_id }} <- apply(expression_{{ env_id }}, 1, paste0, collapse = ";")
+names(expr_str_{{ env_id }}) <- rownames(expression_{{ env_id }})
+```
+
+```{r, eval=!is_shiny, results='asis'}
+#
+# Store expression data in div containers
+#
+data_divs <- lapply(featurenames, function(feature) {
+  e <- expr_str_{{ env_id }}[[feature]]
+  htmltools::div(id = paste0("expression-", feature), `data-feature` = feature, `data-expression` = e)
+})
+htmltools::div(data_divs)
+```
+
+
+```{js, eval=!is_shiny}
+/**
+ * Function to link a div-container with a plotly scatterplot (needs to have only two traces), change the color values and the title of the plot.
+ * @param {string} plot_id The id of the scatterplot that should be changed.
+ * @param {string} div_id The id of the div container.
+ * @param {string} color_by_tag The tag of the div container containing the values for the colorchange (currently as a semicolon separated string).
+ * @param {string} title The new title of the scatterplot.
+ */
+function linking_plotly_scatter(plot_id, div_id, color_by_tag, title = "") {
+
+  color_by = document.getElementById(div_id).getAttribute(color_by_tag);
+
+  // (decode the data) or split the datastring
+  var color_by = color_by.split(';').map(function(item){return parseFloat(item);});
+
+  // get min and max values from expression
+  var min = Math.min(...color_by);
+  var max = Math.max(...color_by);
+  
+  // update scatterplot data
+  var scatter_update_0 = {
+  'marker.color': [color_by],
+  'marker.cmax': max,
+  'marker.cmin': min,
+  'marker.line.cmax': max,
+  'marker.line.cmin': min,
+  'marker.line.color': [color_by]};
+
+  var scatter_update_1 = {
+  'marker.color': [min, max],
+  'marker.cmax': max,
+  'marker.cmin': min};
+  // update scatterplot layout
+  var scatter_layout_update = {title: title};
+  
+  // restyle and relayout of the scatterplot
+  Plotly.restyle(plot_id, scatter_update_0, [0]);
+  Plotly.restyle(plot_id, scatter_update_1, [1]);
+  Plotly.relayout(plot_id, scatter_layout_update);
+}
+```
+
+```{r, eval=!is_shiny}
+default_expression <- expression_{{ env_id }}[1, ]
+i2dash.scrnaseq::plotly_scatterplot(x = reduced_dim_{{ env_id }}$x, y = reduced_dim_{{ env_id }}$y, color = default_expression, colors = "YlOrRd", text = row.names(reduced_dim_{{ env_id }}), hoverinfo = "x+y+text", y_title = "Dimension 2", x_title = "Dimension 1") %>%
+  plotly::layout(
+    title = featurenames[1]
+  ) -> plot_{{ env_id }}
+plot_{{ env_id }}$elementId <- "plot_{{ env_id }}"
+
+htmltools::div(style="display:block;float:left;width:100%;height:90%;padding-left:15px", htmltools::HTML("<p>Please select a feature in the left table to show its expression values.</p>"),plot_{{ env_id }})
+```
+
+```{r, eval=is_shiny}
+ui_list <- list()
+
+#
+# Create reactive data table
+#
+df_{{ env_id }} <- shiny::reactive({
+  selected_gene <- input$tbl_{{ env_id }}_row_last_clicked
+  if(is.null(selected_gene)){
+    expression <- expression_{{ env_id }}[1,] 
+    featurename <- featurenames[1]
+  } else {
+    expression <- expression_{{ env_id }}[selected_gene,]
+    featurename <- featurenames[selected_gene]
+  }
+
+  df <- data.frame("x" = reduced_dim_{{ env_id }}[,1], "y" = reduced_dim_{{ env_id }}[,2], "label" = row.names(reduced_dim_{{ env_id }}), "expression" = expression)
+  
+  return(list("df" = df, "feature" = featurename))
+})
+
+# Download link
+ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), shiny::downloadButton('downloadData_{{ env_id }}', 'Download data')))
+
+#
+# Download
+#
+output$downloadData_{{ env_id }}<- shiny::downloadHandler(
+  filename =  paste('data-', Sys.Date(), '.csv', sep=''),
+  content = function(file) {
+    write.csv(df_{{ env_id }}()$df, file)
+  }
+)
+
+#
+# Output
+#
+output$plot_scatter_{{ env_id }} <- plotly::renderPlotly({
+  i2dash.scrnaseq::plotly_scatterplot(x = df_{{ env_id }}()$df$x, y = df_{{ env_id }}()$df$y, color = df_{{ env_id }}()$df$expression, colors = "YlOrRd", text = df_{{ env_id }}()$df$label, hoverinfo = "x+y+text", y_title = "Dimension 2", x_title = "Dimension 1") %>%
+  plotly::layout(
+    title = df_{{ env_id }}()$feature
+  ) -> scatter
+  scatter
+})
+
+#
+# Layout of component
+#
+shiny::fillRow(flex = c(NA, 1),
+      shinyWidgets::dropdownButton(div(style='max-height: 350px; overflow-x: auto;',do.call(shiny::inputPanel, ui_list)),
+                       circle = TRUE, status = "danger", icon = icon("gear"), width = "300px",
+                       tooltip = shinyWidgets::tooltipOptions(title = "Click, to change plot settings:")),
+      htmltools::div(style="display:block;float:left;width:100%;height:85%;padding-left:15px", htmltools::HTML("<p>Please select a feature in the left table to show its expression values.</p>"), plotly::plotlyOutput("plot_scatter_{{ env_id }}", height = "100%"))
+)
+```
+
+Column
+----------------------------------------------------
+
+###
+
+```{r, eval=!is_shiny}
+cbind(metadata_{{ env_id }}) %>%
+  DT::datatable(filter = 'top', selection = list(mode = 'single', target = 'row'),
+    callback = DT::JS("table.on('click.dt', 'tr', function() {
+
+    var id_scatter = 'plot_{{ env_id }}',
+    feature_name = table.row(this).data()[0],
+    feature_div_id = 'expression-'.concat(feature_name);
+
+    linking_plotly_scatter(plot_id = id_scatter, div_id = feature_div_id, color_by_tag = 'data-expression', title = feature_name);
+    
+    // highlight selected row of the table
+    if ( $(this).hasClass('selected') ) {
+        $(this).removeClass('selected');
+    }
+    else {
+        table.$('tr.selected').removeClass('selected');
+        $(this).addClass('selected');
+    }
+    })"))
+```
+
+```{r, eval=is_shiny}
+output$tbl_{{ env_id }} <- DT::renderDataTable({
+  options(DT.options = list(scrollY="400px",scrollX="300px", pageLength = 50, autoWidth = TRUE))
+  DT::datatable(metadata_{{ env_id }}, filter = 'top', selection = list(mode = 'single', selected = 1, target = 'row'))
+})
+
+DT::dataTableOutput('tbl_{{ env_id }}')
+```
+
