@@ -19,6 +19,7 @@ setMethod("add_gene_expression_page",
 
             # Input validation
             assertive.types::assert_is_any_of(use_dimred, c("data.frame", "matrix"))
+            if(class(exprs_values) == "dgCMatrix") exprs_values <- as.matrix(exprs_values)
             assertive.types::assert_is_any_of(exprs_values, c("data.frame", "matrix"))
 
             if(ncol(use_dimred) < 2 ) stop("'use_dimred' should contain at least two columns.")
@@ -69,14 +70,14 @@ setMethod("add_gene_expression_page",
 #' @param dimred A string or integer scalar indicating the reduced dimension result in \code{reducedDims(object)}.
 #' @param exprs_values A string or integer scalar specifying which assay to obtain expression values from.
 #' @param metadata_columns A character vector with column names of \code{colData(object)} to use for cell grouping.
-#' @param subset_row A character vector (of feature names), a logical vector or numeric vector (of indices) specifying the features to use. The default of NULL will use all features.
+#' @param features A character vector (of feature names), a logical vector or numeric vector (of indices) specifying the features to use. The default of NULL will use all features.
 #' @inheritParams add_gene_expression_page,i2dashboard,missing-method
 #'
 #' @return An object of class \linkS4class{i2dash::i2dashboard}.
 #' @export
 setMethod("add_gene_expression_page",
           signature = signature(dashboard = "i2dashboard", object = "SingleCellExperiment"),
-          function(dashboard, object, use_dimred, exprs_values, metadata_columns = NULL, subset_row = NULL, title = "Gene expression", menu = NULL) {
+          function(dashboard, object, use_dimred, exprs_values, metadata_columns = NULL, features = NULL, title = "Gene expression", menu = NULL) {
 
             assertive.sets::assert_is_subset(use_dimred, SingleCellExperiment::reducedDimNames(object))
             assertive.sets::assert_is_subset(exprs_values, SummarizedExperiment::assayNames(object))
@@ -92,7 +93,7 @@ setMethod("add_gene_expression_page",
               dplyr::select(!!metadata_columns) -> metadata
 
             add_gene_expression_page(dashboard,
-                                     use_dimred = SingleCellExperiment::reducedDim(object, dimred),
+                                     use_dimred = SingleCellExperiment::reducedDim(object, use_dimred),
                                      exprs_values = expression,
                                      group_by = metadata,
                                      labels = colnames(object),

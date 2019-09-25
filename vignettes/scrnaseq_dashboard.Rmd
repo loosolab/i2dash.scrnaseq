@@ -84,6 +84,7 @@ colData(sce)[cols] <- lapply(colData(sce)[cols], as.factor)
 sce <- logNormCounts(sce, exprs_values="counts")
 
 # Calculating QC metrics
+sce <- calculateQCMetrics(sce)
 sce <- addQCPerCell(sce)
 sce <- addQCPerFeature(sce)
 ```
@@ -96,108 +97,360 @@ At first, we create a new i2dashboard object:
 library(i2dash)
 library(i2dash.scrnaseq)
 
-dashboard <- new("i2dashboard",
-                  title = "scRNA-Seq Analysis",
-                  author = "i2dash team",
-                  interactive = TRUE,
-                  theme = "yeti",
-                  datadir = "/datadir",
-                  file = "MyDashboard.Rmd"
-             )
+dashboard <- new(
+  "i2dashboard",
+  title = "scRNA-Seq Analysis",
+  author = "i2dash team",
+  interactive = TRUE,
+  theme = "yeti",
+  datadir = "/datadir",
+  file = "MyDashboard.Rmd"
+)
 ```
 
 ## Components overview
 
 In the following, the provided componenets from i2dash.scrnaseq will be introduced.
 
-### Scatter plot
+### Scatterplot
 
-For the demonstration, we add a new page "Scatter plot" with the default layout to the dashboard:
-
-```{r}
-dashboard <- i2dash::add_page(dashboard, page = "scatter", title = "Scatter plot", layout = "default")
-```
-
-The scatter plot component shows a simple scatter plot. The required arguments are `x` and `y`. They accept a data.frame (matrix) with numeric columns and define the values mapped along the x- and y-axis. In the interactive mode dropdown menues for the x- and y-axis are provided where the user can select the column of the data.frame that should be used for plotting (the column names are used in the dropdown menu). In the statical mode always the first column is used.
+For the demonstration, we add a new page "Scatterplot" with the default layout to the dashboard:
 
 ```{r}
-# basic scatter plot:
-x_df <- data.frame("total_counts" = colData(sce)$total_counts, 
-                   "log10_total_counts" = colData(sce)$log10_total_counts)
-y_df <- data.frame("Features" = colData(sce)$total_features_by_counts, 
-                   "log10_Features" = colData(sce)$log10_total_features_by_counts)
-
-dashboard <- i2dash::add_component(dashboard = dashboard,
-                                component = "i2dash.scrnaseq::scatterplot",
-                                page = "scatter",
-                                x = x_df,
-                                y = y_df,
-                                title = "Basic scatter plot")
+dashboard <- i2dash::add_page(dashboard, page = "scatter", title = "Scatterplot", layout = "default")
 ```
 
-The scatter plot component provides three different options for colouring. With the `colour_by` argument, which accepts a data.frame (matrix) with numerical or factor columns, the scatter plot can be coloured by the values in the columns. You can also provide a vector with labels for the points in the scatter plot. If `labels` is provided, you can select a label and this cell will be highlighted. The third option is to provide a count table containing the genes of interest with the `exprs_values` argument. The cells will be coloured by the expression values of the selected feature.
-
-```{r}
-# scatter plot with all colouring options:
-colour_df <- data.frame("sample" = colData(sce)$sample,
-                        "CellCyclePhase" = colData(sce)$CellCyclePhase,
-                        "Lane" = colData(sce)$Lane,
-                        "DaysPostAmputation" = colData(sce)$DaysPostAmputation,
-                        "Condition" = colData(sce)$Condition,)
-
-dashboard <- i2dash::add_component(dashboard = dashboard,
-                                component = "i2dash.scrnaseq::scatterplot",
-                                page = "scatter",
-                                x = x_df,
-                                y = y_df,
-                                colour_by = colour_df,
-                                labels = colnames(sce),
-                                exprs_values = as.matrix(counts(sce)[1:20,]), # seecting the first 20 genes as features of interest
-                                title = "Scatter plot with colouring options"
-)
-```
-
-We can provide our own axis titles, that do not change according to the selected columns.
-
-```{r}
-# with custom titles
-dashboard <- i2dash::add_component(dashboard = dashboard,
-                                component = "i2dash.scrnaseq::scatterplot",
-                                page = "scatter",
-                                x = x_df,
-                                y = y_df,
-                                title = "Scatter plot with unchangeable titles",
-                                x_title = "Custom X title",
-                                y_title = "Custom Y title"
-)
-```
-
-Use the wrapper for loading the whole SingleCellExperiment or Seurat object. 
+For adding a scatterplot component to the i2dashboard object by using the SingleCellExperiment or Seurat object as input, the i2dash function `add_component()` is used. We specify the type of the component by providing the character string "i2dash.scrnaseq::scatterplot" as the `component` argument. With the `page` parameter we define the page the component is added to. If we do not define a page the component is added to the "default" page of the i2dashboard object. The SingleCellExperiment or Seurat object is provided by the parameter `object`. Additionally, we need to specify with `use` where the data for the scatterplot is obtained from. In case of a SingleCellExperiment object we can decide, wether the columns from "colData", "rowData" or "reducedDim" are used for mapping the x- and y-coordinates as well as for the colour by options. When we select "reducedDim" for the mapping, "colData" is used for the colour by option. By default all numeric and integer columns are utilized for the x and y-values and all numeric, integer or factorial columns for the colour by option. In the interactive mode dropdown menues for the x-, y-axis and colour_by are provided where the user can select the column that should be plotted (the column names are used in the dropdown menu). In the static mode always the first column is used. Furthermore, we can specify the columns that should be mapped. It should be a character vector containing the column names. Optionally, we can provide our own axis titles with the parameters `x_title` and `y_title`, that do not change according to the selected columns.
 
 ```{r, eval=FALSE}
-dashboard <- i2dash::add_component(dashboard = dashboard,
-                                component = "i2dash.scrnaseq::scatterplot",
-                                page = "scatter",
-                                object = sce,
-                                use = "colData",
-                                title = "sce wrapper"
+# this component is added to the page "scatter" in the i2dashboard object;
+# by default the colData of the object is used for the 'use' parameter;
+# as x-values all valid columns are used; 
+# for y-values only the specified columns are used, because we provide a character vector; 
+
+dashboard <- i2dash::add_component(
+  dashboard = dashboard,
+  component = "i2dash.scrnaseq::scatterplot",
+  page = "scatter",
+  object = sce,
+  y = c("total_counts", "log10_total_counts"), 
+  title = "sce scatterplot of colData" # title of the component
 )
+
+dashboard <- i2dash::add_component(
+  dashboard = dashboard,
+  component = "i2dash.scrnaseq::scatterplot",
+  page = "scatter",
+  object = sce,
+  use = "reducedDim",
+  title = "sce scatterplot of reducedDim"
+)
+```
+
+Tipp: In static mode there are no selection options for the columns, therefore it is required to specify the columns which should be used with `x` and `y` parameters.
+
+```{r scatterplotOptions, echo=FALSE, out.width='65%', fig.cap="\\label{fig:scatterplotOptions} Example of selection options for the scatterplot in the interactive mode."}
+knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/scatterplot_options.png", mustWork=TRUE))
+```
+
+```{r scatterplotColData, echo=FALSE, out.width='100%', fig.cap="\\label{fig:scatterplotColData} Example of a scatterplot."}
+knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/scatterplot_colData.png", mustWork=TRUE))
 ```
 
 ### Violinplot
 
+With "i2dash.scrnaseq::violinplot" a component containing a vertical violinplot is created. The parameter `use` defines where to obtain the data from ("colData" or "rowData" in case of a SingleCellExperiment object). `y` describes the observations, optionally the observations can be grouped by factors(`group_by` argument). Therefore, we need to specify the columns containing factors that should be used for grouping the observations along the x-axis. By default all columns with numeric or integer values are used for the observations-dropdown menu in the interactive mode and no columns are used for grouping if "group_by" is not provided. Optionally, we can provide our own axis titles with the parameters `group_by_title` and `y_title`, that do not change according to the selected columns.
 
 
+```{r, eval=FALSE}
+dashboard <- i2dash::add_page(dashboard, page = "violin", title = "Violin plot", layout = "default")
+
+dashboard <- i2dash::add_component(
+  dashboard = dashboard,
+  component = "i2dash.scrnaseq::violinplot",
+  page = "violin",
+  object = sce,
+  use = "colData",
+  group_by = c("CellCyclePhase","Lane","DaysPostAmputation","Condition"),
+  title = "sce violin plot of colData"
+)
+```
+
+```{r violinplotColData, echo=FALSE, out.width='100%', fig.cap="\\label{fig:violinplotColData} Example of a violinplot."}
+knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/violinplot_colData.png", mustWork=TRUE))
+```
+
+### Boxplot
+
+With "i2dash.scrnaseq::boxplot" a component containing a horizontal boxplot is created. The parameter `use` defines where to obtain the data from ("colData" or "rowData" in case of a SingleCellExperiment object). `x` describes the observations, optionally the observations can be grouped by factors (`group_by` argument).  Therefore, we need to specify the columns containing factors that should be used for grouping the observations along the y-axis. By default all columns with numeric or integer values are used for the observations-dropdown menu in the interactive mode and no columns are used for grouping if "group_by" is not provided. Optionally, we can provide our own axis titles with the parameters `group_by_title` and `x_title`, that do not change according to the selected columns.
+
+```{r, eval=FALSE}
+dashboard <- i2dash::add_page(dashboard, page = "box", title = "Boxplot", layout = "default")
+
+dashboard <- i2dash::add_component(
+  dashboard = dashboard,
+  component = "i2dash.scrnaseq::boxplot",
+  page = "box",
+  object = sce,
+  use = "colData",
+  group_by = c("CellCyclePhase","Lane","DaysPostAmputation","Condition"),
+  title = "sce boxplot of colData"
+)
+```
+
+```{r boxplotColData, echo=FALSE, out.width='100%', fig.cap="\\label{fig:boxplotColData} Example of a boxplot."}
+knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/boxplot_colData.png", mustWork=TRUE))
+```
+
+### Barplot
+
+The barplot component created by "i2dash.scrnaseq::barplot" has two possible visualisation options. The first option visualizes a horizontal barplot with the number of observations along the x-axis that are grouped along the y-axis. This option is initiated by only providing the argument `y_group_by`. The second option generates a horizontal barplot with the relative number of observations grouped according to the levels provided by `x_group_by`. This option requires the provision of both parameters `y_group_by` (grouping the observations along the y-axis) and `x_group_by` (grouping the observations along the x-axis). Only columns containing factors are valid for this barplot component. By default, without a character vector provided for `y_group_by` contains the names of columns that should be used, all valid columns are utilized. No columns are used for `x_group_by`, if not provided. Again we need to specify where to obtain the data from with the `use` parameter. Optionally, we can provide our own axis titles with the parameters `y_group_by_title` and `x_group_by_title`, that do not change according to the selected columns.
+
+```{r, eval=FALSE}
+dashboard <- i2dash::add_page(dashboard, page = "bar", title = "Barplot", layout = "2x2_grid")
+
+# 1. mode: count number of observations
+dashboard <- i2dash::add_component(
+  dashboard = dashboard,
+  component = "i2dash.scrnaseq::barplot",
+  page = "bar",
+  object = sce,
+  use = "colData",
+  title = "sce barplot: total number of observations",
+  x_group_by_title = "Number of cells"
+)
+
+# 2. mode: relative number of observations grouped by 'x_group_by'
+dashboard <- i2dash::add_component(
+  dashboard = dashboard,
+  component = "i2dash.scrnaseq::barplot",
+  page = "bar",
+  object = sce,
+  y_group_by = c("CellCyclePhase","Lane","DaysPostAmputation","Condition"),
+  x_group_by = c("CellCyclePhase","Lane","DaysPostAmputation","Condition"),
+  title = "sce barplot: relative number of observations",
+  x_group_by_title = "Fraction of cells"
+)
+```
+
+```{r barplot, echo=FALSE, out.width='100%', fig.cap="\\label{fig:barplot} Example of the two visualization options of the barplot component."}
+knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/barplot.png", mustWork=TRUE))
+```
+
+### Heatmap
+
+i2dash.scrnaseq provides a component containing a heatmap based on the package ComplexHeatmap. In case of the wrapper for the SingleCellExperiment and Seurat object it is required to provide a vector with names of features/ genes of interest that match with the row names of the used assay (`features` parameter). The assay name is defined by `exprs_values` (by default the "counts" assay of the SingleCellExperiment object is used, if it exists). The rows of the heatmap are the features of interest and columns are the cells. Optionally, we can provide the parameter `column_split`, that should be a character vector containing the column names of "colData" (only columns with factors are valid). If provided, it enables two visualisation options. The first option creates a heatmap that is splitted according to the levels of `column_split`. The second option visualizes a heatmap where the cells (columns) are grouped by the levels of `column_split` (each level is a column). The selection of the visualization mode is provided in the interactive mode. Also the interactive mode enables the selection of the clustering distance, the clustering method, the options whether to cluster none, only the rows or columns or both. The static mode doesn't offer interactive selection options. Therefore we can specify these factors with the parameters `visualisation_mode` ("splitted" or "summarized" heatmap; `column_split` should be provided), `cluster_rows` (a logical), `cluster_columns` (a logical), `clustering_distance` (a pre-defined character which is one of the follwing: "euclidean", "maximum", "manhattan", "binary", "minkowski") and `clustering_method` (to perform hierarchical clustering ("average", "ward.D", "ward.D2", "single", "complete", "mcquitty", "median","centroid")).
+
+```{r, eval=FALSE}
+dashboard <- i2dash::add_page(dashboard, page = "heatmap", title = "Heatmap", layout = "2x2_grid")
+
+# the basic heatmap with cells as columns and features as rows
+dashboard <- i2dash::add_component(
+  dashboard = dashboard,
+  component = "i2dash.scrnaseq::heatmap",
+  page = "heatmap",
+  object = sce,
+  features = rownames(sce)[1:20],
+  title = "basic heatmap sce"
+)
+
+# splitted heatmap
+dashboard <- i2dash::add_component(
+  dashboard = dashboard,
+  component = "i2dash.scrnaseq::heatmap",
+  page = "heatmap",
+  object = sce,
+  features = rownames(sce)[1:20],
+  column_split = c("CellCyclePhase","Lane","DaysPostAmputation","Condition"),
+  visualisation_mode = "splitted", # only relevant for static mode
+  cluster_rows = TRUE, # optional; only relevant for static mode
+  cluster_columns = FALSE, # optional; only relevant for static mode
+  title = "splitted heatmap"
+)
+
+# grouped/ summerazied heatmap
+dashboard <- i2dash::add_component(
+  dashboard = dashboard,
+  component = "i2dash.scrnaseq::heatmap",
+  page = "heatmap",
+  object = sce,
+  features = rownames(sce)[1:20],
+  column_split = c("CellCyclePhase","Lane","DaysPostAmputation","Condition"),
+  visualisation_mode = "summarized", # only relevant for static mode
+  cluster_rows = TRUE, # optional; only relevant for static mode
+  cluster_columns = TRUE, # optional; only relevant for static mode
+  title = "summarized heatmap"
+)
+```
+
+```{r heatmapOptions, echo=FALSE, out.width='65%', fig.cap="\\label{fig:heatmapOptions} Example of the options for a heatmap in the interactive mode."}
+knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/heatmap_options.png", mustWork=TRUE))
+```
+
+```{r heatmaps, echo=FALSE, out.width='100%', fig.cap="\\label{fig:heatmaps} Example of the three possible visualizations of the heatmap component."}
+knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/heatmaps.png", mustWork=TRUE))
+```
+
+## Pre-defined pages overview
+
+### Page for gene expression
+
+The gene expression page renders a page with three linked components. The first component is a table representing the statistic of the number of cells per grouping factor. The second component is a scatterplot, showing samples in along coordinates from "reduced_dim" (SingleCellExperiment)/ "DimReduc" (Seurat) that is defined by `use_dimred`. With `metadata_columns` we provide a character vector containing the column names from "colData"/ "meta.data" (only columns with factors are used). The third component is a violin plot, that shows expression values from `exprs_values` by groups defined in `metadata_columns`.
+
+The components are linked together, which means that it is possible to select a row in the table, which represents a feature and the scatterplot is coloured by the expression values of the selected feature. Also it is possible to select several points in the scatterplot of the dimension reduction with the lasso or rectangular tool from plotly and the violinplot reacts to the selection and is recalculated. This functionality works also in the static mode.
+
+```{r, eval=FALSE}
+dashboard <- i2dash.scrnaseq::add_gene_expression_page(
+  dashboard = dashboard,
+  object = sce,
+  use_dimred = "UMAP",
+  exprs_values = "counts",
+  metadata_columns = c("CellCyclePhase","Lane","DaysPostAmputation","Condition"),
+  title = "Gene expression page",
+  features = rownames(sce)[1:50] # vector with features of interest
+)
+```
+
+```{r geneExpr, echo=FALSE, out.width='100%', fig.cap="\\label{fig:geneExpr} Example of the gene expression page with linked components."}
+knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/gene_expression_page.png", mustWork=TRUE))
+```
+
+
+### Page for dimension reduction and cluster analysis
+
+The dimension reduction page provides the possibility to inspect the dimension reduction and distribution of cell metadata (e.g. cluster, timepoint, number of genes, etc). This page with linked components is build up on the "2x2_grid" layout and contains one component of a dimension reduction and the three other component slots are occupied by either a box-, bar- or silhouette plot. `reduced_dim` represents the name of a dimension reduction ("reducedDim" in SingleCellExperiment; "DimReduc" in Seurat). With `metadata` we provide a character vector containing the column names from "colData"/ "meta.data". The data type of the metadata determines whether the component is a bar- (factors) or a boxplot (numeric). The parameter `grouping` should be one of the column names from `metadata` and defines the colouring of the scatterplot. Optionally, one component slot will be filled with a silhouette plot, if the parameter `silhouette_plot` is set to `TRUE`. The silhouette plot is grouped by `grouping`. Furthermore, if `barplot_grouping` is set to `TRUE`, a barplot with the number of observations from `grouping` will be created.
+
+The plots are linked together, which means that it is possible to select several points in the scatterplot of the dimension reduction with the lasso or rectangular tool from plotly and the other plots react to the selection and are recalculated. This functionality works also in the static mode.
+
+```{r, eval=FALSE}
+dashboard <- i2dash.scrnaseq::add_dim_reduction_page(
+  dashboard = dashboard,
+  object = sce,
+  reduced_dim = "UMAP",
+  metadata = c("CellCyclePhase","Lane","log10_total_counts","Condition"),
+  grouping = "Condition",
+  title = "Reduced dimension",
+  barplot_grouping = FALSE,
+  silhouette_plot = FALSE
+)
+
+dashboard <- i2dash.scrnaseq::add_dim_reduction_page(
+  dashboard = dashboard,
+  object = sce,
+  reduced_dim = "UMAP",
+  metadata = c("CellCyclePhase","Lane","log10_total_counts","Condition"),
+  grouping = "Condition",
+  title = "Reduced dimension",
+  barplot_grouping = TRUE,
+  silhouette_plot = TRUE
+)
+```
+
+```{r dimred, echo=FALSE, out.width='100%', fig.cap="\\label{fig:dimred} Example of the dimension reduction page."}
+knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/red_dim_page.png", mustWork=TRUE))
+```
+
+```{r dimredSelection, echo=FALSE, out.width='100%', fig.cap="\\label{fig:dimredSelection} The linking functionality is shown."}
+knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/red_dim_page_selection.png", mustWork=TRUE))
+```
+
+```{r dimredSil, echo=FALSE, out.width='100%', fig.cap="\\label{fig:dimredSil} This dimension reduction page contains the silhuette plot and the grouped barplot."}
+knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/red_dim_page_silhuette.png", mustWork=TRUE))
+```
+
+### Page for dimension reduction and metadata table
+
+This page can be used for the exploration of marker genes. The page contains two components, the first component is a scatterplot representing the dimension reduction coloured by the expression values of the selected marker gene. The second component is a table with statistical values. This additional data is obtained from columns of "rowData"/ "meta.data". The rows represent the features. By clicking on a row the feature is selected in the table and the colouring of the scatterplot changes according to its exression values. This linking mechanic is available in the static mode.
+
+```{r, eval=FALSE}
+dashboard <- i2dash.scrnaseq::add_dimred_metadata_page(
+  dashboard = dashboard,
+  object = sce,
+  use_dimred = "UMAP",
+  exprs_values = "counts",
+  feature_metadata = c("mean_counts", "log10_mean_counts", "log10_mean_counts"), # from colnames(rowData(sce))
+  subset_row = rownames(sce)[1:50], # vector with features of interest
+  title = "Dimension Reduction & Metadata"
+)
+```
+
+```{r dimredMeta, echo=FALSE, out.width='100%', fig.cap="\\label{fig:dimredMeta} Example of the dimension reduction page with metadata table and linked components."}
+knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/dimred_metadata.png", mustWork=TRUE))
+```
+
+### Multi feature expression page
+
+The multi feature expression page can be used only in the interactive mode. This page visualizes several feature expressions (obtained from `exprs_values`) along a dimension reduction in a grid layout. The user can select the dimension reduction (defined by the parameter `use_dimred`), the features of interest (`subset_row`) and the grid layout. If `subset_row` is not provided, all features of `exprs_values` are selectible on the page. After that, the user generates the image by clicking on a button. This page enables the user to create high-quality figures for presentations/ publications and define the dimensions of the figure, which is then provided for download.
+
+```{r, eval=FALSE}
+dashboard <- i2dash.scrnaseq::add_feature_grid_page(
+  dashboard = dashboard,
+  object = sce,
+  use_dimred = "UMAP",
+  exprs_values = "counts",
+  subset_row = rownames(sce)[1:100], # vector with features of interest
+  title = "Multi Gene Expression"
+)
+```
+
+```{r featuregrid, echo=FALSE, out.width='100%', fig.cap="\\label{fig:featuregrid} Example of the feature grid page."}
+knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/feature_grid_page.png", mustWork=TRUE))
+```
+
+## Usage without single-cell objects
+
+All components and pages can be used without a SingleCellExperiment or Seurat object. In case of the single-cell object a wrapper function is used, therefore it is possible to provide raw data (e.g. data.frames) to the underlying functions. The following is an example usecase of using the core function of the scatterplot component. For the illustration purpose we extract the data from the `sce` object:
+
+```{r, eval=FALSE}
+# Creating another page
+dashboard <- i2dash::add_page(dashboard, page = "core", title = "Core function scatterplot", layout = "default")
+
+# Extracting the data as data.frames
+x_df <- data.frame(
+  "total_counts" = colData(sce)$total_counts, 
+  "log10_total_counts" = colData(sce)$log10_total_counts
+)
+
+y_df <- data.frame(
+  "Features" = colData(sce)$total_features_by_counts, 
+  "log10_Features" = colData(sce)$log10_total_features_by_counts
+)
+
+colour_df <- data.frame(
+  "sample" = colData(sce)$sample,
+  "CellCyclePhase" = colData(sce)$CellCyclePhase,
+  "Lane" = colData(sce)$Lane,
+  "DaysPostAmputation" = colData(sce)$DaysPostAmputation,
+  "Condition" = colData(sce)$Condition
+)
+
+count_table <- as.matrix(counts(sce)[1:20,])
+
+# adding the scatterplot component to the i2dashboard object
+dashboard <- i2dash::add_component(
+  dashboard = dashboard,
+  component = "i2dash.scrnaseq::scatterplot",
+  page = "core",
+  x = x_df,
+  y = y_df,
+  colour_by = colour_df,
+  labels = colnames(sce),
+  exprs_values = count_table,
+  title = "Using the core function of the scatterplot"
+)
+```
 
 ## Assemble the dashboard
 
 Finally, we assemble the dashboard:
 
-```{r}
+```{r, eval=FALSE}
 dashboard
-i2dash::assemble(dashboard = dashboard,
-                 file = "MyDashboard.Rmd",
-                 pages = "scatter")
+i2dash::assemble(
+  dashboard = dashboard,
+  file = "MyDashboard.Rmd",
+  pages = "feature_grid_page"
+)
 ```
 
 

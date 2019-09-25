@@ -18,7 +18,7 @@ add_gene_expression_page(dashboard, object, ...)
 
   \S4method{add_gene_expression_page}{i2dashboard,SingleCellExperiment}(dashboard,
   object, use_dimred, exprs_values, metadata_columns = NULL,
-  subset_row = NULL, title = "Gene expression", menu = NULL)
+  features = NULL, title = "Gene expression", menu = NULL)
 
 \S4method{add_gene_expression_page}{i2dashboard,Seurat}(dashboard, object,
   use_dimred, assay, metadata_columns, assay_slot = "data",
@@ -43,9 +43,11 @@ add_gene_expression_page(dashboard, object, ...)
 
 \item{metadata_columns}{A character vector with column names of \code{colData(object)} to use for cell grouping.}
 
-\item{subset_row}{A character vector (of feature names), a logical vector or numeric vector (of indices) specifying the features to use. The default of NULL will use all features.}
+\item{features}{A character vector (of feature names), a logical vector or numeric vector (of indices) specifying the features to use. The default of NULL will use all features.}
 
 \item{assay}{A character vector specifying which assay from \code{object@assays} to obtain expression values from.}
+
+\item{subset_row}{A character vector (of feature names), a logical vector or numeric vector (of indices) specifying the features to use. The default of NULL will use all features.}
 
 \item{dimred}{A string or integer scalar indicating the reduced dimension result in \code{reducedDims(object)}.}
 
@@ -58,8 +60,6 @@ add_gene_expression_page(dashboard, object, ...)
 \item{metadata_columns}{A character vector with column names of \code{object@meta.data} to use for cell grouping.}
 
 \item{slot}{A character vector specifying the name of the slot in the assay.}
-
-\item{subset_row}{A character vector (of feature names), a logical vector or numeric vector (of indices) specifying the features to use. The default of NULL will use all features.}
 }
 \value{
 An object of class \linkS4class{i2dash::i2dashboard}.
@@ -69,5 +69,5 @@ An object of class \linkS4class{i2dash::i2dashboard}.
 An object of class \linkS4class{i2dash::i2dashboard}.
 }
 \description{
-This function adds a page with two linked components to the \code{report} object: A scatterplot, showing samples in along two-dimensional coordinates, and a violin plot, showing feature expression values by groups defined in \code{group_by}.
+This function adds a page with two linked components to the \code{dashboard} object: A scatterplot, showing samples in along two-dimensional coordinates, and a violin plot, showing feature expression values by groups defined in \code{group_by}.
 }

@@ -7,7 +7,7 @@ NULL
 #'
 #' Users can select features and a dimension reduction to plot feature expression values.
 #'
-#' @param report A \linkS4class{i2dash::i2dashboard} report.
+#' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
 #' @param object A \linkS4class{SingleCellExperiment::SingleCellExperiment} object or a \linkS4class{Seurat::Seurat} object.
 #' @param use_dimred A list of data.frames (matrices) or a single data.frame (matrix) containing coordinates of the reduced dimensions, a character vector representing valid \code{reducedDim} slots of \code{object} or names of the \linkS4class{Seurat::DimReduc} object in \code{object@reductions}.
 #' @param exprs_values A data.frame (matrix) containing expression data of features of interest in rows and samples in columns, or a string representing the name of an \code{assay} of \code{object}.
@@ -20,7 +20,7 @@ NULL
 #' @name feature-grid-page
 #' @rdname feature-grid-page
 #' @exportMethod add_feature_grid_page
-setGeneric("add_feature_grid_page", function(report, object, ...) standardGeneric("add_feature_grid_page"))
+setGeneric("add_feature_grid_page", function(dashboard, object, ...) standardGeneric("add_feature_grid_page"))
 
 #' View a dimension reduction side-by-side with feature metadata
 #'
@@ -61,7 +61,7 @@ setGeneric("summarize_features", function(object, ...) standardGeneric("summariz
 
 #' Add a gene expression page.
 #'
-#' This function adds a page with two linked components to the \code{report} object: A scatterplot, showing samples in along two-dimensional coordinates, and a violin plot, showing feature expression values by groups defined in \code{group_by}.
+#' This function adds a page with two linked components to the \code{dashboard} object: A scatterplot, showing samples in along two-dimensional coordinates, and a violin plot, showing feature expression values by groups defined in \code{group_by}.
 #'
 #' @name add_gene_expression_page
 #' @rdname add_gene_expression_page

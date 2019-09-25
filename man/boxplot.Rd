@@ -13,8 +13,7 @@ boxplot(dashboard, object, ...)
   title = NULL, x_title = NULL, group_by_title = NULL)
 
 \S4method{boxplot}{i2dashboard,SingleCellExperiment}(dashboard, object,
-  use = "colData", x = NULL, group_by = NULL, title = NULL,
-  x_title = NULL, group_by_title = NULL)
+  use = "colData", x = NULL, group_by = NULL, ...)
 }
 \arguments{
 \item{dashboard}{An object of class \linkS4class{i2dash::i2dashboard}.}

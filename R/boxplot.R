@@ -45,7 +45,7 @@ setMethod("boxplot",
             env$group_by_title <- group_by_title
 
             # save environment report
-            saveRDS(env, file = file.path(report@datadir, paste0(env_id, ".rds")))
+            saveRDS(env, file = file.path(dashboard@datadir, paste0(env_id, ".rds")))
 
             # Expand component
             timestamp <- Sys.time()
@@ -53,13 +53,12 @@ setMethod("boxplot",
             return(expanded_component)
           })
 
-
 #' @rdname boxplot
 #' @return An object of class \linkS4class{i2dash::i2dashboard}.
 #' @export
 setMethod("boxplot",
           signature = signature(dashboard = "i2dashboard", object = "SingleCellExperiment"),
-          function(dashboard, object, use = "colData", x = NULL, group_by = NULL, title = NULL, x_title = NULL, group_by_title = NULL) {
+          function(dashboard, object, use = "colData", x = NULL, group_by = NULL, ...) {
             if(use == "colData") {
               if(!is.null(x)) {
                 assertive.sets::assert_is_subset(x, colnames(SummarizedExperiment::colData(object)))
@@ -96,8 +95,6 @@ setMethod("boxplot",
             boxplot(dashboard,
                     x = x,
                     group_by = group_by,
-                    title = title,
-                    x_title = x_title,
-                    group_by_title = group_by_title)
+                    ...)
           })
 

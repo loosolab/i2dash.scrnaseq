@@ -5,19 +5,19 @@
 \alias{add_dim_reduction_page,i2dashboard,Seurat-method}
 \title{Renders a page with four linked components at maximum. The first component is a scatterplot, showing samples in along coordinates from \code{reduced_dim}. If \code{barplot_grouping} is \code{TRUE} the second component will be a bar plot, that shows the number of observations by groups defined in \code{grouping}. If \code{silhouette_plot} is \code{TRUE} the third component will be a silhoutte plot, that shows how well each observation has been classified. Therefore the Euclidean distance is applied to the coordinates from \code{reduced_dim} and grouped by the groups defined in \code{grouping}. The remaining component slots are filled with bar or boxplots, that visualize one of the columns from \code{metadata} by groups defined in \code{grouping}.}
 \usage{
-\S4method{add_dim_reduction_page}{i2dashboard,Seurat}(object, sc_object,
+\S4method{add_dim_reduction_page}{i2dashboard,Seurat}(dashboard, object,
   reduced_dim, metadata, grouping, title = NULL,
   barplot_grouping = TRUE, silhouette_plot = FALSE, menu = NULL,
   sidebar = NULL)
 }
 \arguments{
-\item{object}{A \linkS4class{i2dash::i2dashboard} object.}
+\item{dashboard}{A \linkS4class{i2dash::i2dashboard} dashboard.}
 
-\item{sc_object}{A valid \linkS4class{Seurat::Seurat} object}
+\item{object}{A valid \linkS4class{Seurat::Seurat} dashboard}
 
-\item{reduced_dim}{A character of length 1 representing the name of a \linkS4class{Seurat::DimReduc} object present in the slot \code{reductions} of the \linkS4class{Seurat::Seurat} object.}
+\item{reduced_dim}{A character of length 1 representing the name of a \linkS4class{Seurat::DimReduc} dashboard present in the slot \code{reductions} of the \linkS4class{Seurat::Seurat} dashboard.}
 
-\item{metadata}{A character or list representing the names of columns in the slot \code{meta.data} in the \linkS4class{Seurat::Seurat} object.}
+\item{metadata}{A character or list representing the names of columns in the slot \code{meta.data} in the \linkS4class{Seurat::Seurat} dashboard.}
 
 \item{grouping}{A character of length 1 representing the name of a column in the slot \code{meta.data} in the \linkS4class{Seurat::Seurat} and used for expression grouping.}
 

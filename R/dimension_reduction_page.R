@@ -1,9 +1,9 @@
-setGeneric("add_dim_reduction_page", function(object, sc_object, ...) standardGeneric("add_dim_reduction_page"))
+setGeneric("add_dim_reduction_page", function(dashboard, object, ...) standardGeneric("add_dim_reduction_page"))
 
 
 #' Renders a page with four linked components at maximum. The first component is a scatterplot, showing samples in along coordinates from \code{reduced_dim}. If \code{barplot_grouping} is \code{TRUE} the second component will be a bar plot, that shows the number of observations by groups defined in \code{grouping}. If \code{silhouette_plot} is \code{TRUE} the third component will be a silhoutte plot, that shows how well each observation has been classified. Therefore the Euclidean distance is applied to the coordinates from \code{reduced_dim} and grouped by the groups defined in \code{grouping}. The remaining component slots are filled with bar or boxplots, that visualize one of the columns from \code{metadata} by groups defined in \code{grouping}.
 #'
-#' @param object A \linkS4class{i2dash::i2dashboard} object.
+#' @param dashboard A \linkS4class{i2dash::i2dashboard} dashboard.
 #' @param reduced_dim A data.frame or matrix containing coordinates of the reduced dimensions. Rownames are used as labels.
 #' @param metadata A data.frame or matrix containing a maximum of four columns with cell metadata (e.g. cluster, timepoint, number of genes, etc). Should have the same number of rows/length as \code{reduced_dim}. Note: Factorial metadata needs to be of class factor in the data.frame.
 #' @param grouping A character string identical to one of the column names in \code{metadata}.
@@ -17,8 +17,8 @@ setGeneric("add_dim_reduction_page", function(object, sc_object, ...) standardGe
 #' @return A string containing markdown code for the rendered page.
 #' @export
 setMethod("add_dim_reduction_page",
-          signature = signature(object = "i2dashboard", sc_object = "missing"),
-          function(object, reduced_dim, metadata, grouping, title = NULL, labels = NULL, barplot_grouping = TRUE, silhouette_plot = FALSE, menu = NULL, sidebar = NULL) {
+          signature = signature(dashboard = "i2dashboard", object = "missing"),
+          function(dashboard, reduced_dim, metadata, grouping, title = NULL, labels = NULL, barplot_grouping = TRUE, silhouette_plot = FALSE, menu = NULL, sidebar = NULL) {
 
   # Create random env id
   env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
@@ -43,8 +43,8 @@ setMethod("add_dim_reduction_page",
   env$labels <- labels
   env$multiple_meta <- ncol(metadata) > 1
 
-  # save environment object
-  saveRDS(env, file = file.path(object@workdir, "envs", paste0(env_id, ".rds")))
+  # save environment dashboard
+  saveRDS(env, file = file.path(dashboard@datadir, paste0(env_id, ".rds")))
 
   expanded_components <- list()
   timestamp <- Sys.time()
@@ -79,14 +79,14 @@ setMethod("add_dim_reduction_page",
   # Expand component
   timestamp <- Sys.time()
 
-  object@pages[["dim_reduction_page"]] <- list(title = title, layout = "2x2_grid", menu = menu, components = expanded_components, max_components = 4, sidebar = sidebar)
-  return(object)
+  dashboard@pages[["dim_reduction_page"]] <- list(title = title, layout = "2x2_grid", menu = menu, components = expanded_components, max_components = 4, sidebar = sidebar)
+  return(dashboard)
 })
 
 #' Renders a page with four linked components at maximum. The first component is a scatterplot, showing samples in along coordinates from \code{reduced_dim}. If \code{barplot_grouping} is \code{TRUE} the second component will be a bar plot, that shows the number of observations by groups defined in \code{grouping}. If \code{silhouette_plot} is \code{TRUE} the third component will be a silhoutte plot, that shows how well each observation has been classified. Therefore the Euclidean distance is applied to the coordinates from \code{reduced_dim} and grouped by the groups defined in \code{grouping}. The remaining component slots are filled with bar or boxplots, that visualize one of the columns from \code{metadata} by groups defined in \code{grouping}.
 #'
-#' @param object A \linkS4class{i2dash::i2dashboard} object.
-#' @param sc_object A valid \linkS4class{SingleCellExperiment::SingleCellExperiment} object
+#' @param dashboard A \linkS4class{i2dash::i2dashboard} dashboard.
+#' @param object A valid \linkS4class{SingleCellExperiment::SingleCellExperiment} dashboard
 #' @param reduced_dim A character of length 1 representing the name of a dimension reduction of \code{reducedDim}.
 #' @param metadata A character or list representing the names of  columns of \code{colData}.
 #' @param grouping A character of length 1 representing the name of columns of \code{colData} and used for expression grouping.
@@ -99,23 +99,23 @@ setMethod("add_dim_reduction_page",
 #' @return A string containing markdown code for the rendered page.
 #' @export
 setMethod("add_dim_reduction_page",
-          signature = signature(object = "i2dashboard", sc_object = "SingleCellExperiment"),
-          function(object, sc_object, reduced_dim, metadata, grouping, title = NULL, barplot_grouping = TRUE, silhouette_plot = FALSE, menu = NULL, sidebar = NULL) {
+          signature = signature(dashboard = "i2dashboard", object = "SingleCellExperiment"),
+          function(dashboard, object, reduced_dim, metadata, grouping, title = NULL, barplot_grouping = TRUE, silhouette_plot = FALSE, menu = NULL, sidebar = NULL) {
             # validate and extract metadata
             if(!is.character(metadata) & !is.list(metadata)) stop("'metadata' should be a character or a list.")
-            if(!all(metadata %in% names(colData(sc_object)))) stop("'colData' slot of the SingleCellExperiment object does not contain the column names from 'metadata'.")
-            metadata <- as.data.frame(sc_object@colData[metadata])
+            if(!all(metadata %in% names(colData(object)))) stop("'colData' slot of the SingleCellExperiment dashboard does not contain the column names from 'metadata'.")
+            metadata <- as.data.frame(object@colData[metadata])
             # validate input and extract dimension reduction
             if(!is.character(reduced_dim) | length(reduced_dim) > 1) stop("'reduced_dim' should be a character of length 1.")
-            if(!reduced_dim %in% reducedDimNames(sc_object)) stop("'reducedDim' slot of the SingleCellExperiment object does not contain the name provided in 'reduced_dim'.")
-            reduced_dim <- reducedDim(sc_object, reduced_dim)
+            if(!reduced_dim %in% reducedDimNames(object)) stop("'reducedDim' slot of the SingleCellExperiment dashboard does not contain the name provided in 'reduced_dim'.")
+            reduced_dim <- reducedDim(object, reduced_dim)
 
             # validate grouping
             if(!is.character(grouping) | length(grouping) > 1) stop("'grouping' should be a character of length 1.")
 
-            labels <- colnames(sc_object)
+            labels <- colnames(object)
 
-            object <- add_dim_reduction_page(object = object,
+            dashboard <- add_dim_reduction_page(dashboard = dashboard,
                                              reduced_dim = reduced_dim,
                                              metadata = metadata,
                                              grouping = grouping,
@@ -125,16 +125,16 @@ setMethod("add_dim_reduction_page",
                                              sidebar = sidebar,
                                              barplot_grouping = barplot_grouping,
                                              silhouette_plot = silhouette_plot)
-            return(object)
+            return(dashboard)
 
 })
 
 #' Renders a page with four linked components at maximum. The first component is a scatterplot, showing samples in along coordinates from \code{reduced_dim}. If \code{barplot_grouping} is \code{TRUE} the second component will be a bar plot, that shows the number of observations by groups defined in \code{grouping}. If \code{silhouette_plot} is \code{TRUE} the third component will be a silhoutte plot, that shows how well each observation has been classified. Therefore the Euclidean distance is applied to the coordinates from \code{reduced_dim} and grouped by the groups defined in \code{grouping}. The remaining component slots are filled with bar or boxplots, that visualize one of the columns from \code{metadata} by groups defined in \code{grouping}.
 #'
-#' @param object A \linkS4class{i2dash::i2dashboard} object.
-#' @param sc_object A valid \linkS4class{Seurat::Seurat} object
-#' @param reduced_dim A character of length 1 representing the name of a \linkS4class{Seurat::DimReduc} object present in the slot \code{reductions} of the \linkS4class{Seurat::Seurat} object.
-#' @param metadata A character or list representing the names of columns in the slot \code{meta.data} in the \linkS4class{Seurat::Seurat} object.
+#' @param dashboard A \linkS4class{i2dash::i2dashboard} dashboard.
+#' @param object A valid \linkS4class{Seurat::Seurat} dashboard
+#' @param reduced_dim A character of length 1 representing the name of a \linkS4class{Seurat::DimReduc} dashboard present in the slot \code{reductions} of the \linkS4class{Seurat::Seurat} dashboard.
+#' @param metadata A character or list representing the names of columns in the slot \code{meta.data} in the \linkS4class{Seurat::Seurat} dashboard.
 #' @param grouping A character of length 1 representing the name of a column in the slot \code{meta.data} in the \linkS4class{Seurat::Seurat} and used for expression grouping.
 #' @param title The title of the page.
 #' @param barplot_grouping (Optional) A logical value. (Default: TRUE) If TRUE, a barplot with the number of observations from 'grouping' will be created.
@@ -145,25 +145,25 @@ setMethod("add_dim_reduction_page",
 #' @return A string containing markdown code for the rendered page.
 #' @export
 setMethod("add_dim_reduction_page",
-          signature = signature(object = "i2dashboard", sc_object = "Seurat"),
-          function(object, sc_object, reduced_dim, metadata, grouping, title = NULL, barplot_grouping = TRUE, silhouette_plot = FALSE, menu = NULL, sidebar = NULL) {
+          signature = signature(dashboard = "i2dashboard", object = "Seurat"),
+          function(dashboard, object, reduced_dim, metadata, grouping, title = NULL, barplot_grouping = TRUE, silhouette_plot = FALSE, menu = NULL, sidebar = NULL) {
 
             # validate and extract metadata
             if(!is.character(metadata) & !is.list(metadata)) stop("'metadata' should be a character or a list.")
-            if(!all(metadata %in% names(sc_object@meta.data))) stop("'meta.data' slot of the Seurat object does not contain the column names from 'metadata'.")
-            metadata <- sc_object@meta.data[metadata]
+            if(!all(metadata %in% names(object@meta.data))) stop("'meta.data' slot of the Seurat dashboard does not contain the column names from 'metadata'.")
+            metadata <- object@meta.data[metadata]
 
             # validate input and extract dimension reduction
             if(!is.character(reduced_dim) | length(reduced_dim) > 1) stop("'reduced_dim' should be a character of length 1.")
-            if(!reduced_dim %in% names(sc_object@reductions)) stop("'reductions' slot of the Seurat object does not contain the name provided in 'reduced_dim'.")
-            reduced_dim <- Seurat::Embeddings(sc_object, reduction = reduced_dim)[,1:2]
+            if(!reduced_dim %in% names(object@reductions)) stop("'reductions' slot of the Seurat dashboard does not contain the name provided in 'reduced_dim'.")
+            reduced_dim <- Seurat::Embeddings(object, reduction = reduced_dim)[,1:2]
 
             # validate grouping
             if(!is.character(grouping) | length(grouping) > 1) stop("'grouping' should be a character of length 1.")
 
-            labels <- colnames(sc_object)
+            labels <- colnames(object)
 
-            object <- add_dim_reduction_page(object = object,
+            dashboard <- add_dim_reduction_page(dashboard = dashboard,
                                              reduced_dim = reduced_dim,
                                              metadata = metadata,
                                              grouping = grouping,
@@ -173,7 +173,7 @@ setMethod("add_dim_reduction_page",
                                              sidebar = sidebar,
                                              barplot_grouping = barplot_grouping,
                                              silhouette_plot = silhouette_plot)
-            return(object)
+            return(dashboard)
 })
 
 

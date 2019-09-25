@@ -35,6 +35,7 @@ setMethod("heatmap",
             env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
 
             # Input validation
+            if(class(exprs_values) == "dgCMatrix") exprs_values <- as.matrix(exprs_values)
             assertive.types::assert_is_any_of(exprs_values, c("data.frame", "matrix"))
             if(is.null(colnames(exprs_values))) colnames(exprs_values) <- paste0("V", 1:ncol(exprs_values))
 

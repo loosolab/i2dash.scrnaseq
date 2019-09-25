@@ -23,4 +23,6 @@ Imports:
     SummarizedExperiment,
     SingleCellExperiment
 Suggests: 
-    kableExtra
+    kableExtra,
+    multipanelfigure,
+    ComplexHeatmap

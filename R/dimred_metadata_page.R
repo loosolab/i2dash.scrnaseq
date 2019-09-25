@@ -11,6 +11,7 @@ setMethod("add_dimred_metadata_page",
 
             # Input validation
             assertive.types::assert_is_any_of(use_dimred, c("data.frame", "matrix"))
+            if(class(exprs_values) == "dgCMatrix") exprs_values <- as.matrix(exprs_values)
             assertive.types::assert_is_any_of(exprs_values, c("data.frame", "matrix"))
             assertive.types::assert_is_any_of(feature_metadata, c("data.frame", "matrix"))
 
@@ -47,7 +48,7 @@ setMethod("add_dimred_metadata_page",
           function(dashboard, object, use_dimred, exprs_values, feature_metadata, subset_row, title = "Marker gene expression", menu = NULL) {
 
             assertive.sets::assert_is_subset(use_dimred, SingleCellExperiment::reducedDimNames(object))
-            assertive.sets::assert_is_subset(exprs_values, SummarizedExperiment:assay(object))
+            assertive.sets::assert_is_subset(exprs_values, SummarizedExperiment::assayNames(object))
             assertive.sets::assert_is_subset(feature_metadata, colnames(SummarizedExperiment::rowData(object)))
 
             use_dimred <- SingleCellExperiment::reducedDim(object, use_dimred)
@@ -65,7 +66,7 @@ setMethod("add_dimred_metadata_page",
             dashboard <- add_dimred_metadata_page(dashboard = dashboard,
                                                use_dimred = use_dimred,
                                                exprs_values = exprs_values,
-                                               metadata = metadata,
+                                               feature_metadata = metadata,
                                                title = title,
                                                menu = menu)
             return(dashboard)
@@ -98,7 +99,7 @@ setMethod("add_dimred_metadata_page",
             dashboard <- add_dimred_metadata_page(dashboard = dashboard,
                                                use_dimred = use_dimred,
                                                exprs_values = expression,
-                                               metadata = metadata,
+                                               feature_metadata = metadata,
                                                title = title,
                                                menu = menu)
             return(dashboard)
