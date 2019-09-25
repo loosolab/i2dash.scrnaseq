@@ -1,40 +1,87 @@
-#' Renders a boxplot for cluster characterization
-#'
-#' @param object A \linkS4class{i2dash::i2dashboard} object.
-#' @param x Numeric observations for the boxplot. In case of a named list, a dropdown menu will be provided in the interactive mode.
-#' @param group_by A factor, by which observations can optionally be grouped. In case of a named list, a dropdown menu will be provided in the interactive mode.
-#' @param title The title of the components junk.
-#'
-#' @return A string containing markdown code for the rendered component.
-#'
+#' @rdname boxplot
+#' @return A string containing markdown code for the rendered component
+setMethod("boxplot",
+          signature = signature(dashboard = "i2dashboard", object = "missing"),
+          function(dashboard, x, group_by = NULL, title = NULL, x_title = NULL, group_by_title = NULL) {
+            # Create random env id
+            env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
+
+            # Validate input
+            assertive.types::assert_is_any_of(x, c("data.frame", "matrix"))
+            if(is.null(colnames(x))) colnames(x) <- paste0("V", 1:ncol(x))
+
+            if(!is.null(group_by)){
+              assertive.types::assert_is_any_of(group_by, c("data.frame", "matrix"))
+              if(is.null(colnames(group_by))) colnames(group_by) <- paste0("V", 1:ncol(group_by))
+              if(nrow(x) != nrow(group_by)) stop("The numbers of rows in 'x' and 'group_by' are not equal.")
+            }
+
+            # Create component environment
+            env <- new.env()
+
+            env$x <- x
+            env$x_selection <- length(x) > 1
+
+            env$group_by <- group_by
+            env$group_by_selection <- length(group_by) > 1
+
+            env$x_title <- x_title
+            env$group_by_title <- group_by_title
+
+            # save environment report
+            saveRDS(env, file = file.path(report@datadir, paste0(env_id, ".rds")))
+
+            # Expand component
+            timestamp <- Sys.time()
+            expanded_component <- knitr::knit_expand(file = system.file("templates", "boxplot.Rmd", package = "i2dash.scrnaseq"), title = title, env_id = env_id, date = timestamp)
+            return(expanded_component)
+          })
+
+
+#' @rdname boxplot
+#' @return An object of class \linkS4class{i2dash::i2dashboard}.
 #' @export
-boxplot <- function(object, x, group_by, title = NULL) {
-  # Create random env id
-  env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
+setMethod("boxplot",
+          signature = signature(dashboard = "i2dashboard", object = "SingleCellExperiment"),
+          function(dashboard, object, use = "colData", x = NULL, group_by = NULL, title = NULL, x_title = NULL, group_by_title = NULL) {
+            if(use == "colData") {
+              if(!is.null(x)) {
+                assertive.sets::assert_is_subset(x, colnames(SummarizedExperiment::colData(object)))
+                SummarizedExperiment::colData(object) %>%
+                  as.data.frame() %>%
+                  dplyr::select(!!x) -> x
+              } else {
+                SummarizedExperiment::colData(object) %>%
+                  as.data.frame() -> x
+              }
+              if(!is.null(group_by)) {
+                assertive.sets::assert_is_subset(group_by, colnames(SummarizedExperiment::colData(object)))
+                SummarizedExperiment::colData(object) %>%
+                  as.data.frame() %>%
+                  dplyr::select(!!group_by) -> group_by
+              }
+            } else if (use == "rowData") {
+              if(!is.null(x)) {
+                assertive.sets::assert_is_subset(x, colnames(SummarizedExperiment::rowData(object)))
+                SummarizedExperiment::rowData(object) %>%
+                  as.data.frame() %>%
+                  dplyr::select(!!x) -> x
+              } else {
+                SummarizedExperiment::rowData(object) %>%
+                  as.data.frame() -> x
+              }
+              if(!is.null(group_by)) {
+                assertive.sets::assert_is_subset(group_by, colnames(SummarizedExperiment::rowData(object)))
+                SummarizedExperiment::rowData(object) %>%
+                  as.data.frame() %>%
+                  dplyr::select(!!group_by) -> group_by
+              }
+            }
+            boxplot(dashboard,
+                    x = x,
+                    group_by = group_by,
+                    title = title,
+                    x_title = x_title,
+                    group_by_title = group_by_title)
+          })
 
-  if(!is.list(x)) x <- list(x)
-  if(!is.list(group_by)) group_by <- list(group_by)
-
-  # Validate input
-  if(!all(sapply(x, is.numeric))) stop("'x' should only contain numerical values.")
-  if(!all(sapply(cluster, is.factor))) stop("'cluster' should only contain factorial values.")
-
-  # Create component environment
-  env <- new.env()
-  env$x_selection <- FALSE
-  env$group_by_selection <- FALSE
-
-  env$x <- x
-  env$x_selection <- length(env$x) > 1
-
-  env$group_by <- group_by
-  env$group_by_selection <- length(env$group_by) > 1
-
-  # save environment object
-  saveRDS(env, file = file.path(object@datadir, paste0(env_id, ".rds")))
-
-  # Expand component
-  timestamp <- Sys.time()
-  expanded_component <- knitr::knit_expand(file = system.file("templates", "boxplot.Rmd", package = "i2dash.scrnaseq"), title = title, env_id = env_id, date = timestamp)
-  return(expanded_component)
-}
