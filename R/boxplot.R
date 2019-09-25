@@ -1,19 +1,3 @@
-#' Renders a component containing a boxplot
-#'
-#' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
-#' @param x A data.frame (matrix) containing numeric observations for the horizontal axis, or a character vector indicating column names of \code{colData(object)}, \code{rowData(object)}.
-#' @param object A valid \linkS4class{SingleCellExperiment::SingleCellExperiment} object.
-#' @param group_by An optional data.frame (matrix) with columns containing grouping factors for the vertical axis.
-#' @param use A character specifying where to obtain the data from. One of \code{"colData"} or \code{"rowData"}.
-#' @param title The title of the components junk.
-#' @param x_title The title of the x-axis.
-#' @param group_by_title The title of the y-axis.
-#'
-#' @name boxplot
-#' @rdname boxplot
-#' @exportMethod boxplot
-setGeneric("boxplot", function(dashboard, object, ...) standardGeneric("boxplot"))
-
 #' @rdname boxplot
 #' @return A string containing markdown code for the rendered component
 setMethod("boxplot",

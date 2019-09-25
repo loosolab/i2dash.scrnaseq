@@ -1,19 +1,3 @@
-#' Renders a component containing a horizontal barplot.
-#'
-#' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
-#' @param y_group_by A data.frame (matrix) with columns containing grouping factors for the vertical axis.
-#' @param object A valid \linkS4class{SingleCellExperiment::SingleCellExperiment} object.
-#' @param x_group_by Optionally provide a data.frame (matrix) with columns containing grouping factors for the horizontal axis. The result is a barplot grouped by the levels in \code{x_group_by} and shows the relative number of its observations.
-#' @param use A character specifying where to obtain the data from. One of \code{"colData"} or \code{"rowData"}.
-#' @param title The title of the components junk.
-#' @param y_group_by_title The title of the y-axis.
-#' @param x_group_by_title The title of the x-axis.
-#'
-#' @name barplot
-#' @rdname barplot
-#' @exportMethod barplot
-setGeneric("barplot", function(dashboard, object, ...) standardGeneric("barplot"))
-
 #' @rdname barplot
 #' @return A string containing markdown code for the rendered component
 setMethod("barplot",
@@ -98,5 +82,4 @@ setMethod("barplot",
                     x_group_by = x_group_by,
                     ...)
           })
-
 

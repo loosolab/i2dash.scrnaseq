@@ -68,3 +68,51 @@ setGeneric("summarize_features", function(object, ...) standardGeneric("summariz
 #' @exportMethod add_gene_expression_page
 setGeneric("add_gene_expression_page", function(dashboard, object, ...) standardGeneric("add_gene_expression_page"))
 
+#' Renders a component containing a vertical violin plot
+#'
+#' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
+#' @param y A data.frame (matrix) containing numeric observations for the vertical axis, or a character vector indicating column names of \code{colData(object)}, \code{rowData(object)}.
+#' @param object A valid \linkS4class{SingleCellExperiment::SingleCellExperiment} object.
+#' @param group_by An optional data.frame (matrix) with columns containing grouping factors for the horizontal axis.
+#' @param use A character specifying where to obtain the data from. One of \code{"colData"} or \code{"rowData"}.
+#' @param title The title of the component.
+#' @param y_title The title of the y-axis.
+#' @param group_by_title The title of the x-axis.
+#'
+#' @name violinplot
+#' @rdname violinplot
+#' @exportMethod violinplot
+setGeneric("violinplot", function(dashboard, object, ...) standardGeneric("violinplot"))
+
+#' Renders a component containing a horizontal barplot.
+#'
+#' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
+#' @param y_group_by A data.frame (matrix) with columns containing grouping factors for the vertical axis.
+#' @param object A valid \linkS4class{SingleCellExperiment::SingleCellExperiment} object.
+#' @param x_group_by Optionally provide a data.frame (matrix) with columns containing grouping factors for the horizontal axis. The result is a barplot grouped by the levels in \code{x_group_by} and shows the relative number of its observations.
+#' @param use A character specifying where to obtain the data from. One of \code{"colData"} or \code{"rowData"}.
+#' @param title The title of the components junk.
+#' @param y_group_by_title The title of the y-axis.
+#' @param x_group_by_title The title of the x-axis.
+#'
+#' @name barplot
+#' @rdname barplot
+#' @exportMethod barplot
+setGeneric("barplot", function(dashboard, object, ...) standardGeneric("barplot"))
+
+#' Renders a component containing a boxplot
+#'
+#' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
+#' @param x A data.frame (matrix) containing numeric observations for the horizontal axis, or a character vector indicating column names of \code{colData(object)}, \code{rowData(object)}.
+#' @param object A valid \linkS4class{SingleCellExperiment::SingleCellExperiment} object.
+#' @param group_by An optional data.frame (matrix) with columns containing grouping factors for the vertical axis.
+#' @param use A character specifying where to obtain the data from. One of \code{"colData"} or \code{"rowData"}.
+#' @param title The title of the components junk.
+#' @param x_title The title of the x-axis.
+#' @param group_by_title The title of the y-axis.
+#'
+#' @name boxplot
+#' @rdname boxplot
+#' @exportMethod boxplot
+setGeneric("boxplot", function(dashboard, object, ...) standardGeneric("boxplot"))
+
