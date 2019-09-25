@@ -21,3 +21,23 @@ NULL
 #' @rdname feature-grid-page
 #' @exportMethod add_feature_grid_page
 setGeneric("add_feature_grid_page", function(report, object, ...) standardGeneric("add_feature_grid_page"))
+
+#' Characterize and visualize dimension reductions and sample groupings / metadata.
+#'
+#' Creates a page with up to four different linked components, including a scatterplot for dimension reductions, a bar plot showing numbers of observations by group, and a silhouette plot to assess grouping consistency.
+#' Additional sample metadata is visualized using boxplots and barplots, depending on the data type of the underlying variable.
+#'
+#' @param dashboard A \linkS4class{i2dash::i2dashboard}.
+#' @param use_dimred A data.frame (matrix) containing coordinates of the reduced dimensions. Rownames are used as sample labels.
+#' @param metadata A data.frame (matrix) containing metadata (e.g. cluster, timepoint, number of features, etc) along samples.
+#' @param group_by A string indicating a column in \code{metadata} that is used to group observations.
+#' @param title The title of the page.
+#' @param labels An optional vector with sample labels.
+#' @param show_group_sizes A logical value indicating if a barplot showing the number of observations from \code{group_by} will be creaed (default \code{TRUE}).
+#' @param show_silhouette A logical value indicating if a silhouette plot should be shown (default \code{FALSE}).
+#' @param menu The name of the menu, under which the page should appear.
+#'
+#' @name dimred-metadata-page
+#' @rdname dimred-metadata-page
+#' @exportMethod add_dimred_metadata_page
+setGeneric("add_dimred_metadata_page", function(dashboard, object, ...) standardGeneric("add_dimred_metadata_page"))
