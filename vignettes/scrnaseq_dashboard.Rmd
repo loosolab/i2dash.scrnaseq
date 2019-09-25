@@ -453,5 +453,12 @@ i2dash::assemble(
 )
 ```
 
+# Session Info {.unnumbered}
 
+```{r sessioninfo}
+sessionInfo()
+# devtools::session_info()
+```
+
+# References {.unnumbered}
 
