@@ -95,20 +95,19 @@ plotly_barplot <- function(..., showlegend = NULL, x_group_by_title = NULL, y_gr
   p
 }
 
-#' Render a box plot with plotly.
+#' Render a boxplot with plotly.
 #'
 #' @param x Numeric observations for the boxplot.
 #' @param group_by A factor, by which observations can optionally be grouped.
-#' @param title A title that describes the observations.
+#' @param x_title A title that describes the observations.
 #' @param group_by_title A title that describes the grouping factor.
 #'
 #' @return An object of class \code{plotly}.
 #' @export
-plotly_boxplot <- function(x, group_by = NULL, title = "", group_by_title = NULL){
-  plotly::plot_ly(x = x, y = group_by, type = "box", name = title) %>%
-    plotly::layout(xaxis = list(title = title, showline = T),
-                   yaxis = list(title = group_by_title, showline = T, showticklabels = T),
-                   showlegend = T)
+plotly_boxplot <- function(x, group_by = NULL, x_title = NULL, group_by_title = NULL){
+  plotly::plot_ly(x = x, y = group_by, type = "box", colors = "Set1",  color = group_by) %>%
+    plotly::layout(xaxis = list(title = x_title, showline = T),
+                   yaxis = list(title = group_by_title, showline = T, showticklabels = T))
 }
 
 #' Render a vertical violin plot with plotly.
