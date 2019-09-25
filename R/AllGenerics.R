@@ -39,3 +39,19 @@ setGeneric("summarize_samples", function(object, ...) standardGeneric("summarize
 #' @rdname summarize
 #' @exportMethod summarize_features
 setGeneric("summarize_features", function(object, ...) standardGeneric("summarize_features"))
+
+#' Renders a component containing a vertical violin plot
+#'
+#' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
+#' @param y A data.frame (matrix) containing numeric observations for the vertical axis, or a character vector indicating column names of \code{colData(object)}, \code{rowData(object)}.
+#' @param object A valid \linkS4class{SingleCellExperiment::SingleCellExperiment} object.
+#' @param group_by An optional data.frame (matrix) with columns containing grouping factors for the horizontal axis.
+#' @param use A character specifying where to obtain the data from. One of \code{"colData"} or \code{"rowData"}.
+#' @param title The title of the component.
+#' @param y_title The title of the y-axis.
+#' @param group_by_title The title of the x-axis.
+#'
+#' @name violinplot
+#' @rdname violinplot
+#' @exportMethod violinplot
+setGeneric("violinplot", function(dashboard, object, ...) standardGeneric("violinplot"))
