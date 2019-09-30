@@ -29,7 +29,7 @@ setMethod("boxplot",
             env$group_by_title <- group_by_title
 
             # save environment report
-            saveRDS(env, file = file.path(report@datadir, paste0(env_id, ".rds")))
+            saveRDS(env, file = file.path(dashboard@datadir, paste0(env_id, ".rds")))
 
             # Expand component
             timestamp <- Sys.time()
