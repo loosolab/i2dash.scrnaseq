@@ -12,7 +12,9 @@ heatmap(dashboard, object, ...)
 \S4method{heatmap}{i2dashboard,missing}(dashboard, exprs_values,
   column_split = NULL, visualisation_mode = "splitted", title = NULL,
   legend_title = NULL, cluster_rows = FALSE, cluster_columns = FALSE,
-  clustering_distance = "euclidean", clustering_method = "complete")
+  clustering_distance = c("euclidean", "maximum", "manhattan", "binary",
+  "minkowski"), clustering_method = c("average", "ward.D", "ward.D2",
+  "single", "complete", "mcquitty", "median", "centroid"))
 
 \S4method{heatmap}{i2dashboard,SingleCellExperiment}(dashboard, object,
   exprs_values = "counts", features, column_split = NULL, ...)
