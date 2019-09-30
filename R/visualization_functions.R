@@ -1,10 +1,8 @@
 #' Creates a plotly scatterplot
 #'
-#' @param df A dataframe containing the data for the boxplot
-#' @param labels A list with sample names, which should be of the same length as x and y.
-#' @param colour_by A list containing factorial values that will be used for colouring. In case of a named list, a dropdown menu will be provided in the interactive mode. Note: The length of all vectors in case of a named list should be of the same length as x and y.
-#' @param checkbox A boolean value as indicator for colouring by labels.
-#' @param selected_label The label (character) selected by the user.
+#' @param ... these arguments are of either the form value or tag = value and should be valid for the 'plotly::plot_ly()' method.
+#' @param y_title The title of the x-axis.
+#' @param x_title The title of the y-axis.
 #'
 #' @return An object of class \code{plotly}.
 #' @export
@@ -87,7 +85,23 @@ ComplexHeatmap_heatmap <- function(..., legend_title = NULL){
 
 }
 
-
+#' Render a bubbleplot with plotly.
+#'
+#' @param x Numeric observations mapped to the x-axis.
+#' @param y Numeric observations mapped to the y-axis.
+#' @param size Numeric values defining the size of the dots.
+#' @param x_title The title of the x-axis.
+#' @param y_title The title of the y-axis.
+#' @param ... these arguments are of either the form value or tag = value and should be valid for the 'plotly::plot_ly()' method.
+#'
+#' @return An object of class \code{plotly}.
+#' @export
+plotly_bubbleplot <- function(x, y, size, x_title = NULL, y_title = NULL, ...){
+  plotly::plot_ly(x = x, y = y, size = size, type = 'scatter', mode = 'markers', marker = list( oparcity = 0.5), ...) %>%
+    plotly::layout(xaxis = list(title = x_title, showgrid = FALSE),
+                   yaxis = list(title = y_title, showgrid = FALSE)
+    )
+}
 
 
 

@@ -1,0 +1,160 @@
+
+### {{ title }}
+
+<!-- Component created on {{ date }} -->
+
+```{r}
+{{ env_id }} <- readRDS(file.path(datadir, "{{ env_id }}.rds"))
+is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
+library(magrittr)
+```
+
+```{r, eval=!is_shiny}
+# set variables 
+# the first column is always used
+if(!is.null({{ env_id }}$x_title)) x_title_{{ env_id }} <- {{ env_id }}$x_title else x_title_{{ env_id }} <- colnames({{ env_id }}$x)[1]
+if(!is.null({{ env_id }}$y_title)) y_title_{{ env_id }} <- {{ env_id }}$y_title else y_title_{{ env_id }} <- colnames({{ env_id }}$y)[1]
+if(!is.null({{ env_id }}$colour_by)) colour_by_{{ env_id }} <- {{ env_id }}$colour_by[,1] else colour_by_{{ env_id }} <- NULL
+if(!is.null({{ env_id }}$labels)) labels_{{ env_id }} <- {{ env_id }}$labels else labels_{{ env_id }} <- rownames({{ env_id }}$x)
+
+# creating the plot object
+plot_{{ env_id }} <- i2dash.scrnaseq::plotly_bubbleplot(x = {{ env_id }}$x[,1], y = {{ env_id }}$y[,1], size = {{ env_id }}$size[,1], color = colour_by_{{ env_id }}, text = labels_{{ env_id }}, y_title = y_title_{{ env_id }}, x_title = x_title_{{ env_id }})
+
+# Provide data for download
+if(is.null({{ env_id }}$colour_by)){
+  df_{{ env_id }} <- data.frame(x = {{ env_id }}$x[,1], y = {{ env_id }}$y[,1], size = {{ env_id }}$size[,1])
+} else {
+  df_{{ env_id }} <- data.frame(x = {{ env_id }}$x[,1], y = {{ env_id }}$y[,1], size = {{ env_id }}$size[,1], colour_by = {{ env_id }}$colour_by[,1])
+}
+htmltools::div(style='display:block;float:left;width:100%;height:90%;',
+  htmltools::tags$button(i2dash::embed_var(df_{{ env_id }})), plot_{{ env_id }})
+```
+
+```{r, eval=is_shiny}
+#
+# shiny input widgets
+#
+ui_list <- list()
+
+# shiny input widget for x
+if (ncol({{ env_id }}$x) > 1){
+  ui_list <- rlist::list.append(ui_list,
+                                selectInput("input_x_{{ env_id }}", label = "Select data for x axis:",
+                                            choices = colnames({{ env_id }}$x)))
+}
+
+# shiny input widget for y
+if (ncol({{ env_id }}$y) > 1){
+  ui_list <- rlist::list.append(ui_list,
+                                selectInput("input_y_{{ env_id }}", label = "Select data for y axis:",
+                                            choices = colnames({{ env_id }}$y)))
+}
+
+# shiny input widget for size
+if (ncol({{ env_id }}$size) > 1){
+  ui_list <- rlist::list.append(ui_list,
+                                selectInput("input_size_{{ env_id }}", label = "Select data for the size factor:",
+                                            choices = colnames({{ env_id }}$size)))
+}
+
+# shiny input widget for colour_by
+if (!is.null({{ env_id }}$colour_by)){
+  if(ncol({{ env_id }}$colour_by) > 1)
+  ui_list <- rlist::list.append(ui_list,
+                                selectInput("input_colour_{{ env_id }}", label = "Select metadata for colouring:",
+                                            choices = colnames({{ env_id }}$colour_by)))
+}
+
+#
+# shiny download button
+#
+ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downloadData_{{ env_id }}', 'Download data')))
+
+#
+# Handle inputs
+#
+x_{{ env_id }} <- shiny::reactive({
+  if(ncol({{ env_id }}$x) == 1){
+    data <- {{ env_id }}$x[[1]]
+    title <- colnames({{ env_id }}$x)[1]
+    return(list(data = data, title = title))
+  } else {
+    data <- {{ env_id }}$x[[input$input_x_{{ env_id }}]]
+    title <- input$input_x_{{ env_id }}
+    return(list(data = data, title = title))
+  }
+})
+
+y_{{ env_id }} <- shiny::reactive({
+  if(ncol({{ env_id }}$y) == 1){
+    data <- {{ env_id }}$y[[1]]
+    title <- colnames({{ env_id }}$y)[1]
+    return(list(data = data, title = title))
+  } else {
+    data <- {{ env_id }}$y[[input$input_y_{{ env_id }}]]
+    title <- input$input_y_{{ env_id }}
+    return(list(data = data, title = title))
+  }
+})
+
+size_{{ env_id }} <- shiny::reactive({
+  if(ncol({{ env_id }}$size) == 1){
+    return(data <- {{ env_id }}$size[[1]])
+  } else {
+    return({{ env_id }}$size[[input$input_size_{{ env_id }}]])
+  }
+})
+
+colour_{{ env_id }} <- shiny::reactive({
+  if(!is.null({{ env_id }}$colour_by)){
+    if(ncol({{ env_id }}$colour_by) == 1){
+      return({{ env_id }}$colour_by[[1]])
+    } else {
+      return({{ env_id }}$colour_by[[input$input_colour_{{ env_id }}]])
+    }
+  } else {
+    return(NULL)
+  }
+})
+
+#
+# Download data.frame
+#
+output$downloadData_{{ env_id }} <- downloadHandler(
+  filename =  paste('data-', Sys.Date(), '.csv', sep=''),
+  content = function(file) {
+    if(is.null(colour_{{ env_id }}()$colour)){
+      df <- data.frame(x = x_{{ env_id }}()$data, y = y_{{ env_id }}()$data, size = size_{{ env_id }}())
+    } else {
+      df <- data.frame(x = x_{{ env_id }}()$data, y = y_{{ env_id }}()$data, size = size_{{ env_id }}(), colour_by = colour_{{ env_id }}()$colour)
+    }
+    write.csv(df, file)
+  }
+)
+
+#
+# reactive for plot creation
+#
+output$plot_{{ env_id }} <- plotly::renderPlotly({
+  if(!is.null({{ env_id }}$y_title)) y_title <- {{ env_id }}$y_title else y_title <- y_{{ env_id }}()$title
+  if(!is.null({{ env_id }}$x_title)) x_title <- {{ env_id }}$x_title else x_title <- x_{{ env_id }}()$title
+  if(!is.null({{ env_id }}$labels)) labels <- {{ env_id }}$labels else labels <- rownames({{ env_id }}$x)
+
+  i2dash.scrnaseq::plotly_bubbleplot(x = x_{{ env_id }}()$data, y = y_{{ env_id }}()$data, size = size_{{ env_id }}(), color = colour_{{ env_id }}(), text = paste0("label: ",labels, "</br>size: ",size_{{ env_id }}()), y_title = y_title, x_title = x_title)
+  
+  
+})
+
+#
+# Layout of component
+#
+shiny::fillRow(flex = c(NA, 1),
+      shinyWidgets::dropdownButton(div(style='max-height: 350px; overflow-x: auto;',do.call(shiny::inputPanel, ui_list)),
+                       circle = TRUE, status = "danger", icon = icon("gear"), width = "300px",
+                       tooltip = shinyWidgets::tooltipOptions(title = "Click, to change plot settings:"))
+      ,
+      plotly::plotlyOutput("plot_{{ env_id }}", height = "100%")
+)
+```
+
+

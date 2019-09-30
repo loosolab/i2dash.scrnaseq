@@ -4,7 +4,7 @@ author: i2dash team
 output:
   flexdashboard::flex_dashboard:
     theme: yeti
-runtime: shiny
+#runtime: shiny
 ---
 <!-- This dashboard was created with the R package 'i2dash'. https://gitlab.gwdg.de/loosolab/software/i2dash -->
 ```{r i2dash-global-setup}
@@ -20,187 +20,171 @@ options(knitr.duplicate.label = "allow")
 datadir <- "/datadir"
 ```
 
-Multi Gene Expression {data-navmenu="Tools"}
+Bubbleplot 
 ====================================================
 
-<!-- Component created on  2019-09-25 14:03:56  -->
+<!-- Page created on 2019-09-26 16:38:53 -->
+
+
+Column {.tabset}
+----------------------------------------------------
+
+
+### Test of the bubbleplot
+
+<!-- Component created on 2019-09-26 16:38:46 -->
 
 ```{r}
-env_eowq8S = readRDS(file.path(datadir, "env_eowq8S.rds"))
-
+env_eowq8S <- readRDS(file.path(datadir, "env_eowq8S.rds"))
 is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
-
 library(magrittr)
-
-use_dimred_env_eowq8S <- env_eowq8S$use_dimred
-exprs_values_env_eowq8S <- env_eowq8S$exprs_values
-
-#
-# Helper functions for generating figures
-#
-create_feature_figure <- function(feature, data, mapping = viridis::scale_color_viridis()){
-  data %>%
-    ggplot2::ggplot(ggplot2::aes_string(x = "dim1", y = "dim2", color = feature)) +
-    ggplot2::geom_point() +
-    mapping +
-    ggplot2::labs(color = feature, x = "", y = "", title = "") +
-    ggplot2::theme_minimal()
-}
 ```
-
-UI elements {.sidebar}
--------------------------------------
-    
-###
-
-```{r, eval=is_shiny}
-#
-# Render UI elements for the selection of the dimension reduction, features and number of columns
-#
-if(length(use_dimred_env_eowq8S) > 1){
-  selectInput("select_dimred_env_eowq8S", label = "Select dimension reduction:", choices = names(use_dimred_env_eowq8S))
-}
-
-selectInput("selected_features_env_eowq8S", label = "Select features:", choices = rownames(exprs_values_env_eowq8S), multiple = TRUE)
-
-# Maximum number of columns depends on selected features
-output$select_columns_env_eowq8S <- renderUI({
-  max_columns <- max(length(input$selected_features_env_eowq8S), 1)
-  numericInput("columns_env_eowq8S",
-               label = HTML("(Please select features first) <br/> Number of columns:"),
-               value = 1,
-               min = 1,
-               max = max_columns)
-})
-uiOutput("select_columns_env_eowq8S")
-
-#
-# Render a button to preview the figure
-#
-actionButton("preview_figure_env_eowq8S", label = "Preview figure")
-
-```
-
-The following **width** and **height** selections are applied only to the downloadable png file of the figure. These selections are **optional**. If the values are `0` the figure will be saved as shown on the display.
-
-```{r, eval=is_shiny}
-#
-# Render UI elements for the selection of figure width and height
-#
-numericInput("width_env_eowq8S", label = "Choose width (cm):", value = 0, min = 0)
-numericInput("height_env_eowq8S", label = "Choose height (cm):", value = 0, min = 0)
-
-# Add a checkbox to preview with selected figure width and height
-checkboxInput("checkbox_env_eowq8S", label = "Preview with customized size", value = FALSE)
-
-#
-# Render buttons for figure and data download
-#
-htmltools::div(style="display:block;float:left;margin-top:20px",
-               downloadButton("download_figure_env_eowq8S", "Download figure"))
-htmltools::div(style="display:block;float:left;margin-top:20px",
-               downloadButton("download_data_env_eowq8S", "Download data"))
-```
-
-Column
--------------------------------------
-    
-### Feature grid
 
 ```{r, eval=!is_shiny}
-htmltools::HTML("<div class='alert alert-warning' role='alert'>
-  <h4>This page can only be used with the shiny-based interactive mode.</h4>
-</div>")
+# set variables 
+# the first column is always used
+if(!is.null(env_eowq8S$x_title)) x_title_env_eowq8S <- env_eowq8S$x_title else x_title_env_eowq8S <- colnames(env_eowq8S$x)[1]
+if(!is.null(env_eowq8S$y_title)) y_title_env_eowq8S <- env_eowq8S$y_title else y_title_env_eowq8S <- colnames(env_eowq8S$y)[1]
+if(!is.null(env_eowq8S$colour_by)) colour_by_env_eowq8S <- env_eowq8S$colour_by[,1] else colour_by_env_eowq8S <- NULL
+if(!is.null(env_eowq8S$labels)) labels_env_eowq8S <- env_eowq8S$labels else labels_env_eowq8S <- rownames(env_eowq8S$x)
+
+# creating the plot object
+plot_env_eowq8S <- i2dash.scrnaseq::plotly_bubbleplot(x = env_eowq8S$x[,1], y = env_eowq8S$y[,1], size = env_eowq8S$size[,1], color = colour_by_env_eowq8S, text = labels_env_eowq8S, y_title = y_title_env_eowq8S, x_title = x_title_env_eowq8S)
+
+# Provide data for download
+if(is.null(env_eowq8S$colour_by)){
+  df_env_eowq8S <- data.frame(x = env_eowq8S$x[,1], y = env_eowq8S$y[,1], size = env_eowq8S$size[,1])
+} else {
+  df_env_eowq8S <- data.frame(x = env_eowq8S$x[,1], y = env_eowq8S$y[,1], size = env_eowq8S$size[,1], colour_by = env_eowq8S$colour_by[,1])
+}
+htmltools::div(style='display:block;float:left;width:100%;height:90%;',
+  htmltools::tags$button(i2dash::embed_var(df_env_eowq8S)), plot_env_eowq8S)
 ```
 
 ```{r, eval=is_shiny}
-reactive_env_eowq8S <- eventReactive(input$preview_figure_env_eowq8S, {
-  # validate if at least a feature is selected
-  validate(
-      need(input$selected_features_env_eowq8S != "", "Please select at least one feature.")
-  )
-  
-  if(length(use_dimred_env_eowq8S) > 1){
-    red_dim <- use_dimred_env_eowq8S[[input$select_dimred_env_eowq8S]]
-  } else {
-    red_dim <- use_dimred_env_eowq8S[[1]]
-  }
-  
-  #
-  # Create data for the figure from selected features
-  #
-  selected_features <- input$selected_features_env_eowq8S
-  data <- data.frame(dim1 = red_dim[, 1],
-                     dim2 = red_dim[, 2],
-                     t(exprs_values_env_eowq8S[selected_features, ]))
-  
-  #
-  # Create figures
-  #
-  figure_columns <- input$columns_env_eowq8S
-  
-  # Calculate number of rows
-  figure_rows <- ceiling(length(selected_features)/input$columns_env_eowq8S)
-  
-  figure_autosize <- multipanelfigure::multi_panel_figure(
-    width = "auto",
-    columns = figure_columns,
-    height = "auto",
-    rows = figure_rows)
-  
-  figure_customsize <- NULL
-  if(input$width_env_eowq8S > 0 & input$height_env_eowq8S > 0) {
-    figure_customsize <- multipanelfigure::multi_panel_figure(
-      width = input$width_env_eowq8S,
-      columns = figure_columns,
-      height = input$height_env_eowq8S,
-      rows = figure_rows,
-      unit = "cm")
-  }
-  
-  #
-  # Create a list of plots for selected features
-  #
-  feature_plot_list <- lapply(selected_features, create_feature_figure, data = data)
-  
-  for(feature_plot in feature_plot_list){
-    figure_autosize <- multipanelfigure::fill_panel(figure_autosize, feature_plot, scaling = "fit")
-    if(!is.null(figure_customsize)) figure_customsize <- multipanelfigure::fill_panel(figure_customsize, feature_plot, scaling = "fit")
-  }
-  
-  return(list("figure_auto" = figure_autosize, "figure_custom" = figure_customsize, "data" = data))
-})
+#
+# shiny input widgets
+#
+ui_list <- list()
+
+# shiny input widget for x
+if (ncol(env_eowq8S$x) > 1){
+  ui_list <- rlist::list.append(ui_list,
+                                selectInput("input_x_env_eowq8S", label = "Select data for x axis:",
+                                            choices = colnames(env_eowq8S$x)))
+}
+
+# shiny input widget for y
+if (ncol(env_eowq8S$y) > 1){
+  ui_list <- rlist::list.append(ui_list,
+                                selectInput("input_y_env_eowq8S", label = "Select data for y axis:",
+                                            choices = colnames(env_eowq8S$y)))
+}
+
+# shiny input widget for size
+if (ncol(env_eowq8S$size) > 1){
+  ui_list <- rlist::list.append(ui_list,
+                                selectInput("input_size_env_eowq8S", label = "Select data for the size factor:",
+                                            choices = colnames(env_eowq8S$size)))
+}
+
+# shiny input widget for colour_by
+if (!is.null(env_eowq8S$colour_by)){
+  if(ncol(env_eowq8S$colour_by) > 1)
+  ui_list <- rlist::list.append(ui_list,
+                                selectInput("input_colour_env_eowq8S", label = "Select metadata for colouring:",
+                                            choices = colnames(env_eowq8S$colour_by)))
+}
 
 #
-# Render output and prepare downloads
+# shiny download button
 #
-output$plot_env_eowq8S <- renderPlot({
-  if(input$checkbox_env_eowq8S & !is.null(reactive_env_eowq8S()$figure_custom)){
-    reactive_env_eowq8S()$figure_custom
+ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downloadData_env_eowq8S', 'Download data')))
+
+#
+# Handle inputs
+#
+x_env_eowq8S <- shiny::reactive({
+  if(ncol(env_eowq8S$x) == 1){
+    data <- env_eowq8S$x[[1]]
+    title <- colnames(env_eowq8S$x)[1]
+    return(list(data = data, title = title))
   } else {
-    reactive_env_eowq8S()$figure_auto
+    data <- env_eowq8S$x[[input$input_x_env_eowq8S]]
+    title <- input$input_x_env_eowq8S
+    return(list(data = data, title = title))
   }
 })
 
-plotOutput("plot_env_eowq8S")
+y_env_eowq8S <- shiny::reactive({
+  if(ncol(env_eowq8S$y) == 1){
+    data <- env_eowq8S$y[[1]]
+    title <- colnames(env_eowq8S$y)[1]
+    return(list(data = data, title = title))
+  } else {
+    data <- env_eowq8S$y[[input$input_y_env_eowq8S]]
+    title <- input$input_y_env_eowq8S
+    return(list(data = data, title = title))
+  }
+})
 
-# Download figure
-output$download_figure_env_eowq8S <- downloadHandler(
-  filename = function() { paste("feature_grid_", Sys.Date(), ".png", sep="") },
-  content = function(file) {
-    if(!is.null(reactive_env_eowq8S()$figure_custom)){
-      multipanelfigure::save_multi_panel_figure(figure = reactive_env_eowq8S()$figure_custom, filename = file, dpi = 300, device = "png")
+size_env_eowq8S <- shiny::reactive({
+  if(ncol(env_eowq8S$size) == 1){
+    return(data <- env_eowq8S$size[[1]])
+  } else {
+    return(env_eowq8S$size[[input$input_size_env_eowq8S]])
+  }
+})
+
+colour_env_eowq8S <- shiny::reactive({
+  if(!is.null(env_eowq8S$colour_by)){
+    if(ncol(env_eowq8S$colour_by) == 1){
+      return(env_eowq8S$colour_by[[1]])
     } else {
-      multipanelfigure::save_multi_panel_figure(figure = reactive_env_eowq8S()$figure_auto, filename = file, dpi = 300, device = "png")
+      return(env_eowq8S$colour_by[[input$input_colour_env_eowq8S]])
     }
+  } else {
+    return(NULL)
+  }
+})
+
+#
+# Download data.frame
+#
+output$downloadData_env_eowq8S <- downloadHandler(
+  filename =  paste('data-', Sys.Date(), '.csv', sep=''),
+  content = function(file) {
+    if(is.null(colour_env_eowq8S()$colour)){
+      df <- data.frame(x = x_env_eowq8S()$data, y = y_env_eowq8S()$data, size = size_env_eowq8S())
+    } else {
+      df <- data.frame(x = x_env_eowq8S()$data, y = y_env_eowq8S()$data, size = size_env_eowq8S(), colour_by = colour_env_eowq8S()$colour)
+    }
+    write.csv(df, file)
   }
 )
 
-# Download data
-output$download_data_env_eowq8S <- downloadHandler(
-  filename =  paste("feature_grid_", Sys.Date(), ".csv", sep = ""),
-  content = function(file) {
-    write.csv(reactive_env_eowq8S()$df, file)
-  }
+#
+# reactive for plot creation
+#
+output$plot_env_eowq8S <- plotly::renderPlotly({
+  if(!is.null(env_eowq8S$y_title)) y_title <- env_eowq8S$y_title else y_title <- y_env_eowq8S()$title
+  if(!is.null(env_eowq8S$x_title)) x_title <- env_eowq8S$x_title else x_title <- x_env_eowq8S()$title
+  if(!is.null(env_eowq8S$labels)) labels <- env_eowq8S$labels else labels <- rownames(env_eowq8S$x)
+
+  i2dash.scrnaseq::plotly_bubbleplot(x = x_env_eowq8S()$data, y = y_env_eowq8S()$data, size = size_env_eowq8S(), color = colour_env_eowq8S(), text = paste0("label: ",labels, "</br>size: ",size_env_eowq8S()), y_title = y_title, x_title = x_title)
+  
+  
+})
+
+#
+# Layout of component
+#
+shiny::fillRow(flex = c(NA, 1),
+      shinyWidgets::dropdownButton(div(style='max-height: 350px; overflow-x: auto;',do.call(shiny::inputPanel, ui_list)),
+                       circle = TRUE, status = "danger", icon = icon("gear"), width = "300px",
+                       tooltip = shinyWidgets::tooltipOptions(title = "Click, to change plot settings:"))
+      ,
+      plotly::plotlyOutput("plot_env_eowq8S", height = "100%")
 )
 ```
+

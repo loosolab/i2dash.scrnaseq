@@ -440,6 +440,51 @@ dashboard <- i2dash::add_component(
 )
 ```
 
+```{r, eval=FALSE}
+# Creating another page
+dashboard <- i2dash::add_page(dashboard, page = "bubble", title = "Bubbleplot", layout = "default")
+
+# Extracting the data as data.frames
+x_df <- data.frame(
+  "total_counts" = colData(sce)$total_counts, 
+  "log10_total_counts" = colData(sce)$log10_total_counts
+)
+
+y_df <- data.frame(
+  "Features" = colData(sce)$total_features_by_counts, 
+  "log10_Features" = colData(sce)$log10_total_features_by_counts
+)
+
+size_df <- data.frame(
+  "total_counts" = colData(sce)$total_counts,
+  "CellCyclePhase" = colData(sce)$CellCyclePhase,
+  "sum" = colData(sce)$sum,
+  "DaysPostAmputation" = colData(sce)$DaysPostAmputation,
+  "Condition" = colData(sce)$Condition
+)
+
+colour_df <- data.frame(
+  "sample" = colData(sce)$sample,
+  "CellCyclePhase" = colData(sce)$CellCyclePhase,
+  "Lane" = colData(sce)$Lane,
+  "DaysPostAmputation" = colData(sce)$DaysPostAmputation,
+  "Condition" = colData(sce)$Condition
+)
+
+# adding the scatterplot component to the i2dashboard object
+dashboard <- i2dash::add_component(
+  dashboard = dashboard,
+  component = "i2dash.scrnaseq::bubbleplot",
+  page = "bubble",
+  x = x_df,
+  y = y_df,
+  size = size_df,
+  colour_by = colour_df,
+  labels = colnames(sce),
+  title = "Test of the bubbleplot"
+)
+```
+
 ## Assemble the dashboard
 
 Finally, we assemble the dashboard:
@@ -449,7 +494,7 @@ dashboard
 i2dash::assemble(
   dashboard = dashboard,
   file = "MyDashboard.Rmd",
-  pages = "feature_grid_page"
+  pages = "bubble"
 )
 ```
 

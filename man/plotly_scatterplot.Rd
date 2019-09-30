@@ -7,15 +7,11 @@
 plotly_scatterplot(..., y_title = NULL, x_title = NULL)
 }
 \arguments{
-\item{df}{A dataframe containing the data for the boxplot}
+\item{...}{these arguments are of either the form value or tag = value and should be valid for the 'plotly::plot_ly()' method.}
 
-\item{labels}{A list with sample names, which should be of the same length as x and y.}
+\item{y_title}{The title of the x-axis.}
 
-\item{colour_by}{A list containing factorial values that will be used for colouring. In case of a named list, a dropdown menu will be provided in the interactive mode. Note: The length of all vectors in case of a named list should be of the same length as x and y.}
-
-\item{checkbox}{A boolean value as indicator for colouring by labels.}
-
-\item{selected_label}{The label (character) selected by the user.}
+\item{x_title}{The title of the y-axis.}
 }
 \value{
 An object of class \code{plotly}.

@@ -21,7 +21,8 @@ Imports:
     tidyr,
     dplyr,
     SummarizedExperiment,
-    SingleCellExperiment
+    SingleCellExperiment,
+    shinyWidgets
 Suggests: 
     kableExtra,
     multipanelfigure,
