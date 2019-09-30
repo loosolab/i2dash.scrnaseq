@@ -28,8 +28,8 @@ setMethod("heatmap",
                    legend_title  = NULL,
                    cluster_rows = FALSE,
                    cluster_columns = FALSE,
-                   clustering_distance = "euclidean",
-                   clustering_method = "complete") {
+                   clustering_distance = c("euclidean", "maximum", "manhattan", "binary", "minkowski"),
+                   clustering_method = c("average", "ward.D", "ward.D2", "single", "complete", "mcquitty", "median","centroid")) {
 
             # Create random env id
             env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
@@ -47,10 +47,8 @@ setMethod("heatmap",
               if(is.null(colnames(column_split))) colnames(column_split) <- paste0("C", 1:ncol(column_split))
               if(ncol(exprs_values) != nrow(column_split)) stop("The number of columns in 'exprs_values' and rows in 'column_split' are not equal.")
             }
-            clustdist_values <- c("euclidean", "maximum", "manhattan", "binary", "minkowski")
-            clustmethod_values <- c("average", "ward.D", "ward.D2", "single", "complete", "mcquitty", "median","centroid")
-            if(! clustering_distance %in% clustdist_values) stop("The character is not a valid pre-defined character. Functions are not possible.")
-            if(! clustering_method %in% clustmethod_values) stop("The character is not a valid pre-defined character. Functions are not possible.")
+            clustering_distance <- match.arg(clustering_distance)
+            clustering_method <- match.arg(clustering_method)
 
             # Create component environment
             env <- new.env()
@@ -108,4 +106,3 @@ setMethod("heatmap",
                     column_split = column_split,
                     ...)
           })
-
