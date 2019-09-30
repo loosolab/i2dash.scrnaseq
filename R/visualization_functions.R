@@ -77,67 +77,52 @@
   return(p)
 }
 
-#' Render a bar plot
+#' Render a bar plot with plotly.
 #'
-#' @param cluster Values for the membership to clusters. In case of a nested list, a dropdown menu will be provided in the interactive mode.
-#' @param x Numeric values mapped to the x-axis. In case of a nested list, a dropdown menu will be provided in the interactive mode.
+#' @param ... these arguments are of either the form value or tag = value and should be valid for the 'plotly::plot_ly()' method.
+#' @param showlegend (Optional) Boolean value that describes if the legend should be shown.
+#' @param title_x (Optional) A title that describes the observations.
+#' @param title_group_by (Optional) A title that describes the grouping factor.
 #'
-#' @return A list with 1. the plotly object & 2. the data frame used in the plot
+#' @return An object of class \code{plotly}.
 #' @export
-.bar_plot <- function(cluster, x = NULL){
-
-  #if x = NULL -> plot for "Number of cells"
-  #if x != NULL -> plot for "Number of fractions"
-  if(is.null(x)){
-    tab <- table(cluster)
-    tab_df <- as.data.frame(tab)
-
-    # plotly
-    title <- "Number of cells"
-    p <- plotly::plot_ly(tab_df, x = tab_df[[2]], y = tab_df[[1]],
-                         name = names(tab_df[1]),
-                         type = "bar", orientation = "h", opacity = 0.7)
-    p <- plotly::layout(p,
-                        xaxis = list(title=title, showline = T),
-                        yaxis = list(title="Cluster", showline = T, showticklabels = T),
-                        showlegend = F
-    )
-    return(list("plot" = p, "df" = tab_df))
-  } else {
-    # create data.frame for plot
-    tab <- table(cluster[[1]],x[[1]])
-    ptab <- prop.table(tab,margin = 1)
-    ptab_df <- as.data.frame.matrix(ptab)
-
-    # plotly
-    title <- "Fraction of cells"
-    p <- plotly::plot_ly(ptab_df, type = "bar", orientation = "h", opacity = 0.7)
-    for(i in 1:length(names(ptab_df))){
-      p <- plotly::add_trace(p, x = ptab_df[[i]], y = row.names(ptab_df), name = names(ptab_df[i]))
-    }
-    p <- plotly::layout(p,
-                        xaxis = list(title=title, showline = T),
-                        yaxis = list(title="Cluster", showline = T, showticklabels = T),
-                        barmode = 'stack',
-                        showlegend = T
-    )
-    return(list("plot" = p, "df" = ptab_df))
-  }
-
+plotly_barplot <- function(..., showlegend = NULL, x_group_by_title = NULL, y_group_by_title = NULL){
+  p <- plotly::plot_ly(..., type = "bar", orientation = "h", opacity = 0.7) %>%
+    plotly::layout(xaxis = list(title = x_group_by_title, showline = T),
+                   yaxis = list(title = y_group_by_title, showline = T, showticklabels = T),
+                   barmode = 'stack',
+                   showlegend = showlegend)
+  p
 }
 
-#' Render a box plot with plotly.
+#' Render a boxplot with plotly.
 #'
 #' @param x Numeric observations for the boxplot.
 #' @param group_by A factor, by which observations can optionally be grouped.
-#' @param title A title that describes the observations.
+#' @param x_title A title that describes the observations.
 #' @param group_by_title A title that describes the grouping factor.
 #'
 #' @return An object of class \code{plotly}.
 #' @export
-plotly_boxplot <- function(x, group_by = NULL, title = "", group_by_title = NULL){
-  plotly::plot_ly(x = x, y = group_by, type = "box", name = title) %>%
-    plotly::layout(xaxis = list(title = title, showline = T),
-                   yaxis = list(title = group_by_title, showline = T, showticklabels = T),
-                   showlegend = T)
+plotly_boxplot <- function(x, group_by = NULL, x_title = NULL, group_by_title = NULL){
+  plotly::plot_ly(x = x, y = group_by, type = "box", colors = "Set1",  color = group_by) %>%
+    plotly::layout(xaxis = list(title = x_title, showline = T),
+                   yaxis = list(title = group_by_title, showline = T, showticklabels = T))
+}
+
+#' Render a vertical violin plot with plotly.
+#'
+#' @param y Numeric observations.
+#' @param group_by A factor, by which observations can optionally be grouped.
+#' @param y_title A title that describes the observations.
+#' @param group_by_title A title that describes the grouping factor.
+#'
+#' @return An object of class \code{plotly}.
+#' @export
+ plotly_violinplot <- function(y, group_by = NULL, y_title = NULL, group_by_title = NULL){
+      plotly::plot_ly(colors = "Set1", x = group_by, y = y, color = group_by, type = "violin", box = list(visible = T), meanline = list(visible = T), points = "all", jitter = 0) %>%
+      plotly::layout(
+        xaxis = list(title = group_by_title),
+        yaxis = list(title = y_title)
+      )
 }

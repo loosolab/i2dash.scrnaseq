@@ -1,0 +1,156 @@
+
+### {{ title }}
+
+<!-- Component created on {{ date }} -->
+
+```{r}
+{{ env_id }} <- readRDS(file.path(datadir, "{{ env_id }}.rds"))
+is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
+library(magrittr)
+```
+
+```{r}
+#' Function to create a dataframe for plotly_barplot.
+
+#' @param y_group_by A list with factorial values, by which x_group_by can optionally be grouped.
+#' @param x_group_by (Optional) A named list with the x_group_by for the barplot.
+#'
+#' @return An object of class \code{list} containig the dataframe 'df', the vector 'x' with values for the x-axis, the vector 'y' with values for the y-axis, the vector 'names' (can be NULL), the boolean value 'showlegend'.
+create_barplot_df <- function(y_group_by, x_group_by = NULL){
+  if(is.null(x_group_by)){
+    tab <- base::table(y_group_by)
+    df <- as.data.frame(tab)
+    x <- df[2]
+    y <- df[1]
+    names <- NULL
+    showlegend <- F
+    return(list("df" = df, "x" = x, "y" = y, "names" = names, "showlegend" = showlegend))
+  } else {
+    tab <- base::table(y_group_by, x_group_by)
+    ptab <- prop.table(tab, margin = 1)
+    df <- as.data.frame(ptab)
+    x <- df[3]
+    y <- df[1]
+    names <- df[2]
+    showlegend <- T
+    return(list("df" = df, "x" = x, "y" = y, "names" = names, "showlegend" = showlegend))
+  }
+}
+```
+
+```{r, eval=!is_shiny}
+# selecting the first numeric and factor column for object wrapper 
+{{ env_id }}$y_group_by %>%
+  as.data.frame() %>%
+  dplyr::select_if(is.factor) %>%
+  dplyr::select(1) -> y_group_by_{{ env_id }}
+
+if(!is.null({{ env_id }}$x_group_by)){
+  {{ env_id }}$x_group_by %>%
+    as.data.frame() %>%
+    dplyr::select_if(is.factor) %>%
+    dplyr::select(1) -> x_group_by_{{ env_id }}
+  x_group_by_title_{{ env_id }} <- colnames(x_group_by_{{ env_id }})
+} else {
+  x_group_by_title_{{ env_id }} <- NULL
+  x_group_by_{{ env_id }} <- NULL
+}
+
+# set title variables
+if(!is.null({{ env_id }}$y_group_by_title)) y_group_by_title_{{ env_id }} <- {{ env_id }}$y_group_by_title else y_group_by_title_{{ env_id }} <- colnames(y_group_by_{{ env_id }})
+if(!is.null({{ env_id }}$x_group_by_title)) x_group_by_title_{{ env_id }} <- {{ env_id }}$x_group_by_title
+
+# Function to create a dataframe for bar plot
+output_list <- create_barplot_df(y_group_by = y_group_by_{{ env_id }}[,1], x_group_by = x_group_by_{{ env_id }}[,1])
+
+# creating the plot object
+plot_{{ env_id }} <- i2dash.scrnaseq::plotly_barplot(x = output_list$x[[1]], y = output_list$y[[1]], name = output_list$names[[1]], showlegend = output_list$showlegend, x_group_by_title = x_group_by_title_{{ env_id }}, y_group_by_title = y_group_by_title_{{ env_id }})
+
+# Provide data for download
+htmltools::div(style="display:block;float:left;width:100%;height:90%;",
+  htmltools::tags$button(i2dash::embed_var(output_list$df)), plot_{{ env_id }}
+)
+```
+
+```{r, eval=is_shiny}
+ui_list <- list()
+
+#
+# shiny input widget for y_group_by
+#
+if ({{ env_id }}$y_group_by_selection){
+  ui_list <- rlist::list.append(ui_list,
+                                selectInput("select_y_group_by_{{ env_id }}", label = "Group x_group_by by:",
+                                            choices = colnames({{ env_id }}$y_group_by[lapply({{ env_id }}$y_group_by, class) =="factor"])))
+}
+
+#
+# shiny input widget for x_group_by
+#
+if ({{ env_id }}$x_group_by_selection){
+  ui_list <- rlist::list.append(ui_list,
+                                selectInput("select_x_group_by_{{ env_id }}", label = "Select x_group_by:",
+                                            choices = colnames({{ env_id }}$x_group_by[lapply({{ env_id }}$x_group_by, class) =="factor"])))
+}
+
+#
+# shiny download button
+#
+ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downloadData_{{ env_id }}', 'Download data')))
+
+#
+# Create reactive dataframe
+#
+reactive_{{ env_id }} <- shiny::reactive({
+  
+  if(!{{ env_id }}$y_group_by_selection){
+    y_group_by <- {{ env_id }}$y_group_by[[1]]
+    y_group_by_title <- colnames({{ env_id }}$y_group_by)[1]
+  } else {
+    y_group_by = {{ env_id }}$y_group_by[[input$select_y_group_by_{{ env_id }}]]
+    y_group_by_title <- input$select_y_group_by_{{ env_id }}
+  }
+  
+  if(!{{ env_id }}$x_group_by_selection){
+    x_group_by = {{ env_id }}$x_group_by[[1]]
+    x_group_by_title <- colnames({{ env_id }}$x_group_by)[1]
+  } else {
+    x_group_by = {{ env_id }}$x_group_by[[input$select_x_group_by_{{ env_id }}]]
+    x_group_by_title <- input$select_x_group_by_{{ env_id }}
+  }
+  
+  output_list <- create_barplot_df(y_group_by = y_group_by, x_group_by = x_group_by)
+  return(list("barplot_input_list" = output_list, "y_group_by_title" = y_group_by_title, "x_group_by_title" = x_group_by_title))
+})
+
+#
+# Download data.frame
+#
+output$downloadData_{{ env_id }} <- downloadHandler(
+  filename =  paste('data-', Sys.Date(), '.csv', sep=''),
+  content = function(file) {
+    write.csv(reactive_{{ env_id }}()$barplot_input_list$df, file)
+  }
+)
+
+#
+# Reactive for plot creation
+#
+output$plot_{{ env_id }} <- plotly::renderPlotly({
+  if(!is.null({{ env_id }}$y_group_by_title)) y_group_by_title <- {{ env_id }}$y_group_by_title else y_group_by_title <- reactive_{{ env_id }}()$y_group_by_title
+  if(!is.null({{ env_id }}$x_group_by_title)) x_group_by_title <- {{ env_id }}$x_group_by_title else x_group_by_title <- reactive_{{ env_id }}()$x_group_by_title
+
+  i2dash.scrnaseq::plotly_barplot(x = reactive_{{ env_id }}()$barplot_input_list$x[[1]], y = reactive_{{ env_id }}()$barplot_input_list$y[[1]], name = reactive_{{ env_id }}()$barplot_input_list$names[[1]], showlegend = reactive_{{ env_id }}()$barplot_input_list$showlegend, x_group_by_title = x_group_by_title, y_group_by_title = y_group_by_title)
+})
+
+#
+# Layout of component
+#
+shiny::fillRow(flex = c(NA, 1),
+      shinyWidgets::dropdownButton(div(style='max-height: 350px; overflow-x: auto;',do.call(shiny::inputPanel, ui_list)),
+                       circle = TRUE, status = "danger", icon = icon("gear"), width = "300px",
+                       tooltip = shinyWidgets::tooltipOptions(title = "Click, to change plot settings:")),
+      plotly::plotlyOutput("plot_{{ env_id }}", height = "100%")
+)
+```
+
