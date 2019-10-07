@@ -27,6 +27,8 @@ add_dimred_sample_page(dashboard, object, ...)
 
 \item{use_dimred}{A data.frame (matrix) containing coordinates of the reduced dimensions or a string indicating a dimension reduction from "reductions" of a Seurat \code{object}. Rownames are used as sample labels.}
 
+\item{sample_metadata}{A data.frame (matrix) containing metadata (e.g. cluster, timepoint, number of features, etc) along samples or a character vector indicating the columns to use from the "meta.data" of a Seurat \code{object}.}
+
 \item{group_by}{A string indicating a column in \code{metadata} that is used to group observations.}
 
 \item{title}{The title of the page.}
@@ -38,8 +40,6 @@ add_dimred_sample_page(dashboard, object, ...)
 \item{show_silhouette}{A logical value indicating if a silhouette plot should be shown (default \code{FALSE}).}
 
 \item{menu}{The name of the menu, under which the page should appear.}
-
-\item{metadata}{A data.frame (matrix) containing metadata (e.g. cluster, timepoint, number of features, etc) along samples or a character vector indicating the columns to use from the "meta.data" of a Seurat \code{object}.}
 }
 \value{
 An object of class \linkS4class{i2dash::i2dashboard}.

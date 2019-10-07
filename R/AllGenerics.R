@@ -65,7 +65,7 @@ setGeneric("summarize_features", function(object, ...) standardGeneric("summariz
 #'
 #' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
 #' @param object A \linkS4class{SingleCellExperiment::SingleCellExperiment} object or a \linkS4class{Seurat::Seurat} object.
-#' @param use_dimred A data.frame (matrix) containing coordinates of the reduced dimension or a character representing a valid \code{reducedDim} slot of a SingleCellExperiment \code{object}/ a name of the \linkS4class{Seurat::DimReduc} object in \code{object@reductions}.
+#' @param use_dimred A data.frame (matrix) containing coordinates of the reduced dimension or a character representing a valid \code{reducedDim} slot of the SingleCellExperiment \code{object}/ a name of the \linkS4class{Seurat::DimReduc} object in \code{object@reductions}.
 #' @param exprs_values A data.frame (matrix) containing expression data of features of interest in rows and samples in columns.
 #' @param group_by A data.frame (matrix) containing factorial metadata (e.g. cluster, timepoint, etc.) along samples or a character vector indicating the columns to use from the "meta.data" of a Seurat \code{object}.
 #' @param assay A character specifying the assay (\code{object@assays}) to obtain expression values from. (Default: "RNA")
@@ -138,7 +138,7 @@ setGeneric("boxplot", function(dashboard, object, ...) standardGeneric("boxplot"
 #' @param dashboard A \linkS4class{i2dash::i2dashboard}.
 #' @param object An object of class \linkS4class{Seurat::Seurat} or \linkS4class{SingleCellExperiment::SingleCellExperiment}.
 #' @param use_dimred A data.frame (matrix) containing coordinates of the reduced dimensions or a string indicating a dimension reduction from "reductions" of a Seurat \code{object}. Rownames are used as sample labels.
-#' @param metadata A data.frame (matrix) containing metadata (e.g. cluster, timepoint, number of features, etc) along samples or a character vector indicating the columns to use from the "meta.data" of a Seurat \code{object}.
+#' @param sample_metadata A data.frame (matrix) containing metadata (e.g. cluster, timepoint, number of features, etc) along samples or a character vector indicating the columns to use from the "meta.data" of a Seurat \code{object}.
 #' @param group_by A string indicating a column in \code{metadata} that is used to group observations.
 #' @param title The title of the page.
 #' @param labels An optional vector with sample labels.

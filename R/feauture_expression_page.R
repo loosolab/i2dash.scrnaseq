@@ -62,15 +62,15 @@ setMethod("add_feature_expression_page",
 #' @export
 setMethod("add_feature_expression_page",
           signature = signature(dashboard = "i2dashboard", object = "SingleCellExperiment"),
-          function(dashboard, object, use_dimred, exprs_values, metadata_columns = NULL, features = NULL, title = "Gene expression", menu = NULL) {
+          function(dashboard, object, use_dimred, exprs_values, metadata_columns = NULL, subset_row = NULL, ...) {
 
             assertive.sets::assert_is_subset(use_dimred, SingleCellExperiment::reducedDimNames(object))
             assertive.sets::assert_is_subset(exprs_values, SummarizedExperiment::assayNames(object))
             assertive.sets::assert_is_subset(metadata_columns, colnames(SummarizedExperiment::colData(object)))
 
             expression <- SummarizedExperiment::assay(object, i = exprs_values)
-            if(!is.null(features)) {
-              expression <- SummarizedExperiment::assay(object, i = exprs_values)[features, ]
+            if(!is.null(subset_row)) {
+              expression <- SummarizedExperiment::assay(object, i = exprs_values)[subset_row, ]
             }
 
             SummarizedExperiment::colData(object) %>%
@@ -82,8 +82,7 @@ setMethod("add_feature_expression_page",
                                      exprs_values = expression,
                                      group_by = metadata,
                                      labels = colnames(object),
-                                     title = title,
-                                     menu = menu)
+                                     ...)
           })
 
 #' @name feature-expression-page
