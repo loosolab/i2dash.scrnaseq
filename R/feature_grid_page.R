@@ -69,16 +69,16 @@ setMethod("add_feature_grid_page",
 #' @export
 setMethod("add_feature_grid_page",
           signature = signature(dashboard = "i2dashboard", object = "Seurat"),
-          function(dashboard, object, use_dimred, assay, slot = "data", subset_row = NULL, ...) {
+          function(dashboard, object, use_dimred, assay, assay_slot = "data", subset_row = NULL, ...) {
 
             assertive.sets::assert_is_subset(use_dimred, names(object@reductions))
             assertive.sets::assert_is_subset(assay, names(object@assays))
 
             assay_obj <- Seurat::GetAssay(object = object, assay = assay)
-            expression <- Seurat::GetAssayData(object = assay_obj, slot = slot)
+            expression <- Seurat::GetAssayData(object = assay_obj, slot = assay_slot)
 
             if(!is.null(subset_row)) {
-              expression <- Seurat::GetAssayData(object = assay_obj, slot = slot)[subset_row, ]
+              expression <- expression[subset_row, ]
             }
 
             use_dimreds <- lapply(use_dimred, function(dimred) {

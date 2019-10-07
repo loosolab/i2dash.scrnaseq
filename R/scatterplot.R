@@ -1,23 +1,3 @@
-#' Renders a component containing a scatterplot with optional selection options
-#'
-#' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
-#' @param x A data.frame (matrix) containing columns with numeric values that will be mapped to the x-axis.
-#' @param y A data.frame (matrix) containing columns with numeric values that will be mapped to the y-axis.
-#' @param object A valid \linkS4class{SingleCellExperiment::SingleCellExperiment} object.
-#' @param use A character specifying where to obtain the data from. One of \code{"colData"}, \code{"rowData"}, \code{"reducedDim"}.
-#' @param reducedDim A character vector indicating the reduced dimension to use from \code{"reducedDim"}
-#' @param colour_by An optional data.frame (matrix) containing columns with numeric or factorial values that will be used for colouring.
-#' @param labels An optional vector with sample names. A dropdown menu for colouring by label will be provided.
-#' @param exprs_values An optional data.frame (matrix) containing expression data of features of interest in rows and samples in columns.
-#' @param title The title of the components junk.
-#' @param x_title An optional title of the x-axis. If not provided the column names from \code{x} are used instead.
-#' @param y_title An optional title of the y-axis. If not provided the column names from \code{y}  are used instead.
-#'
-#' @name scatterplot
-#' @rdname scatterplot
-#' @exportMethod scatterplot
-setGeneric("scatterplot", function(dashboard, object, ...) standardGeneric("scatterplot"))
-
 #' @rdname scatterplot
 #' @return A string containing markdown code for the rendered component
 setMethod("scatterplot",
@@ -39,6 +19,8 @@ setMethod("scatterplot",
             if(is.null(colnames(x))) colnames(x) <- paste0("X_", 1:ncol(x))
             if(is.null(colnames(y))) colnames(y) <- paste0("Y_", 1:ncol(y))
             if(nrow(x) != nrow(y)) stop("The number of rows in 'x' and 'y' are is equal.")
+
+            if(colnames(x)[1] == colnames(y)[1] & colnames(x)[2] == colnames(y)[2]) y <-  y[, c(2, 1, c(3:ncol(y)))]
 
             colouring <- list("No colour" = 0)
 
@@ -97,10 +79,11 @@ setMethod("scatterplot",
 #' @export
 setMethod("scatterplot",
           signature = signature(dashboard = "i2dashboard", object = "SingleCellExperiment"),
-          function(dashboard, object, use = "colData", x = NULL, y = NULL, colour_by = NULL, reduced_dim = NULL, ...) {
+          function(dashboard, object, use = c("colData", "rowData", "reducedDim"), x = NULL, y = NULL, colour_by = NULL, use_dimred = NULL, ...) {
             #
             # use colData
             #
+            use <- match.arg(use)
             if(use == "colData") {
               labels <- rownames(SummarizedExperiment::colData(object))
               #
@@ -189,9 +172,9 @@ setMethod("scatterplot",
               # create data.frames for x, y
               #
               # To Do: in statical mode the first column is used for x and y. This is useless.
-              if(!is.null(reduced_dim)) {
-                assertive.sets::assert_is_subset(reduced_dim, SingleCellExperiment::reducedDimNames(object))
-                SingleCellExperiment::reducedDim(object, reduced_dim) %>%
+              if(!is.null(use_dimred)) {
+                assertive.sets::assert_is_subset(use_dimred, SingleCellExperiment::reducedDimNames(object))
+                SingleCellExperiment::reducedDim(object, use_dimred) %>%
                   as.data.frame() -> x -> y
               } else {
                 SingleCellExperiment::reducedDim(object) %>%
@@ -207,6 +190,133 @@ setMethod("scatterplot",
                   dplyr::select(!!colour_by) -> colour_by
               } else {
                 SummarizedExperiment::colData(object) %>%
+                  as.data.frame() -> colour_by
+              }
+            }
+
+            scatterplot(dashboard,
+                        x = x,
+                        y = y,
+                        labels = labels,
+                        colour_by = colour_by,
+                        ...)
+          })
+
+#' @rdname scatterplot
+#' @return An object of class \linkS4class{i2dash::i2dashboard}.
+#' @export
+setMethod("scatterplot",
+          signature = signature(dashboard = "i2dashboard", object = "Seurat"),
+          function(dashboard, object, use = c("meta.data", "meta.features", "reduction"), x = NULL, y = NULL, colour_by = NULL, use_dimred = NULL, assay = "RNA", ...) {
+            #
+            # use meta.data
+            #
+            use <- match.arg(use)
+            if(use == "meta.data") {
+              labels <- rownames(object@meta.data)
+              #
+              # create data.frame for y
+              #
+              if(!is.null(y)) {
+                assertive.sets::assert_is_subset(y, colnames(object@meta.data))
+                object@meta.data %>%
+                  as.data.frame() %>%
+                  dplyr::select(!!y) -> y
+              } else {
+                object@meta.data %>%
+                  as.data.frame() -> y
+              }
+              #
+              # create data.frame for x
+              #
+              if(!is.null(x)) {
+                assertive.sets::assert_is_subset(x, colnames(object@meta.data))
+                object@meta.data %>%
+                  as.data.frame() %>%
+                  dplyr::select(!!x) -> x
+              } else {
+                object@meta.data %>%
+                  as.data.frame() -> x
+              }
+              #
+              # create data.frame for colour_by
+              #
+              if(!is.null(colour_by)) {
+                assertive.sets::assert_is_subset(colour_by, colnames(object@meta.data))
+                object@meta.data %>%
+                  as.data.frame() %>%
+                  dplyr::select(!!colour_by) -> colour_by
+              } else {
+                object@meta.data %>%
+                  as.data.frame() -> colour_by
+              }
+              #
+              # use meta.features
+              #
+            } else if (use == "meta.features") {
+              labels <- rownames(object[[assay]]@meta.features)
+              #
+              # create data.frame for y
+              #
+              if(!is.null(y)) {
+                assertive.sets::assert_is_subset(y, colnames(object[[assay]]@meta.features))
+                object[[assay]]@meta.features %>%
+                  as.data.frame() %>%
+                  dplyr::select(!!y) -> y
+              } else {
+                object[[assay]]@meta.features %>%
+                  as.data.frame() -> y
+              }
+              #
+              # create data.frame for x
+              #
+              if(!is.null(x)) {
+                assertive.sets::assert_is_subset(x, colnames(object[[assay]]@meta.features))
+                object[[assay]]@meta.features %>%
+                  as.data.frame() %>%
+                  dplyr::select(!!x) -> x
+              } else {
+                object[[assay]]@meta.features %>%
+                  as.data.frame() -> x
+              }
+              #
+              # create data.frame for colour_by
+              #
+              if(!is.null(colour_by)) {
+                assertive.sets::assert_is_subset(colour_by, colnames(object[[assay]]@meta.features))
+                object[[assay]]@meta.features %>%
+                  as.data.frame() %>%
+                  dplyr::select(!!colour_by) -> colour_by
+              } else {
+                object[[assay]]@meta.features %>%
+                  as.data.frame() -> colour_by
+              }
+              #
+              # use reducedDim
+              #
+            } else if (use == "reduction"){
+              assertive.sets::assert_is_subset(use_dimred, SingleCellExperiment::reducedDimNames(object))
+              labels <- rownames(Seurat::Embeddings(seu, reduction = use_dimred)[, 1:2])
+              #
+              # create data.frames for x, y
+              #
+              if(!is.null(use_dimred)) {
+                Seurat::Embeddings(seu, reduction = use_dimred)[, 1:2] %>%
+                  as.data.frame() -> x -> y
+              } else {
+                Seurat::Embeddings(seu)[, 1:2] %>%
+                  as.data.frame() -> x -> y
+              }
+              #
+              # create data.frame for colour_by
+              #
+              if(!is.null(colour_by)) {
+                assertive.sets::assert_is_subset(colour_by, colnames(object@meta.data))
+                  object@meta.data %>%
+                  as.data.frame() %>%
+                  dplyr::select(!!colour_by) -> colour_by
+              } else {
+                object@meta.data %>%
                   as.data.frame() -> colour_by
               }
             }

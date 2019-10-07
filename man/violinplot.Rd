@@ -5,6 +5,7 @@
 \alias{violinplot}
 \alias{violinplot,i2dashboard,missing-method}
 \alias{violinplot,i2dashboard,SingleCellExperiment-method}
+\alias{violinplot,i2dashboard,Seurat-method}
 \title{Renders a component containing a vertical violin plot}
 \usage{
 violinplot(dashboard, object, ...)
@@ -13,17 +14,20 @@ violinplot(dashboard, object, ...)
   title = NULL, y_title = NULL, group_by_title = NULL)
 
 \S4method{violinplot}{i2dashboard,SingleCellExperiment}(dashboard, object,
-  use = "colData", y = NULL, group_by = NULL, title = NULL,
-  y_title = NULL, group_by_title = NULL)
+  use = c("colData", "rowData"), y = NULL, group_by = NULL, ...)
+
+\S4method{violinplot}{i2dashboard,Seurat}(dashboard, object,
+  use = c("meta.data", "meta.features"), assay = "RNA", y = NULL,
+  group_by = NULL, ...)
 }
 \arguments{
 \item{dashboard}{An object of class \linkS4class{i2dash::i2dashboard}.}
 
-\item{object}{A valid \linkS4class{SingleCellExperiment::SingleCellExperiment} object.}
+\item{object}{An object of class \linkS4class{Seurat::Seurat} or \linkS4class{SingleCellExperiment::SingleCellExperiment}.}
 
-\item{y}{A data.frame (matrix) containing numeric observations for the vertical axis, or a character vector indicating column names of \code{colData(object)}, \code{rowData(object)}.}
+\item{y}{A data.frame (matrix) containing numeric observations for the vertical axisor a character vector indicating the columns to use from \code{use}.}
 
-\item{group_by}{An optional data.frame (matrix) with columns containing grouping factors for the horizontal axis.}
+\item{group_by}{An optional data.frame (matrix) with columns containing grouping factors for the horizontal axis or a character vector indicating the columns to use from \code{use}.}
 
 \item{title}{The title of the component.}
 
@@ -31,10 +35,14 @@ violinplot(dashboard, object, ...)
 
 \item{group_by_title}{The title of the x-axis.}
 
-\item{use}{A character specifying where to obtain the data from. One of \code{"colData"} or \code{"rowData"}.}
+\item{use}{A character specifying where to obtain the data from. Valid input for SingleCellExperiment object: ("colData", "rowData"). Valid input for Seurat object: ("meta.data" for sample metadata, "meta.feature" for feature metadata.)}
+
+\item{assay}{Necessery, if \code{use} = "meta.feature". A character defining the assay to obtain the feature metadata from (default "RNA").}
 }
 \value{
 A string containing markdown code for the rendered component
+
+An object of class \linkS4class{i2dash::i2dashboard}.
 
 An object of class \linkS4class{i2dash::i2dashboard}.
 }

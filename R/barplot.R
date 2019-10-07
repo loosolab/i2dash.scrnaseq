@@ -37,13 +37,13 @@ setMethod("barplot",
             return(expanded_component)
           })
 
-
 #' @rdname barplot
 #' @return An object of class \linkS4class{i2dash::i2dashboard}.
 #' @export
 setMethod("barplot",
           signature = signature(dashboard = "i2dashboard", object = "SingleCellExperiment"),
-          function(dashboard, object, use = "colData", y_group_by = NULL, x_group_by = NULL, ...) {
+          function(dashboard, object, use = c("colData", "rowData"), y_group_by = NULL, x_group_by = NULL, ...) {
+            use <- match.arg(use)
             if(use == "colData") {
               if(!is.null(y_group_by)) {
                 assertive.sets::assert_is_subset(y_group_by, colnames(SummarizedExperiment::colData(object)))
@@ -83,3 +83,48 @@ setMethod("barplot",
                     ...)
           })
 
+#' @rdname barplot
+#' @return An object of class \linkS4class{i2dash::i2dashboard}.
+#' @export
+setMethod("barplot",
+          signature = signature(dashboard = "i2dashboard", object = "Seurat"),
+          function(dashboard, object, use = c("meta.data", "meta.features"), assay = "RNA", y_group_by = NULL, x_group_by = NULL, ...) {
+            use <- match.arg(use)
+            if(use == "meta.data") {
+              if(!is.null(y_group_by)) {
+                assertive.sets::assert_is_subset(y_group_by, colnames(object@meta.data))
+                object@meta.data %>%
+                  as.data.frame() %>%
+                  dplyr::select(!!y_group_by) -> y_group_by
+              } else {
+                object@meta.data %>%
+                  as.data.frame() -> y_group_by
+              }
+              if(!is.null(x_group_by)) {
+                assertive.sets::assert_is_subset(x_group_by,  colnames(object@meta.data))
+                object@meta.data %>%
+                  as.data.frame() %>%
+                  dplyr::select(!!x_group_by) -> x_group_by
+              }
+            } else if (use == "meta.features") {
+              if(!is.null(y_group_by)) {
+                assertive.sets::assert_is_subset(y_group_by, colnames(object[[assay]]@meta.features))
+                object[[assay]]@meta.features %>%
+                  as.data.frame() %>%
+                  dplyr::select(!!y_group_by) -> y_group_by
+              } else {
+                object[[assay]]@meta.features %>%
+                  as.data.frame() -> y_group_by
+              }
+              if(!is.null(x_group_by)) {
+                assertive.sets::assert_is_subset(x_group_by, colnames(object[[assay]]@meta.features))
+                object[[assay]]@meta.features %>%
+                  as.data.frame() %>%
+                  dplyr::select(!!x_group_by) -> x_group_by
+              }
+            }
+            barplot(dashboard,
+                    y_group_by = y_group_by,
+                    x_group_by = x_group_by,
+                    ...)
+          })

@@ -86,9 +86,13 @@ if( !{{ env_id }}$x_selection){
 
 if( !{{ env_id }}$group_by_selection ) {
   group_by_{{ env_id }} <- shiny::reactive({
-    data <- {{ env_id }}$group_by[[1]]
-    title <- colnames({{ env_id }}$group_by)[1]
-    return(list(data = data, title = title))
+    if(is.null({{ env_id }}$group_by)){
+      return(list(data = NULL, title = NULL))
+    } else {
+      data <- {{ env_id }}$group_by[[1]]
+      title <- colnames({{ env_id }}$group_by)[1]
+      return(list(data = data, title = title))
+    }
   })
 } else {
   group_by_{{ env_id }} <- shiny::reactive({
@@ -104,7 +108,12 @@ if( !{{ env_id }}$group_by_selection ) {
 output$downloadData_{{ env_id }} <- downloadHandler(
   filename =  paste('data-', Sys.Date(), '.csv', sep=''),
   content = function(file) {
-    write.csv(data.frame(x_{{ env_id }}()$data, group_by_{{ env_id }}()$data), file)
+    if(is.null({{ env_id }}$group_by)){
+      df <- x_{{ env_id }}()$data
+    } else {
+      df <- data.frame(x_{{ env_id }}()$data, group_by_{{ env_id }}()$data)
+    }
+    write.csv(df, file)
   }
 )
 

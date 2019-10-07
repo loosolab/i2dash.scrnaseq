@@ -103,7 +103,12 @@ if( !{{ env_id }}$group_by_selection ) {
 output$downloadData_{{ env_id }} <- downloadHandler(
   filename =  paste('data-', Sys.Date(), '.csv', sep=''),
   content = function(file) {
-    write.csv(data.frame(y_{{ env_id }}()$data, group_by_{{ env_id }}()$data), file)
+    if(is.null({{ env_id }}$group_by)){
+      df <- y_{{ env_id }}()$data
+    } else {
+      df <- data.frame(y_{{ env_id }}()$data, group_by_{{ env_id }}()$data)
+    }
+    write.csv(df, file)
   }
 )
 

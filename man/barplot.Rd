@@ -5,6 +5,7 @@
 \alias{barplot}
 \alias{barplot,i2dashboard,missing-method}
 \alias{barplot,i2dashboard,SingleCellExperiment-method}
+\alias{barplot,i2dashboard,Seurat-method}
 \title{Renders a component containing a horizontal barplot.}
 \usage{
 barplot(dashboard, object, ...)
@@ -14,16 +15,21 @@ barplot(dashboard, object, ...)
   y_group_by_title = NULL)
 
 \S4method{barplot}{i2dashboard,SingleCellExperiment}(dashboard, object,
-  use = "colData", y_group_by = NULL, x_group_by = NULL, ...)
+  use = c("colData", "rowData"), y_group_by = NULL,
+  x_group_by = NULL, ...)
+
+\S4method{barplot}{i2dashboard,Seurat}(dashboard, object,
+  use = c("meta.data", "meta.features"), assay = "RNA",
+  y_group_by = NULL, x_group_by = NULL, ...)
 }
 \arguments{
 \item{dashboard}{An object of class \linkS4class{i2dash::i2dashboard}.}
 
-\item{object}{A valid \linkS4class{SingleCellExperiment::SingleCellExperiment} object.}
+\item{object}{An object of class \linkS4class{Seurat::Seurat} or \linkS4class{SingleCellExperiment::SingleCellExperiment}.}
 
-\item{y_group_by}{A data.frame (matrix) with columns containing grouping factors for the vertical axis.}
+\item{y_group_by}{A data.frame (matrix) with columns containing grouping factors for the vertical axis or a character vector indicating the columns to use from \code{use}.}
 
-\item{x_group_by}{Optionally provide a data.frame (matrix) with columns containing grouping factors for the horizontal axis. The result is a barplot grouped by the levels in \code{x_group_by} and shows the relative number of its observations.}
+\item{x_group_by}{Optionally provide a data.frame (matrix) with columns containing grouping factors for the horizontal axis or a character vector indicating the columns to use from \code{use}. The result is a barplot grouped by the levels in \code{x_group_by}, which shows the relative number of its observations.}
 
 \item{title}{The title of the components junk.}
 
@@ -31,10 +37,14 @@ barplot(dashboard, object, ...)
 
 \item{y_group_by_title}{The title of the y-axis.}
 
-\item{use}{A character specifying where to obtain the data from. One of \code{"colData"} or \code{"rowData"}.}
+\item{use}{A character specifying where to obtain the data from. Valid input for SingleCellExperiment object: ("colData", "rowData"). Valid input for Seurat object: ("meta.data" for sample metadata, "meta.feature" for feature metadata.)}
+
+\item{assay}{Necessery, if \code{use} = "meta.feature". A character defining the assay to obtain the feature metadata from (default "RNA").}
 }
 \value{
 A string containing markdown code for the rendered component
+
+An object of class \linkS4class{i2dash::i2dashboard}.
 
 An object of class \linkS4class{i2dash::i2dashboard}.
 }

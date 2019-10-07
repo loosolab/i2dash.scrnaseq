@@ -5,6 +5,7 @@
 \alias{boxplot}
 \alias{boxplot,i2dashboard,missing-method}
 \alias{boxplot,i2dashboard,SingleCellExperiment-method}
+\alias{boxplot,i2dashboard,Seurat-method}
 \title{Renders a component containing a boxplot}
 \usage{
 boxplot(dashboard, object, ...)
@@ -13,16 +14,20 @@ boxplot(dashboard, object, ...)
   title = NULL, x_title = NULL, group_by_title = NULL)
 
 \S4method{boxplot}{i2dashboard,SingleCellExperiment}(dashboard, object,
-  use = "colData", x = NULL, group_by = NULL, ...)
+  use = c("colData", "rowData"), x = NULL, group_by = NULL, ...)
+
+\S4method{boxplot}{i2dashboard,Seurat}(dashboard, object,
+  use = c("meta.data", "meta.features"), assay = "RNA", x = NULL,
+  group_by = NULL, ...)
 }
 \arguments{
 \item{dashboard}{An object of class \linkS4class{i2dash::i2dashboard}.}
 
-\item{object}{A valid \linkS4class{SingleCellExperiment::SingleCellExperiment} object.}
+\item{object}{An object of class \linkS4class{Seurat::Seurat} or \linkS4class{SingleCellExperiment::SingleCellExperiment}.}
 
-\item{x}{A data.frame (matrix) containing numeric observations for the horizontal axis, or a character vector indicating column names of \code{colData(object)}, \code{rowData(object)}.}
+\item{x}{A data.frame (matrix) containing numeric observations for the horizontal axis or a character vector indicating the columns to use from \code{use}.}
 
-\item{group_by}{An optional data.frame (matrix) with columns containing grouping factors for the vertical axis.}
+\item{group_by}{An optional data.frame (matrix) with columns containing grouping factors for the vertical axis or a character vector indicating the columns to use from \code{use}}
 
 \item{title}{The title of the components junk.}
 
@@ -30,10 +35,14 @@ boxplot(dashboard, object, ...)
 
 \item{group_by_title}{The title of the y-axis.}
 
-\item{use}{A character specifying where to obtain the data from. One of \code{"colData"} or \code{"rowData"}.}
+\item{use}{A character specifying where to obtain the data from. Valid input for SingleCellExperiment object: ("colData", "rowData"). Valid input for Seurat object: ("meta.data" for sample metadata, "meta.feature" for feature metadata.)}
+
+\item{assay}{Necessery, if \code{use} = "meta.feature". A character defining the assay to obtain the feature metadata from (default "RNA").}
 }
 \value{
 A string containing markdown code for the rendered component
+
+An object of class \linkS4class{i2dash::i2dashboard}.
 
 An object of class \linkS4class{i2dash::i2dashboard}.
 }

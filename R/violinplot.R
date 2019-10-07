@@ -42,8 +42,8 @@ setMethod("violinplot",
 #' @export
 setMethod("violinplot",
           signature = signature(dashboard = "i2dashboard", object = "SingleCellExperiment"),
-          function(dashboard, object, use = "colData", y = NULL, group_by = NULL,  title = NULL, y_title = NULL, group_by_title = NULL) {
-
+          function(dashboard, object, use = c("colData", "rowData"), y = NULL, group_by = NULL, ...) {
+            use <- match.arg(use)
             if(use == "colData") {
               if(!is.null(y)) {
                 assertive.sets::assert_is_subset(y, colnames(SummarizedExperiment::colData(object)))
@@ -80,8 +80,52 @@ setMethod("violinplot",
             violinplot(dashboard,
                        y = y,
                        group_by = group_by,
-                       title = title,
-                       y_title = y_title,
-                       group_by_title = group_by_title)
+                       ...)
           })
 
+
+#' @rdname violinplot
+#' @return An object of class \linkS4class{i2dash::i2dashboard}.
+#' @export
+setMethod("violinplot",
+          signature = signature(dashboard = "i2dashboard", object = "Seurat"),
+          function(dashboard, object, use = c("meta.data", "meta.features"), assay = "RNA", y = NULL, group_by = NULL, ...) {
+            use <- match.arg(use)
+            if(use == "meta.data") {
+              if(!is.null(y)) {
+                assertive.sets::assert_is_subset(y, colnames(object@meta.data))
+                object@meta.data %>%
+                  as.data.frame() %>%
+                  dplyr::select(!!y) -> y
+              } else {
+                object@meta.data %>%
+                  as.data.frame() -> y
+              }
+              if(!is.null(group_by)) {
+                assertive.sets::assert_is_subset(group_by,  colnames(object@meta.data))
+                object@meta.data %>%
+                  as.data.frame() %>%
+                  dplyr::select(!!group_by) -> group_by
+              }
+            } else if (use == "meta.features") {
+              if(!is.null(y)) {
+                assertive.sets::assert_is_subset(y, colnames(object[[assay]]@meta.features))
+                object[[assay]]@meta.features %>%
+                  as.data.frame() %>%
+                  dplyr::select(!!y) -> y
+              } else {
+                object[[assay]]@meta.features %>%
+                  as.data.frame() -> y
+              }
+              if(!is.null(group_by)) {
+                assertive.sets::assert_is_subset(group_by, colnames(object[[assay]]@meta.features))
+                object[[assay]]@meta.features %>%
+                  as.data.frame() %>%
+                  dplyr::select(!!group_by) -> group_by
+              }
+            }
+            violinplot(dashboard,
+                    y = y,
+                    group_by = group_by,
+                    ...)
+          })

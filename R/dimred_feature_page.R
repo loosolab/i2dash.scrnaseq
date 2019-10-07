@@ -1,10 +1,11 @@
-#' @name dimred-metadata-page
-#' @rdname dimred-metadata-page
-#' @aliases add_dimred_metadata_page
+#' @name dimred-feature-page
+#' @rdname dimred-feature-page
+#' @aliases add_dimred_feature_page
+#' @return An object of class \linkS4class{i2dash::i2dashboard}.
 #' @export
-setMethod("add_dimred_metadata_page",
+setMethod("add_dimred_feature_page",
           signature = signature(dashboard = "i2dashboard", object = "missing"),
-          function(dashboard, use_dimred, exprs_values, feature_metadata, title = "Marker gene expression", menu = NULL) {
+          function(dashboard, use_dimred, exprs_values, feature_metadata, title = "Feature expression", menu = NULL) {
 
             # Create random env id
             env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
@@ -35,17 +36,17 @@ setMethod("add_dimred_metadata_page",
 
             component <- knitr::knit_expand(file = system.file("templates", "dimred_metadata.Rmd", package = "i2dash.scrnaseq"), env_id = env_id, date = timestamp)
 
-            dashboard@pages[["dimred_metadata_page"]] <- list(title = title, layout = "default", menu = menu, components = component, max_components = 1)
+            dashboard@pages[["dimred_feature_page"]] <- list(title = title, layout = "default", menu = menu, components = component, max_components = 1)
             return(dashboard)
           })
 
 
-#' @name dimred-metadata-page
-#' @rdname dimred-metadata-page
+#' @name dimred-feature-page
+#' @rdname dimred-feature-page
 #' @export
-setMethod("add_dimred_metadata_page",
+setMethod("add_dimred_feature_page",
           signature = signature(dashboard = "i2dashboard", object = "SingleCellExperiment"),
-          function(dashboard, object, use_dimred, exprs_values, feature_metadata, subset_row, title = "Marker gene expression", menu = NULL) {
+          function(dashboard, object, use_dimred, exprs_values, feature_metadata, subset_row, ...) {
 
             assertive.sets::assert_is_subset(use_dimred, SingleCellExperiment::reducedDimNames(object))
             assertive.sets::assert_is_subset(exprs_values, SummarizedExperiment::assayNames(object))
@@ -63,44 +64,43 @@ setMethod("add_dimred_metadata_page",
               metadata <- metadata[subset_row, ]
             }
 
-            dashboard <- add_dimred_metadata_page(dashboard = dashboard,
+            dashboard <- add_dimred_feature_page(dashboard = dashboard,
                                                use_dimred = use_dimred,
                                                exprs_values = exprs_values,
                                                feature_metadata = metadata,
-                                               title = title,
-                                               menu = menu)
-            return(dashboard)
+                                               ...)
           })
 
-#' @name dimred-metadata-page
-#' @rdname dimred-metadata-page
+#' @name dimred-feature-page
+#' @rdname dimred-feature-page
 #' @export
-setMethod("add_dimred_metadata_page",
+setMethod("add_dimred_feature_page",
           signature = signature(dashboard = "i2dashboard", object = "Seurat"),
-          function(dashboard, object, use_dimred, exprs_values, feature_metadata, subset_row, assay, assay_slot = "data", title = "Marker gene expression", menu = NULL) {
+          function(dashboard, object, use_dimred, feature_metadata, subset_row, assay = "RNA", assay_slot = "data", ...){
+            assertive.types::assert_is_character(use_dimred)
+            assertive.types::assert_is_character(assay)
+            assertive.types::assert_is_character(assay_slot)
+            assertive.sets::assert_is_subset(use_dimred, colnames(object@reductions))
+            assertive.sets::assert_is_subset(assay, colnames(object@assays))
+            assertive.sets::assert_is_subset(feature_metadata, colnames(object[[assay]]@meta.features))
 
-            assertive.sets::assert_is_subset(use_dimred, names(object@reductions))
-            assertive.sets::assert_is_subset(assay, names(object@assays))
-            assertive.sets::assert_is_subset(feature_metadata, names(object@meta.data))
-
+            # exprs_values
             assay_obj <- Seurat::GetAssay(object = object, assay = assay)
-            expression <- Seurat::GetAssayData(object = assay_obj, slot = slot)
-            metadata <- object@meta.data[metadata]
+            exprs_values <- Seurat::GetAssayData(object = assay_obj, slot = assay_slot)[subset_row, ]
 
-            if(!is.null(subset_row)) {
-              expression <- Seurat::GetAssayData(object = assay_obj, slot = slot)[subset_row, ]
-              metadata <- metadata[subset_row, ]
-            }
+            # feature_metadata
+            object[[assay]]@meta.features %>%
+              as.data.frame() %>%
+              dplyr::select(!!feature_metadata) -> feature_metadata
+            feature_metadata <- feature_metadata[subset_row, ]
 
-            use_dimred <- lapply(use_dimred, function(dimred) {
-              Seurat::Embeddings(object, reduction = dimred)[, 1:2]
-            })
+            # use_dimred
+            use_dimred <- Seurat::Embeddings(object, reduction = use_dimred)[, 1:2]
 
-            dashboard <- add_dimred_metadata_page(dashboard = dashboard,
-                                               use_dimred = use_dimred,
-                                               exprs_values = expression,
-                                               feature_metadata = metadata,
-                                               title = title,
-                                               menu = menu)
-            return(dashboard)
+            dashboard <- add_dimred_feature_page(
+              dashboard = dashboard,
+              use_dimred = use_dimred,
+              exprs_values = exprs_values,
+              feature_metadata = feature_metadata,
+              ...)
           })

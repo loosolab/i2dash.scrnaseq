@@ -42,7 +42,8 @@ setMethod("boxplot",
 #' @export
 setMethod("boxplot",
           signature = signature(dashboard = "i2dashboard", object = "SingleCellExperiment"),
-          function(dashboard, object, use = "colData", x = NULL, group_by = NULL, ...) {
+          function(dashboard, object, use = c("colData", "rowData"), x = NULL, group_by = NULL, ...) {
+            use <- match.arg(use)
             if(use == "colData") {
               if(!is.null(x)) {
                 assertive.sets::assert_is_subset(x, colnames(SummarizedExperiment::colData(object)))
@@ -82,3 +83,48 @@ setMethod("boxplot",
                     ...)
           })
 
+#' @rdname boxplot
+#' @return An object of class \linkS4class{i2dash::i2dashboard}.
+#' @export
+setMethod("boxplot",
+          signature = signature(dashboard = "i2dashboard", object = "Seurat"),
+          function(dashboard, object, use = c("meta.data", "meta.features"), assay = "RNA", x = NULL, group_by = NULL, ...) {
+            use <- match.arg(use)
+            if(use == "meta.data") {
+              if(!is.null(x)) {
+                assertive.sets::assert_is_subset(x, colnames(object@meta.data))
+                object@meta.data %>%
+                  as.data.frame() %>%
+                  dplyr::select(!!x) -> x
+              } else {
+                object@meta.data %>%
+                  as.data.frame() -> x
+              }
+              if(!is.null(group_by)) {
+                assertive.sets::assert_is_subset(group_by,  colnames(object@meta.data))
+                object@meta.data %>%
+                  as.data.frame() %>%
+                  dplyr::select(!!group_by) -> group_by
+              }
+            } else if (use == "meta.features") {
+              if(!is.null(x)) {
+                assertive.sets::assert_is_subset(x, colnames(object[[assay]]@meta.features))
+                object[[assay]]@meta.features %>%
+                  as.data.frame() %>%
+                  dplyr::select(!!x) -> x
+              } else {
+                object[[assay]]@meta.features %>%
+                  as.data.frame() -> x
+              }
+              if(!is.null(group_by)) {
+                assertive.sets::assert_is_subset(group_by, colnames(object[[assay]]@meta.features))
+                object[[assay]]@meta.features %>%
+                  as.data.frame() %>%
+                  dplyr::select(!!group_by) -> group_by
+              }
+            }
+            boxplot(dashboard,
+                    x = x,
+                    group_by = group_by,
+                    ...)
+          })

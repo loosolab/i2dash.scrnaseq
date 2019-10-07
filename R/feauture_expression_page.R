@@ -1,18 +1,11 @@
-#' @rdname add_gene_expression_page
-#' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
-#' @param use_dimred A data.frame (matrix) containing coordinates of the reduced dimensions.
-#' @param exprs_values A data.frame (matrix) containing expression data of features of interest in rows and samples in columns.
-#' @param group_by A data.frame (matrix) along rows of \code{use_dimred} that is used for grouping expression values in the violin plot.
-#' @param labels A vector with optional sample labels that are used instead of \code{rownames(use_dimred)}.
-#' @param title The title of the page.
-#' @param menu (Optional) The name of the menu, under which the page should appear.
-#'
+#' @name feature-expression-page
+#' @rdname feature-expression-page
+#' @aliases add_feature_expression_page
 #' @return An object of class \linkS4class{i2dash::i2dashboard}.
-#'
 #' @export
-setMethod("add_gene_expression_page",
+setMethod("add_feature_expression_page",
           signature = signature(dashboard = "i2dashboard", object = "missing"),
-          function(dashboard, use_dimred, exprs_values, group_by = NULL, labels = rownames(use_dimred), title = "Gene expression", menu = NULL) {
+          function(dashboard, use_dimred, exprs_values, group_by = NULL, labels = rownames(use_dimred), title = "Feature expression", menu = NULL) {
 
             # Create random env id
             env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
@@ -60,22 +53,14 @@ setMethod("add_gene_expression_page",
             timestamp <- Sys.time()
             expanded_component <- list(knitr::knit_expand(file = system.file("templates", "gene_expression_page.Rmd", package = "i2dash.scrnaseq"), env_id = env_id, date = timestamp))
 
-            dashboard@pages[["gene_expression_page"]] <- list(title = title, layout = "default", menu = menu, components = expanded_component, max_components = 1, sidebar = NULL)
+            dashboard@pages[["feature_expression_page"]] <- list(title = title, layout = "default", menu = menu, components = expanded_component, max_components = 1, sidebar = NULL)
             return(dashboard)
           })
 
-#' @rdname add_gene_expression_page
-#'
-#' @param object A valid \linkS4class{SingleCellExperiment::SingleCellExperiment} object.
-#' @param dimred A string or integer scalar indicating the reduced dimension result in \code{reducedDims(object)}.
-#' @param exprs_values A string or integer scalar specifying which assay to obtain expression values from.
-#' @param metadata_columns A character vector with column names of \code{colData(object)} to use for cell grouping.
-#' @param features A character vector (of feature names), a logical vector or numeric vector (of indices) specifying the features to use. The default of NULL will use all features.
-#' @inheritParams add_gene_expression_page,i2dashboard,missing-method
-#'
-#' @return An object of class \linkS4class{i2dash::i2dashboard}.
+#' @name feature-expression-page
+#' @rdname feature-expression-page
 #' @export
-setMethod("add_gene_expression_page",
+setMethod("add_feature_expression_page",
           signature = signature(dashboard = "i2dashboard", object = "SingleCellExperiment"),
           function(dashboard, object, use_dimred, exprs_values, metadata_columns = NULL, features = NULL, title = "Gene expression", menu = NULL) {
 
@@ -92,7 +77,7 @@ setMethod("add_gene_expression_page",
               as.data.frame() %>%
               dplyr::select(!!metadata_columns) -> metadata
 
-            add_gene_expression_page(dashboard,
+            add_feature_expression_page(dashboard,
                                      use_dimred = SingleCellExperiment::reducedDim(object, use_dimred),
                                      exprs_values = expression,
                                      group_by = metadata,
@@ -101,41 +86,39 @@ setMethod("add_gene_expression_page",
                                      menu = menu)
           })
 
-#' @rdname add_gene_expression_page
-#'
-#' @param object A valid \linkS4class{Seurat::Seurat} object.
-#' @param dimred A character vector indicating the \linkS4class{Seurat::DimReduc} object in \code{object@reductions}.
-#' @param assay A character vector specifying which assay from \code{object@assays} to obtain expression values from.
-#' @param metadata_columns A character vector with column names of \code{object@meta.data} to use for cell grouping.
-#' @param slot A character vector specifying the name of the slot in the assay.
-#' @param subset_row A character vector (of feature names), a logical vector or numeric vector (of indices) specifying the features to use. The default of NULL will use all features.
-#' @inheritParams add_gene_expression_page,i2dashboard,missing-method
-#'
-#' @return An object of class \linkS4class{i2dash::i2dashboard}.
+#' @name feature-expression-page
+#' @rdname feature-expression-page
 #' @export
-setMethod("add_gene_expression_page",
+setMethod("add_feature_expression_page",
           signature = signature(dashboard = "i2dashboard", object = "Seurat"),
-          function(dashboard, object, use_dimred, assay, metadata_columns, assay_slot = "data", subset_row = NULL, title = NULL, menu = NULL) {
+          function(dashboard, object, use_dimred, group_by = NULL, assay = "RNA", assay_slot = "data", subset_row = NULL, ...) {
 
+            assertive.types::assert_is_character(use_dimred)
+            assertive.types::assert_is_character(assay)
+            assertive.types::assert_is_character(assay_slot)
             assertive.sets::assert_is_subset(use_dimred, names(object@reductions))
             assertive.sets::assert_is_subset(assay, names(object@assays))
-            assertive.sets::assert_is_subset(metadata_columns, names(object@meta.data))
+            assertive.sets::assert_is_subset(group_by, names(object@meta.data))
 
+            # exprs_values
             assay_obj <- Seurat::GetAssay(object = object, assay = assay)
-            expression <- Seurat::GetAssayData(object = assay_obj, slot = assay_slot)
+            exprs_values <- Seurat::GetAssayData(object = assay_obj, slot = assay_slot)
             if(!is.null(subset_row)) {
-              expression <- Seurat::GetAssayData(object = assay_obj, slot = assay_slot)[feature, ]
+              exprs_values <- exprs_values[subset_row, ]
             }
 
-            object@meta.data[metadata] %>%
+            # group_by
+            object@meta.data %>%
               as.data.frame() %>%
-              dplyr::select(!!metadata_columns) -> metadata
+              dplyr::select(!!group_by) -> group_by
 
-            add_gene_expression_page(dashboard,
-                                     use_dimred = Seurat::Embeddings(object, reduction = dimred),
-                                     exprs_values = expression,
-                                     group_by = metadata,
-                                     labels = colnames(expression),
-                                     title = title,
-                                     menu = menu)
+            # use_dimred
+            use_dimred <- Seurat::Embeddings(object, reduction = use_dimred)[, 1:2]
+
+            add_feature_expression_page(
+              dashboard = dashboard,
+              use_dimred = use_dimred,
+              exprs_values = exprs_values,
+              group_by = group_by,
+              ...)
           })

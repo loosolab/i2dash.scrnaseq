@@ -16,7 +16,7 @@ add_feature_grid_page(dashboard, object, ...)
   object, use_dimred, exprs_values, subset_row = NULL, ...)
 
 \S4method{add_feature_grid_page}{i2dashboard,Seurat}(dashboard, object,
-  use_dimred, assay, slot = "data", subset_row = NULL, ...)
+  use_dimred, assay, assay_slot = "data", subset_row = NULL, ...)
 }
 \arguments{
 \item{dashboard}{An object of class \linkS4class{i2dash::i2dashboard}.}
