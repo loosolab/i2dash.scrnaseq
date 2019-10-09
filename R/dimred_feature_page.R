@@ -5,7 +5,9 @@
 #' @export
 setMethod("add_dimred_feature_page",
           signature = signature(dashboard = "i2dashboard", object = "missing"),
-          function(dashboard, use_dimred, exprs_values, feature_metadata, title = "Feature expression", menu = NULL) {
+          function(dashboard, use_dimred, exprs_values, feature_metadata, page = "dimred_feature_page", title = "Feature expression", menu = NULL) {
+
+            page %>% tolower %>% gsub(x = ., pattern = " ", replacement = "_") %>% make.names -> name
 
             # Create random env id
             env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
@@ -36,7 +38,7 @@ setMethod("add_dimred_feature_page",
 
             component <- knitr::knit_expand(file = system.file("templates", "dimred_metadata.Rmd", package = "i2dash.scrnaseq"), env_id = env_id, date = timestamp)
 
-            dashboard@pages[["dimred_feature_page"]] <- list(title = title, layout = "default", menu = menu, components = component, max_components = 1)
+            dashboard@pages[[name]] <- list(title = title, layout = "default", menu = menu, components = component, max_components = 1)
             return(dashboard)
           })
 

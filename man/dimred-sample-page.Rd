@@ -9,7 +9,7 @@
 add_dimred_sample_page(dashboard, object, ...)
 
 \S4method{add_dimred_sample_page}{i2dashboard,missing}(dashboard,
-  use_dimred, sample_metadata, group_by,
+  use_dimred, sample_metadata, group_by, page = "dimred_sample_page",
   title = "Dim. reduction & sample metadata", labels = NULL,
   show_group_sizes = TRUE, show_silhouette = FALSE, menu = NULL)
 
@@ -30,6 +30,8 @@ add_dimred_sample_page(dashboard, object, ...)
 \item{sample_metadata}{A data.frame (matrix) containing metadata (e.g. cluster, timepoint, number of features, etc) along samples or a character vector indicating the columns to use from the "meta.data" of a Seurat \code{object}.}
 
 \item{group_by}{A string indicating a column in \code{metadata} that is used to group observations.}
+
+\item{page}{The name of the page to be added.}
 
 \item{title}{The title of the page.}
 
