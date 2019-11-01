@@ -64,3 +64,37 @@ plotly_boxplot <- function(x, group_by = NULL, x_title = NULL, group_by_title = 
         yaxis = list(title = y_title)
       )
 }
+
+#' Render a heatmap with ComplexHeatmap.
+#'
+#' @param ... further optional and valid arguments, that are the supported arguments in ComplexHeatmap.
+#' @param legend_title An optional title of the legend.
+#' @return An object of class \code{Heatmap}.
+#' @export
+ComplexHeatmap_heatmap <- function(..., legend_title = NULL){
+  if (!requireNamespace("ComplexHeatmap", quietly = TRUE)){
+    stop("Package ComplexHeatmap is needed to use this function. Please install it.")
+  }
+  ComplexHeatmap::Heatmap(...,
+                          row_title_side = "right",
+                          row_names_side = "left",
+                          row_dend_side = "right",
+                          column_names_side = "top",
+                          heatmap_legend_param = list(
+                            color_bar = "continuous",
+                            title = legend_title
+                          ))
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
