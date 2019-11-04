@@ -21,45 +21,6 @@ aggregate_data <- function(data, group) {
 ```
 
 ```{r, eval=!is_shiny}
-<<<<<<< HEAD
-ha = NULL
-if(!is.null({{ env_id }}$column_split)){
-  if({{ env_id }}$visualisation_mode == "splitted"){
-    exprs_values_{{ env_id }} <- {{ env_id }}$exprs_values
-    colnames(exprs_values_{{ env_id }}) <- c()
-    column_split_{{ env_id }} <- {{ env_id }}$column_split[,1]
-    column_names_rot_{{ env_id }} <- NULL
-    cell_fun_{{ env_id }} <- NULL
-    if(colnames({{ env_id }}$column_split)[1] %in% names(colormaps)){
-      ha = ComplexHeatmap::HeatmapAnnotation(
-            group_by = {{ env_id }}$column_split[,1],
-            col = list(group_by = colormaps[[colnames({{ env_id }}$column_split)[1]]])
-      )
-    }
-  } else if({{ env_id }}$visualisation_mode == "summarized"){
-    exprs_values_{{ env_id }} <- create_data.table({{ env_id }}$exprs_values, {{ env_id }}$column_split[,1])
-    column_split_{{ env_id }} <- NULL
-    column_names_rot_{{ env_id }} <- 45
-    cell_fun_{{ env_id }} <- function(j, i, x, y, width, height, fill) {
-      grid::grid.text(sprintf("%.1f", exprs_values_{{ env_id }}[i, j]), x, y, gp = grid::gpar(fontsize = 10))
-    }
-    if(colnames({{ env_id }}$column_split)[1] %in% names(colormaps)){
-      ha = ComplexHeatmap::HeatmapAnnotation(
-            group_by = colnames(exprs_values_{{ env_id }}),
-            col = list(group_by = colormaps[[colnames({{ env_id }}$column_split)[1]]])
-      )
-    }
-  }
-} else {
-  exprs_values_{{ env_id }} <- {{ env_id }}$exprs_values
-  colnames(exprs_values_{{ env_id }}) <- c()
-  column_split_{{ env_id }} <- {{ env_id }}$column_split
-  column_names_rot_{{ env_id }} <- NULL
-  cell_fun_{{ env_id }} <- NULL
-  ha = NULL
-}
-
-=======
 # Create defaults for heatmap
 exprs_values_{{ env_id }} <- {{ env_id }}$exprs_values
 split_by_{{ env_id }} <- NULL
