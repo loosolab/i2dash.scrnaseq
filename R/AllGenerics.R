@@ -181,6 +181,15 @@ setGeneric("heatmap", function(dashboard, object, ...) standardGeneric("heatmap"
 #' @param use A character specifying where to obtain the data from. Valid input for SingleCellExperiment object: ("colData", "rowData", "reducedDim"). Valid input for Seurat object: ("meta.data" for sample metadata, "meta.feature" for feature metadata, "reduction" for a dimension reduction)
 #' @param use_dimred A character vector indicating the reduced dimension to use from "reducedDim"/ \"reduction".
 #' @param assay Necessery, if \code{use} = "meta.feature". A character defining the assay to obtain the feature metadata from (default "RNA").
+
+#' Renders a component containing a scatterplot with optional selection options
+#'
+#' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
+#' @param x A data.frame (matrix) containing columns with numeric values that will be mapped to the x-axis.
+#' @param y A data.frame (matrix) containing columns with numeric values that will be mapped to the y-axis.
+#' @param object A valid \linkS4class{SingleCellExperiment::SingleCellExperiment} object.
+#' @param use A character specifying where to obtain the data from. One of \code{"colData"}, \code{"rowData"}, \code{"reducedDim"}.
+#' @param use_dimred A character vector indicating the reduced dimension to use from \code{"object"}
 #' @param colour_by An optional data.frame (matrix) containing columns with numeric or factorial values that will be used for colouring.
 #' @param labels An optional vector with sample names. A dropdown menu for colouring by label will be provided.
 #' @param exprs_values An optional data.frame (matrix) containing expression data of features of interest in rows and samples in columns.
@@ -192,3 +201,23 @@ setGeneric("heatmap", function(dashboard, object, ...) standardGeneric("heatmap"
 #' @rdname scatterplot
 #' @exportMethod scatterplot
 setGeneric("scatterplot", function(dashboard, object, ...) standardGeneric("scatterplot"))
+
+#' Renders a component containing a \link[ComplexHeatmap]{Heatmap}.
+#'
+#' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
+#' @param exprs_values A data.frame (matrix) containing expression data of features of interest in rows and samples in columns or a string representing the name of an \code{assay} of \code{object}.
+#' @param object A valid \linkS4class{SingleCellExperiment::SingleCellExperiment} object.
+#' @param subset_row A character vector (of feature names), a logical vector or numeric vector (of indices) specifying the features to use. The default of NULL will use all features.
+#' @param split_by An optional data.frame (matrix) containing grouping factors for spliting columns of the heatmap. In case of \code{i2dashboard,SingleCellExperiment}, should be column names of \code{colData(object)}.
+#' @param aggregate_by An optional data.frame (matrix) containing grouping factors for aggregating columns of the heatmap. In case of \code{i2dashboard,SingleCellExperiment}, should be column names of \code{colData(object)}.
+#' @param title Title of the component.
+#' @param legend Title of the heatmap legend.
+#' @param cluster_rows A logical controls whether to make cluster on rows.
+#' @param cluster_columns A logical controls whether to make cluster on columns.
+#' @param clustering_method Method to perform hierarchical clustering, passed to \link[stats]{hclust}.
+#' @param clustering_distance The distance measure to use for hierarchical clustering.
+#'
+#' @name heatmap
+#' @rdname heatmap
+#' @exportMethod heatmap
+setGeneric("heatmap", function(dashboard, object, ...) standardGeneric("heatmap"))

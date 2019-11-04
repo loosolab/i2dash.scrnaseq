@@ -48,7 +48,20 @@ scatterplot(dashboard, object, ...)
 
 \item{use_dimred}{A character vector indicating the reduced dimension to use from "reducedDim"/ \"reduction".}
 
-\item{assay}{Necessery, if \code{use} = "meta.feature". A character defining the assay to obtain the feature metadata from (default "RNA").}
+\item{assay}{Necessery, if \code{use} = "meta.feature". A character defining the assay to obtain the feature metadata from (default "RNA").
+Renders a component containing a scatterplot with optional selection options}
+
+\item{dashboard}{An object of class \linkS4class{i2dash::i2dashboard}.}
+
+\item{x}{A data.frame (matrix) containing columns with numeric values that will be mapped to the x-axis.}
+
+\item{y}{A data.frame (matrix) containing columns with numeric values that will be mapped to the y-axis.}
+
+\item{object}{A valid \linkS4class{SingleCellExperiment::SingleCellExperiment} object.}
+
+\item{use}{A character specifying where to obtain the data from. One of \code{"colData"}, \code{"rowData"}, \code{"reducedDim"}.}
+
+\item{use_dimred}{A character vector indicating the reduced dimension to use from \code{"object"}}
 }
 \value{
 A string containing markdown code for the rendered component
