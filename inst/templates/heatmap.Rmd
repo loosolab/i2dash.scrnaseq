@@ -6,38 +6,22 @@
 ```{r}
 {{ env_id }} <- readRDS(file.path(datadir, "{{ env_id }}.rds"))
 is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
-library(magrittr)
 
+library(magrittr)
+library(data.table)
 ```
 
 ```{r}
-#
-# Method for creating a data.table required by create_heatmap() method from wilson.
-#
-create_data.table <- function(matrix, group_by){
-  # validate input
-  if(ncol(matrix) != length(group_by)) stop("The length of the vector 'group_by' should be of the same length as the column number of 'matrix'.")
-  # create data.table
-  dt <- data.table::data.table(t(matrix))
-  dt[, cell    := dimnames(matrix)[2]]
-  dt[, grouping := group_by]
-  # Melt
-  dt <- data.table::melt(dt, id.vars = c('cell', 'grouping'), variable.name='gene')
-  # Aggregate
-  dt2 <- dt[, .(meanvalue = mean(value)), by = c('grouping', 'gene')]
-  # Cast
-  dt3 <- dt2 %>% data.table::dcast(gene ~ grouping, value.var = 'meanvalue')
-  # change categorical 'gene' column to character
-  dt3[[1]] <- as.character(dt3[[1]])
-  dt3 %<>% 
-    tibble::column_to_rownames("gene") %>%
-    data.matrix(rownames.force = T)
-  return(dt3)
+# Function to aggregate a data matrix/df according to a grouping
+aggregate_data <- function(data, group) {
+  vapply(split(1:ncol(data), group),
+         function(x) { rowMeans(data[, x, drop = FALSE]) },
+         numeric(nrow(data)))
 }
 ```
 
-
 ```{r, eval=!is_shiny}
+<<<<<<< HEAD
 ha = NULL
 if(!is.null({{ env_id }}$column_split)){
   if({{ env_id }}$visualisation_mode == "splitted"){
@@ -75,6 +59,48 @@ if(!is.null({{ env_id }}$column_split)){
   ha = NULL
 }
 
+=======
+# Create defaults for heatmap
+exprs_values_{{ env_id }} <- {{ env_id }}$exprs_values
+split_by_{{ env_id }} <- NULL
+cell_fun_{{ env_id }} <- NULL
+column_names_rot_{{ env_id }} <- NULL
+ha_{{ env_id }} <- NULL
+
+# annotation in case of aggregation and splitting
+# if(colnames({{ env_id }}$column_split)[1] %in% names(colormaps)){
+#       ha = ComplexHeatmap::HeatmapAnnotation(
+#             group_by = {{ env_id }}$column_split[,1],
+#             col = list(group_by = colormaps[[colnames({{ env_id }}$column_split)[1]]])
+#       )
+#     }
+# if(colnames({{ env_id }}$column_split)[1] %in% names(colormaps)){
+#       ha = ComplexHeatmap::HeatmapAnnotation(
+#             group_by = colnames(exprs_values_{{ env_id }}),
+#             col = list(group_by = colormaps[[colnames({{ env_id }}$column_split)[1]]])
+#       )
+#     }
+
+# Handle column split
+if (!is.null({{ env_id }}$split_by)) {
+  split_by_{{ env_id }} <- {{ env_id }}$split_by[,1]
+}
+
+# Handle data aggregation
+if (!is.null({{ env_id }}$aggregate_by)) {
+  exprs_values_{{ env_id }} <- aggregate_data({{ env_id }}$exprs_values, {{ env_id }}$aggregate_by[,1])
+  column_names_rot_{{ env_id }} <- 45
+  cell_fun_{{ env_id }} <- function(j, i, x, y, width, height, fill) {
+      grid::grid.text(sprintf("%.1f", exprs_values_{{ env_id }}[i, j]), x, y, gp = grid::gpar(fontsize = 10))
+    }
+}
+
+# Remove column names
+colnames(exprs_values_{{ env_id }}) <- c()
+
+# Todo?
+row_split_{{ env_id }} <- NULL
+
 # Provide data for download
 # htmltools::tags$button(i2dash::embed_var(exprs_values_{{ env_id }})) # prevents large size of the plot
 # htmltools::tags$br()
@@ -89,7 +115,8 @@ i2dash.scrnaseq::ComplexHeatmap_heatmap(
     clustering_distance_columns = {{ env_id }}$clustering_distance,
     clustering_method_rows = {{ env_id }}$clustering_method,
     clustering_method_columns = {{ env_id }}$clustering_method,
-    column_split = column_split_{{ env_id }},
+    column_split = split_by_{{ env_id }},
+    row_split = row_split_{{ env_id }},
     column_names_rot = column_names_rot_{{ env_id }},
     cell_fun = cell_fun_{{ env_id }},
     top_annotation = ha
@@ -97,58 +124,26 @@ i2dash.scrnaseq::ComplexHeatmap_heatmap(
 ```
 
 ```{r, eval=is_shiny}
-ui_list <- list()
-# selection of the visualisation mode:
-if (!is.null({{ env_id }}$column_split)){
-  ui_list <- rlist::list.append(ui_list,
-                                radioButtons("select_visualisation_{{ env_id }}", label = "Columns by:",
-                                            choices = c("samples", colnames({{ env_id }}$column_split))))
-}
-# selection field for splitting the columns
-if (!is.null({{ env_id }}$column_split)){
-  ui_list <- rlist::list.append(ui_list,
-                                selectInput("select_column_split_{{ env_id }}", label = "(If 'samples' selected) Column splitting:",
-                                            choices = c("none", colnames({{ env_id }}$column_split))))
-}
-
-# subset the genes
-ui_list <- rlist::list.append(ui_list,
-                                selectInput("select_subset_{{ env_id }}",
-                                  label = "Select features:",
-                                  choices = rownames({{ env_id }}$exprs_values),
-                                  multiple = TRUE)
-                              )
-
-# select clustering
-ui_list <- rlist::list.append(ui_list,
-                                radioButtons("select_clustering_{{ env_id }}",
-                                  label = "Select clustering:",
-                                  choices = c("no clustering" = "none", "columns and rows" = "both", "only columns" = "column", "only rows" = "row"))
-                              )
-# select clustering distance
-ui_list <- rlist::list.append(ui_list,
-                                selectInput("select_clustdist_{{ env_id }}",
-                                  label = "Cluster distance:",
-                                  choices = c("euclidean", "maximum", "manhattan", "binary", "minkowski"),
-                                  multiple = FALSE)
-                              )
-# select clustering method
-ui_list <- rlist::list.append(ui_list,
-                                selectInput("select_clustmethod_{{ env_id }}",
-                                  label = "Cluster method:",
-                                  choices = c("average", "ward.D", "ward.D2", "single", "complete", "mcquitty"),
-                                  multiple = FALSE)
-                              )
-
-# Download link
-ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downloadData_{{ env_id }}', 'Download data')))
+ui_list <- list(
+  # Split_by
+  shiny::selectInput("select_split_by_{{ env_id }}", label = "Split columns by:", choices = c("None", colnames({{ env_id }}$split_by))),
+  # Aggregate_by
+  shiny::selectInput("select_aggregate_by_{{ env_id }}", label = "Aggregate columns by:", choices = c("None", colnames({{ env_id }}$aggregate_by))),
+  # Subset_rows
+  shiny::selectInput("select_subset_{{ env_id }}", label = "Select features:", choices = rownames({{ env_id }}$exprs_values), multiple = TRUE),
+  # Clustering
+  shiny::radioButtons("select_clustering_{{ env_id }}", label = "Clustering", choices = c("None" = "none", "Columns and rows" = "both", "Columns" = "column", "Rows" = "row")),
+  shiny::selectInput("select_clustdist_{{ env_id }}", label = "Cluster distance:", choices = c("euclidean", "maximum", "manhattan", "binary", "minkowski")),
+  shiny::selectInput("select_clustmethod_{{ env_id }}", label = "Cluster method:", choices = c("average", "ward.D", "ward.D2", "single", "complete", "mcquitty")),
+  shiny::tags$div(shiny::tags$br(), shiny::downloadButton("downloadData_{{ env_id }}", "Download data"))
+)
 
 # Function for subsetting a matrix accoriding to a vector of features
 subset_features <- function(matrix, features){
   if(length(features) > 1){
     matrix <- matrix[features,]
   } else if(length(features) == 1){
-    matrix <- matrix[features,,drop = FALSE]
+    matrix <- matrix[features, , drop = FALSE]
   }
   return(matrix)
 }
@@ -158,21 +153,17 @@ subset_features <- function(matrix, features){
 #
 exprs_values_{{ env_id }} <- shiny::reactive({
   exprs_values <- {{ env_id }}$exprs_values
-  if(!is.null({{ env_id }}$column_split)){
-    if(input$select_visualisation_{{ env_id }} == "samples"){
-      colnames(exprs_values) <- c()
-      exprs_values <- subset_features(exprs_values, input$select_subset_{{ env_id }})
-      return(exprs_values)
-    } else {
-      create_data.table(exprs_values, {{ env_id }}$column_split[[input$select_visualisation_{{ env_id }}]]) %>%
-      subset_features(features = input$select_subset_{{ env_id }}) -> exprs_values
-      return(exprs_values)
-    }
-  } else {
-    colnames(exprs_values) <- c()
-    exprs_values <- subset_features(exprs_values, input$select_subset_{{ env_id }})
-    return(exprs_values)
+  
+  # Subset features
+  exprs_values <- subset_features(exprs_values, input$select_subset_{{ env_id }})
+  
+  # Handle aggregation
+  if (input$select_aggregate_by_{{ env_id }} != "None") {
+    exprs_values <- aggregate_data(exprs_values, {{ env_id }}$aggregate_by[, input$select_aggregate_by_{{ env_id }}])
   }
+  
+  colnames(exprs_values) <- c()
+  return(exprs_values)
 })
 
 clust_{{ env_id }} <- shiny::reactive({
@@ -193,56 +184,46 @@ clust_{{ env_id }} <- shiny::reactive({
   return(list(rows = cluster_rows, columns = cluster_columns))
 })
 
-column_split_{{ env_id }} <- shiny::reactive({
-  if(!is.null({{ env_id }}$column_split)){
-    if(input$select_visualisation_{{ env_id }} == "samples"){
-      if(input$select_column_split_{{ env_id }} != "none"){
-        return({{ env_id }}$column_split[[input$select_column_split_{{ env_id }}]])
-      }
-    }
+split_by_{{ env_id }} <- shiny::reactive({
+  if(input$select_split_by_{{ env_id }} == "None") {
+    return(NULL)
   }
+  
+  return({{ env_id }}$split_by[[input$select_split_by_{{ env_id }}]])
 })
+
 
 #
 # Generate plot
 #
-output$plot_{{ env_id }} <- renderPlot({
+output$plot_{{ env_id }} <- shiny::renderPlot({
   clustdist <- input$select_clustdist_{{ env_id }}
   clustmethod <- input$select_clustmethod_{{ env_id }}
-  
-  # cell function for showing numbers in cells
-  if(!is.null({{ env_id }}$column_split)){
-    if(input$select_visualisation_{{ env_id }} == "samples"){
-      cell_fun <- NULL
-      column_names_rot = NULL
-    } else {
-      cell_fun <- function(j, i, x, y, width, height, fill) {
-        grid::grid.text(sprintf("%.1f", exprs_values_{{ env_id }}()[i, j]), x, y, gp = grid::gpar(fontsize = 10))
-      }
-      column_names_rot = 45
-    }
-  } else {
-    cell_fun <- NULL
-    column_names_rot = NULL
+  cell_fun <- NULL
+  column_names_rot = NULL
+      
+  if (input$select_aggregate_by_{{ env_id }} != "None") {
+    cell_fun <- function(j, i, x, y, width, height, fill) {grid::grid.text(sprintf("%.1f", exprs_values_{{ env_id }}()[i, j]), x, y, gp = grid::gpar(fontsize = 10))}
+    column_names_rot <- 45
   }
   
   # add annotation along the colormap
-  ha = NULL
-  if(!is.null({{ env_id }}$column_split)){
-    if(input$select_visualisation_{{ env_id }} %in% names(colormaps)){
-      ha = ComplexHeatmap::HeatmapAnnotation(
-        group_by = colnames(exprs_values_{{ env_id }}()),
-        col = list(group_by = colormaps[[input$select_visualisation_{{ env_id }}]])
-      )
-    } else if(input$select_visualisation_{{ env_id }} == "samples" & input$select_column_split_{{ env_id }} != "none"){
-      if(input$select_column_split_{{ env_id }} %in% names(colormaps)){
-        ha = ComplexHeatmap::HeatmapAnnotation(
-          group_by = column_split_{{ env_id }}(),
-          col = list(group_by = colormaps[[input$select_column_split_{{ env_id }}]])
-        )
-      }
-    }
-  }
+  # ha = NULL
+  # if(!is.null({{ env_id }}$column_split)){
+  #   if(input$select_visualisation_{{ env_id }} %in% names(colormaps)){
+  #     ha = ComplexHeatmap::HeatmapAnnotation(
+  #       group_by = colnames(exprs_values_{{ env_id }}()),
+  #       col = list(group_by = colormaps[[input$select_visualisation_{{ env_id }}]])
+  #     )
+  #   } else if(input$select_visualisation_{{ env_id }} == "samples" & input$select_column_split_{{ env_id }} != "none"){
+  #     if(input$select_column_split_{{ env_id }} %in% names(colormaps)){
+  #       ha = ComplexHeatmap::HeatmapAnnotation(
+  #         group_by = column_split_{{ env_id }}(),
+  #         col = list(group_by = colormaps[[input$select_column_split_{{ env_id }}]])
+  #       )
+  #     }
+  #   }
+  # }
   
   i2dash.scrnaseq::ComplexHeatmap_heatmap(
     matrix = exprs_values_{{ env_id }}(),
@@ -253,7 +234,7 @@ output$plot_{{ env_id }} <- renderPlot({
     clustering_distance_columns = clustdist,
     clustering_method_rows = clustmethod,
     clustering_method_columns = clustmethod,
-    column_split = column_split_{{ env_id }}(),
+    column_split = split_by_{{ env_id }}(),
     column_names_rot = column_names_rot,
     cell_fun = cell_fun,
     top_annotation = ha
@@ -274,10 +255,12 @@ output$downloadData_{{ env_id }} <- downloadHandler(
 # Layout of component
 #
 shiny::fillRow(flex = c(NA, 1),
-      shinyWidgets::dropdownButton(div(style='max-height: 350px; overflow-x: auto;',do.call(shiny::inputPanel, ui_list)),
-                       circle = TRUE, status = "danger", icon = icon("gear"), width = "300px",
-                       tooltip = shinyWidgets::tooltipOptions(title = "Click, to change plot settings:")),
-      plotOutput("plot_{{ env_id }}", width = "100%", height = "400px")
+      shinyWidgets::dropdownButton(div(style='max-height: 350px; overflow-x: auto;', do.call(shiny::inputPanel, ui_list)),
+                                   circle = TRUE,
+                                   status = "danger",
+                                   icon = icon("gear"),
+                                   width = "300px",
+                                   tooltip = shinyWidgets::tooltipOptions(title = "Change plot settings:")),
+      shiny::plotOutput("plot_{{ env_id }}", width = "100%", height = "400px")
 )
 ```
-

@@ -36,7 +36,8 @@ setMethod("scatterplot",
               colour_by %<>%
                 as.data.frame() %>%
                 dplyr::select_if(function(col) is.integer(col) | is.numeric(col) | is.factor(col))
-              if(is.null(colnames(colour_by))) colnames(colour_by) <- paste0("Color_by_", 1:ncol(colour_by))
+
+              if(is.null(colnames(colour_by))) colnames(colour_by) <- paste0("Colour_by_", 1:ncol(colour_by))
               if(nrow(x) != nrow(colour_by)) stop("The number of rows in 'x' and 'colour_by' is not equal.")
               colouring["Colour by metadata"] <- 1
             }
@@ -178,7 +179,6 @@ setMethod("scatterplot",
               #
               # create data.frames for x, y
               #
-              # To Do: in statical mode the first column is used for x and y. This is useless.
               if(!is.null(use_dimred)) {
                 assertive.sets::assert_is_subset(use_dimred, SingleCellExperiment::reducedDimNames(object))
                 SingleCellExperiment::reducedDim(object, use_dimred) %>%

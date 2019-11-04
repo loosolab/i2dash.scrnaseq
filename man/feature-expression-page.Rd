@@ -9,9 +9,9 @@
 add_feature_expression_page(dashboard, object, ...)
 
 \S4method{add_feature_expression_page}{i2dashboard,missing}(dashboard,
-  use_dimred, exprs_values, group_by = NULL,
-  labels = rownames(use_dimred), title = "Feature expression",
-  menu = NULL)
+  use_dimred, exprs_values, page = "feature_expression_page",
+  group_by = NULL, labels = rownames(use_dimred),
+  title = "Feature expression", menu = NULL)
 
 
   \S4method{add_feature_expression_page}{i2dashboard,SingleCellExperiment}(dashboard,
@@ -30,6 +30,8 @@ add_feature_expression_page(dashboard, object, ...)
 \item{use_dimred}{A data.frame (matrix) containing coordinates of the reduced dimension or a character representing a valid \code{reducedDim} slot of the SingleCellExperiment \code{object}/ a name of the \linkS4class{Seurat::DimReduc} object in \code{object@reductions}.}
 
 \item{exprs_values}{A data.frame (matrix) containing expression data of features of interest in rows and samples in columns.}
+
+\item{page}{The name of the page to be added.}
 
 \item{group_by}{A data.frame (matrix) containing factorial metadata (e.g. cluster, timepoint, etc.) along samples or a character vector indicating the columns to use from the "meta.data" of a Seurat \code{object}.}
 

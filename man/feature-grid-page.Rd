@@ -9,7 +9,8 @@
 add_feature_grid_page(dashboard, object, ...)
 
 \S4method{add_feature_grid_page}{i2dashboard,missing}(dashboard,
-  use_dimred, exprs_values, title = "Feature grid", menu = "Tools")
+  use_dimred, exprs_values, page = "feature_grid_page",
+  title = "Feature grid", menu = "Tools")
 
 
   \S4method{add_feature_grid_page}{i2dashboard,SingleCellExperiment}(dashboard,
@@ -26,6 +27,8 @@ add_feature_grid_page(dashboard, object, ...)
 \item{use_dimred}{A list of data.frames (matrices) or a single data.frame (matrix) containing coordinates of the reduced dimensions, a character vector representing valid \code{reducedDim} slots of \code{object} or names of the \linkS4class{Seurat::DimReduc} object in \code{object@reductions}.}
 
 \item{exprs_values}{A data.frame (matrix) containing expression data of features of interest in rows and samples in columns, or a string representing the name of an \code{assay} of \code{object}.}
+
+\item{page}{The name of the page to be added.}
 
 \item{title}{The title of the page.}
 
