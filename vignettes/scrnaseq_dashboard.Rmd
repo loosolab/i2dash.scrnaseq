@@ -311,7 +311,7 @@ dashboard <- i2dash.scrnaseq::add_feature_expression_page(
 )
 ```
 
-```{r geneExpr, echo=FALSE, out.width='100%', fig.cap="\\label{fig:geneExpr} Example of the gene expression page with linked components."}
+```{r geneExpr, echo=FALSE, out.width='100%', fig.cap="\\label{fig:geneExpr} Example of the feature expression page with linked components."}
 knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/gene_expression_page.png", mustWork=TRUE))
 ```
 
