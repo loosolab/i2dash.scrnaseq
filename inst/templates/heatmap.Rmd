@@ -121,7 +121,7 @@ exprs_values_{{ env_id }} <- shiny::reactive({
   colnames(exprs_values) <- c()
   
   # Handle aggregation
-  if (input$select_aggregate_by_{{ env_id }} != "None" & input$select_split_by_{{ env_id }} == "None") {
+  if (input$select_aggregate_by_{{ env_id }} != "None") {
     exprs_values <- aggregate_data(exprs_values, {{ env_id }}$aggregate_by[, input$select_aggregate_by_{{ env_id }}])
   }
   
@@ -147,7 +147,7 @@ clust_{{ env_id }} <- shiny::reactive({
 })
 
 split_by_{{ env_id }} <- shiny::reactive({
-  if(input$select_split_by_{{ env_id }} == "None") {
+  if(input$select_split_by_{{ env_id }} == "None" | input$select_aggregate_by_{{ env_id }} != "None") {
     return(NULL)
   }
   return({{ env_id }}$split_by[[input$select_split_by_{{ env_id }}]])
@@ -164,13 +164,13 @@ output$plot_{{ env_id }} <- shiny::renderPlot({
   column_names_rot = NULL
   ha = NULL
       
-  if (input$select_aggregate_by_{{ env_id }} != "None" & input$select_split_by_{{ env_id }} == "None") {
+  if (input$select_aggregate_by_{{ env_id }} != "None") {
     cell_fun <- function(j, i, x, y, width, height, fill) {grid::grid.text(sprintf("%.1f", exprs_values_{{ env_id }}()[i, j]), x, y, gp = grid::gpar(fontsize = 10))}
     column_names_rot <- 45
   }
   
   # Handle annotation
-  if (input$select_split_by_{{ env_id }} != "None") {
+  if (input$select_split_by_{{ env_id }} != "None" & input$select_aggregate_by_{{ env_id }} == "None") {
     # Use colors defined by colormap else use random colors
     if (input$select_split_by_{{ env_id }} %in% names(colormaps)){
       ha = ComplexHeatmap::HeatmapAnnotation(
