@@ -22,6 +22,25 @@ NULL
 #' @exportMethod add_feature_grid_page
 setGeneric("add_feature_grid_page", function(report, object, ...) standardGeneric("add_feature_grid_page"))
 
+#' Add a dimension reduction page with feature metadata
+#'
+#' This function adds a page with two linked components to the \code{dashboard} object: A scatterplot, showing samples in along two-dimensional coordinates, and a table, showing feature metadata. A click on a feature in the table updates the scatterplot with the feature expression.
+#'
+#' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
+#' @param object A \linkS4class{SingleCellExperiment::SingleCellExperiment} object or a \linkS4class{Seurat::Seurat} object.
+#' @param use_dimred A list of data.frames (matrices) or a single data.frame (matrix) containing coordinates of the reduced dimensions, a character vector representing valid \code{reducedDim} slots of \code{object} or names of the \linkS4class{Seurat::DimReduc} object in \code{object@reductions}.
+#' @param exprs_values A data.frame (matrix) containing expression data of features of interest in rows and samples in columns, or a string representing the name of an \code{assay} of \code{object}.
+#' @param feature_metadata A data.frame (matrix) along rows of \code{exprs_values} containing feature metadata, or a character vector indicating columns from \code{rowData(object)} or \code{object@meta.data}.
+#' @param assay A character vector specifying which assay from \code{object@assays} to obtain expression values from.
+#' @param slot A character vector specifying the name of the slot in the assay.
+#' @param title The title of the page.
+#' @param menu (Optional) The name of the menu, under which the page should appear.
+#'
+#' @name dimred-metadata-page
+#' @rdname dimred-metadata-page
+#' @exportMethod add_dimred_feature_page
+setGeneric("add_dimred_feature_page", function(dashboard, object, ...) standardGeneric("add_dimred_feature_page"))
+
 #' Summarize samples or features of objects containing data from single-cell experiments.
 #'
 #' @param object A SingleCellExperiment or Seurat object.
