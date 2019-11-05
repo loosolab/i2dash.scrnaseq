@@ -84,4 +84,3 @@ setMethod("violinplot",
                        y_title = y_title,
                        group_by_title = group_by_title)
           })
-
