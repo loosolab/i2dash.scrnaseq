@@ -10,7 +10,8 @@ add_dimred_feature_page(dashboard, object, ...)
 
 \S4method{add_dimred_feature_page}{i2dashboard,missing}(dashboard,
   use_dimred, exprs_values, feature_metadata,
-  title = "Feature expression", menu = NULL)
+  page = "dimred_feature_page", title = "Feature expression",
+  menu = NULL)
 
 
   \S4method{add_dimred_feature_page}{i2dashboard,SingleCellExperiment}(dashboard,
@@ -30,6 +31,8 @@ add_dimred_feature_page(dashboard, object, ...)
 \item{exprs_values}{A data.frame (matrix) containing expression data of features of interest in rows and samples in columns.}
 
 \item{feature_metadata}{A data.frame (matrix) along rows of \code{exprs_values} containing feature metadata, or a character vector indicating columns from \code{rowData(object)} or \code{object[[assay]]@feature.data}.}
+
+\item{page}{The name of the page to be added.}
 
 \item{title}{The title of the page.}
 

@@ -13,7 +13,7 @@ plotly_scatterplot <- function(..., y_title = NULL, x_title = NULL){
     )
 }
 
-#' Render a bar plot with plotly.
+#' Render a barplot with plotly.
 #'
 #' @param ... these arguments are of either the form value or tag = value and should be valid for the 'plotly::plot_ly()' method.
 #' @param showlegend (Optional) Boolean value that describes if the legend should be shown.
@@ -23,12 +23,11 @@ plotly_scatterplot <- function(..., y_title = NULL, x_title = NULL){
 #' @return An object of class \code{plotly}.
 #' @export
 plotly_barplot <- function(..., showlegend = NULL, x_group_by_title = NULL, y_group_by_title = NULL){
-  p <- plotly::plot_ly(..., type = "bar", orientation = "h", opacity = 0.7) %>%
+  plotly::plot_ly(..., type = "bar", orientation = "h", opacity = 0.7) %>%
     plotly::layout(xaxis = list(title = x_group_by_title, showline = T),
                    yaxis = list(title = y_group_by_title, showline = T, showticklabels = T),
                    barmode = 'stack',
                    showlegend = showlegend)
-  p
 }
 
 #' Render a boxplot with plotly.
@@ -37,11 +36,12 @@ plotly_barplot <- function(..., showlegend = NULL, x_group_by_title = NULL, y_gr
 #' @param group_by A factor, by which observations can optionally be grouped.
 #' @param x_title A title that describes the observations.
 #' @param group_by_title A title that describes the grouping factor.
+#' @param ... these arguments are of the form tag = value and should be valid for the 'plotly::plot_ly()' method.
 #'
 #' @return An object of class \code{plotly}.
 #' @export
-plotly_boxplot <- function(x, group_by = NULL, x_title = NULL, group_by_title = NULL){
-  plotly::plot_ly(x = x, y = group_by, type = "box", colors = "Set1",  color = group_by) %>%
+plotly_boxplot <- function(x, group_by = NULL, x_title = NULL, group_by_title = NULL, ...){
+  plotly::plot_ly(x = x, y = group_by, type = "box", color = group_by, ...) %>%
     plotly::layout(xaxis = list(title = x_title, showline = T),
                    yaxis = list(title = group_by_title, showline = T, showticklabels = T))
 }
@@ -52,11 +52,12 @@ plotly_boxplot <- function(x, group_by = NULL, x_title = NULL, group_by_title = 
 #' @param group_by A factor, by which observations can optionally be grouped.
 #' @param y_title A title that describes the observations.
 #' @param group_by_title A title that describes the grouping factor.
+#' @param ... these arguments are of the form tag = value and should be valid for the 'plotly::plot_ly()' method.
 #'
 #' @return An object of class \code{plotly}.
 #' @export
- plotly_violinplot <- function(y, group_by = NULL, y_title = NULL, group_by_title = NULL){
-      plotly::plot_ly(colors = "Set1", x = group_by, y = y, color = group_by, type = "violin", box = list(visible = T), meanline = list(visible = T), points = "all", jitter = 0) %>%
+ plotly_violinplot <- function(y, group_by = NULL, y_title = NULL, group_by_title = NULL, ...){
+      plotly::plot_ly(x = group_by, y = y, color = group_by, type = "violin", box = list(visible = T), meanline = list(visible = T), points = "all", jitter = 0, ...) %>%
       plotly::layout(
         xaxis = list(title = group_by_title),
         yaxis = list(title = y_title)

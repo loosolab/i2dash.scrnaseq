@@ -5,7 +5,7 @@
 \title{Render a vertical violin plot with plotly.}
 \usage{
 plotly_violinplot(y, group_by = NULL, y_title = NULL,
-  group_by_title = NULL)
+  group_by_title = NULL, ...)
 }
 \arguments{
 \item{y}{Numeric observations.}
@@ -15,6 +15,8 @@ plotly_violinplot(y, group_by = NULL, y_title = NULL,
 \item{y_title}{A title that describes the observations.}
 
 \item{group_by_title}{A title that describes the grouping factor.}
+
+\item{...}{these arguments are of the form tag = value and should be valid for the 'plotly::plot_ly()' method.}
 }
 \value{
 An object of class \code{plotly}.

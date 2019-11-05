@@ -20,7 +20,14 @@ setMethod("scatterplot",
             if(is.null(colnames(y))) colnames(y) <- paste0("Y_", 1:ncol(y))
             if(nrow(x) != nrow(y)) stop("The number of rows in 'x' and 'y' are is equal.")
 
-            if(colnames(x)[1] == colnames(y)[1] & colnames(x)[2] == colnames(y)[2]) y <-  y[, c(2, 1, c(3:ncol(y)))]
+            # switch first two columns if their are equal for the static mode
+            if(colnames(x)[1] == colnames(y)[1] & colnames(x)[2] == colnames(y)[2]) {
+              if(ncol(y) > 2) {
+                y <-  y[, c(2, 1, c(3:ncol(y)))]
+              } else {
+                y <-  y[, c(2, 1)]
+              }
+            }
 
             colouring <- list("No colour" = 0)
 
