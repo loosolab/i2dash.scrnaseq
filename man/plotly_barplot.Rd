@@ -8,7 +8,7 @@ plotly_barplot(..., showlegend = NULL, x_group_by_title = NULL,
   y_group_by_title = NULL)
 }
 \arguments{
-\item{...}{these arguments are of either the form value or tag = value and should be valid for the 'plotly::plot_ly()' method.}
+\item{...}{these arguments are of either the form \code{value} or \code{tag = value} and should be valid for the \code{plotly::plot_ly()} method.}
 
 \item{showlegend}{(Optional) Boolean value that describes if the legend should be shown.}
 

@@ -20,7 +20,7 @@ setMethod("scatterplot",
             if(is.null(colnames(y))) colnames(y) <- paste0("Y_", 1:ncol(y))
             if(nrow(x) != nrow(y)) stop("The number of rows in 'x' and 'y' are is equal.")
 
-            # switch first two columns if their are equal for the static mode
+            # Columns are swapped in case of equal column names to prevent visualization of the same column (always the first one) on both axes.
             if(colnames(x)[1] == colnames(y)[1] & colnames(x)[2] == colnames(y)[2]) {
               if(ncol(y) > 2) {
                 y <-  y[, c(2, 1, c(3:ncol(y)))]
@@ -49,7 +49,7 @@ setMethod("scatterplot",
             }
 
             if(!is.null(exprs_values)){
-              assertive.types::assert_is_any_of(exprs_values, c("data.frame", "matrix"))
+              exprs_values <- as.matrix(exprs_values)
               if(is.null(rownames(exprs_values))) rownames(exprs_values) <- paste0("feature_", 1:nrow(exprs_values))
               if(nrow(x) != ncol(exprs_values)) stop("The number of rows in 'x' and columns in 'exprs_values' is not equal.")
               colouring["Colour by expression"] <- 3

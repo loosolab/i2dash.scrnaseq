@@ -15,7 +15,7 @@ plotly_scatterplot <- function(..., y_title = NULL, x_title = NULL){
 
 #' Render a barplot with plotly.
 #'
-#' @param ... these arguments are of either the form value or tag = value and should be valid for the 'plotly::plot_ly()' method.
+#' @param ... these arguments are of either the form \code{value} or \code{tag = value} and should be valid for the \code{plotly::plot_ly()} method.
 #' @param showlegend (Optional) Boolean value that describes if the legend should be shown.
 #' @param title_x (Optional) A title that describes the observations.
 #' @param title_group_by (Optional) A title that describes the grouping factor.
@@ -36,7 +36,7 @@ plotly_barplot <- function(..., showlegend = NULL, x_group_by_title = NULL, y_gr
 #' @param group_by A factor, by which observations can optionally be grouped.
 #' @param x_title A title that describes the observations.
 #' @param group_by_title A title that describes the grouping factor.
-#' @param ... these arguments are of the form tag = value and should be valid for the 'plotly::plot_ly()' method.
+#' @param ... these arguments are of either the form \code{value} or \code{tag = value} and should be valid for the \code{plotly::plot_ly()} method.
 #'
 #' @return An object of class \code{plotly}.
 #' @export
@@ -52,7 +52,7 @@ plotly_boxplot <- function(x, group_by = NULL, x_title = NULL, group_by_title = 
 #' @param group_by A factor, by which observations can optionally be grouped.
 #' @param y_title A title that describes the observations.
 #' @param group_by_title A title that describes the grouping factor.
-#' @param ... these arguments are of the form tag = value and should be valid for the 'plotly::plot_ly()' method.
+#' @param ... these arguments are of either the form \code{value} or \code{tag = value} and should be valid for the \code{plotly::plot_ly()} method.
 #'
 #' @return An object of class \code{plotly}.
 #' @export
@@ -66,7 +66,7 @@ plotly_boxplot <- function(x, group_by = NULL, x_title = NULL, group_by_title = 
 
 #' Render a heatmap with ComplexHeatmap.
 #'
-#' @param ... further optional and valid arguments, that are the supported arguments in ComplexHeatmap.
+#' @param ... further optional arguments, that are the supported arguments in \code{ComplexHeatmap}.
 #' @param legend_title An optional title of the legend.
 #' @return An object of class \code{Heatmap}.
 #' @export
@@ -93,7 +93,7 @@ ComplexHeatmap_heatmap <- function(..., legend_title = NULL){
 #' @param size Numeric values defining the size of the dots.
 #' @param x_title The title of the x-axis.
 #' @param y_title The title of the y-axis.
-#' @param ... these arguments are of either the form value or tag = value and should be valid for the 'plotly::plot_ly()' method.
+#' @param ... these arguments are of either the form \code{value} or \code{tag = value} and should be valid for the \code{plotly::plot_ly()} method.
 #'
 #' @return An object of class \code{plotly}.
 #' @export

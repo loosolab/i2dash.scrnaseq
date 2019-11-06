@@ -24,7 +24,8 @@ heatmap(dashboard, object, ...)
   aggregate_by = NULL, ...)
 
 \S4method{heatmap}{i2dashboard,Seurat}(dashboard, object, assay = "RNA",
-  assay_slot = "data", subset_row, column_split = NULL, ...)
+  assay_slot = "data", subset_row, split_by = NULL,
+  aggregate_by = NULL, ...)
 }
 \arguments{
 \item{dashboard}{An object of class \linkS4class{i2dash::i2dashboard}.}

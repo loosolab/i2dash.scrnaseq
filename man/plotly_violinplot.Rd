@@ -16,7 +16,7 @@ plotly_violinplot(y, group_by = NULL, y_title = NULL,
 
 \item{group_by_title}{A title that describes the grouping factor.}
 
-\item{...}{these arguments are of the form tag = value and should be valid for the 'plotly::plot_ly()' method.}
+\item{...}{these arguments are of either the form \code{value} or \code{tag = value} and should be valid for the \code{plotly::plot_ly()} method.}
 }
 \value{
 An object of class \code{plotly}.

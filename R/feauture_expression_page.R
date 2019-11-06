@@ -14,8 +14,7 @@ setMethod("add_feature_expression_page",
 
             # Input validation
             assertive.types::assert_is_any_of(use_dimred, c("data.frame", "matrix"))
-            if(class(exprs_values) == "dgCMatrix") exprs_values <- as.matrix(exprs_values)
-            assertive.types::assert_is_any_of(exprs_values, c("data.frame", "matrix"))
+            exprs_values <- as.matrix(exprs_values)
 
             if(ncol(use_dimred) < 2 ) stop("'use_dimred' should contain at least two columns.")
 

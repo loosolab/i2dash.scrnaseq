@@ -21,8 +21,7 @@ setMethod("add_feature_grid_page",
             if(!assertive.properties::has_names(use_dimred)) {
               names(use_dimred) <- paste0("dimred_", 1:length(use_dimred))
             }
-            if(class(exprs_values) == "dgCMatrix") exprs_values <- as.matrix(exprs_values)
-            assertive.types::assert_is_any_of(exprs_values, c("data.frame", "matrix"))
+            exprs_values <- as.matrix(exprs_values)
 
             # Create component environment
             env <- new.env()
