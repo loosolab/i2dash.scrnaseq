@@ -13,8 +13,9 @@ add_dimred_feature_page(dashboard, object, ...)
 add_dimred_metadata_page(dashboard, object, ...)
 
 \S4method{add_dimred_metadata_page}{i2dashboard,missing}(dashboard,
-  use_dimred, metadata, group_by, title = NULL, labels = NULL,
-  show_group_sizes = TRUE, show_silhouette = FALSE, menu = NULL)
+  use_dimred, metadata, group_by, title = "Dimension reduction",
+  labels = NULL, show_group_sizes = TRUE, show_silhouette = FALSE,
+  menu = NULL)
 
 \S4method{add_dimred_feature_page}{i2dashboard,missing}(dashboard,
   use_dimred, exprs_values, feature_metadata,
