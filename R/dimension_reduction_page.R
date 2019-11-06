@@ -5,7 +5,7 @@
 #' @export
 setMethod("add_dimred_metadata_page",
           signature = signature(dashboard = "i2dashboard", object = "missing"),
-          function(dashboard, use_dimred, metadata, group_by, title = NULL, labels = NULL, show_group_sizes = TRUE, show_silhouette = FALSE, menu = NULL) {
+          function(dashboard, use_dimred, metadata, group_by, title = "Dimension reduction", labels = NULL, show_group_sizes = TRUE, show_silhouette = FALSE, menu = NULL) {
   # Create random env id
   env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
 
