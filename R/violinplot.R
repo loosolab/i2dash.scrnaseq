@@ -83,7 +83,6 @@ setMethod("violinplot",
                        ...)
           })
 
-
 #' @rdname violinplot
 #' @return An object of class \linkS4class{i2dash::i2dashboard}.
 #' @export

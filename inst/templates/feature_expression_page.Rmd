@@ -156,7 +156,8 @@ data_{{ env_id }} %>%
                 caption = 'Table: No. of cells with positive expression (>0)', 
                 selection = list(mode = 'single', target = 'row'), 
                 options = list(
-    columnDefs = list(list(visible = FALSE, targets = c(1)))
+    columnDefs = list(list(visible = FALSE, targets = c(1))),
+    pageLength = 100
     ),
     callback=DT::JS("
       table.on('click.dt', 'tr', function() {
@@ -237,7 +238,7 @@ Column
 <!-- Component created on 2019-09-02 13:41:13 -->
 
 ```{r, eval=!is_shiny}
-i2dash.scrnaseq::plotly_violinplot(y = exprs_values_{{ env_id }}[1,], group_by = group_by_{{ env_id }}[,1], y_title = "Expression per cluster", group_by_title = "Grouping") %>%
+i2dash.scrnaseq::plotly_violinplot(y = exprs_values_{{ env_id }}[1,], group_by = group_by_{{ env_id }}[,1], y_title = "Expression", group_by_title = "Group") %>%
   plotly::layout(
     title = row.names(exprs_values_{{ env_id }})[1]
   ) -> violin_{{ env_id }}
@@ -264,7 +265,7 @@ df2_{{ env_id }} <- shiny::reactive({
 # creating a violinplot with the primitive function of i2dash.scrnaseq::plotly_violinplot
 #
 output$violin_{{ env_id }} <- plotly::renderPlotly({
-  i2dash.scrnaseq::plotly_violinplot(y = df2_{{ env_id }}()$expression, group_by = df2_{{ env_id }}()$level, y_title = "Expression per cluster", group_by_title = "Grouping") %>%
+  i2dash.scrnaseq::plotly_violinplot(y = df2_{{ env_id }}()$expression, group_by = df2_{{ env_id }}()$level, y_title = "Expression", group_by_title = "Group") %>%
   plotly::layout(title = df_{{ env_id }}()$feature) -> violin
 })
 plotly::plotlyOutput("violin_{{ env_id }}", height = "100%")
