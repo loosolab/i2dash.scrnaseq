@@ -27,7 +27,12 @@ if(!is.null({{ env_id }}$group_by)){
   group_by_{{ env_id }} <- NULL
 }
 # compare with colormaps
-if(group_by_title_{{ env_id }} %in% names(colormaps)) colors_{{ env_id }} <- colormaps[[group_by_title_{{ env_id }}]] else colors_{{ env_id }} <- "Set1"
+if(!is.null(group_by_title_{{ env_id }})){
+  if(group_by_title_{{ env_id }} %in% names(colormaps)) colors_{{ env_id }} <- colormaps[[group_by_title_{{ env_id }}]] else colors_{{ env_id }} <- "Set1"
+} else {
+  colors_{{ env_id }} <- "Set1"
+}
+
 # set title variables
 if(!is.null({{ env_id }}$y_title)) y_title_{{ env_id }} <- {{ env_id }}$y_title else y_title_{{ env_id }} <- colnames(y_{{ env_id }})
 if(!is.null({{ env_id }}$group_by_title)) group_by_title_{{ env_id }} <- {{ env_id }}$group_by_title
@@ -118,8 +123,13 @@ output$downloadData_{{ env_id }} <- downloadHandler(
 #
 output$plot_{{ env_id }} <- plotly::renderPlotly({
   # compare with colormaps
-  if(group_by_{{ env_id }}()$title %in% names(colormaps)) colors <- colormaps[[group_by_{{ env_id }}()$title]] else colors <- "Set1"
+  if(!is.null(group_by_{{ env_id }}()$title)){
+    if(group_by_{{ env_id }}()$title %in% names(colormaps)) colors <- colormaps[[group_by_{{ env_id }}()$title]] else colors <- "Set1"
+  } else {
+    colors <- "Set1"
+  }
   
+  # set custom axis titles if provided
   if(!is.null({{ env_id }}$y_title)) y_title <- {{ env_id }}$y_title else y_title <- y_{{ env_id }}()$title
   if(!is.null({{ env_id }}$group_by_title)) group_by_title <- {{ env_id }}$group_by_title else group_by_title <- group_by_{{ env_id }}()$title
   

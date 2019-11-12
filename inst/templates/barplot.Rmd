@@ -59,7 +59,7 @@ if(!is.null({{ env_id }}$x_group_by)){
   if(is.null({{ env_id }}$x_group_by)){
     if(colnames(y_group_by_{{ env_id }}) %in% names(colormaps)) colors_{{ env_id }} <- colormaps[[colnames(y_group_by_{{ env_id }})]] else colors_{{ env_id }} <- "Set1"
   } else {
-    if(x_group_by_title_{{ env_id }} %in% names(colormaps)) colors_{{ env_id }} <- colormaps[[x_group_by_title_{{ env_id }}]] else colors <- "Set1"
+    if(x_group_by_title_{{ env_id }} %in% names(colormaps)) colors_{{ env_id }} <- colormaps[[x_group_by_title_{{ env_id }}]] else colors_{{ env_id }} <- "Set1"
   }
 
 # set title variables

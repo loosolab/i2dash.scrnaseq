@@ -68,8 +68,8 @@ setMethod("add_feature_expression_page",
             assertive.sets::assert_is_subset(group_by, colnames(SummarizedExperiment::colData(object)))
 
             expression <- SummarizedExperiment::assay(object, i = exprs_values)
-            if(!is.null(features)) {
-              expression <- SummarizedExperiment::assay(object, i = exprs_values)[features, ]
+            if(!is.null(subset_row)) {
+              expression <- SummarizedExperiment::assay(object, i = exprs_values)[subset_row, ]
             }
 
             SummarizedExperiment::colData(object) %>%
@@ -77,7 +77,7 @@ setMethod("add_feature_expression_page",
               dplyr::select(!!group_by) -> metadata
 
             add_feature_expression_page(dashboard,
-                                     use_dimred = SingleCellExperiment::reducedDim(object, dimred),
+                                     use_dimred = SingleCellExperiment::reducedDim(object, use_dimred),
                                      exprs_values = expression,
                                      group_by = metadata,
                                      labels = colnames(object),
@@ -99,7 +99,7 @@ setMethod("add_feature_expression_page",
             assay_obj <- Seurat::GetAssay(object = object, assay = assay)
             expression <- Seurat::GetAssayData(object = assay_obj, slot = slot)
             if(!is.null(subset_row)) {
-              expression <- Seurat::GetAssayData(object = assay_obj, slot = slot)[feature, ]
+              expression <- Seurat::GetAssayData(object = assay_obj, slot = slot)[subset_row, ]
             }
 
             object@meta.data[metadata] %>%
@@ -107,7 +107,7 @@ setMethod("add_feature_expression_page",
               dplyr::select(!!group_by) -> metadata
 
             add_feature_expression_page(dashboard,
-                                     use_dimred = Seurat::Embeddings(object, reduction = dimred),
+                                     use_dimred = Seurat::Embeddings(object, reduction = use_dimred),
                                      exprs_values = expression,
                                      group_by = metadata,
                                      labels = colnames(expression),

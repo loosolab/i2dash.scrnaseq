@@ -10,8 +10,8 @@ add_dimred_feature_page(dashboard, object, ...)
 
 \S4method{add_dimred_feature_page}{i2dashboard,missing}(dashboard,
   use_dimred, exprs_values, feature_metadata,
-  page = "dimred_feature_page", title = "Feature expression",
-  menu = NULL)
+  page = "dimred_feature_page",
+  title = "Dim. reduction & deature metadata", menu = NULL)
 
 
   \S4method{add_dimred_feature_page}{i2dashboard,SingleCellExperiment}(dashboard,
@@ -26,9 +26,9 @@ add_dimred_feature_page(dashboard, object, ...)
 
 \item{object}{A \linkS4class{SingleCellExperiment::SingleCellExperiment} object or a \linkS4class{Seurat::Seurat} object.}
 
-\item{use_dimred}{A data.frame (matrix) containing coordinates of the reduced dimension or a character representing a valid \code{reducedDim} slot of a SingleCellExperiment \code{object}/ a name of the \linkS4class{Seurat::DimReduc} object in \code{object@reductions}.}
+\item{use_dimred}{Coordinates of the reduced dimensions, used for the scatterplot (see Details).}
 
-\item{exprs_values}{A data.frame (matrix) containing expression data of features of interest in rows and samples in columns.}
+\item{exprs_values}{Expression data of features of interest in rows and samples in columns (see Details).}
 
 \item{feature_metadata}{A data.frame (matrix) along rows of \code{exprs_values} containing feature metadata, or a character vector indicating columns from \code{rowData(object)} or \code{object[[assay]]@feature.data}.}
 
@@ -47,4 +47,14 @@ An object of class \linkS4class{i2dash::i2dashboard}.
 }
 \description{
 The dimension reduction plot is colored by feature expression and updated if the users clicks feature rows in the metadata table.
+}
+\details{
+The parameters \code{use_dimred}, \code{exprs_values} (or \code{assay}) and \code{group_by} take different arguments depending on the class of \code{object}.
+  In case no object is supplied (\emph{i2dashboard,missing}-method), the parameters are expected to be of class \code{data.frame} or \code{matrix}.
+  In case a \linkS4class{SingleCellExperiment::SingleCellExperiment} or \linkS4class{Seurat::Seurat} object is supplied, the parameters are expected to be of class \code{character}, containing
+  \itemize{
+    \item the name of an item in \code{reducedDims(object)} or \code{object@reductions},
+    \item a valid assay name from \code{assayNames(object)} or \code{names(object@assays)},
+    \item column names of \code{colData(object)} or \code{object@meta.data}.
+  }
 }

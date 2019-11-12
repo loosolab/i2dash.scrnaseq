@@ -20,7 +20,7 @@ heatmap(dashboard, object, ...)
   "single", "complete", "mcquitty", "median", "centroid"))
 
 \S4method{heatmap}{i2dashboard,SingleCellExperiment}(dashboard, object,
-  exprs_values = "counts", subset_row = NULL, split_by = NULL,
+  exprs_values = "counts", subset_row, split_by = NULL,
   aggregate_by = NULL, ...)
 
 \S4method{heatmap}{i2dashboard,Seurat}(dashboard, object, assay = "RNA",

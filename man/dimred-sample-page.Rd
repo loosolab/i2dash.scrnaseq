@@ -27,7 +27,7 @@ add_dimred_sample_page(dashboard, object, ...)
 
 \item{use_dimred}{A data.frame (matrix) containing coordinates of the reduced dimensions or a string indicating a dimension reduction from "reductions" of a Seurat \code{object}. Rownames are used as sample labels.}
 
-\item{sample_metadata}{A data.frame (matrix) containing metadata (e.g. cluster, timepoint, number of features, etc) along samples or a character vector indicating the columns to use from the "meta.data" of a Seurat \code{object}.}
+\item{sample_metadata}{Sample metadata in columns and samples in rows (see Details).}
 
 \item{group_by}{A string indicating a column in \code{metadata} that is used to group observations.}
 
@@ -49,4 +49,14 @@ An object of class \linkS4class{i2dash::i2dashboard}.
 \description{
 Creates a page with up to four different linked components, including a scatterplot for dimension reductions, a bar plot showing numbers of observations by group, and a silhouette plot to assess grouping consistency.
 Additional sample metadata is visualized using boxplots and barplots, depending on the data type of the underlying variable.
+}
+\details{
+The parameters \code{use_dimred}, \code{sample_metadata} (or \code{assay}) and \code{group_by} take different arguments depending on the class of \code{object}.
+  In case no object is supplied (\emph{i2dashboard,missing}-method), the parameters are expected to be of class \code{data.frame} or \code{matrix}.
+  In case a \linkS4class{SingleCellExperiment::SingleCellExperiment} or \linkS4class{Seurat::Seurat} object is supplied, the parameters are expected to be of class \code{character}, containing
+  \itemize{
+    \item the name of an item in \code{reducedDims(object)} or \code{object@reductions},
+    \item a valid assay name from \code{assayNames(object)} or \code{names(object@assays)},
+    \item column names of \code{colData(object)} or \code{object@meta.data}.
+  }
 }

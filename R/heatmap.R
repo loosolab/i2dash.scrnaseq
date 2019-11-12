@@ -75,7 +75,7 @@ setMethod("heatmap",
           function(dashboard,
                    object,
                    exprs_values = "counts",
-                   subset_row = NULL,
+                   subset_row,
                    split_by = NULL,
                    aggregate_by = NULL,
                    ...) {
@@ -85,7 +85,7 @@ setMethod("heatmap",
             exprs_values <- SummarizedExperiment::assay(object, exprs_values)
 
             # Subset to requested features
-            if(!is.null(subset_row)) exprs_values <- exprs_values[subset_row, ]
+            exprs_values <- exprs_values[subset_row, ]
 
             # Create data.frames for splitting and aggregation
             if(!is.null(split_by)) {
@@ -132,7 +132,7 @@ setMethod("heatmap",
             exprs_values <- Seurat::GetAssayData(object = assay_obj, slot = assay_slot)
 
             # Subset to requested features
-            if(!is.null(subset_row)) exprs_values <- exprs_values[subset_row, ]
+            exprs_values <- exprs_values[subset_row, ]
 
             # Create data.frames for splitting and aggregation
             if(!is.null(split_by)) {

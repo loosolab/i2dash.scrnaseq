@@ -5,7 +5,7 @@
 #' @export
 setMethod("add_dimred_feature_page",
           signature = signature(dashboard = "i2dashboard", object = "missing"),
-          function(dashboard, use_dimred, exprs_values, feature_metadata, page = "dimred_feature_page", title = "Feature expression", menu = NULL) {
+          function(dashboard, use_dimred, exprs_values, feature_metadata, page = "dimred_feature_page", title = "Dim. reduction & deature metadata", menu = NULL) {
 
             page %>% tolower %>% gsub(x = ., pattern = " ", replacement = "_") %>% make.names -> name
 
