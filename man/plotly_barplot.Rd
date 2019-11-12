@@ -2,13 +2,13 @@
 % Please edit documentation in R/visualization_functions.R
 \name{plotly_barplot}
 \alias{plotly_barplot}
-\title{Render a bar plot with plotly.}
+\title{Render a barplot with plotly.}
 \usage{
 plotly_barplot(..., showlegend = NULL, x_group_by_title = NULL,
   y_group_by_title = NULL)
 }
 \arguments{
-\item{...}{these arguments are of either the form value or tag = value and should be valid for the 'plotly::plot_ly()' method.}
+\item{...}{these arguments are of either the form \code{value} or \code{tag = value} and should be valid for the \code{plotly::plot_ly()} method.}
 
 \item{showlegend}{(Optional) Boolean value that describes if the legend should be shown.}
 
@@ -20,5 +20,5 @@ plotly_barplot(..., showlegend = NULL, x_group_by_title = NULL,
 An object of class \code{plotly}.
 }
 \description{
-Render a bar plot with plotly.
+Render a barplot with plotly.
 }

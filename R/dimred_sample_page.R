@@ -5,7 +5,9 @@
 #' @export
 setMethod("add_dimred_sample_page",
           signature = signature(dashboard = "i2dashboard", object = "missing"),
-          function(dashboard, use_dimred, sample_metadata, group_by, title = "Dim. reduction & sample metadata", labels = NULL, show_group_sizes = TRUE, show_silhouette = FALSE, menu = NULL) {
+          function(dashboard, use_dimred, sample_metadata, group_by, page = "dimred_sample_page", title = "Dim. reduction & sample metadata", labels = NULL, show_group_sizes = TRUE, show_silhouette = FALSE, menu = NULL) {
+
+            page %>% tolower %>% gsub(x = ., pattern = " ", replacement = "_") %>% make.names -> name
 
             # Create random env id
             env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
@@ -58,7 +60,7 @@ setMethod("add_dimred_sample_page",
             # Expand component
             timestamp <- Sys.time()
 
-            dashboard@pages[["dimred_sample_page"]] <- list(title = title, layout = "2x2_grid", menu = menu, components = expanded_components, max_components = 4, sidebar = NULL)
+            dashboard@pages[[name]] <- list(title = title, layout = "2x2_grid", menu = menu, components = expanded_components, max_components = 4, sidebar = NULL)
             return(dashboard)
           })
 

@@ -46,7 +46,7 @@ scatterplot(dashboard, object, ...)
 
 \item{use}{A character specifying where to obtain the data from. Valid input for SingleCellExperiment object: ("colData", "rowData", "reducedDim"). Valid input for Seurat object: ("meta.data" for sample metadata, "meta.feature" for feature metadata, "reduction" for a dimension reduction)}
 
-\item{use_dimred}{A character vector indicating the reduced dimension to use from "reducedDim"/ \"reduction".}
+\item{use_dimred}{A character vector indicating the reduced dimension to use from \code{"object"}.}
 
 \item{assay}{Necessery, if \code{use} = "meta.feature". A character defining the assay to obtain the feature metadata from (default "RNA").}
 }

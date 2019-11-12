@@ -5,15 +5,16 @@
 #' @export
 setMethod("add_dimred_feature_page",
           signature = signature(dashboard = "i2dashboard", object = "missing"),
-          function(dashboard, use_dimred, exprs_values, feature_metadata, title = "Feature expression", menu = NULL) {
+          function(dashboard, use_dimred, exprs_values, feature_metadata, page = "dimred_feature_page", title = "Dim. reduction & deature metadata", menu = NULL) {
+
+            page %>% tolower %>% gsub(x = ., pattern = " ", replacement = "_") %>% make.names -> name
 
             # Create random env id
             env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
 
             # Input validation
             assertive.types::assert_is_any_of(use_dimred, c("data.frame", "matrix"))
-            if(class(exprs_values) == "dgCMatrix") exprs_values <- as.matrix(exprs_values)
-            assertive.types::assert_is_any_of(exprs_values, c("data.frame", "matrix"))
+            exprs_values <- as.matrix(exprs_values)
             assertive.types::assert_is_any_of(feature_metadata, c("data.frame", "matrix"))
 
             if(ncol(use_dimred) < 2 ) stop("'use_dimred' should contain at least two columns.")
@@ -36,7 +37,7 @@ setMethod("add_dimred_feature_page",
 
             component <- knitr::knit_expand(file = system.file("templates", "dimred_metadata.Rmd", package = "i2dash.scrnaseq"), env_id = env_id, date = timestamp)
 
-            dashboard@pages[["dimred_feature_page"]] <- list(title = title, layout = "default", menu = menu, components = component, max_components = 1)
+            dashboard@pages[[name]] <- list(title = title, layout = "default", menu = menu, components = component, max_components = 1)
             return(dashboard)
           })
 

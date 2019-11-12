@@ -9,14 +9,23 @@ NULL
 #'
 #' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
 #' @param object A \linkS4class{SingleCellExperiment::SingleCellExperiment} object or a \linkS4class{Seurat::Seurat} object.
-#' @param use_dimred A list of data.frames (matrices) or a single data.frame (matrix) containing coordinates of the reduced dimensions, a character vector representing valid \code{reducedDim} slots of \code{object} or names of the \linkS4class{Seurat::DimReduc} object in \code{object@reductions}.
-#' @param exprs_values A data.frame (matrix) containing expression data of features of interest in rows and samples in columns, or a string representing the name of an \code{assay} of \code{object}.
+#' @param use_dimred Coordinates of the reduced dimensions, used for the scatterplot (see Details).
+#' @param exprs_values Expression data of features of interest in rows and samples in columns (see Details).
+#' @param page The name of the page to be added.
 #' @param assay A character vector specifying which assay from \code{object@assays} to obtain expression values from.
 #' @param slot A character vector specifying the name of the slot in the assay.
 #' @param subset_row A character vector (of feature names), a logical vector or numeric vector (of indices) specifying the features to use. The default of NULL will use all features.
 #' @param title The title of the page.
 #' @param menu (Optional) The name of the menu, under which the page should appear.
 #'
+#' @details The parameters \code{use_dimred}, \code{exprs_values} (or \code{assay}) and \code{group_by} take different arguments depending on the class of \code{object}.
+#'   In case no object is supplied (\emph{i2dashboard,missing}-method), the parameters are expected to be of class \code{data.frame} or \code{matrix}.
+#'   In case a \linkS4class{SingleCellExperiment::SingleCellExperiment} or \linkS4class{Seurat::Seurat} object is supplied, the parameters are expected to be of class \code{character}, containing
+#'   \itemize{
+#'     \item the name of an item in \code{reducedDims(object)} or \code{object@reductions},
+#'     \item a valid assay name from \code{assayNames(object)} or \code{names(object@assays)},
+#'     \item column names of \code{colData(object)} or \code{object@meta.data}.
+#'   }
 #' @name feature-grid-page
 #' @rdname feature-grid-page
 #' @exportMethod add_feature_grid_page
@@ -28,13 +37,23 @@ setGeneric("add_feature_grid_page", function(dashboard, object, ...) standardGen
 #'
 #' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
 #' @param object A \linkS4class{SingleCellExperiment::SingleCellExperiment} object or a \linkS4class{Seurat::Seurat} object.
-#' @param use_dimred A data.frame (matrix) containing coordinates of the reduced dimension or a character representing a valid \code{reducedDim} slot of a SingleCellExperiment \code{object}/ a name of the \linkS4class{Seurat::DimReduc} object in \code{object@reductions}.
-#' @param exprs_values A data.frame (matrix) containing expression data of features of interest in rows and samples in columns.
+#' @param use_dimred Coordinates of the reduced dimensions, used for the scatterplot (see Details).
+#' @param exprs_values Expression data of features of interest in rows and samples in columns (see Details).
 #' @param feature_metadata A data.frame (matrix) along rows of \code{exprs_values} containing feature metadata, or a character vector indicating columns from \code{rowData(object)} or \code{object[[assay]]@feature.data}.
+#' @param page The name of the page to be added.
 #' @param assay A character specifying the assay (\code{object@assays}) to obtain expression values from. (Default: "RNA")
 #' @param assay_slot A character specifying the name of the data slot in the assay. (Default: "data")
 #' @param title The title of the page.
 #' @param menu (Optional) The name of the menu, under which the page should appear.
+#'
+#' @details The parameters \code{use_dimred}, \code{exprs_values} (or \code{assay}) and \code{group_by} take different arguments depending on the class of \code{object}.
+#'   In case no object is supplied (\emph{i2dashboard,missing}-method), the parameters are expected to be of class \code{data.frame} or \code{matrix}.
+#'   In case a \linkS4class{SingleCellExperiment::SingleCellExperiment} or \linkS4class{Seurat::Seurat} object is supplied, the parameters are expected to be of class \code{character}, containing
+#'   \itemize{
+#'     \item the name of an item in \code{reducedDims(object)} or \code{object@reductions},
+#'     \item a valid assay name from \code{assayNames(object)} or \code{names(object@assays)},
+#'     \item column names of \code{colData(object)} or \code{object@meta.data}.
+#'   }
 #'
 #' @name dimred-feature-page
 #' @rdname dimred-feature-page
@@ -64,18 +83,30 @@ setGeneric("summarize_features", function(object, ...) standardGeneric("summariz
 #' This function adds a page with two linked components to the \code{dashboard} object: A scatterplot, showing samples in along two-dimensional coordinates, and a violin plot, showing feature expression values by groups defined in \code{group_by}.
 #'
 #' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
-#' @param object A \linkS4class{SingleCellExperiment::SingleCellExperiment} object or a \linkS4class{Seurat::Seurat} object.
-#' @param use_dimred A data.frame (matrix) containing coordinates of the reduced dimension or a character representing a valid \code{reducedDim} slot of the SingleCellExperiment \code{object}/ a name of the \linkS4class{Seurat::DimReduc} object in \code{object@reductions}.
-#' @param exprs_values A data.frame (matrix) containing expression data of features of interest in rows and samples in columns.
-#' @param group_by A data.frame (matrix) containing factorial metadata (e.g. cluster, timepoint, etc.) along samples or a character vector indicating the columns to use from the "meta.data" of a Seurat \code{object}.
-#' @param assay A character specifying the assay (\code{object@assays}) to obtain expression values from. (Default: "RNA")
+#' @param page The name of the page to be added.
+#' @param use_dimred Coordinates of the reduced dimensions, used for the scatterplot (see Details).
+#' @param exprs_values Expression data of features of interest in rows and samples in columns (see Details).
+#' @param assay A character vector specifying which assay from \code{object@assays} to obtain expression values from (see Details).
 #' @param assay_slot A character specifying the name of the data slot in the assay. (Default: "data")
+#' @param group_by Data along samples that is used for grouping expression values in the violin plot (see Details).
+#' @param object A valid \linkS4class{SingleCellExperiment::SingleCellExperiment} or \linkS4class{Seurat::Seurat} object.
+#' @param slot A character vector specifying the name of the slot in the assay.
+#' @param subset_row A character vector (of feature names), a logical vector or numeric vector (of indices) specifying the features to use. The default of NULL will use all features.
 #' @param labels A vector with optional sample labels that are used instead of \code{rownames(use_dimred)}.
 #' @param title The title of the page.
 #' @param menu (Optional) The name of the menu, under which the page should appear.
 #'
-#' @name feature-expression-page
-#' @rdname feature-expression-page
+#' @details The parameters \code{use_dimred}, \code{exprs_values} (or \code{assay}) and \code{group_by} take different arguments depending on the class of \code{object}.
+#'   In case no object is supplied (\emph{i2dashboard,missing}-method), the parameters are expected to be of class \code{data.frame} or \code{matrix}.
+#'   In case a \linkS4class{SingleCellExperiment::SingleCellExperiment} or \linkS4class{Seurat::Seurat} object is supplied, the parameters are expected to be of class \code{character}, containing
+#'   \itemize{
+#'     \item the name of an item in \code{reducedDims(object)} or \code{object@reductions},
+#'     \item a valid assay name from \code{assayNames(object)} or \code{names(object@assays)},
+#'     \item column names of \code{colData(object)} or \code{object@meta.data}.
+#'   }
+#'
+#' @name add_feature_expression_page
+#' @rdname add_feature_expression_page
 #' @exportMethod add_feature_expression_page
 setGeneric("add_feature_expression_page", function(dashboard, object, ...) standardGeneric("add_feature_expression_page"))
 
@@ -138,14 +169,23 @@ setGeneric("boxplot", function(dashboard, object, ...) standardGeneric("boxplot"
 #' @param dashboard A \linkS4class{i2dash::i2dashboard}.
 #' @param object An object of class \linkS4class{Seurat::Seurat} or \linkS4class{SingleCellExperiment::SingleCellExperiment}.
 #' @param use_dimred A data.frame (matrix) containing coordinates of the reduced dimensions or a string indicating a dimension reduction from "reductions" of a Seurat \code{object}. Rownames are used as sample labels.
-#' @param sample_metadata A data.frame (matrix) containing metadata (e.g. cluster, timepoint, number of features, etc) along samples or a character vector indicating the columns to use from the "meta.data" of a Seurat \code{object}.
+#' @param sample_metadata Sample metadata in columns and samples in rows (see Details).
 #' @param group_by A string indicating a column in \code{metadata} that is used to group observations.
+#' @param page The name of the page to be added.
 #' @param title The title of the page.
 #' @param labels An optional vector with sample labels.
 #' @param show_group_sizes A logical value indicating if a barplot showing the number of observations from \code{group_by} will be created (default \code{TRUE}).
 #' @param show_silhouette A logical value indicating if a silhouette plot should be shown (default \code{FALSE}).
 #' @param menu The name of the menu, under which the page should appear.
 #'
+#' @details The parameters \code{use_dimred}, \code{sample_metadata} (or \code{assay}) and \code{group_by} take different arguments depending on the class of \code{object}.
+#'   In case no object is supplied (\emph{i2dashboard,missing}-method), the parameters are expected to be of class \code{data.frame} or \code{matrix}.
+#'   In case a \linkS4class{SingleCellExperiment::SingleCellExperiment} or \linkS4class{Seurat::Seurat} object is supplied, the parameters are expected to be of class \code{character}, containing
+#'   \itemize{
+#'     \item the name of an item in \code{reducedDims(object)} or \code{object@reductions},
+#'     \item a valid assay name from \code{assayNames(object)} or \code{names(object@assays)},
+#'     \item column names of \code{colData(object)} or \code{object@meta.data}.
+#'   }
 #' @name dimred-sample-page
 #' @rdname dimred-sample-page
 #' @exportMethod add_dimred_sample_page
@@ -179,7 +219,7 @@ setGeneric("heatmap", function(dashboard, object, ...) standardGeneric("heatmap"
 #' @param x A data.frame (matrix) containing columns with numeric values that will be mapped to the x-axis.
 #' @param y A data.frame (matrix) containing columns with numeric values that will be mapped to the y-axis.
 #' @param use A character specifying where to obtain the data from. Valid input for SingleCellExperiment object: ("colData", "rowData", "reducedDim"). Valid input for Seurat object: ("meta.data" for sample metadata, "meta.feature" for feature metadata, "reduction" for a dimension reduction)
-#' @param use_dimred A character vector indicating the reduced dimension to use from "reducedDim"/ \"reduction".
+#' @param use_dimred A character vector indicating the reduced dimension to use from \code{"object"}.
 #' @param assay Necessery, if \code{use} = "meta.feature". A character defining the assay to obtain the feature metadata from (default "RNA").
 #' @param colour_by An optional data.frame (matrix) containing columns with numeric or factorial values that will be used for colouring.
 #' @param labels An optional vector with sample names. A dropdown menu for colouring by label will be provided.
@@ -211,3 +251,24 @@ setGeneric("scatterplot", function(dashboard, object, ...) standardGeneric("scat
 #' @rdname tsne-comparison-page
 #' @exportMethod add_tsne_comparison_page
 setGeneric("add_tsne_comparison_page", function(dashboard, object, ...) standardGeneric("add_tsne_comparison_page"))
+
+#' Renders a component containing a \link[ComplexHeatmap]{Heatmap}.
+#'
+#' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
+#' @param exprs_values A data.frame (matrix) containing expression data of features of interest in rows and samples in columns or a string representing the name of an \code{assay} of \code{object}.
+#' @param object A valid \linkS4class{SingleCellExperiment::SingleCellExperiment} object.
+#' @param subset_row A character vector (of feature names), a logical vector or numeric vector (of indices) specifying the features to use. The default of NULL will use all features.
+#' @param split_by An optional data.frame (matrix) containing grouping factors for spliting columns of the heatmap. In case of \code{i2dashboard,SingleCellExperiment}, should be column names of \code{colData(object)}.
+#' @param aggregate_by An optional data.frame (matrix) containing grouping factors for aggregating columns of the heatmap. In case of \code{i2dashboard,SingleCellExperiment}, should be column names of \code{colData(object)}.
+#' @param title Title of the component.
+#' @param legend Title of the heatmap legend.
+#' @param cluster_rows A logical controls whether to make cluster on rows.
+#' @param cluster_columns A logical controls whether to make cluster on columns.
+#' @param clustering_method Method to perform hierarchical clustering, passed to \link[stats]{hclust}.
+#' @param clustering_distance The distance measure to use for hierarchical clustering.
+#'
+#' @name heatmap
+#' @rdname heatmap
+#' @exportMethod heatmap
+setGeneric("heatmap", function(dashboard, object, ...) standardGeneric("heatmap"))
+

@@ -5,7 +5,7 @@
 \title{Render a boxplot with plotly.}
 \usage{
 plotly_boxplot(x, group_by = NULL, x_title = NULL,
-  group_by_title = NULL)
+  group_by_title = NULL, ...)
 }
 \arguments{
 \item{x}{Numeric observations for the boxplot.}
@@ -15,6 +15,8 @@ plotly_boxplot(x, group_by = NULL, x_title = NULL,
 \item{x_title}{A title that describes the observations.}
 
 \item{group_by_title}{A title that describes the grouping factor.}
+
+\item{...}{these arguments are of either the form \code{value} or \code{tag = value} and should be valid for the \code{plotly::plot_ly()} method.}
 }
 \value{
 An object of class \code{plotly}.

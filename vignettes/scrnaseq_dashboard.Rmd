@@ -41,10 +41,6 @@ stopifnot(requireNamespace("htmltools"))
 htmltools::tagList(rmarkdown::html_dependency_font_awesome())
 ```
 
-```{r, echo=FALSE, out.width='50%', fig.align='center'}
-#knitr::include_graphics(path = system.file(package="i2dash", "/www/logo-placeholder.png", mustWork=TRUE))
-```
-
 
 # Introduction 
 
@@ -150,11 +146,12 @@ dashboard <- i2dash::add_component(
 Tipp: In static mode there are no selection options for the columns, therefore it is required to specify the columns which should be used with `x` and `y` parameters.
 
 ```{r scatterplotOptions, echo=FALSE, out.width='65%', fig.cap="\\label{fig:scatterplotOptions} Example of selection options for the scatterplot in the interactive mode."}
-knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/scatterplot_options.png", mustWork=TRUE))
+#knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "../vignettes/images/scatterplot_options.png", mustWork=TRUE))
+knitr::include_graphics(path = system.file("images/scatterplot_options.PNG", package="i2dash.scrnaseq", mustWork=TRUE))
 ```
 
 ```{r scatterplotColData, echo=FALSE, out.width='100%', fig.cap="\\label{fig:scatterplotColData} Example of a scatterplot."}
-knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/scatterplot_colData.png", mustWork=TRUE))
+#knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/scatterplot_colData.png", mustWork=TRUE))
 ```
 
 ### Violinplot
@@ -177,7 +174,7 @@ dashboard <- i2dash::add_component(
 ```
 
 ```{r violinplotColData, echo=FALSE, out.width='100%', fig.cap="\\label{fig:violinplotColData} Example of a violinplot."}
-knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/violinplot_colData.png", mustWork=TRUE))
+#knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/violinplot_colData.png", mustWork=TRUE))
 ```
 
 ### Boxplot
@@ -199,7 +196,7 @@ dashboard <- i2dash::add_component(
 ```
 
 ```{r boxplotColData, echo=FALSE, out.width='100%', fig.cap="\\label{fig:boxplotColData} Example of a boxplot."}
-knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/boxplot_colData.png", mustWork=TRUE))
+#knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/boxplot_colData.png", mustWork=TRUE))
 ```
 
 ### Barplot
@@ -234,7 +231,7 @@ dashboard <- i2dash::add_component(
 ```
 
 ```{r barplot, echo=FALSE, out.width='100%', fig.cap="\\label{fig:barplot} Example of the two visualization options of the barplot component."}
-knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/barplot.png", mustWork=TRUE))
+#knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/barplot.png", mustWork=TRUE))
 ```
 
 ### Heatmap
@@ -284,11 +281,11 @@ dashboard <- i2dash::add_component(
 ```
 
 ```{r heatmapOptions, echo=FALSE, out.width='65%', fig.cap="\\label{fig:heatmapOptions} Example of the options for a heatmap in the interactive mode."}
-knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/heatmap_options.png", mustWork=TRUE))
+#knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/heatmap_options.png", mustWork=TRUE))
 ```
 
 ```{r heatmaps, echo=FALSE, out.width='100%', fig.cap="\\label{fig:heatmaps} Example of the three possible visualizations of the heatmap component."}
-knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/heatmaps.png", mustWork=TRUE))
+#knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/heatmaps.png", mustWork=TRUE))
 ```
 
 ## Pre-defined pages overview
@@ -311,8 +308,8 @@ dashboard <- i2dash.scrnaseq::add_feature_expression_page(
 )
 ```
 
-```{r geneExpr, echo=FALSE, out.width='100%', fig.cap="\\label{fig:geneExpr} Example of the gene expression page with linked components."}
-knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/gene_expression_page.png", mustWork=TRUE))
+```{r geneExpr, echo=FALSE, out.width='100%', fig.cap="\\label{fig:geneExpr} Example of the feature expression page with linked components."}
+#knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/gene_expression_page.png", mustWork=TRUE))
 ```
 
 
@@ -347,15 +344,15 @@ dashboard <- i2dash.scrnaseq::add_dimred_metadata_page(
 ```
 
 ```{r dimred, echo=FALSE, out.width='100%', fig.cap="\\label{fig:dimred} Example of the dimension reduction page."}
-knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/red_dim_page.png", mustWork=TRUE))
+#knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/red_dim_page.png", mustWork=TRUE))
 ```
 
 ```{r dimredSelection, echo=FALSE, out.width='100%', fig.cap="\\label{fig:dimredSelection} The linking functionality is shown."}
-knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/red_dim_page_selection.png", mustWork=TRUE))
+#knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/red_dim_page_selection.png", mustWork=TRUE))
 ```
 
 ```{r dimredSil, echo=FALSE, out.width='100%', fig.cap="\\label{fig:dimredSil} This dimension reduction page contains the silhuette plot and the grouped barplot."}
-knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/red_dim_page_silhuette.png", mustWork=TRUE))
+#knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/red_dim_page_silhuette.png", mustWork=TRUE))
 ```
 
 ### Page for dimension reduction and feature metadata analysis
@@ -375,7 +372,7 @@ dashboard <- i2dash.scrnaseq::add_dimred_metadata_page(
 ```
 
 ```{r dimredMeta, echo=FALSE, out.width='100%', fig.cap="\\label{fig:dimredMeta} Example of the dimension reduction page with metadata table and linked components."}
-knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/dimred_metadata.png", mustWork=TRUE))
+#knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/dimred_metadata.png", mustWork=TRUE))
 ```
 
 ### Feature expression grid page
@@ -394,7 +391,7 @@ dashboard <- i2dash.scrnaseq::add_feature_grid_page(
 ```
 
 ```{r featuregrid, echo=FALSE, out.width='100%', fig.cap="\\label{fig:featuregrid} Example of the feature grid page."}
-knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/feature_grid_page.png", mustWork=TRUE))
+#knitr::include_graphics(path = system.file(package="i2dash.scrnaseq", "/www/feature_grid_page.png", mustWork=TRUE))
 ```
 
 ## Usage without single-cell objects

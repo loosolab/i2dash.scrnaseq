@@ -5,7 +5,9 @@
 #' @export
 setMethod("add_feature_grid_page",
           signature = signature(dashboard = "i2dashboard", object = "missing"),
-          function(dashboard, use_dimred, exprs_values, title = "Feature grid", menu = "Tools") {
+          function(dashboard, use_dimred, exprs_values, page = "feature_grid_page", title = "Feature grid", menu = "Tools") {
+
+            page %>% tolower %>% gsub(x = ., pattern = " ", replacement = "_") %>% make.names -> name
 
             # warn if no interactive mode is used
             if(!dashboard@interactive) warning("This page can only be used during interactive shiny sessions. Consider setting interactivity(dashboard) <- TRUE.")
@@ -19,8 +21,7 @@ setMethod("add_feature_grid_page",
             if(!assertive.properties::has_names(use_dimred)) {
               names(use_dimred) <- paste0("dimred_", 1:length(use_dimred))
             }
-            if(class(exprs_values) == "dgCMatrix") exprs_values <- as.matrix(exprs_values)
-            assertive.types::assert_is_any_of(exprs_values, c("data.frame", "matrix"))
+            exprs_values <- as.matrix(exprs_values)
 
             # Create component environment
             env <- new.env()
@@ -33,7 +34,7 @@ setMethod("add_feature_grid_page",
             timestamp <- Sys.time()
             multi_gene_expr_component <- knitr::knit_expand(file = system.file("templates", "feature_grid.Rmd", package = "i2dash.scrnaseq"), env_id = env_id, date = timestamp)
 
-            dashboard@pages[["feature_grid_page"]] <- list(title = title, layout = "empty", menu = menu, components = multi_gene_expr_component, max_components = 1, sidebar = NULL)
+            dashboard@pages[[name]] <- list(title = title, layout = "empty", menu = menu, components = multi_gene_expr_component, max_components = 1, sidebar = NULL)
             return(dashboard)
           })
 

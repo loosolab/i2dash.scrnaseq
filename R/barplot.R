@@ -14,6 +14,16 @@ setMethod("barplot",
               assertive.types::assert_is_any_of(x_group_by, c("data.frame", "matrix"))
               if(is.null(colnames(x_group_by))) colnames(x_group_by) <- paste0("V", 1:ncol(x_group_by))
               if(nrow(y_group_by) != nrow(x_group_by)) stop("The numbers of rows in 'x_group_by' and 'y_group_by' are not equal.")
+              # Columns are swapped in case of equal column names to prevent visualization of the same column (always the first one) on both axes.
+              if(ncol(x_group_by) > 1){
+                if(colnames(y_group_by)[1] == colnames(x_group_by)[1]) {
+                  if(ncol(x_group_by) > 2) {
+                    x_group_by <-  x_group_by[, c(2, 1, c(3:ncol(x_group_by)))]
+                  } else {
+                    x_group_by <-  x_group_by[, c(2, 1)]
+                  }
+                }
+              }
             }
 
             # Create component environment

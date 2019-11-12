@@ -9,7 +9,8 @@
 add_feature_grid_page(dashboard, object, ...)
 
 \S4method{add_feature_grid_page}{i2dashboard,missing}(dashboard,
-  use_dimred, exprs_values, title = "Feature grid", menu = "Tools")
+  use_dimred, exprs_values, page = "feature_grid_page",
+  title = "Feature grid", menu = "Tools")
 
 
   \S4method{add_feature_grid_page}{i2dashboard,SingleCellExperiment}(dashboard,
@@ -23,9 +24,11 @@ add_feature_grid_page(dashboard, object, ...)
 
 \item{object}{A \linkS4class{SingleCellExperiment::SingleCellExperiment} object or a \linkS4class{Seurat::Seurat} object.}
 
-\item{use_dimred}{A list of data.frames (matrices) or a single data.frame (matrix) containing coordinates of the reduced dimensions, a character vector representing valid \code{reducedDim} slots of \code{object} or names of the \linkS4class{Seurat::DimReduc} object in \code{object@reductions}.}
+\item{use_dimred}{Coordinates of the reduced dimensions, used for the scatterplot (see Details).}
 
-\item{exprs_values}{A data.frame (matrix) containing expression data of features of interest in rows and samples in columns, or a string representing the name of an \code{assay} of \code{object}.}
+\item{exprs_values}{Expression data of features of interest in rows and samples in columns (see Details).}
+
+\item{page}{The name of the page to be added.}
 
 \item{title}{The title of the page.}
 
@@ -42,4 +45,14 @@ An object of class \linkS4class{i2dash::i2dashboard}.
 }
 \description{
 Users can select features and a dimension reduction to plot feature expression values.
+}
+\details{
+The parameters \code{use_dimred}, \code{exprs_values} (or \code{assay}) and \code{group_by} take different arguments depending on the class of \code{object}.
+  In case no object is supplied (\emph{i2dashboard,missing}-method), the parameters are expected to be of class \code{data.frame} or \code{matrix}.
+  In case a \linkS4class{SingleCellExperiment::SingleCellExperiment} or \linkS4class{Seurat::Seurat} object is supplied, the parameters are expected to be of class \code{character}, containing
+  \itemize{
+    \item the name of an item in \code{reducedDims(object)} or \code{object@reductions},
+    \item a valid assay name from \code{assayNames(object)} or \code{names(object@assays)},
+    \item column names of \code{colData(object)} or \code{object@meta.data}.
+  }
 }

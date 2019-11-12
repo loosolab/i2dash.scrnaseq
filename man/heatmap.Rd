@@ -10,18 +10,22 @@
 \usage{
 heatmap(dashboard, object, ...)
 
+heatmap(dashboard, object, ...)
+
 \S4method{heatmap}{i2dashboard,missing}(dashboard, exprs_values,
-  column_split = NULL, visualisation_mode = "splitted", title = NULL,
-  legend_title = NULL, cluster_rows = FALSE, cluster_columns = FALSE,
+  split_by = NULL, aggregate_by = NULL, title = NULL,
+  legend = NULL, cluster_rows = FALSE, cluster_columns = FALSE,
   clustering_distance = c("euclidean", "maximum", "manhattan", "binary",
   "minkowski"), clustering_method = c("average", "ward.D", "ward.D2",
   "single", "complete", "mcquitty", "median", "centroid"))
 
 \S4method{heatmap}{i2dashboard,SingleCellExperiment}(dashboard, object,
-  exprs_values = "counts", subset_row, column_split = NULL, ...)
+  exprs_values = "counts", subset_row, split_by = NULL,
+  aggregate_by = NULL, ...)
 
 \S4method{heatmap}{i2dashboard,Seurat}(dashboard, object, assay = "RNA",
-  assay_slot = "data", subset_row, column_split = NULL, ...)
+  assay_slot = "data", subset_row, split_by = NULL,
+  aggregate_by = NULL, ...)
 }
 \arguments{
 \item{dashboard}{An object of class \linkS4class{i2dash::i2dashboard}.}
@@ -30,11 +34,13 @@ heatmap(dashboard, object, ...)
 
 \item{exprs_values}{A data.frame (matrix) containing expression data of features of interest in rows and samples in columns or a character indicating which assay of the \linkS4class{SingleCellExperiment::SingleCellExperiment} object to use.}
 
-\item{column_split}{An optional data.frame (matrix) containing factorial metadata (e.g. cluster, timepoint, etc.) along samples for splitting the columns or a character vector indicating the columns to use from the "meta.data" of a Seurat \code{object}/ the columns to use from "colData" of a SingleCellExperiment. Enables a second visualisation option: heatmap with levels of \code{column_split} as columns and features of \code{exprs_values} as rows.}
+\item{split_by}{An optional data.frame (matrix) containing grouping factors for spliting columns of the heatmap. In case of \code{i2dashboard,SingleCellExperiment}, should be column names of \code{colData(object)}.}
 
-\item{visualisation_mode}{Used in case of the static mode and if \code{column_split} is provided: Select between "splitted" or "summarized" heatmap visualisation according to the levels in the 1. column of \code{column_split}.}
+\item{aggregate_by}{An optional data.frame (matrix) containing grouping factors for aggregating columns of the heatmap. In case of \code{i2dashboard,SingleCellExperiment}, should be column names of \code{colData(object)}.}
 
 \item{title}{Title of the component.}
+
+\item{legend}{Title of the heatmap legend.}
 
 \item{cluster_rows}{A logical controls whether to make cluster on rows.}
 
@@ -49,6 +55,28 @@ heatmap(dashboard, object, ...)
 \item{assay}{A character specifying the assay (\code{object@assays}) to obtain expression values from. (Default: "RNA")}
 
 \item{assay_slot}{A character specifying the name of the data slot in the assay. (Default: "data")}
+
+\item{column_split}{An optional data.frame (matrix) containing factorial metadata (e.g. cluster, timepoint, etc.) along samples for splitting the columns or a character vector indicating the columns to use from the "meta.data" of a Seurat \code{object}/ the columns to use from "colData" of a SingleCellExperiment. Enables a second visualisation option: heatmap with levels of \code{column_split} as columns and features of \code{exprs_values} as rows.}
+
+\item{visualisation_mode}{Used in case of the static mode and if \code{column_split} is provided: Select between "splitted" or "summarized" heatmap visualisation according to the levels in the 1. column of \code{column_split}.}
+
+\item{dashboard}{An object of class \linkS4class{i2dash::i2dashboard}.}
+
+\item{exprs_values}{A data.frame (matrix) containing expression data of features of interest in rows and samples in columns or a string representing the name of an \code{assay} of \code{object}.}
+
+\item{object}{A valid \linkS4class{SingleCellExperiment::SingleCellExperiment} object.}
+
+\item{subset_row}{A character vector (of feature names), a logical vector or numeric vector (of indices) specifying the features to use. The default of NULL will use all features.}
+
+\item{title}{Title of the component.}
+
+\item{cluster_rows}{A logical controls whether to make cluster on rows.}
+
+\item{cluster_columns}{A logical controls whether to make cluster on columns.}
+
+\item{clustering_method}{Method to perform hierarchical clustering, passed to \link[stats]{hclust}.}
+
+\item{clustering_distance}{The distance measure to use for hierarchical clustering.}
 }
 \value{
 A string containing markdown code for the rendered component
@@ -59,4 +87,6 @@ An object of class \linkS4class{i2dash::i2dashboard}.
 }
 \description{
 Renders a component containing a heatmap based on \link[ComplexHeatmap]{Heatmap}.
+
+Renders a component containing a \link[ComplexHeatmap]{Heatmap}.
 }

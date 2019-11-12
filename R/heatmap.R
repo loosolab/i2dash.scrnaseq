@@ -4,10 +4,10 @@ setMethod("heatmap",
           signature = signature(dashboard = "i2dashboard", object = "missing"),
           function(dashboard,
                    exprs_values,
-                   column_split = NULL,
-                   visualisation_mode = "splitted",
+                   split_by = NULL,
+                   aggregate_by = NULL,
                    title = NULL,
-                   legend_title  = NULL,
+                   legend  = NULL,
                    cluster_rows = FALSE,
                    cluster_columns = FALSE,
                    clustering_distance = c("euclidean", "maximum", "manhattan", "binary", "minkowski"),
@@ -17,18 +17,32 @@ setMethod("heatmap",
             env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
 
             # Input validation
-            if(class(exprs_values) == "dgCMatrix") exprs_values <- as.matrix(exprs_values)
+            exprs_values <- as.matrix(exprs_values)
             assertive.types::assert_is_any_of(exprs_values, c("data.frame", "matrix"))
             if(is.null(colnames(exprs_values))) colnames(exprs_values) <- paste0("V", 1:ncol(exprs_values))
 
-            if(!is.null(column_split)) {
-              assertive.types::assert_is_any_of(column_split, c("data.frame", "matrix"))
-              column_split %<>%
+            if(!is.null(split_by)) {
+              assertive.types::assert_is_any_of(split_by, c("data.frame", "matrix"))
+
+              # retain only columns that contain factors
+              split_by %<>%
                 as.data.frame() %>%
                 dplyr::select_if(is.factor)
-              if(is.null(colnames(column_split))) colnames(column_split) <- paste0("C", 1:ncol(column_split))
-              if(ncol(exprs_values) != nrow(column_split)) stop("The number of columns in 'exprs_values' and rows in 'column_split' are not equal.")
+              if(is.null(colnames(split_by))) colnames(split_by) <- paste0("C", 1:ncol(split_by))
+              if(ncol(exprs_values) != nrow(split_by)) stop("The number of columns in 'exprs_values' and rows in 'split_by' are not equal.")
             }
+
+            if(!is.null(aggregate_by)) {
+              assertive.types::assert_is_any_of(aggregate_by, c("data.frame", "matrix"))
+
+              # retain only columns that contain factors
+              aggregate_by %<>%
+                as.data.frame() %>%
+                dplyr::select_if(is.factor)
+              if(is.null(colnames(aggregate_by))) colnames(aggregate_by) <- paste0("C", 1:ncol(aggregate_by))
+              if(ncol(exprs_values) != nrow(aggregate_by)) stop("The number of columns in 'exprs_values' and rows in 'split_by' are not equal.")
+            }
+
             clustering_distance <- match.arg(clustering_distance)
             clustering_method <- match.arg(clustering_method)
 
@@ -36,9 +50,9 @@ setMethod("heatmap",
             env <- new.env()
 
             env$exprs_values <- exprs_values
-            env$column_split <- column_split
-            env$visualisation_mode <- visualisation_mode
-            env$legend_title <- legend_title
+            env$split_by <- split_by
+            env$aggregate_by <- aggregate_by
+            env$legend_title <- legend
             env$cluster_rows <- cluster_rows
             env$cluster_columns <- cluster_columns
             env$clustering_distance <- clustering_distance
@@ -58,27 +72,40 @@ setMethod("heatmap",
 #' @export
 setMethod("heatmap",
           signature = signature(dashboard = "i2dashboard", object = "SingleCellExperiment"),
-          function(dashboard, object, exprs_values = "counts", subset_row, column_split = NULL, ...) {
+          function(dashboard,
+                   object,
+                   exprs_values = "counts",
+                   subset_row,
+                   split_by = NULL,
+                   aggregate_by = NULL,
+                   ...) {
+
 
             assertive.sets::assert_is_subset(exprs_values, SummarizedExperiment::assayNames(object))
             exprs_values <- SummarizedExperiment::assay(object, exprs_values)
-            exprs_values <- exprs_values[subset_row,]
-            #
-            # create data.frame for column_split
-            #
-            if(!is.null(column_split)) {
-              assertive.sets::assert_is_subset(column_split, colnames(SummarizedExperiment::colData(object)))
+
+            # Subset to requested features
+            exprs_values <- exprs_values[subset_row, ]
+
+            # Create data.frames for splitting and aggregation
+            if(!is.null(split_by)) {
+              assertive.sets::assert_is_subset(split_by, colnames(SummarizedExperiment::colData(object)))
               SummarizedExperiment::colData(object) %>%
                 as.data.frame() %>%
-                dplyr::select(!!column_split) -> column_split
-            } else {
+                dplyr::select(!!split_by) -> split_by
+            }
+
+            if(!is.null(aggregate_by)) {
+              assertive.sets::assert_is_subset(aggregate_by, colnames(SummarizedExperiment::colData(object)))
               SummarizedExperiment::colData(object) %>%
-                as.data.frame() -> column_split
+                as.data.frame() %>%
+                dplyr::select(!!aggregate_by) -> aggregate_by
             }
 
             heatmap(dashboard = dashboard,
                     exprs_values = exprs_values,
-                    column_split = column_split,
+                    split_by = split_by,
+                    aggregate_by = aggregate_by,
                     ...)
           })
 
@@ -87,7 +114,14 @@ setMethod("heatmap",
 #' @export
 setMethod("heatmap",
           signature = signature(dashboard = "i2dashboard", object = "Seurat"),
-          function(dashboard, object, assay = "RNA", assay_slot = "data", subset_row, column_split = NULL, ...) {
+          function(dashboard,
+                   object,
+                   assay = "RNA",
+                   assay_slot = "data",
+                   subset_row,
+                   split_by  = NULL,
+                   aggregate_by = NULL,
+                   ...) {
 
             assertive.types::assert_is_character(assay)
             assertive.types::assert_is_character(assay_slot)
@@ -96,25 +130,28 @@ setMethod("heatmap",
             # exprs_values
             assay_obj <- Seurat::GetAssay(object = object, assay = assay)
             exprs_values <- Seurat::GetAssayData(object = assay_obj, slot = assay_slot)
-            if(!is.null(subset_row)) {
-              exprs_values <- exprs_values[subset_row, ]
-            }
 
-            #
-            # create data.frame for column_split
-            #
-            if(!is.null(column_split)) {
-              assertive.sets::assert_is_subset(column_split,  colnames(object@meta.data))
+            # Subset to requested features
+            exprs_values <- exprs_values[subset_row, ]
+
+            # Create data.frames for splitting and aggregation
+            if(!is.null(split_by)) {
+              assertive.sets::assert_is_subset(split_by,  colnames(object@meta.data))
               object@meta.data %>%
                 as.data.frame() %>%
-                dplyr::select(!!column_split) -> column_split
-            } else {
-              object@meta.data %>%
-                as.data.frame() -> column_split
+                dplyr::select(!!split_by) -> split_by
             }
 
-            heatmap(dashboard = dashboard,
-              exprs_values = exprs_values,
-              column_split = column_split,
-              ...)
+            if(!is.null(aggregate_by)) {
+              assertive.sets::assert_is_subset(aggregate_by, colnames(object@meta.data))
+              bject@meta.data %>%
+                as.data.frame() %>%
+                dplyr::select(!!aggregate_by) -> aggregate_by
+            }
+
+            heatmap(dashboard,
+                    exprs_values = exprs_values,
+                    split_by = split_by,
+                    aggregate_by = aggregate_by,
+                    ...)
           })

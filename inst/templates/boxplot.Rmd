@@ -7,6 +7,8 @@
 {{ env_id }} <- readRDS(file.path(datadir, "{{ env_id }}.rds"))
 
 is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
+
+library(magrittr)
 ```
 
 ```{r, eval=!is_shiny}
@@ -27,12 +29,19 @@ if(!is.null({{ env_id }}$group_by)){
   group_by_{{ env_id }} <- NULL
 }
 
+# compare with colormaps
+if(!is.null(group_by_title_{{ env_id }})){
+  if(group_by_title_{{ env_id }} %in% names(colormaps)) colors_{{ env_id }} <- colormaps[[group_by_title_{{ env_id }}]] else colors_{{ env_id }} <- "Set1"
+} else {
+  colors_{{ env_id }} <- "Set1"
+}
+
 # set title variables
 if(!is.null({{ env_id }}$x_title)) x_title_{{ env_id }} <- {{ env_id }}$x_title else x_title_{{ env_id }} <- colnames(x_{{ env_id }})
 if(!is.null({{ env_id }}$group_by_title)) group_by_title_{{ env_id }} <- {{ env_id }}$group_by_title
 
 # creating the plot object
-plot_{{ env_id }} <- i2dash.scrnaseq::plotly_boxplot(x = x_{{ env_id }}[,1], group_by = group_by_{{ env_id }}[,1], x_title = x_title_{{ env_id }}, group_by_title = group_by_title_{{ env_id }})
+plot_{{ env_id }} <- i2dash.scrnaseq::plotly_boxplot(x = x_{{ env_id }}[,1], group_by = group_by_{{ env_id }}[,1], x_title = x_title_{{ env_id }}, group_by_title = group_by_title_{{ env_id }}, colors = colors_{{ env_id }})
 
 # Provide data for download
 if(!is.null({{ env_id }}$group_by)) download_df <- data.frame(x_{{ env_id }}, group_by_{{ env_id }}) else download_df <- data.frame(x_{{ env_id }})
@@ -121,10 +130,18 @@ output$downloadData_{{ env_id }} <- downloadHandler(
 # reactive for plot creation
 #
 output$plot_{{ env_id }} <- plotly::renderPlotly({
+  # compare with colormaps
+  if(!is.null(group_by_{{ env_id }}()$title)){
+    if(group_by_{{ env_id }}()$title %in% names(colormaps)) colors <- colormaps[[group_by_{{ env_id }}()$title]] else colors <- "Set1"
+  } else {
+    colors <- "Set1"
+  }
+  
+  # set custom axis titles if provided
   if(!is.null({{ env_id }}$x_title)) x_title <- {{ env_id }}$x_title else x_title <- x_{{ env_id }}()$title
   if(!is.null({{ env_id }}$group_by_title)) group_by_title <- {{ env_id }}$group_by_title else group_by_title <- group_by_{{ env_id }}()$title
-
-  i2dash.scrnaseq::plotly_boxplot(x = x_{{ env_id }}()$data, group_by = group_by_{{ env_id }}()$data, x_title = x_title, group_by_title = group_by_title)
+  
+  i2dash.scrnaseq::plotly_boxplot(x = x_{{ env_id }}()$data, group_by = group_by_{{ env_id }}()$data, x_title = x_title, group_by_title = group_by_title, colors = colors)
 })
 
 #

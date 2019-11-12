@@ -7,7 +7,7 @@
 ComplexHeatmap_heatmap(..., legend_title = NULL)
 }
 \arguments{
-\item{...}{further optional and valid arguments, that are the supported arguments in ComplexHeatmap.}
+\item{...}{further optional arguments, that are the supported arguments in \code{ComplexHeatmap}.}
 
 \item{legend_title}{An optional title of the legend.}
 }

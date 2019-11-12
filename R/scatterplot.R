@@ -20,7 +20,14 @@ setMethod("scatterplot",
             if(is.null(colnames(y))) colnames(y) <- paste0("Y_", 1:ncol(y))
             if(nrow(x) != nrow(y)) stop("The number of rows in 'x' and 'y' are is equal.")
 
-            if(colnames(x)[1] == colnames(y)[1] & colnames(x)[2] == colnames(y)[2]) y <-  y[, c(2, 1, c(3:ncol(y)))]
+            # Columns are swapped in case of equal column names to prevent visualization of the same column (always the first one) on both axes.
+            if(colnames(x)[1] == colnames(y)[1] & colnames(x)[2] == colnames(y)[2]) {
+              if(ncol(y) > 2) {
+                y <-  y[, c(2, 1, c(3:ncol(y)))]
+              } else {
+                y <-  y[, c(2, 1)]
+              }
+            }
 
             colouring <- list("No colour" = 0)
 
@@ -29,7 +36,8 @@ setMethod("scatterplot",
               colour_by %<>%
                 as.data.frame() %>%
                 dplyr::select_if(function(col) is.integer(col) | is.numeric(col) | is.factor(col))
-              if(is.null(colnames(colour_by))) colnames(colour_by) <- paste0("Color_by_", 1:ncol(colour_by))
+
+              if(is.null(colnames(colour_by))) colnames(colour_by) <- paste0("Colour_by_", 1:ncol(colour_by))
               if(nrow(x) != nrow(colour_by)) stop("The number of rows in 'x' and 'colour_by' is not equal.")
               colouring["Colour by metadata"] <- 1
             }
@@ -41,7 +49,7 @@ setMethod("scatterplot",
             }
 
             if(!is.null(exprs_values)){
-              assertive.types::assert_is_any_of(exprs_values, c("data.frame", "matrix"))
+              exprs_values <- as.matrix(exprs_values)
               if(is.null(rownames(exprs_values))) rownames(exprs_values) <- paste0("feature_", 1:nrow(exprs_values))
               if(nrow(x) != ncol(exprs_values)) stop("The number of rows in 'x' and columns in 'exprs_values' is not equal.")
               colouring["Colour by expression"] <- 3
@@ -171,7 +179,6 @@ setMethod("scatterplot",
               #
               # create data.frames for x, y
               #
-              # To Do: in statical mode the first column is used for x and y. This is useless.
               if(!is.null(use_dimred)) {
                 assertive.sets::assert_is_subset(use_dimred, SingleCellExperiment::reducedDimNames(object))
                 SingleCellExperiment::reducedDim(object, use_dimred) %>%
