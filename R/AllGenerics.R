@@ -252,3 +252,21 @@ setGeneric("scatterplot", function(dashboard, object, ...) standardGeneric("scat
 #' @rdname heatmap
 #' @exportMethod heatmap
 setGeneric("heatmap", function(dashboard, object, ...) standardGeneric("heatmap"))
+
+#' Renders a component containing a vertical violin plot
+#'
+#' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
+#' @param object An object of class \linkS4class{Seurat::Seurat} or \linkS4class{SingleCellExperiment::SingleCellExperiment}.
+#' @param y A data.frame (matrix) containing numeric observations for the vertical axisor a character vector indicating the columns to use from \code{use}.
+#' @param group_by An optional data.frame (matrix) with columns containing grouping factors for the horizontal axis or a character vector indicating the columns to use from \code{use}.
+#' @param use A character specifying where to obtain the data from. Valid input for SingleCellExperiment object: ("colData", "rowData"). Valid input for Seurat object: ("meta.data" for sample metadata, "meta.feature" for feature metadata.)
+#' @param assay Necessery, if \code{use} = "meta.feature". A character defining the assay to obtain the feature metadata from (default "RNA").
+#' @param title The title of the component.
+#' @param y_title The title of the y-axis.
+#' @param group_by_title The title of the x-axis.
+#' @param page The name of the page to add the component to.
+#'
+#' @name add_violinplot
+#' @rdname add_violinplot
+#' @exportMethod add_violinplot
+setGeneric("add_violinplot", function(dashboard, object, ...) standardGeneric("add_violinplot"))
