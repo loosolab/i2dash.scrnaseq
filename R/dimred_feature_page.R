@@ -87,7 +87,10 @@ setMethod("add_dimred_feature_page",
 
             # exprs_values
             assay_obj <- Seurat::GetAssay(object = object, assay = assay)
-            exprs_values <- Seurat::GetAssayData(object = assay_obj, slot = assay_slot)[subset_row, ]
+            exprs_values <- Seurat::GetAssayData(object = assay_obj, slot = assay_slot)
+            if(!is.null(subset_row)) {
+              exprs_values <- exprs_values[subset_row, ]
+            }
 
             # feature_metadata
             object[[assay]]@meta.features %>%

@@ -48,10 +48,9 @@ setMethod("add_feature_grid_page",
             assertive.sets::assert_is_subset(use_dimred, SingleCellExperiment::reducedDimNames(object))
             assertive.sets::assert_is_subset(exprs_values, SummarizedExperiment::assayNames(object))
 
+            exprs_values <- SummarizedExperiment::assay(object, i = exprs_values)
             if(!is.null(subset_row)) {
-              expression <- SummarizedExperiment::assay(object, i = exprs_values)[subset_row, ]
-            } else {
-              expression <- SummarizedExperiment::assay(object, i = exprs_values)
+              exprs_values <- exprs_values[subset_row, ]
             }
 
             use_dimreds <- lapply(use_dimred, function(dimred) {
@@ -60,7 +59,7 @@ setMethod("add_feature_grid_page",
 
             dashboard <- add_feature_grid_page(dashboard = dashboard,
                                          use_dimred = use_dimreds,
-                                         exprs_values = expression,
+                                         exprs_values = exprs_values,
                                          ...)
             return(dashboard)
           })
@@ -76,10 +75,10 @@ setMethod("add_feature_grid_page",
             assertive.sets::assert_is_subset(assay, names(object@assays))
 
             assay_obj <- Seurat::GetAssay(object = object, assay = assay)
-            expression <- Seurat::GetAssayData(object = assay_obj, slot = assay_slot)
+            exprs_values <- Seurat::GetAssayData(object = assay_obj, slot = assay_slot)
 
             if(!is.null(subset_row)) {
-              expression <- expression[subset_row, ]
+              exprs_values <- exprs_values[subset_row, ]
             }
 
             use_dimreds <- lapply(use_dimred, function(dimred) {
@@ -88,7 +87,7 @@ setMethod("add_feature_grid_page",
 
             dashboard <- add_feature_grid_page(dashboard = dashboard,
                                          use_dimred = use_dimreds,
-                                         exprs_values = expression,
+                                         exprs_values = exprs_values,
                                          ...)
             return(dashboard)
           })

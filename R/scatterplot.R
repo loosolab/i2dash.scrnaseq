@@ -7,6 +7,10 @@ setMethod("scatterplot",
             env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
 
             # Validate input
+            # handle single numeric vector:
+            if(is.numeric(x)) x <- data.frame("X" <- x)
+            if(is.numeric(y)) y <- data.frame("Y" <- y)
+
             assertive.types::assert_is_any_of(x, c("data.frame", "matrix"))
             assertive.types::assert_is_any_of(y, c("data.frame", "matrix"))
             x %<>%
@@ -87,7 +91,7 @@ setMethod("scatterplot",
 #' @export
 setMethod("scatterplot",
           signature = signature(dashboard = "i2dashboard", object = "SingleCellExperiment"),
-          function(dashboard, object, use = c("colData", "rowData", "reducedDim"), x = NULL, y = NULL, colour_by = NULL, use_dimred = NULL, ...) {
+          function(dashboard, object, use = c("colData", "rowData", "reducedDim"), x = NULL, y = NULL, colour_by = NULL, use_dimred = NULL, exprs_values = NULL, subset_row = NULL, ...) {
             #
             # use colData
             #
@@ -130,6 +134,17 @@ setMethod("scatterplot",
                 SummarizedExperiment::colData(object) %>%
                   as.data.frame() -> colour_by
               }
+              #
+              # use Assay for colouring by expression
+              #
+              if(!is.null(exprs_values)){
+                assertive.sets::assert_is_subset(exprs_values, SummarizedExperiment::assayNames(object))
+                exprs_values <- SummarizedExperiment::assay(object, i = exprs_values)
+                if(!is.null(subset_row)) {
+                  exprs_values <- exprs_values[subset_row, ]
+                }
+              }
+
             #
             # use rowData
             #
@@ -199,6 +214,16 @@ setMethod("scatterplot",
                 SummarizedExperiment::colData(object) %>%
                   as.data.frame() -> colour_by
               }
+              #
+              # use Assay for colouring by expression
+              #
+              if(!is.null(exprs_values)){
+                assertive.sets::assert_is_subset(exprs_values, SummarizedExperiment::assayNames(object))
+                exprs_values <- SummarizedExperiment::assay(object, i = exprs_values)
+                if(!is.null(subset_row)) {
+                  exprs_values <- exprs_values[subset_row, ]
+                }
+              }
             }
 
             scatterplot(dashboard,
@@ -206,6 +231,7 @@ setMethod("scatterplot",
                         y = y,
                         labels = labels,
                         colour_by = colour_by,
+                        exprs_values = exprs_values,
                         ...)
           })
 
@@ -214,7 +240,7 @@ setMethod("scatterplot",
 #' @export
 setMethod("scatterplot",
           signature = signature(dashboard = "i2dashboard", object = "Seurat"),
-          function(dashboard, object, use = c("meta.data", "meta.features", "reduction"), x = NULL, y = NULL, colour_by = NULL, use_dimred = NULL, assay = "RNA", ...) {
+          function(dashboard, object, use = c("meta.data", "meta.features", "reduction"), x = NULL, y = NULL, colour_by = NULL, use_dimred = NULL, assay = "RNA", slot = NULL, subset_row = NULL, ...) {
             #
             # use meta.data
             #
@@ -258,8 +284,19 @@ setMethod("scatterplot",
                   as.data.frame() -> colour_by
               }
               #
-              # use meta.features
+              # use Assay for colouring by expression
               #
+              if(!is.null(slot)){
+                assertive.sets::assert_is_subset(assay, names(object@assays))
+                assay_obj <- Seurat::GetAssay(object = object, assay = assay)
+                exprs_values <- Seurat::GetAssayData(object = assay_obj, slot = slot)
+                if(!is.null(subset_row)) {
+                  exprs_values <- exprs_values[subset_row, ]
+                }
+              }
+            #
+            # use meta.features
+            #
             } else if (use == "meta.features") {
               labels <- rownames(object[[assay]]@meta.features)
               #
@@ -303,15 +340,15 @@ setMethod("scatterplot",
               #
             } else if (use == "reduction"){
               assertive.sets::assert_is_subset(use_dimred, SingleCellExperiment::reducedDimNames(object))
-              labels <- rownames(Seurat::Embeddings(seu, reduction = use_dimred)[, 1:2])
+              labels <- rownames(Seurat::Embeddings(object, reduction = use_dimred)[, 1:2])
               #
               # create data.frames for x, y
               #
               if(!is.null(use_dimred)) {
-                Seurat::Embeddings(seu, reduction = use_dimred)[, 1:2] %>%
+                Seurat::Embeddings(object, reduction = use_dimred)[, 1:2] %>%
                   as.data.frame() -> x -> y
               } else {
-                Seurat::Embeddings(seu)[, 1:2] %>%
+                Seurat::Embeddings(object)[, 1:2] %>%
                   as.data.frame() -> x -> y
               }
               #
@@ -326,6 +363,17 @@ setMethod("scatterplot",
                 object@meta.data %>%
                   as.data.frame() -> colour_by
               }
+              #
+              # use Assay for colouring by expression
+              #
+              if(!is.null(slot)){
+                assertive.sets::assert_is_subset(assay, names(object@assays))
+                assay_obj <- Seurat::GetAssay(object = object, assay = assay)
+                exprs_values <- Seurat::GetAssayData(object = assay_obj, slot = slot)
+                if(!is.null(subset_row)) {
+                  exprs_values <- exprs_values[subset_row, ]
+                }
+              }
             }
 
             scatterplot(dashboard,
@@ -333,5 +381,6 @@ setMethod("scatterplot",
                         y = y,
                         labels = labels,
                         colour_by = colour_by,
+                        exprs_values = exprs_values,
                         ...)
           })
