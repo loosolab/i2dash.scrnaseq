@@ -12,8 +12,8 @@ library(magrittr)
 ```{r}
 #' Function to create a dataframe for plotly_barplot.
 
-#' @param y_group_by A list with factorial values, by which x_group_by can optionally be grouped.
-#' @param x_group_by (Optional) A named list with the x_group_by for the barplot.
+#' @param y_group_by A vector with values the rows of the dataframe should be grouped by.
+#' @param x_group_by A vector with values the columns of the dataframe should be grouped by.
 #'
 #' @return An object of class \code{list} containig the dataframe 'df', the vector 'x' with values for the x-axis, the vector 'y' with values for the y-axis, the vector 'names' (can be NULL), the boolean value 'showlegend'.
 create_barplot_df <- function(y_group_by, x_group_by = NULL){
@@ -89,7 +89,7 @@ htmltools::div(style="display:block;float:left;width:100%;height:90%;",
 
 ```{r, eval=is_shiny}
 ui_list <- list()
-
+vals_{{ env_id }} <- reactiveValues(proceed = T)
 #
 # shiny input widget for y_group_by
 #
@@ -135,7 +135,33 @@ reactive_{{ env_id }} <- shiny::reactive({
   }
   
   output_list <- create_barplot_df(y_group_by = y_group_by, x_group_by = x_group_by)
+  
+  # Handle modal if number of rows of the dataframe are > 100.
+  if(nrow(output_list$df)>100) {
+    showModal(dataModal())
+    vals_{{ env_id }}$proceed <- F
+  } else {
+    vals_{{ env_id }}$proceed <- T
+  }
+  
   return(list("barplot_input_list" = output_list, "y_group_by_title" = y_group_by_title, "x_group_by_title" = x_group_by_title))
+})
+
+# Function for a modal dialog
+dataModal <- function(){
+  modalDialog(
+    title = "Warning",
+    "The barplot will have more than 100 bars.",
+    easyClose = F,
+    footer = tagList(modalButton("Cancel"),
+                     actionButton("proceed_{{ env_id }}", "Proceed"))
+  )
+}
+
+# Handle proceed button of modal
+observeEvent(input$proceed_{{ env_id }},{
+  vals_{{ env_id }}$proceed <- T
+  removeModal()
 })
 
 #
@@ -159,18 +185,29 @@ output$plot_{{ env_id }} <- plotly::renderPlotly({
     if(reactive_{{ env_id }}()$x_group_by_title %in% names(colormaps)) colors <- colormaps[[reactive_{{ env_id }}()$x_group_by_title]] else colors <- "Set1"
   }
   
+  # Handle custom titles
   if(!is.null({{ env_id }}$y_group_by_title)) y_group_by_title <- {{ env_id }}$y_group_by_title else y_group_by_title <- reactive_{{ env_id }}()$y_group_by_title
   if(!is.null({{ env_id }}$x_group_by_title)) x_group_by_title <- {{ env_id }}$x_group_by_title else x_group_by_title <- reactive_{{ env_id }}()$x_group_by_title
-
-  i2dash.scrnaseq::plotly_barplot(
-    x = reactive_{{ env_id }}()$barplot_input_list$x[[1]],
-    y = reactive_{{ env_id }}()$barplot_input_list$y[[1]],
-    showlegend = reactive_{{ env_id }}()$barplot_input_list$showlegend,
-    x_group_by_title = x_group_by_title,
-    y_group_by_title = y_group_by_title,
-    color = reactive_{{ env_id }}()$barplot_input_list$names[[1]],
-    colors = colors
-  )
+  
+  if(vals_{{ env_id }}$proceed){
+    i2dash.scrnaseq::plotly_barplot(
+      x = reactive_{{ env_id }}()$barplot_input_list$x[[1]],
+      y = reactive_{{ env_id }}()$barplot_input_list$y[[1]],
+      showlegend = reactive_{{ env_id }}()$barplot_input_list$showlegend,
+      x_group_by_title = x_group_by_title,
+      y_group_by_title = y_group_by_title,
+      color = reactive_{{ env_id }}()$barplot_input_list$names[[1]],
+      colors = colors
+    )
+  } else {
+    i2dash.scrnaseq::plotly_barplot(
+      x = NULL,
+      y = NULL,
+      showlegend = F,
+      x_group_by_title = NULL,
+      y_group_by_title = NULL
+    ) %>% plotly::layout(title = "Please select another grouping")
+  }
 })
 
 #
