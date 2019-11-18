@@ -12,7 +12,8 @@ scatterplot(dashboard, object, ...)
 
 \S4method{scatterplot}{i2dashboard,missing}(dashboard, x, y,
   colour_by = NULL, labels = NULL, exprs_values = NULL,
-  title = NULL, x_title = NULL, y_title = NULL)
+  title = NULL, x_title = NULL, y_title = NULL, source = "A",
+  transmitter = NULL)
 
 \S4method{scatterplot}{i2dashboard,SingleCellExperiment}(dashboard, object,
   use = c("colData", "rowData", "reducedDim"), x = NULL, y = NULL,
@@ -44,6 +45,10 @@ scatterplot(dashboard, object, ...)
 \item{x_title}{An optional title of the x-axis. If not provided the column names from \code{x} are used instead.}
 
 \item{y_title}{An optional title of the y-axis. If not provided the column names from \code{y}  are used instead.}
+
+\item{source}{A character defining the id used in plotly's source argument of the component.}
+
+\item{transmitter}{A character defining the id of an existing transmitter to obtain the data from.}
 
 \item{use}{A character specifying where to obtain the data from \code{object} (see Details).}
 

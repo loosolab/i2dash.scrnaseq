@@ -228,6 +228,8 @@ setGeneric("heatmap", function(dashboard, object, ...) standardGeneric("heatmap"
 #' @param title The title of the components junk.
 #' @param x_title An optional title of the x-axis. If not provided the column names from \code{x} are used instead.
 #' @param y_title An optional title of the y-axis. If not provided the column names from \code{y}  are used instead.
+#' @param source A character defining the id used in plotly's source argument of the component.
+#' @param transmitter A character defining the id of an existing transmitter to obtain the data from.
 #'
 #' @details The parameters \code{x}, \code{y}, \code{colour_by}, \code{use}, \code{use_dimred}, \code{exprs_values}, \code{assay} and \code{slot}) take different arguments depending on the class of \code{object}.
 #'   In case no object is supplied (\emph{i2dashboard,missing}-method), the parameters \code{x}, \code{y}, \code{colour_by} and \code{exprs_values} are expected to be of class \code{data.frame} or \code{matrix}. T he parameters \code{x}, \code{y} can also be a numeric vector. The parameters \code{use}, \code{use_dimred}, \code{assay} and \code{slot} can be ignored.
@@ -271,3 +273,15 @@ setGeneric("scatterplot", function(dashboard, object, ...) standardGeneric("scat
 #' @rdname heatmap
 #' @exportMethod heatmap
 setGeneric("heatmap", function(dashboard, object, ...) standardGeneric("heatmap"))
+
+#' Renders a component containing a shiny verbatim_text.
+#'
+#' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
+#' @param transmitter A character defining the id of an existing transmitter to obtain the data from.
+#' @param event The type of plotly event. (see \code{?plotly::event_data()}.
+#' @param title Title of the component.
+#'
+#' @name verbatim_text
+#' @rdname verbatim_text
+#' @exportMethod verbatim_text
+setGeneric("verbatim_text", function(dashboard, object, ...) standardGeneric("verbatim_text"))
