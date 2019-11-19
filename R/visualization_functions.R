@@ -57,12 +57,11 @@ plotly_boxplot <- function(x, group_by = NULL, x_title = NULL, group_by_title = 
 #'
 #' @return An object of class \code{plotly}.
 #' @export
- plotly_violinplot <- function(y, group_by = NULL, y_title = NULL, group_by_title = NULL){
-      plotly::plot_ly(colors = "Set1", x = group_by, y = y, color = group_by, type = "violin", box = list(visible = T), meanline = list(visible = T), points = "all", jitter = 0) %>%
-      plotly::layout(
-        xaxis = list(title = group_by_title),
-        yaxis = list(title = y_title)
-      )
+plotly_violinplot <- function(y, group_by = NULL, y_title = NULL, group_by_title = NULL, ...){
+  plotly::plot_ly(x = group_by, y = y, color = group_by, type = "violin", box = list(visible = T), meanline = list(visible = T), points = "all", jitter = 0, ...) %>%
+    plotly::layout(
+      xaxis = list(title = group_by_title),
+      yaxis = list(title = y_title))
 }
 
 #' Render a vertical violin plot with plotly.

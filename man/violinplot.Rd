@@ -13,8 +13,7 @@ violinplot(dashboard, object, ...)
   title = NULL, y_title = NULL, group_by_title = NULL)
 
 \S4method{violinplot}{i2dashboard,SingleCellExperiment}(dashboard, object,
-  use = "colData", y = NULL, group_by = NULL, title = NULL,
-  y_title = NULL, group_by_title = NULL)
+  use = c("colData", "rowData"), y = NULL, group_by = NULL, ...)
 }
 \arguments{
 \item{dashboard}{An object of class \linkS4class{i2dash::i2dashboard}.}
