@@ -11,7 +11,8 @@
 violinplot(dashboard, object, ...)
 
 \S4method{violinplot}{i2dashboard,missing}(dashboard, y, group_by = NULL,
-  title = NULL, y_title = NULL, group_by_title = NULL)
+  title = NULL, y_title = NULL, group_by_title = NULL,
+  transmitter = NULL)
 
 \S4method{violinplot}{i2dashboard,SingleCellExperiment}(dashboard, object,
   use = c("colData", "rowData"), y = NULL, group_by = NULL, ...)
@@ -34,6 +35,8 @@ violinplot(dashboard, object, ...)
 \item{y_title}{The title of the y-axis.}
 
 \item{group_by_title}{The title of the x-axis.}
+
+\item{transmitter}{A character defining the id of an existing transmitter to obtain the data from.}
 
 \item{use}{A character specifying where to obtain the data from. Valid input for SingleCellExperiment object: ("colData", "rowData"). Valid input for Seurat object: ("meta.data" for sample metadata, "meta.feature" for feature metadata.)}
 

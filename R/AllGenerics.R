@@ -121,6 +121,7 @@ setGeneric("add_feature_expression_page", function(dashboard, object, ...) stand
 #' @param title The title of the component.
 #' @param y_title The title of the y-axis.
 #' @param group_by_title The title of the x-axis.
+#' @param transmitter A character defining the id of an existing transmitter to obtain the data from.
 #'
 #' @name violinplot
 #' @rdname violinplot

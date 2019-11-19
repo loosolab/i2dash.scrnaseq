@@ -14,10 +14,12 @@ setMethod("boxplot",
 
             assertive.types::assert_is_any_of(x, c("data.frame", "matrix"))
             if(is.null(colnames(x))) colnames(x) <- paste0("V", 1:ncol(x))
+            if(is.null(rownames(x))) rownames(x) <- 1:nrow(x)
 
             if(!is.null(group_by)){
               assertive.types::assert_is_any_of(group_by, c("data.frame", "matrix"))
               if(is.null(colnames(group_by))) colnames(group_by) <- paste0("V", 1:ncol(group_by))
+              if(is.null(rownames(group_by))) rownames(group_by) <- 1:nrow(group_by)
               if(nrow(x) != nrow(group_by)) stop("The numbers of rows in 'x' and 'group_by' are not equal.")
             }
 
