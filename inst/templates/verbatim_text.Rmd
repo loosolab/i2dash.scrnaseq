@@ -28,7 +28,7 @@ output${{ env_id }} <- renderPrint({
 output$downloadData_{{ env_id }} <- downloadHandler(
   filename =  paste('data-', Sys.Date(), '.csv', sep=''),
   content = function(file) {
-    df <- plotly::event_data("plotly_selected", source = {{ env_id }}$transmitter)
+    df <- plotly::event_data({{ env_id }}$event, source = {{ env_id }}$transmitter)
     write.csv(df[, c("x", "y", "key")], file)
   }
 )

@@ -156,6 +156,7 @@ setGeneric("barplot", function(dashboard, object, ...) standardGeneric("barplot"
 #' @param title The title of the components junk.
 #' @param x_title The title of the x-axis.
 #' @param group_by_title The title of the y-axis.
+#' @param transmitter A character defining the id of an existing transmitter to obtain the data from.
 #'
 #' @name boxplot
 #' @rdname boxplot
