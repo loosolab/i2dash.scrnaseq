@@ -12,7 +12,7 @@ barplot(dashboard, object, ...)
 
 \S4method{barplot}{i2dashboard,missing}(dashboard, y_group_by,
   x_group_by = NULL, title = NULL, x_group_by_title = NULL,
-  y_group_by_title = NULL)
+  y_group_by_title = NULL, transmitter = NULL)
 
 \S4method{barplot}{i2dashboard,SingleCellExperiment}(dashboard, object,
   use = c("colData", "rowData"), y_group_by = NULL,
@@ -36,6 +36,8 @@ barplot(dashboard, object, ...)
 \item{x_group_by_title}{The title of the x-axis.}
 
 \item{y_group_by_title}{The title of the y-axis.}
+
+\item{transmitter}{A character defining the id of an existing transmitter to obtain the data from.}
 
 \item{use}{A character specifying where to obtain the data from. Valid input for SingleCellExperiment object: ("colData", "rowData"). Valid input for Seurat object: ("meta.data" for sample metadata, "meta.feature" for feature metadata.)}
 

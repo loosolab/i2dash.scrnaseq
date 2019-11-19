@@ -138,6 +138,7 @@ setGeneric("violinplot", function(dashboard, object, ...) standardGeneric("violi
 #' @param title The title of the components junk.
 #' @param y_group_by_title The title of the y-axis.
 #' @param x_group_by_title The title of the x-axis.
+#' @param transmitter A character defining the id of an existing transmitter to obtain the data from.
 #'
 #' @name barplot
 #' @rdname barplot

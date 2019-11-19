@@ -116,6 +116,7 @@ ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downl
 #
 # Create reactive dataframe
 #
+{{ env_id }}$transmitter <- "transmitter"
 reactive_{{ env_id }} <- shiny::reactive({
   
   if(!{{ env_id }}$y_group_by_selection){
@@ -132,6 +133,17 @@ reactive_{{ env_id }} <- shiny::reactive({
   } else {
     x_group_by = {{ env_id }}$x_group_by[[input$select_x_group_by_{{ env_id }}]]
     x_group_by_title <- input$select_x_group_by_{{ env_id }}
+  }
+  
+  #
+  # Handle eventdata
+  #
+  eventdata <- plotly::event_data("plotly_selected", source = {{ env_id }}$transmitter)
+  if(!is.null(eventdata)){
+    keys <- rownames({{ env_id }}$y_group_by)
+    indexes <- which(keys %in% eventdata$key)
+    y_group_by <- y_group_by[indexes]
+    if(!is.null(x_group_by)) x_group_by <- x_group_by[indexes]
   }
   
   output_list <- create_barplot_df(y_group_by = y_group_by, x_group_by = x_group_by)
