@@ -17,7 +17,8 @@ heatmap(dashboard, object, ...)
   legend = NULL, cluster_rows = FALSE, cluster_columns = FALSE,
   clustering_distance = c("euclidean", "maximum", "manhattan", "binary",
   "minkowski"), clustering_method = c("average", "ward.D", "ward.D2",
-  "single", "complete", "mcquitty", "median", "centroid"))
+  "single", "complete", "mcquitty", "median", "centroid"),
+  transmitter = NULL)
 
 \S4method{heatmap}{i2dashboard,SingleCellExperiment}(dashboard, object,
   exprs_values = "counts", subset_row, split_by = NULL,
@@ -49,6 +50,8 @@ heatmap(dashboard, object, ...)
 \item{clustering_distance}{A pre-defined character which is in ("euclidean", "maximum", "manhattan", "binary", "minkowski").}
 
 \item{clustering_method}{Method to perform hierarchical clustering, pass to \link[stats]{hclust} ("average", "ward.D", "ward.D2", "single", "complete", "mcquitty", "median","centroid").}
+
+\item{transmitter}{A character defining the id of an existing transmitter to obtain the data from.}
 
 \item{subset_row}{A character vector (of feature names), a logical vector or numeric vector (of indices) specifying the features to use.}
 

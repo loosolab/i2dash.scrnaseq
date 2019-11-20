@@ -209,6 +209,7 @@ setGeneric("add_dimred_sample_page", function(dashboard, object, ...) standardGe
 #' @param cluster_columns A logical controls whether to make cluster on columns.
 #' @param clustering_distance A pre-defined character which is in ("euclidean", "maximum", "manhattan", "binary", "minkowski").
 #' @param clustering_method Method to perform hierarchical clustering, pass to \link[stats]{hclust} ("average", "ward.D", "ward.D2", "single", "complete", "mcquitty", "median","centroid").
+#' @param transmitter A character defining the id of an existing transmitter to obtain the data from.
 #'
 #' @name heatmap
 #' @rdname heatmap
