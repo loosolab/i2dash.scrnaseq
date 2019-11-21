@@ -42,7 +42,8 @@ setMethod("violinplot",
 #' @export
 setMethod("violinplot",
           signature = signature(dashboard = "i2dashboard", object = "SingleCellExperiment"),
-          function(dashboard, object, use = "colData", y = NULL, group_by = NULL,  title = NULL, y_title = NULL, group_by_title = NULL) {
+          function(dashboard, object, use = c("colData", "rowData"), y = NULL, group_by = NULL, ...) {
+            use <- match.arg(use)
 
             if(use == "colData") {
               if(!is.null(y)) {
@@ -80,7 +81,5 @@ setMethod("violinplot",
             violinplot(dashboard,
                        y = y,
                        group_by = group_by,
-                       title = title,
-                       y_title = y_title,
-                       group_by_title = group_by_title)
+                       ...)
           })
