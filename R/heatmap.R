@@ -17,6 +17,7 @@ setMethod("heatmap",
             env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
 
             # Input validation
+            exprs_values <- as.matrix(exprs_values)
             assertive.types::assert_is_any_of(exprs_values, c("data.frame", "matrix"))
             if(is.null(colnames(exprs_values))) colnames(exprs_values) <- paste0("V", 1:ncol(exprs_values))
 
@@ -74,7 +75,7 @@ setMethod("heatmap",
           function(dashboard,
                    object,
                    exprs_values = "counts",
-                   subset_row = NULL,
+                   subset_row,
                    split_by = NULL,
                    aggregate_by = NULL,
                    ...) {
@@ -84,7 +85,7 @@ setMethod("heatmap",
             exprs_values <- SummarizedExperiment::assay(object, exprs_values)
 
             # Subset to requested features
-            if(!is.null(subset_row)) exprs_values <- exprs_values[subset_row, ]
+            exprs_values <- exprs_values[subset_row, ]
 
             # Create data.frames for splitting and aggregation
             if(!is.null(split_by)) {
@@ -97,6 +98,53 @@ setMethod("heatmap",
             if(!is.null(aggregate_by)) {
               assertive.sets::assert_is_subset(aggregate_by, colnames(SummarizedExperiment::colData(object)))
               SummarizedExperiment::colData(object) %>%
+                as.data.frame() %>%
+                dplyr::select(!!aggregate_by) -> aggregate_by
+            }
+
+            heatmap(dashboard,
+                    exprs_values = exprs_values,
+                    split_by = split_by,
+                    aggregate_by = aggregate_by,
+                    ...)
+          })
+
+#' @rdname heatmap
+#' @return An object of class \linkS4class{i2dash::i2dashboard}.
+#' @export
+setMethod("heatmap",
+          signature = signature(dashboard = "i2dashboard", object = "Seurat"),
+          function(dashboard,
+                   object,
+                   assay = "RNA",
+                   assay_slot = "data",
+                   subset_row,
+                   split_by  = NULL,
+                   aggregate_by = NULL,
+                   ...) {
+
+            assertive.types::assert_is_character(assay)
+            assertive.types::assert_is_character(assay_slot)
+            assertive.sets::assert_is_subset(assay, names(object@assays))
+
+            # exprs_values
+            assay_obj <- Seurat::GetAssay(object = object, assay = assay)
+            exprs_values <- Seurat::GetAssayData(object = assay_obj, slot = assay_slot)
+
+            # Subset to requested features
+            exprs_values <- exprs_values[subset_row, ]
+
+            # Create data.frames for splitting and aggregation
+            if(!is.null(split_by)) {
+              assertive.sets::assert_is_subset(split_by,  colnames(object@meta.data))
+              object@meta.data %>%
+                as.data.frame() %>%
+                dplyr::select(!!split_by) -> split_by
+            }
+
+            if(!is.null(aggregate_by)) {
+              assertive.sets::assert_is_subset(aggregate_by, colnames(object@meta.data))
+              bject@meta.data %>%
                 as.data.frame() %>%
                 dplyr::select(!!aggregate_by) -> aggregate_by
             }
