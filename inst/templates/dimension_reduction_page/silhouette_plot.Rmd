@@ -4,8 +4,11 @@
 <!-- Component created on {{ date }} -->
 
 ```{r, eval=!is_shiny}
-sil_plot <- plotly::plot_ly(sd_{{ env_id }}, colors = "Set1") %>%
-  plotly::add_bars(color = df_{{ env_id }}[[grouping]], name = df_{{ env_id }}[[grouping]], orientation = 'h', mode = "bar", y = ~cell, x = ~silhouette) %>%
+# Handle colormaps
+if(grouping_{{ env_id }} %in% names(colormaps)) colors_{{ env_id }} <- colormaps[[grouping_{{ env_id }}]] else colors_{{ env_id }} <- "Set1"
+
+sil_plot <- plotly::plot_ly(sd_{{ env_id }}, colors = colors_{{ env_id }}) %>%
+  plotly::add_bars(color = df_{{ env_id }}[[grouping_{{ env_id }}]], name = df_{{ env_id }}[[grouping_{{ env_id }}]], orientation = 'h', y = ~cell, x = ~silhouette) %>%
   plotly::layout(yaxis = list(showticklabels = FALSE), showlegend = FALSE) %>%
   plotly::highlight(on = "plotly_selected", dynamic = F, selectize = F)
 sil_plot
@@ -16,8 +19,11 @@ sil_plot
 # Output
 #
 output$plot_sil_{{ env_id }} <- plotly::renderPlotly({
-  sil_plot <- plotly::plot_ly(df_{{ env_id }}()$sd, colors = "Set1") %>%
-  plotly::add_bars(color = df_{{ env_id }}()$df[[df_{{ env_id }}()$grouping]], name = df_{{ env_id }}()$df[[df_{{ env_id }}()$grouping]], orientation = 'h', mode = "bar", y = ~cell, x = ~silhouette) %>%
+  # Handle colormaps
+  if(df_{{ env_id }}()$grouping %in% names(colormaps)) colors <- colormaps[[df_{{ env_id }}()$grouping]] else colors <- "Set1"
+  
+  sil_plot <- plotly::plot_ly(df_{{ env_id }}()$sd, colors = colors) %>%
+  plotly::add_bars(color = df_{{ env_id }}()$df[[df_{{ env_id }}()$grouping]], name = df_{{ env_id }}()$df[[df_{{ env_id }}()$grouping]], orientation = 'h', y = ~cell, x = ~silhouette) %>%
   plotly::layout(yaxis = list(showticklabels = FALSE), showlegend = FALSE) %>%
   plotly::highlight(on = "plotly_selected", dynamic = F, selectize = F)
   sil_plot

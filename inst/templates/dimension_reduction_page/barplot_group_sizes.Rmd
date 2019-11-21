@@ -4,7 +4,8 @@
 <!-- Component created on {{ date }} -->
 
 ```{r, eval=!is_shiny}
-sp_bars <- plotly::plot_ly(sd_{{ env_id }}, colors = "Set1", x = df_{{ env_id }}[[grouping]], color = df_{{ env_id }}[[grouping]]) %>%
+if(grouping_{{ env_id }} %in% names(colormaps)) colors_{{ env_id }} <- colormaps[[grouping_{{ env_id }}]] else colors_{{ env_id }} <- "Set1"
+sp_bars <- plotly::plot_ly(sd_{{ env_id }}, colors = colors_{{ env_id }}, x = df_{{ env_id }}[[grouping_{{ env_id }}]], color = df_{{ env_id }}[[grouping_{{ env_id }}]]) %>%
   plotly::layout(
     xaxis = list(title = names(df_{{ env_id }}[grouping])),
     yaxis = list(title = "Number of observations"),
@@ -20,7 +21,8 @@ sp_bars
 # Output
 #
 output$plot_sp_bars_{{ env_id }} <- plotly::renderPlotly({
-  sp_bars <- plotly::plot_ly(df_{{ env_id }}()$sd, colors = "Set1", x = df_{{ env_id }}()$df[[df_{{ env_id }}()$grouping]], color = df_{{ env_id }}()$df[[df_{{ env_id }}()$grouping]]) %>%
+  if(df_{{ env_id }}()$grouping %in% names(colormaps)) colors <- colormaps[[df_{{ env_id }}()$grouping]] else colors <- "Set1"
+  sp_bars <- plotly::plot_ly(df_{{ env_id }}()$sd, colors = colors, x = df_{{ env_id }}()$df[[df_{{ env_id }}()$grouping]], color = df_{{ env_id }}()$df[[df_{{ env_id }}()$grouping]]) %>%
   plotly::layout(
     xaxis = list(title = names(df_{{ env_id }}()$df[df_{{ env_id }}()$grouping])),
     yaxis = list(title = "Number of observations"),

@@ -5,7 +5,8 @@
 
 ```{r, eval=!is_shiny}
 if(is.factor(df_{{ env_id }}[["{{ meta_column }}"]])){
-  bars_{{ meta_column }} <- plotly::plot_ly(sd_{{ env_id }}, colors = "Set1", x = df_{{ env_id }}[["{{ meta_column }}"]], color = df_{{ env_id }}[["{{ meta_column }}"]]) %>%
+  if("{{ meta_column }}" %in% names(colormaps)) colors_{{ env_id }} <- colormaps[["{{ meta_column }}"]] else colors_{{ env_id }} <- "Set1"
+  bars_{{ meta_column }} <- plotly::plot_ly(sd_{{ env_id }}, colors = colors_{{ env_id }}, x = df_{{ env_id }}[["{{ meta_column }}"]], color = df_{{ env_id }}[["{{ meta_column }}"]]) %>%
   plotly::layout(
     xaxis = list(title = names(df_{{ env_id }}["{{ meta_column }}"])),
     yaxis = list(title = "Number of observations"),
@@ -15,15 +16,16 @@ if(is.factor(df_{{ env_id }}[["{{ meta_column }}"]])){
   plotly::highlight("plotly_selected")
   bars_{{ meta_column }}
 } else {
-  boxs_{{ meta_column }} <- plotly::plot_ly(sd_{{ env_id }}, colors = "Set1", x = df_{{ env_id }}[[grouping]], y = df_{{ env_id }}[["{{ meta_column }}"]], color = df_{{ env_id }}[[grouping]]) %>%
+  if(grouping_{{ env_id }} %in% names(colormaps)) colors_{{ env_id }} <- colormaps[[grouping_{{ env_id }}]] else colors_{{ env_id }} <- "Set1"
+  box_{{ meta_column }} <- plotly::plot_ly(sd_{{ env_id }}, colors = colors_{{ env_id }}, x = df_{{ env_id }}[[grouping_{{ env_id }}]], y = df_{{ env_id }}[["{{ meta_column }}"]], color = df_{{ env_id }}[[grouping_{{ env_id }}]]) %>%
   plotly::add_boxplot() %>%
   plotly::layout(
-    xaxis = list(title = names(df_{{ env_id }}["{{ meta_column }}"])),
-    yaxis = list(title = "Distribution per cluster"),
+    xaxis = list(title = grouping_{{ env_id }}),
+    yaxis = list(title = names(df_{{ env_id }}["{{ meta_column }}"])),
     showlegend = FALSE
   ) %>%
   plotly::highlight("plotly_selected")
-  boxs_{{ meta_column }}
+  box_{{ meta_column }}
 }
 ```
 
@@ -33,26 +35,29 @@ if(is.factor(df_{{ env_id }}[["{{ meta_column }}"]])){
 #
 output$plot_box_bar_{{ meta_column }}_{{ env_id }} <- plotly::renderPlotly({
   if(is.factor(df_{{ env_id }}()$df[["{{ meta_column }}"]])){
-  bars <- plotly::plot_ly(df_{{ env_id }}()$sd, colors = "Set1", x = df_{{ env_id }}()$df[["{{ meta_column }}"]], color = df_{{ env_id }}()$df[["{{ meta_column }}"]]) %>%
-  plotly::layout(
-    xaxis = list(title = names(df_{{ env_id }}()$df["{{ meta_column }}"])),
-    yaxis = list(title = "Number of observations"),
-    barmode = "overlay",
-    showlegend = FALSE
-  ) %>%
-  plotly::highlight("plotly_selected")
-  bars
-} else {
-  boxs <- plotly::plot_ly(df_{{ env_id }}()$sd, colors = "Set1", x = df_{{ env_id }}()$df[[df_{{ env_id }}()$grouping]], y = df_{{ env_id }}()$df[["{{ meta_column }}"]], color = df_{{ env_id }}()$df[[df_{{ env_id }}()$grouping]]) %>%
-  plotly::add_boxplot() %>%
-  plotly::layout(
-    xaxis = list(title = names(df_{{ env_id }}()$df["{{ meta_column }}"])),
-    yaxis = list(title = "Distribution per cluster"),
-    showlegend = FALSE
-  ) %>%
-  plotly::highlight("plotly_selected")
-  boxs
-}
+    if("{{ meta_column }}" %in% names(colormaps)) colors <- colormaps[["{{ meta_column }}"]] else colors <- "Set1"
+    bars <- plotly::plot_ly(df_{{ env_id }}()$sd, colors = colors, x = df_{{ env_id }}()$df[["{{ meta_column }}"]], color = df_{{ env_id }}()$df[["{{ meta_column }}"]]) %>%
+    plotly::layout(
+      xaxis = list(title = names(df_{{ env_id }}()$df["{{ meta_column }}"])),
+      yaxis = list(title = "Number of observations"),
+      barmode = "overlay",
+      showlegend = FALSE
+    ) %>%
+    plotly::highlight("plotly_selected")
+    bars
+  } else {
+    if(df_{{ env_id }}()$grouping %in% names(colormaps)) colors <- colormaps[[df_{{ env_id }}()$grouping]] else colors <- "Set1"
+    box <- plotly::plot_ly(df_{{ env_id }}()$sd, colors = colors, x = df_{{ env_id }}()$df[[df_{{ env_id }}()$grouping]], y = df_{{ env_id }}()$df[["{{ meta_column }}"]], color = df_{{ env_id }}()$df[[df_{{ env_id }}()$grouping]]) %>%
+    plotly::add_boxplot() %>%
+    plotly::layout(
+      xaxis = list(title = df_{{ env_id }}()$grouping),
+      yaxis = list(title = names(df_{{ env_id }}()$df["{{ meta_column }}"])),
+      showlegend = FALSE
+    ) %>%
+    plotly::highlight("plotly_selected")
+    box
+  }
+
 })
 
 #
