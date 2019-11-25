@@ -1,23 +1,3 @@
-#' Renders a component containing a scatterplot with optional selection options
-#'
-#' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
-#' @param x A data.frame (matrix) containing columns with numeric values that will be mapped to the x-axis.
-#' @param y A data.frame (matrix) containing columns with numeric values that will be mapped to the y-axis.
-#' @param object A valid \linkS4class{SingleCellExperiment::SingleCellExperiment} object.
-#' @param use A character specifying where to obtain the data from. One of \code{"colData"}, \code{"rowData"}, \code{"reducedDim"}.
-#' @param reducedDim A character vector indicating the reduced dimension to use from \code{"reducedDim"}
-#' @param colour_by An optional data.frame (matrix) containing columns with numeric or factorial values that will be used for colouring.
-#' @param labels An optional vector with sample names. A dropdown menu for colouring by label will be provided.
-#' @param exprs_values An optional data.frame (matrix) containing expression data of features of interest in rows and samples in columns.
-#' @param title The title of the components junk.
-#' @param x_title An optional title of the x-axis. If not provided the column names from \code{x} are used instead.
-#' @param y_title An optional title of the y-axis. If not provided the column names from \code{y}  are used instead.
-#'
-#' @name scatterplot
-#' @rdname scatterplot
-#' @exportMethod scatterplot
-setGeneric("scatterplot", function(dashboard, object, ...) standardGeneric("scatterplot"))
-
 #' @rdname scatterplot
 #' @return A string containing markdown code for the rendered component
 setMethod("scatterplot",
@@ -47,7 +27,7 @@ setMethod("scatterplot",
               colour_by %<>%
                 as.data.frame() %>%
                 dplyr::select_if(function(col) is.integer(col) | is.numeric(col) | is.factor(col))
-              if(is.null(colnames(colour_by))) colnames(colour_by) <- paste0("Color_by_", 1:ncol(colour_by))
+              if(is.null(colnames(colour_by))) colnames(colour_by) <- paste0("Colour_by_", 1:ncol(colour_by))
               if(nrow(x) != nrow(colour_by)) stop("The number of rows in 'x' and 'colour_by' is not equal.")
               colouring["Colour by metadata"] <- 1
             }
