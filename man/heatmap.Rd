@@ -4,6 +4,7 @@
 \alias{heatmap}
 \alias{heatmap,i2dashboard,missing-method}
 \alias{heatmap,i2dashboard,SingleCellExperiment-method}
+\alias{heatmap,i2dashboard,Seurat-method}
 \title{Renders a component containing a \link[ComplexHeatmap]{Heatmap}.}
 \usage{
 heatmap(dashboard, object, ...)
@@ -26,6 +27,17 @@ heatmap(dashboard, object, ...)
   dashboard,
   object,
   exprs_values = "counts",
+  subset_row = NULL,
+  split_by = NULL,
+  aggregate_by = NULL,
+  ...
+)
+
+\S4method{heatmap}{i2dashboard,Seurat}(
+  dashboard,
+  object,
+  assay = "RNA",
+  assay_slot = "data",
   subset_row = NULL,
   split_by = NULL,
   aggregate_by = NULL,
@@ -55,10 +67,12 @@ heatmap(dashboard, object, ...)
 
 \item{clustering_method}{Method to perform hierarchical clustering, passed to \link[stats]{hclust}.}
 
-\item{subset_row}{A character vector (of feature names), a logical vector or numeric vector (of indices) specifying the features to use. The default of NULL will use all features.}
+\item{subset_row}{An optional character vector (of feature names), a logical vector or numeric vector (of indices) specifying the features to use. The default of NULL will use the first 100 features.}
 }
 \value{
 A string containing markdown code for the rendered component
+
+An object of class \linkS4class{i2dash::i2dashboard}.
 
 An object of class \linkS4class{i2dash::i2dashboard}.
 }

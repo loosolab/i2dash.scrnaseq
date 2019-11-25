@@ -75,7 +75,7 @@ setMethod("heatmap",
           function(dashboard,
                    object,
                    exprs_values = "counts",
-                   subset_row,
+                   subset_row = NULL,
                    split_by = NULL,
                    aggregate_by = NULL,
                    ...) {
@@ -85,7 +85,12 @@ setMethod("heatmap",
             exprs_values <- SummarizedExperiment::assay(object, exprs_values)
 
             # Subset to requested features
-            exprs_values <- exprs_values[subset_row, ]
+            if (!is.null(subset_row)){
+              exprs_values <- exprs_values[subset_row, ]
+            } else {
+              # preventing a huge heatmap by limiting the features to the first 100 features
+              exprs_values <- exprs_values[100, ]
+            }
 
             # Create data.frames for splitting and aggregation
             if(!is.null(split_by)) {
@@ -118,7 +123,7 @@ setMethod("heatmap",
                    object,
                    assay = "RNA",
                    assay_slot = "data",
-                   subset_row,
+                   subset_row = NULL,
                    split_by  = NULL,
                    aggregate_by = NULL,
                    ...) {
@@ -132,7 +137,13 @@ setMethod("heatmap",
             exprs_values <- Seurat::GetAssayData(object = assay_obj, slot = assay_slot)
 
             # Subset to requested features
-            exprs_values <- exprs_values[subset_row, ]
+            if (!is.null(subset_row)){
+              exprs_values <- exprs_values[subset_row, ]
+            } else {
+              # preventing a huge heatmap by limiting the features to the first 100 features
+              exprs_values <- exprs_values[100, ]
+            }
+
 
             # Create data.frames for splitting and aggregation
             if(!is.null(split_by)) {
