@@ -4,8 +4,17 @@
 \alias{bubbleplot}
 \title{Renders a component containing a bubbleplot with optional selection options}
 \usage{
-bubbleplot(dashboard, x, y, size, colour_by = NULL, labels = NULL,
-  title = NULL, x_title = NULL, y_title = NULL)
+bubbleplot(
+  dashboard,
+  x,
+  y,
+  size,
+  colour_by = NULL,
+  labels = NULL,
+  title = NULL,
+  x_title = NULL,
+  y_title = NULL
+)
 }
 \arguments{
 \item{dashboard}{An object of class \linkS4class{i2dash::i2dashboard}.}

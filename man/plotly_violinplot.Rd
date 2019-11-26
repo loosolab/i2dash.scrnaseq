@@ -4,8 +4,13 @@
 \alias{plotly_violinplot}
 \title{Render a vertical violin plot with plotly.}
 \usage{
-plotly_violinplot(y, group_by = NULL, y_title = NULL,
-  group_by_title = NULL, ...)
+plotly_violinplot(
+  y,
+  group_by = NULL,
+  y_title = NULL,
+  group_by_title = NULL,
+  ...
+)
 }
 \arguments{
 \item{y}{Numeric observations.}
