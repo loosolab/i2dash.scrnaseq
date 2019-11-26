@@ -5,10 +5,8 @@
 \alias{heatmap,i2dashboard,missing-method}
 \alias{heatmap,i2dashboard,SingleCellExperiment-method}
 \alias{heatmap,i2dashboard,Seurat-method}
-\title{Renders a component containing a heatmap based on \link[ComplexHeatmap]{Heatmap}.}
+\title{Renders a component containing a \link[ComplexHeatmap]{Heatmap}.}
 \usage{
-heatmap(dashboard, object, ...)
-
 heatmap(dashboard, object, ...)
 
 \S4method{heatmap}{i2dashboard,missing}(
@@ -70,14 +68,6 @@ heatmap(dashboard, object, ...)
 \item{clustering_method}{Method to perform hierarchical clustering, passed to \link[stats]{hclust}.}
 
 \item{subset_row}{A character vector (of feature names), a logical vector or numeric vector (of indices) specifying the features to use. The default of NULL will use all features.}
-
-\item{assay}{A character specifying the assay (\code{object@assays}) to obtain expression values from. (Default: "RNA")}
-
-\item{assay_slot}{A character specifying the name of the data slot in the assay. (Default: "data")}
-
-\item{column_split}{An optional data.frame (matrix) containing factorial metadata (e.g. cluster, timepoint, etc.) along samples for splitting the columns or a character vector indicating the columns to use from the "meta.data" of a Seurat \code{object}/ the columns to use from "colData" of a SingleCellExperiment. Enables a second visualisation option: heatmap with levels of \code{column_split} as columns and features of \code{exprs_values} as rows.}
-
-\item{visualisation_mode}{Used in case of the static mode and if \code{column_split} is provided: Select between "splitted" or "summarized" heatmap visualisation according to the levels in the 1. column of \code{column_split}.}
 }
 \value{
 A string containing markdown code for the rendered component
@@ -87,7 +77,5 @@ An object of class \linkS4class{i2dash::i2dashboard}.
 An object of class \linkS4class{i2dash::i2dashboard}.
 }
 \description{
-Renders a component containing a heatmap based on \link[ComplexHeatmap]{Heatmap}.
-
 Renders a component containing a \link[ComplexHeatmap]{Heatmap}.
 }
