@@ -37,51 +37,72 @@ setMethod("boxplot",
             return(expanded_component)
           })
 
-
 #' @rdname boxplot
 #' @return An object of class \linkS4class{i2dash::i2dashboard}.
 #' @export
 setMethod("boxplot",
           signature = signature(dashboard = "i2dashboard", object = "SingleCellExperiment"),
-          function(dashboard, object, use = "colData", x = NULL, group_by = NULL, title = NULL, x_title = NULL, group_by_title = NULL) {
-            if(use == "colData") {
-              if(!is.null(x)) {
-                assertive.sets::assert_is_subset(x, colnames(SummarizedExperiment::colData(object)))
-                SummarizedExperiment::colData(object) %>%
-                  as.data.frame() %>%
-                  dplyr::select(!!x) -> x
-              } else {
-                SummarizedExperiment::colData(object) %>%
-                  as.data.frame() -> x
-              }
-              if(!is.null(group_by)) {
-                assertive.sets::assert_is_subset(group_by, colnames(SummarizedExperiment::colData(object)))
-                SummarizedExperiment::colData(object) %>%
-                  as.data.frame() %>%
-                  dplyr::select(!!group_by) -> group_by
-              }
-            } else if (use == "rowData") {
-              if(!is.null(x)) {
-                assertive.sets::assert_is_subset(x, colnames(SummarizedExperiment::rowData(object)))
-                SummarizedExperiment::rowData(object) %>%
-                  as.data.frame() %>%
-                  dplyr::select(!!x) -> x
-              } else {
-                SummarizedExperiment::rowData(object) %>%
-                  as.data.frame() -> x
-              }
-              if(!is.null(group_by)) {
-                assertive.sets::assert_is_subset(group_by, colnames(SummarizedExperiment::rowData(object)))
-                SummarizedExperiment::rowData(object) %>%
-                  as.data.frame() %>%
-                  dplyr::select(!!group_by) -> group_by
-              }
+          function(dashboard, object, from = c("colData", "rowData"), x = NULL, group_by = NULL, ...) {
+            from <- match.arg(from)
+
+            data <- switch(from,
+                           "colData" = SummarizedExperiment::colData(object),
+                           "rowData" = SummarizedExperiment::rowData(object))
+
+            if(!is.null(x)) {
+              assertive.sets::assert_is_subset(x, colnames(data))
+              data %>%
+                as.data.frame() %>%
+                dplyr::select(!!x) -> x
+            } else {
+              data %>%
+                as.data.frame() -> x
             }
+
+            if(!is.null(group_by)) {
+              assertive.sets::assert_is_subset(group_by, colnames(data))
+              data %>%
+                as.data.frame() %>%
+                dplyr::select(!!group_by) -> group_by
+            }
+
             boxplot(dashboard,
                     x = x,
                     group_by = group_by,
-                    title = title,
-                    x_title = x_title,
-                    group_by_title = group_by_title)
+                    ...)
           })
 
+#' @rdname boxplot
+#' @return An object of class \linkS4class{i2dash::i2dashboard}.
+#' @export
+setMethod("boxplot",
+          signature = signature(dashboard = "i2dashboard", object = "Seurat"),
+          function(dashboard, object, from = c("meta.data", "meta.features"), assay = "RNA", x = NULL, group_by = NULL, ...) {
+            from <- match.arg(from)
+
+            data <- switch(from,
+                           "meta.data" = object@meta.data,
+                           "meta.features" = object[[assay]]@meta.features)
+
+            if(!is.null(x)) {
+              assertive.sets::assert_is_subset(x, colnames(data))
+              data %>%
+                as.data.frame() %>%
+                dplyr::select(!!x) -> x
+            } else {
+              data %>%
+                as.data.frame() -> x
+            }
+
+            if(!is.null(group_by)) {
+              assertive.sets::assert_is_subset(group_by,  colnames(data))
+              data %>%
+                as.data.frame() %>%
+                dplyr::select(!!group_by) -> group_by
+            }
+
+            boxplot(dashboard,
+                    x = x,
+                    group_by = group_by,
+                    ...)
+          })

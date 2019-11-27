@@ -143,13 +143,23 @@ setGeneric("barplot", function(dashboard, object, ...) standardGeneric("barplot"
 #' Renders a component containing a boxplot
 #'
 #' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
-#' @param x A data.frame (matrix) containing numeric observations for the horizontal axis, or a character vector indicating column names of \code{colData(object)}, \code{rowData(object)}.
-#' @param object A valid \linkS4class{SingleCellExperiment::SingleCellExperiment} object.
-#' @param group_by An optional data.frame (matrix) with columns containing grouping factors for the vertical axis.
-#' @param use A character specifying where to obtain the data from. One of \code{"colData"} or \code{"rowData"}.
+#' @param object An object of class \linkS4class{Seurat::Seurat} or \linkS4class{SingleCellExperiment::SingleCellExperiment}.
+#' @param x Data containing numeric observations for the horizontal axis.
+#' @param group_by Optionally provide data containing grouping factors for the vertical axis..
+#' @param from A character specifying where to obtain the data from (see Details).
+#' @param assay Necessery, if \code{use} = "meta.feature". A character defining the assay to obtain the feature metadata from (default "RNA").
 #' @param title The title of the components junk.
 #' @param x_title The title of the x-axis.
 #' @param group_by_title The title of the y-axis.
+#'
+#' @details The parameters \code{x}, \code{group_by} take different arguments depending on the class of \code{object}.
+#'   In case of the \emph{i2dashboard,missing}-method, the parameters are expected to be of class \code{data.frame} or \code{matrix}.
+#'   In case of the \emph{i2dashboard,SingleCellExperiment}- or \emph{i2dashboard,Seurat}-method, the parameters are expected to be of class \code{character} and
+#'   \itemize{
+#'     \item the parameter \code{from} can be either \code{"colData"} or \code{"rowData"} for a \linkS4class{SingleCellExperiment::SingleCellExperiment} object or
+#'     \item \code{"meta.data"} or \code{"meta.features"} for a \linkS4class{Seurat::Seurat} object.
+#'   }
+#'   In both cases, \code{x} and \code{group_by} take column names of \code{from}.
 #'
 #' @name boxplot
 #' @rdname boxplot
