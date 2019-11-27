@@ -2,7 +2,7 @@
 #' @return A string containing markdown code for the rendered component
 setMethod("scatterplot",
           signature = signature(dashboard = "i2dashboard", object = "missing"),
-          function(dashboard, x, y, colour_by = NULL, labels = NULL, exprs_values = NULL, title = NULL, x_title = NULL, y_title = NULL) {
+          function(dashboard, x, y, colour_by = NULL, labels = NULL, exprs_values = NULL, title = NULL, x_title = NULL, y_title = NULL, plot_title = NULL) {
             # Create random env id
             env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
 
@@ -76,6 +76,7 @@ setMethod("scatterplot",
             env$colouring <- colouring
             env$x_title <- x_title
             env$y_title <- y_title
+            env$plot_title <- plot_title
 
             saveRDS(env, file = file.path(dashboard@datadir, paste0(env_id, ".rds")))
 

@@ -17,7 +17,10 @@ if(!is.null({{ env_id }}$colour_by)) colour_by_{{ env_id }} <- {{ env_id }}$colo
 if(!is.null({{ env_id }}$labels)) labels_{{ env_id }} <- {{ env_id }}$labels else labels_{{ env_id }} <- rownames({{ env_id }}$x)
 
 # creating the plot object
-plot_{{ env_id }} <- i2dash.scrnaseq::plotly_scatterplot(x = {{ env_id }}$x[,1], y = {{ env_id }}$y[,1], color = colour_by_{{ env_id }}, text = labels_{{ env_id }}, y_title = y_title_{{ env_id }}, x_title = x_title_{{ env_id }})
+plot_{{ env_id }} <- i2dash.scrnaseq::plotly_scatterplot(x = {{ env_id }}$x[,1], y = {{ env_id }}$y[,1], color = colour_by_{{ env_id }}, text = labels_{{ env_id }}, y_title = y_title_{{ env_id }}, x_title = x_title_{{ env_id }}) %>%
+  plotly::layout(
+    title = {{ env_id }}$plot_title
+  )
 
 # Provide data for download
 if(is.null({{ env_id }}$colour_by)){
@@ -175,7 +178,8 @@ output$plot_{{ env_id }} <- plotly::renderPlotly({
   
   i2dash.scrnaseq::plotly_scatterplot(x = x_{{ env_id }}()$data, y = y_{{ env_id }}()$data, color = colour_{{ env_id }}()$colour, text = labels, y_title = y_title, x_title = x_title) %>%
     plotly::layout(
-      annotations = colour_{{ env_id }}()$annotation
+      annotations = colour_{{ env_id }}()$annotation,
+      title = {{ env_id }}$plot_title
     )
 })
 
