@@ -12,8 +12,19 @@ setMethod("barplot",
 
             if(!is.null(x_group_by)){
               assertive.types::assert_is_any_of(x_group_by, c("data.frame", "matrix"))
+
               if(is.null(colnames(x_group_by))) colnames(x_group_by) <- paste0("V", 1:ncol(x_group_by))
+
               if(nrow(y_group_by) != nrow(x_group_by)) stop("The numbers of rows in 'x_group_by' and 'y_group_by' are not equal.")
+
+              # Columns are swapped in case of equal column names to prevent visualization of the same column (always the first one) on both axes.
+              if(ncol(x_group_by) > 1 && colnames(y_group_by)[1] == colnames(x_group_by)[1]) {
+                if(ncol(x_group_by) > 2) {
+                  x_group_by <-  x_group_by[, c(2, 1, c(3:ncol(x_group_by)))]
+                } else {
+                  x_group_by <-  x_group_by[, c(2, 1)]
+                }
+              }
             }
 
             # Create component environment
@@ -37,46 +48,70 @@ setMethod("barplot",
             return(expanded_component)
           })
 
-
 #' @rdname barplot
 #' @return An object of class \linkS4class{i2dash::i2dashboard}.
 #' @export
 setMethod("barplot",
           signature = signature(dashboard = "i2dashboard", object = "SingleCellExperiment"),
-          function(dashboard, object, use = "colData", y_group_by = NULL, x_group_by = NULL, ...) {
-            if(use == "colData") {
-              if(!is.null(y_group_by)) {
-                assertive.sets::assert_is_subset(y_group_by, colnames(SummarizedExperiment::colData(object)))
-                SummarizedExperiment::colData(object) %>%
-                  as.data.frame() %>%
-                  dplyr::select(!!y_group_by) -> y_group_by
-              } else {
-                SummarizedExperiment::colData(object) %>%
-                  as.data.frame() -> y_group_by
-              }
-              if(!is.null(x_group_by)) {
-                assertive.sets::assert_is_subset(x_group_by, colnames(SummarizedExperiment::colData(object)))
-                SummarizedExperiment::colData(object) %>%
-                  as.data.frame() %>%
-                  dplyr::select(!!x_group_by) -> x_group_by
-              }
-            } else if (use == "rowData") {
-              if(!is.null(y_group_by)) {
-                assertive.sets::assert_is_subset(y_group_by, colnames(SummarizedExperiment::rowData(object)))
-                SummarizedExperiment::rowData(object) %>%
-                  as.data.frame() %>%
-                  dplyr::select(!!y_group_by) -> y_group_by
-              } else {
-                SummarizedExperiment::rowData(object) %>%
-                  as.data.frame() -> y_group_by
-              }
-              if(!is.null(x_group_by)) {
-                assertive.sets::assert_is_subset(x_group_by, colnames(SummarizedExperiment::rowData(object)))
-                SummarizedExperiment::rowData(object) %>%
-                  as.data.frame() %>%
-                  dplyr::select(!!x_group_by) -> x_group_by
-              }
+          function(dashboard, object, y_group_by = NULL, x_group_by = NULL, from = c("colData", "rowData"), ...) {
+            from <- match.arg(from)
+
+            data <- switch(from,
+                           "colData" = SummarizedExperiment::colData(object),
+                           "rowData" = SummarizedExperiment::rowData(object))
+
+            if(!is.null(y_group_by)) {
+              assertive.sets::assert_is_subset(y_group_by, colnames(data))
+              data %>%
+                as.data.frame() %>%
+                dplyr::select(!!y_group_by) -> y_group_by
+            } else {
+              data %>%
+                as.data.frame() -> y_group_by
             }
+
+            if(!is.null(x_group_by)) {
+              assertive.sets::assert_is_subset(x_group_by, colnames(data))
+              data %>%
+                as.data.frame() %>%
+                dplyr::select(!!x_group_by) -> x_group_by
+            }
+
+            barplot(dashboard,
+                    y_group_by = y_group_by,
+                    x_group_by = x_group_by,
+                    ...)
+          })
+
+#' @rdname barplot
+#' @return An object of class \linkS4class{i2dash::i2dashboard}.
+#' @export
+setMethod("barplot",
+          signature = signature(dashboard = "i2dashboard", object = "Seurat"),
+          function(dashboard, object, y_group_by = NULL, x_group_by = NULL, from = c("meta.data", "meta.features"), assay = "RNA", ...) {
+            from <- match.arg(from)
+
+            data <- switch(from,
+                           "meta.data" = object@meta.data,
+                           "meta.features" = object[[assay]]@meta.features)
+
+            if(!is.null(y_group_by)) {
+              assertive.sets::assert_is_subset(y_group_by, colnames(data))
+              data %>%
+                as.data.frame() %>%
+                dplyr::select(!!y_group_by) -> y_group_by
+            } else {
+              data %>%
+                as.data.frame() -> y_group_by
+            }
+
+            if(!is.null(x_group_by)) {
+              assertive.sets::assert_is_subset(x_group_by,  colnames(data))
+              data %>%
+                as.data.frame() %>%
+                dplyr::select(!!x_group_by) -> x_group_by
+            }
+
             barplot(dashboard,
                     y_group_by = y_group_by,
                     x_group_by = x_group_by,
