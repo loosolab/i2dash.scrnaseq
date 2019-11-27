@@ -18,7 +18,8 @@ scatterplot(dashboard, object, ...)
   exprs_values = NULL,
   title = NULL,
   x_title = NULL,
-  y_title = NULL
+  y_title = NULL,
+  plot_title = NULL
 )
 
 \S4method{scatterplot}{i2dashboard,SingleCellExperiment}(
@@ -68,6 +69,8 @@ scatterplot(dashboard, object, ...)
 \item{x_title}{An optional title of the x-axis. If not provided the column names from \code{x} are used instead.}
 
 \item{y_title}{An optional title of the y-axis. If not provided the column names from \code{y}  are used instead.}
+
+\item{plot_title}{An optional title of the plot.}
 
 \item{from}{A character specifying where to obtain the data from \code{object} (see Details).}
 

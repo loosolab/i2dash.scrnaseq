@@ -153,6 +153,7 @@ setGeneric("boxplot", function(dashboard, object, ...) standardGeneric("boxplot"
 #' @param title The title of the components junk.
 #' @param x_title An optional title of the x-axis. If not provided the column names from \code{x} are used instead.
 #' @param y_title An optional title of the y-axis. If not provided the column names from \code{y}  are used instead.
+#' @param plot_title An optional title of the plot.
 #'
 #' @details The parameters \code{x}, \code{y}, \code{colour_by}, \code{use_dimred}, \code{exprs_values}, \code{assay} and \code{slot}) take different arguments depending on the class of \code{object}.
 #'   In case the \emph{i2dashboard,missing}-method, the parameters \code{x}, \code{y}, \code{colour_by} and \code{exprs_values} are expected to be of class \code{data.frame} or \code{matrix}. The parameters \code{x}, \code{y} can also be numeric vectors. The parameters \code{use}, \code{use_dimred}, \code{assay} and \code{slot} can be ignored.
