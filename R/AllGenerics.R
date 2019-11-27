@@ -141,9 +141,9 @@ setGeneric("boxplot", function(dashboard, object, ...) standardGeneric("boxplot"
 #'
 #' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
 #' @param object An object of class \linkS4class{Seurat::Seurat} or \linkS4class{SingleCellExperiment::SingleCellExperiment}.
-#' @param x Values that will be mapped to the x-axis (see Details).
-#' @param y Values that will be mapped to the y-axis (see Details).
-#' @param use A character specifying where to obtain the data from \code{object} (see Details).
+#' @param x Data that will be mapped to the x-axis (see Details).
+#' @param y Data that will be mapped to the y-axis (see Details).
+#' @param from A character specifying where to obtain the data from \code{object} (see Details).
 #' @param use_dimred A character vector indicating the reduced dimension to use from \code{"object"} (see Details).
 #' @param assay A character defining the assay of \code{object} and is used for obtaining the \code{exprs_values} (default "RNA") (see Details).
 #' @param slot A character defining the data slot of \code{assay}.
@@ -154,25 +154,22 @@ setGeneric("boxplot", function(dashboard, object, ...) standardGeneric("boxplot"
 #' @param x_title An optional title of the x-axis. If not provided the column names from \code{x} are used instead.
 #' @param y_title An optional title of the y-axis. If not provided the column names from \code{y}  are used instead.
 #'
-#' @details The parameters \code{x}, \code{y}, \code{colour_by}, \code{use}, \code{use_dimred}, \code{exprs_values}, \code{assay} and \code{slot}) take different arguments depending on the class of \code{object}.
-#'   In case no object is supplied (\emph{i2dashboard,missing}-method), the parameters \code{x}, \code{y}, \code{colour_by} and \code{exprs_values} are expected to be of class \code{data.frame} or \code{matrix}. T he parameters \code{x}, \code{y} can also be a numeric vector. The parameters \code{use}, \code{use_dimred}, \code{assay} and \code{slot} can be ignored.
-#'   In case a \linkS4class{SingleCellExperiment::SingleCellExperiment} object is supplied, the parameters are expected to be of class \code{character}:
+#' @details The parameters \code{x}, \code{y}, \code{colour_by}, \code{use_dimred}, \code{exprs_values}, \code{assay} and \code{slot}) take different arguments depending on the class of \code{object}.
+#'   In case the \emph{i2dashboard,missing}-method, the parameters \code{x}, \code{y}, \code{colour_by} and \code{exprs_values} are expected to be of class \code{data.frame} or \code{matrix}. The parameters \code{x}, \code{y} can also be numeric vectors. The parameters \code{use}, \code{use_dimred}, \code{assay} and \code{slot} can be ignored.
+#'   In case the \emph{i2dashboard,SingleCellExperiment}-method, the parameters are expected to be of class \code{character}:
 #'   \itemize{
-#'     \item \code{use} "colData", "rowData", "reducedDim",
-#'     \item \code{x} / \code{y} optionally provide names of columns from \code{use}, if no culumn names are supplied all columns from \code{use} are used,
-#'     \item \code{use_dimred} the name of an item in \code{reducedDims(object)},
-#'     \item \code{exprs_values} a valid assay name from \code{assayNames(object)},
-#'     \item \code{colour_by} column names of \code{colData(object)} or \code{colData(object)} in dependence of \code{use}.
+#'     \item the parameter \code{from} can be either \code{"colData"}, \code{"rowData"} or \code{"reducedDim"}
+#'     \item \code{use_dimred} the name of an item in \code{reducedDims(object)}
+#'     \item \code{exprs_values} a valid assay name from \code{assayNames(object)}
 #'   }
-#'   In case a \linkS4class{Seurat::Seurat} object is supplied, the parameters are expected to be of class \code{character}:
+#'   In case of the \emph{i2dashboard,Seurat}-method, the parameters are expected to be of class \code{character}:
 #'   \itemize{
-#'     \item \code{use} "meta.data" for sample metadata, "meta.feature" for feature metadata, "reduction" for a dimension reduction,
-#'     \item \code{x} / \code{y} optionally provide names of columns from \code{use}, if no culumn names are supplied all columns from \code{use} are used,
-#'     \item \code{use_dimred} the name of an item in \code{object@reductions},
-#'     \item \code{assay} a valid assay name from \code{names(object@assays)},
-#'     \item \code{slot} a valid data slot from \code{assay},
-#'     \item \code{colour_by} column names of \code{use}.
+#'     \item the parameter \code{from} can be either \code{"meta.data"} for sample metadata, \code{"meta.feature"} for feature metadata, \code{"reduction"} for a dimension reduction
+#'     \item \code{use_dimred} the name of an item in \code{object@reductions}
+#'     \item \code{assay} a valid assay name from \code{names(object@assays)}
+#'     \item \code{slot} a valid data slot from \code{assay}
 #'   }
+#'   In both cases, \code{x}, \code{y}, \code{colour_by} take column names of \code{from}.
 #'
 #' @name scatterplot
 #' @rdname scatterplot

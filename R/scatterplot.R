@@ -91,131 +91,65 @@ setMethod("scatterplot",
 #' @export
 setMethod("scatterplot",
           signature = signature(dashboard = "i2dashboard", object = "SingleCellExperiment"),
-          function(dashboard, object, use = c("colData", "rowData", "reducedDim"), x = NULL, y = NULL, colour_by = NULL, use_dimred = NULL, exprs_values = NULL, subset_row = NULL, ...) {
-            #
-            # use colData
-            #
-            use <- match.arg(use)
-            if(use == "colData") {
-              labels <- rownames(SummarizedExperiment::colData(object))
-              #
-              # create data.frame for y
-              #
-              if(!is.null(y)) {
-                assertive.sets::assert_is_subset(y, colnames(SummarizedExperiment::colData(object)))
-                SummarizedExperiment::colData(object) %>%
-                  as.data.frame() %>%
-                  dplyr::select(!!y) -> y
-              } else {
-                SummarizedExperiment::colData(object) %>%
-                  as.data.frame() -> y
-              }
-              #
-              # create data.frame for x
-              #
-              if(!is.null(x)) {
-                assertive.sets::assert_is_subset(x, colnames(SummarizedExperiment::colData(object)))
-                SummarizedExperiment::colData(object) %>%
-                  as.data.frame() %>%
-                  dplyr::select(!!x) -> x
-              } else {
-                SummarizedExperiment::colData(object) %>%
-                  as.data.frame() -> x
-              }
-              #
-              # create data.frame for colour_by
-              #
-              if(!is.null(colour_by)) {
-                assertive.sets::assert_is_subset(colour_by, colnames(SummarizedExperiment::colData(object)))
-                SummarizedExperiment::colData(object) %>%
-                  as.data.frame() %>%
-                  dplyr::select(!!colour_by) -> colour_by
-              } else {
-                SummarizedExperiment::colData(object) %>%
-                  as.data.frame() -> colour_by
-              }
-              #
-              # use Assay for colouring by expression
-              #
-              if(!is.null(exprs_values)){
-                assertive.sets::assert_is_subset(exprs_values, SummarizedExperiment::assayNames(object))
-                exprs_values <- SummarizedExperiment::assay(object, i = exprs_values)
-                if(!is.null(subset_row)) {
-                  exprs_values <- exprs_values[subset_row, ]
-                }
-              }
-            #
-            # use rowData
-            #
-            } else if (use == "rowData") {
-              labels <- rownames(SummarizedExperiment::rowData(object))
-              #
-              # create data.frame for y
-              #
-              if(!is.null(y)) {
-                assertive.sets::assert_is_subset(y, colnames(SummarizedExperiment::rowData(object)))
-                SummarizedExperiment::rowData(object) %>%
-                  as.data.frame() %>%
-                  dplyr::select(!!y) -> y
-              } else {
-                SummarizedExperiment::rowData(object) %>%
-                  as.data.frame() -> y
-              }
-              #
-              # create data.frame for x
-              #
-              if(!is.null(x)) {
-                assertive.sets::assert_is_subset(x, colnames(SummarizedExperiment::rowData(object)))
-                SummarizedExperiment::rowData(object) %>%
-                  as.data.frame() %>%
-                  dplyr::select(!!x) -> x
-              } else {
-                SummarizedExperiment::rowData(object) %>%
-                  as.data.frame() -> x
-              }
-              #
-              # create data.frame for colour_by
-              #
-              if(!is.null(colour_by)) {
-                assertive.sets::assert_is_subset(colour_by, colnames(SummarizedExperiment::rowData(object)))
-                SummarizedExperiment::rowData(object) %>%
-                  as.data.frame() %>%
-                  dplyr::select(!!colour_by) -> colour_by
-              } else {
-                SummarizedExperiment::rowData(object) %>%
-                  as.data.frame() -> colour_by
-              }
-            #
-            # use reducedDim
-            #
-            } else if (use == "reducedDim"){
-              labels <- rownames(SingleCellExperiment::reducedDim(object))
-              #
-              # create data.frames for x, y
-              #
+          function(dashboard, object, from = c("colData", "rowData", "reducedDim"), x = NULL, y = NULL, colour_by = NULL, use_dimred = NULL, exprs_values = NULL, subset_row = NULL, ...) {
+
+            from <- match.arg(from)
+
+            data <- switch(from,
+                           "colData" = SummarizedExperiment::colData(object),
+                           "rowData" = SummarizedExperiment::rowData(object),
+                           "reducedDim" = SingleCellExperiment::reducedDim(object)
+                           )
+
+            labels <- rownames(data)
+
+            if(from == "reducedDim"){
               if(!is.null(use_dimred)) {
                 assertive.sets::assert_is_subset(use_dimred, SingleCellExperiment::reducedDimNames(object))
+                labels <- rownames(SingleCellExperiment::reducedDim(object, use_dimred))
                 SingleCellExperiment::reducedDim(object, use_dimred) %>%
                   as.data.frame() -> x -> y
               } else {
-                SingleCellExperiment::reducedDim(object) %>%
+                data %>%
                   as.data.frame() -> x -> y
               }
-              #
-              # create data.frame for colour_by
-              #
-              if(!is.null(colour_by)) {
-                assertive.sets::assert_is_subset(colour_by, colnames(SummarizedExperiment::colData(object)))
-                SummarizedExperiment::colData(object) %>%
+            } else {
+              # create data.frame for y
+              if(!is.null(y)) {
+                assertive.sets::assert_is_subset(y, colnames(data))
+                data %>%
                   as.data.frame() %>%
-                  dplyr::select(!!colour_by) -> colour_by
+                  dplyr::select(!!y) -> y
               } else {
-                SummarizedExperiment::colData(object) %>%
-                  as.data.frame() -> colour_by
+                data %>%
+                  as.data.frame() -> y
               }
-              #
-              # use Assay for colouring by expression
-              #
+
+              # create data.frame for x
+              if(!is.null(x)) {
+                assertive.sets::assert_is_subset(x, colnames(data))
+                data %>%
+                  as.data.frame() %>%
+                  dplyr::select(!!x) -> x
+              } else {
+                data %>%
+                  as.data.frame() -> x
+              }
+            }
+
+            # create data.frame for colour_by
+            if(!is.null(colour_by)) {
+              assertive.sets::assert_is_subset(colour_by, colnames(data))
+              data %>%
+                as.data.frame() %>%
+                dplyr::select(!!colour_by) -> colour_by
+            } else {
+              data %>%
+                as.data.frame() -> colour_by
+            }
+
+            # data.frame from Assay for colouring by expression
+            if(from != "rowData"){
               if(!is.null(exprs_values)){
                 assertive.sets::assert_is_subset(exprs_values, SummarizedExperiment::assayNames(object))
                 exprs_values <- SummarizedExperiment::assay(object, i = exprs_values)
@@ -239,132 +173,64 @@ setMethod("scatterplot",
 #' @export
 setMethod("scatterplot",
           signature = signature(dashboard = "i2dashboard", object = "Seurat"),
-          function(dashboard, object, use = c("meta.data", "meta.features", "reduction"), x = NULL, y = NULL, colour_by = NULL, use_dimred = NULL, assay = "RNA", slot = NULL, subset_row = NULL, ...) {
-            #
-            # use meta.data
-            #
-            use <- match.arg(use)
-            if(use == "meta.data") {
-              labels <- rownames(object@meta.data)
-              #
-              # create data.frame for y
-              #
-              if(!is.null(y)) {
-                assertive.sets::assert_is_subset(y, colnames(object@meta.data))
-                object@meta.data %>%
-                  as.data.frame() %>%
-                  dplyr::select(!!y) -> y
-              } else {
-                object@meta.data %>%
-                  as.data.frame() -> y
-              }
-              #
-              # create data.frame for x
-              #
-              if(!is.null(x)) {
-                assertive.sets::assert_is_subset(x, colnames(object@meta.data))
-                object@meta.data %>%
-                  as.data.frame() %>%
-                  dplyr::select(!!x) -> x
-              } else {
-                object@meta.data %>%
-                  as.data.frame() -> x
-              }
-              #
-              # create data.frame for colour_by
-              #
-              if(!is.null(colour_by)) {
-                assertive.sets::assert_is_subset(colour_by, colnames(object@meta.data))
-                object@meta.data %>%
-                  as.data.frame() %>%
-                  dplyr::select(!!colour_by) -> colour_by
-              } else {
-                object@meta.data %>%
-                  as.data.frame() -> colour_by
-              }
-              #
-              # use Assay for colouring by expression
-              #
-              if(!is.null(slot)){
-                assertive.sets::assert_is_subset(assay, names(object@assays))
-                assay_obj <- Seurat::GetAssay(object = object, assay = assay)
-                exprs_values <- Seurat::GetAssayData(object = assay_obj, slot = slot)
-                if(!is.null(subset_row)) {
-                  exprs_values <- exprs_values[subset_row, ]
-                }
-              }
-              #
-              # use meta.features
-              #
-            } else if (use == "meta.features") {
-              labels <- rownames(object[[assay]]@meta.features)
-              #
-              # create data.frame for y
-              #
-              if(!is.null(y)) {
-                assertive.sets::assert_is_subset(y, colnames(object[[assay]]@meta.features))
-                object[[assay]]@meta.features %>%
-                  as.data.frame() %>%
-                  dplyr::select(!!y) -> y
-              } else {
-                object[[assay]]@meta.features %>%
-                  as.data.frame() -> y
-              }
-              #
-              # create data.frame for x
-              #
-              if(!is.null(x)) {
-                assertive.sets::assert_is_subset(x, colnames(object[[assay]]@meta.features))
-                object[[assay]]@meta.features %>%
-                  as.data.frame() %>%
-                  dplyr::select(!!x) -> x
-              } else {
-                object[[assay]]@meta.features %>%
-                  as.data.frame() -> x
-              }
-              #
-              # create data.frame for colour_by
-              #
-              if(!is.null(colour_by)) {
-                assertive.sets::assert_is_subset(colour_by, colnames(object[[assay]]@meta.features))
-                object[[assay]]@meta.features %>%
-                  as.data.frame() %>%
-                  dplyr::select(!!colour_by) -> colour_by
-              } else {
-                object[[assay]]@meta.features %>%
-                  as.data.frame() -> colour_by
-              }
-              #
-              # use reducedDim
-              #
-            } else if (use == "reduction"){
-              assertive.sets::assert_is_subset(use_dimred, SingleCellExperiment::reducedDimNames(object))
-              labels <- rownames(Seurat::Embeddings(object, reduction = use_dimred)[, 1:2])
-              #
-              # create data.frames for x, y
-              #
+          function(dashboard, object, from = c("meta.data", "meta.features", "reduction"), x = NULL, y = NULL, colour_by = NULL, use_dimred = NULL, assay = "RNA", slot = NULL, subset_row = NULL, ...) {
+
+            from <- match.arg(from)
+
+            data <- switch(from,
+                           "meta.data" = object@meta.data,
+                           "meta.features" = object[[assay]]@meta.features,
+                           "reduction" = Seurat::Embeddings(object)[, 1:2])
+
+            labels <- rownames(data)
+
+            if(from == "reducedDim"){
               if(!is.null(use_dimred)) {
+                assertive.sets::assert_is_subset(use_dimred, SingleCellExperiment::reducedDimNames(object))
+                labels <- rownames(Seurat::Embeddings(object, reduction = use_dimred)[, 1:2])
                 Seurat::Embeddings(object, reduction = use_dimred)[, 1:2] %>%
                   as.data.frame() -> x -> y
               } else {
-                Seurat::Embeddings(object)[, 1:2] %>%
+                data %>%
                   as.data.frame() -> x -> y
               }
-              #
-              # create data.frame for colour_by
-              #
-              if(!is.null(colour_by)) {
-                assertive.sets::assert_is_subset(colour_by, colnames(object@meta.data))
-                object@meta.data %>%
+            } else {
+              # create data.frame for y
+              if(!is.null(y)) {
+                assertive.sets::assert_is_subset(y, colnames(data))
+                data %>%
                   as.data.frame() %>%
-                  dplyr::select(!!colour_by) -> colour_by
+                  dplyr::select(!!y) -> y
               } else {
-                object@meta.data %>%
-                  as.data.frame() -> colour_by
+                data %>%
+                  as.data.frame() -> y
               }
-              #
-              # use Assay for colouring by expression
-              #
+
+              # create data.frame for x
+              if(!is.null(x)) {
+                assertive.sets::assert_is_subset(x, colnames(data))
+                data %>%
+                  as.data.frame() %>%
+                  dplyr::select(!!x) -> x
+              } else {
+                data %>%
+                  as.data.frame() -> x
+              }
+            }
+
+            # create data.frame for colour_by
+            if(!is.null(colour_by)) {
+              assertive.sets::assert_is_subset(colour_by, colnames(data))
+              data %>%
+                as.data.frame() %>%
+                dplyr::select(!!colour_by) -> colour_by
+            } else {
+              data %>%
+                as.data.frame() -> colour_by
+            }
+
+            # data.frame from Assay for colouring by expression
+            if(from != "rowData"){
               if(!is.null(slot)){
                 assertive.sets::assert_is_subset(assay, names(object@assays))
                 assay_obj <- Seurat::GetAssay(object = object, assay = assay)

@@ -21,10 +21,11 @@ plot_{{ env_id }} <- i2dash.scrnaseq::plotly_scatterplot(x = {{ env_id }}$x[,1],
 
 # Provide data for download
 if(is.null({{ env_id }}$colour_by)){
-      df_{{ env_id }} <- data.frame(x = {{ env_id }}$x[,1], y = {{ env_id }}$y[,1])
-    } else {
-      df_{{ env_id }} <- data.frame(x = {{ env_id }}$x[,1], y = {{ env_id }}$y[,1], colour_by = {{ env_id }}$colour_by[,1])
-    }
+  df_{{ env_id }} <- data.frame(x = {{ env_id }}$x[,1], y = {{ env_id }}$y[,1])
+} else {
+  df_{{ env_id }} <- data.frame(x = {{ env_id }}$x[,1], y = {{ env_id }}$y[,1], colour_by = {{ env_id }}$colour_by[,1])
+}
+rownames(df_{{ env_id }}) <- rownames({{ env_id }}$x)
 htmltools::div(style="display:block;float:left;width:100%;height:90%;",
   htmltools::tags$button(i2dash::embed_var(df_{{ env_id }})), plot_{{ env_id }}
 )
@@ -158,6 +159,8 @@ output$downloadData_{{ env_id }} <- downloadHandler(
     } else {
       df <- data.frame(x = x_{{ env_id }}()$data, y = y_{{ env_id }}()$data, colour_by = colour_{{ env_id }}()$colour)
     }
+    if(!is.null({{ env_id }}$labels)) labels <- {{ env_id }}$labels else labels <- rownames({{ env_id }}$x)
+    rownames(df) <- labels)
     write.csv(df, file)
   }
 )
