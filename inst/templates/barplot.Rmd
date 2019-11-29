@@ -95,7 +95,7 @@ ui_list <- list()
 #
 if ({{ env_id }}$y_group_by_selection){
   ui_list <- rlist::list.append(ui_list,
-                                selectInput("select_y_group_by_{{ env_id }}", label = "Group x_group_by by:",
+                                selectInput("select_y_group_by_{{ env_id }}", label = "Select grouping for y axis:",
                                             choices = colnames({{ env_id }}$y_group_by[lapply({{ env_id }}$y_group_by, class) =="factor"])))
 }
 
@@ -104,7 +104,7 @@ if ({{ env_id }}$y_group_by_selection){
 #
 if ({{ env_id }}$x_group_by_selection){
   ui_list <- rlist::list.append(ui_list,
-                                selectInput("select_x_group_by_{{ env_id }}", label = "Select x_group_by:",
+                                selectInput("select_x_group_by_{{ env_id }}", label = "Select grouping for x axis:",
                                             choices = colnames({{ env_id }}$x_group_by[lapply({{ env_id }}$x_group_by, class) =="factor"])))
 }
 
