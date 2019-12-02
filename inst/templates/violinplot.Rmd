@@ -5,16 +5,16 @@
 
 ```{r}
 {{ env_id }} <- readRDS(file.path(datadir, "{{ env_id }}.rds"))
-
 is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
+library(magrittr)
 ```
 
 ```{r, eval=!is_shiny}
 # selecting the first numeric and factor column for object wrapper 
-{{ env_id }}$x %>%
+{{ env_id }}$y %>%
   as.data.frame() %>%
   dplyr::select_if(function(col) is.integer(col) | is.numeric(col)) %>%
-  dplyr::select(1) -> x_{{ env_id }}
+  dplyr::select(1) -> y_{{ env_id }}
 
 if(!is.null({{ env_id }}$group_by)){
   {{ env_id }}$group_by %>%
@@ -28,14 +28,14 @@ if(!is.null({{ env_id }}$group_by)){
 }
 
 # set title variables
-if(!is.null({{ env_id }}$x_title)) x_title_{{ env_id }} <- {{ env_id }}$x_title else x_title_{{ env_id }} <- colnames(x_{{ env_id }})
+if(!is.null({{ env_id }}$y_title)) y_title_{{ env_id }} <- {{ env_id }}$y_title else y_title_{{ env_id }} <- colnames(y_{{ env_id }})
 if(!is.null({{ env_id }}$group_by_title)) group_by_title_{{ env_id }} <- {{ env_id }}$group_by_title
 
 # creating the plot object
-plot_{{ env_id }} <- i2dash.scrnaseq::plotly_boxplot(x = x_{{ env_id }}[,1], group_by = group_by_{{ env_id }}[,1], x_title = x_title_{{ env_id }}, group_by_title = group_by_title_{{ env_id }})
+plot_{{ env_id }} <- i2dash.scrnaseq::plotly_violinplot(y = y_{{ env_id }}[,1], group_by = group_by_{{ env_id }}[,1], y_title = y_title_{{ env_id }}, group_by_title = group_by_title_{{ env_id }})
 
 # Provide data for download
-if(!is.null({{ env_id }}$group_by)) download_df <- data.frame(x_{{ env_id }}, group_by_{{ env_id }}) else download_df <- data.frame(x_{{ env_id }})
+if(!is.null({{ env_id }}$group_by)) download_df <- data.frame(y_{{ env_id }}, group_by_{{ env_id }}) else download_df <- data.frame(y_{{ env_id }})
 htmltools::div(style="display:block;float:left;width:100%;height:90%;",
   htmltools::tags$button(i2dash::embed_var(download_df)), plot_{{ env_id }}
 )
@@ -47,10 +47,10 @@ ui_list <- list()
 #
 # shiny input widget for y
 #
-if ({{ env_id }}$x_selection){
+if ({{ env_id }}$y_selection){
   ui_list <- rlist::list.append(ui_list,
-                                selectInput("select_x_{{ env_id }}", label = "Select observations:",
-                                            choices = colnames({{ env_id }}$x[lapply({{ env_id }}$x,class) =="numeric" | lapply({{ env_id }}$x,class) =="integer"])))
+                                selectInput("select_y_{{ env_id }}", label = "Select observations:",
+                                            choices = colnames({{ env_id }}$y[lapply({{ env_id }}$y,class) =="numeric" | lapply({{ env_id }}$y,class) =="integer"])))
 }
 
 #
@@ -61,7 +61,6 @@ if ({{ env_id }}$group_by_selection){
                                 selectInput("select_group_by_{{ env_id }}", label = "Group observations by:",
                                             choices = colnames({{ env_id }}$group_by[lapply({{ env_id }}$group_by,class) =="factor"])))
 }
-
 #
 # shiny download button
 #
@@ -70,16 +69,16 @@ ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downl
 #
 # Handle inputs
 #
-if( !{{ env_id }}$x_selection){
-  x_{{ env_id }} <- shiny::reactive({
-    data <- {{ env_id }}$x[[1]]
-    title <- colnames({{ env_id }}$x)[1]
+if( !{{ env_id }}$y_selection){
+  y_{{ env_id }} <- shiny::reactive({
+    data <- {{ env_id }}$y[[1]]
+    title <- colnames({{ env_id }}$y)[1]
     return(list(data = data, title = title))
   })
 } else {
-  x_{{ env_id }} <- shiny::reactive({
-    data <- {{ env_id }}$x[[input$select_x_{{ env_id }}]]
-    title <- input$select_x_{{ env_id }}
+  y_{{ env_id }} <- shiny::reactive({
+    data <- {{ env_id }}$y[[input$select_y_{{ env_id }}]]
+    title <- input$select_y_{{ env_id }}
     return(list(data = data, title = title))
   })
 }
@@ -104,7 +103,7 @@ if( !{{ env_id }}$group_by_selection ) {
 output$downloadData_{{ env_id }} <- downloadHandler(
   filename =  paste('data-', Sys.Date(), '.csv', sep=''),
   content = function(file) {
-    write.csv(data.frame(x_{{ env_id }}()$data, group_by_{{ env_id }}()$data), file)
+    write.csv(data.frame(y_{{ env_id }}()$data, group_by_{{ env_id }}()$data), file)
   }
 )
 
@@ -112,10 +111,18 @@ output$downloadData_{{ env_id }} <- downloadHandler(
 # reactive for plot creation
 #
 output$plot_{{ env_id }} <- plotly::renderPlotly({
-  if(!is.null({{ env_id }}$x_title)) x_title <- {{ env_id }}$x_title else x_title <- x_{{ env_id }}()$title
-  if(!is.null({{ env_id }}$group_by_title)) group_by_title <- {{ env_id }}$group_by_title else group_by_title <- group_by_{{ env_id }}()$title
-
-  i2dash.scrnaseq::plotly_boxplot(x = x_{{ env_id }}()$data, group_by = group_by_{{ env_id }}()$data, x_title = x_title, group_by_title = group_by_title)
+  if(!is.null({{ env_id }}$y_title)){
+    y_title <- {{ env_id }}$y_title
+  } else {
+    y_title <- y_{{ env_id }}()$title
+  }
+  if(!is.null({{ env_id }}$group_by_title)){
+    group_by_title <- {{ env_id }}$group_by_title
+  } else {
+    group_by_title <- group_by_{{ env_id }}()$title
+  }
+  
+  i2dash.scrnaseq::plotly_violinplot(y = y_{{ env_id }}()$data, group_by = group_by_{{ env_id }}()$data, y_title = y_title, group_by_title = group_by_title)
 })
 
 #
@@ -128,4 +135,5 @@ shiny::fillRow(flex = c(NA, 1),
       plotly::plotlyOutput("plot_{{ env_id }}", height = "100%")
 )
 ```
+
 
