@@ -225,3 +225,4 @@ shiny::fillRow(flex = c(NA, 1),
       shiny::plotOutput("plot_{{ env_id }}", width = "100%", height = "400px")
 )
 ```
+
