@@ -181,7 +181,7 @@ output$downloadData_{{ env_id }} <- downloadHandler(
 output$plot_{{ env_id }} <- plotly::renderPlotly({
   # compare with colormaps
   if(is.factor(colour_{{ env_id }}()$colour)){
-    if(colour_{{ env_id }}()$colour_title %in% names(colormaps)) colors <- colormaps[[input$select_colour_{{ env_id }}]] else colors <- "Set1"
+    if(colour_{{ env_id }}()$colour_title %in% names(colormaps)) colors <- colormaps[[colour_{{ env_id }}()$colour_title]] else colors <- "Set1"
   } else {
     colors <- NULL
   }
