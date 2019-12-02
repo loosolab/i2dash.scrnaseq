@@ -24,7 +24,7 @@ if(is.factor(colour_by_{{ env_id }})){
 }
 
 # creating the plot object
-plot_{{ env_id }} <- i2dash.scrnaseq::plotly_scatterplot(x = {{ env_id }}$x[,1], y = {{ env_id }}$y[,1], color = colour_by_{{ env_id }}, text = labels_{{ env_id }}, y_title = y_title_{{ env_id }}, x_title = x_title_{{ env_id }}, colors = colors_{{ env_id }}, type = "scatter")
+plot_{{ env_id }} <- i2dash.scrnaseq::plotly_scatterplot(x = {{ env_id }}$x[,1], y = {{ env_id }}$y[,1], color = colour_by_{{ env_id }}, text = labels_{{ env_id }}, y_title = y_title_{{ env_id }}, x_title = x_title_{{ env_id }}, colors = colors_{{ env_id }}, type = "scatter") %>% plotly::toWebGL()
 
 # Provide data for download
 if(is.null({{ env_id }}$colour_by)){
@@ -196,7 +196,7 @@ output$plot_{{ env_id }} <- plotly::renderPlotly({
   i2dash.scrnaseq::plotly_scatterplot(x = x_{{ env_id }}()$data, y = y_{{ env_id }}()$data, color = colour_{{ env_id }}()$colour, text = labels, y_title = y_title, x_title = x_title, colors = colors, type = "scatter") %>%
     plotly::layout(
       annotations = colour_{{ env_id }}()$annotation
-    )
+    ) %>% plotly::toWebGL()
 })
 
 #
