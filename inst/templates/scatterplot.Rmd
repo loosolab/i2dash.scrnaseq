@@ -20,7 +20,7 @@ if(!is.null({{ env_id }}$labels)) labels_{{ env_id }} <- {{ env_id }}$labels els
 plot_{{ env_id }} <- i2dash.scrnaseq::plotly_scatterplot(x = {{ env_id }}$x[,1], y = {{ env_id }}$y[,1], color = colour_by_{{ env_id }}, text = labels_{{ env_id }}, y_title = y_title_{{ env_id }}, x_title = x_title_{{ env_id }}) %>%
   plotly::layout(
     title = {{ env_id }}$plot_title
-  )
+  ) %>% plotly::toWebGL()
 
 # Provide data for download
 if(is.null({{ env_id }}$colour_by)){
@@ -180,7 +180,7 @@ output$plot_{{ env_id }} <- plotly::renderPlotly({
     plotly::layout(
       annotations = colour_{{ env_id }}()$annotation,
       title = {{ env_id }}$plot_title
-    )
+    ) %>% plotly::toWebGL()
 })
 
 #
