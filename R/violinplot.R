@@ -42,45 +42,65 @@ setMethod("violinplot",
 #' @export
 setMethod("violinplot",
           signature = signature(dashboard = "i2dashboard", object = "SingleCellExperiment"),
-          function(dashboard, object, use = "colData", y = NULL, group_by = NULL,  title = NULL, y_title = NULL, group_by_title = NULL) {
+          function(dashboard, object, from = c("colData", "rowData"), y = NULL, group_by = NULL, ...) {
+            from <- match.arg(from)
 
-            if(use == "colData") {
-              if(!is.null(y)) {
-                assertive.sets::assert_is_subset(y, colnames(SummarizedExperiment::colData(object)))
-                SummarizedExperiment::colData(object) %>%
-                  as.data.frame() %>%
-                  dplyr::select(!!y) -> y
-              } else {
-                SummarizedExperiment::colData(object) %>%
-                  as.data.frame() -> y
-              }
-              if(!is.null(group_by)) {
-                assertive.sets::assert_is_subset(group_by, colnames(SummarizedExperiment::colData(object)))
-                SummarizedExperiment::colData(object) %>%
-                  as.data.frame() %>%
-                  dplyr::select(!!group_by) -> group_by
-              }
-            } else if (use == "rowData") {
-              if(!is.null(y)) {
-                assertive.sets::assert_is_subset(y, colnames(SummarizedExperiment::rowData(object)))
-                SummarizedExperiment::rowData(object) %>%
-                  as.data.frame() %>%
-                  dplyr::select(!!y) -> y
-              } else {
-                SummarizedExperiment::rowData(object) %>%
-                  as.data.frame() -> y
-              }
-              if(!is.null(group_by)) {
-                assertive.sets::assert_is_subset(group_by, colnames(SummarizedExperiment::rowData(object)))
-                SummarizedExperiment::rowData(object) %>%
-                  as.data.frame() %>%
-                  dplyr::select(!!group_by) -> group_by
-              }
+            data <- switch(from,
+                           "colData" = SummarizedExperiment::colData(object),
+                           "rowData" = SummarizedExperiment::rowData(object))
+
+            if(!is.null(y)) {
+              assertive.sets::assert_is_subset(y, colnames(data))
+              data %>%
+                as.data.frame() %>%
+                dplyr::select(!!y) -> y
+            } else {
+              data %>%
+                as.data.frame() -> y
+            }
+            if(!is.null(group_by)) {
+              assertive.sets::assert_is_subset(group_by, colnames(data))
+              data %>%
+                as.data.frame() %>%
+                dplyr::select(!!group_by) -> group_by
+            }
+
+            violinplot(dashboard,
+                       y = y,
+                       group_by = group_by,
+                       ...)
+          })
+
+#' @rdname violinplot
+#' @export
+setMethod("violinplot",
+          signature = signature(dashboard = "i2dashboard", object = "Seurat"),
+          function(dashboard, object, from = c("meta.data", "meta.features"), assay = "RNA", y = NULL, group_by = NULL, ...) {
+            from <- match.arg(from)
+
+            data <- switch(from,
+                           "meta.data" = object@meta.data,
+                           "meta.features" = object[[assay]]@meta.features)
+
+            if(!is.null(y)) {
+              assertive.sets::assert_is_subset(y, colnames(data))
+              data %>%
+                as.data.frame() %>%
+                dplyr::select(!!y) -> y
+            } else {
+              data %>%
+                as.data.frame() -> y
+            }
+
+            if(!is.null(group_by)) {
+              assertive.sets::assert_is_subset(group_by,  colnames(data))
+              data %>%
+                as.data.frame() %>%
+                dplyr::select(!!group_by) -> group_by
             }
             violinplot(dashboard,
                        y = y,
                        group_by = group_by,
-                       title = title,
-                       y_title = y_title,
-                       group_by_title = group_by_title)
+                       ...)
           })
+
