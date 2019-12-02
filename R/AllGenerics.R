@@ -171,6 +171,9 @@ setGeneric("scatterplot", function(dashboard, object, ...) standardGeneric("scat
 #' @param cluster_columns A logical controls whether to make cluster on columns.
 #' @param clustering_method Method to perform hierarchical clustering, passed to \link[stats]{hclust}.
 #' @param clustering_distance The distance measure to use for hierarchical clustering.
+#' @param show_column_labels A logical controls whether the column lables should be displayed. Pay attention that a large number of columns with column lables can cause visualization problems.
+#' @param column_title The column title of the heatmap.
+#' @param row_title The row title of the heatmap.
 #'
 #' @name heatmap
 #' @rdname heatmap

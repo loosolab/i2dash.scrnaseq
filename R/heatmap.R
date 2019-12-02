@@ -10,8 +10,11 @@ setMethod("heatmap",
                    legend  = NULL,
                    cluster_rows = FALSE,
                    cluster_columns = FALSE,
+                   show_column_labels = FALSE,
                    clustering_distance = c("euclidean", "maximum", "manhattan", "binary", "minkowski"),
-                   clustering_method = c("average", "ward.D", "ward.D2", "single", "complete", "mcquitty", "median","centroid")) {
+                   clustering_method = c("average", "ward.D", "ward.D2", "single", "complete", "mcquitty", "median","centroid"),
+                   column_title = NULL,
+                   row_title = NULL) {
 
             # Create random env id
             env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
@@ -57,6 +60,9 @@ setMethod("heatmap",
             env$cluster_columns <- cluster_columns
             env$clustering_distance <- clustering_distance
             env$clustering_method <- clustering_method
+            env$show_column_labels <- show_column_labels
+            env$column_title <- column_title
+            env$row_title <- row_title
 
             # save environment
             saveRDS(env, file = file.path(dashboard@datadir, paste0(env_id, ".rds")))
