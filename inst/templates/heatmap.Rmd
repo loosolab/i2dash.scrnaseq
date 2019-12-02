@@ -82,7 +82,11 @@ i2dash.scrnaseq::ComplexHeatmap_heatmap(
     cell_fun = cell_fun_{{ env_id }},
     top_annotation = ha_{{ env_id }},
     column_title = {{ env_id }}$column_title,
-    row_title = {{ env_id }}$row_title
+    row_title = {{ env_id }}$row_title,
+    row_names_gp = grid::gpar(fontsize = 7),
+    column_names_gp = grid::gpar(fontsize = 7),
+    column_title_gp = grid::gpar(fontsize = 10),
+    row_title_gp = grid::gpar(fontsize = 10)
   )
 ```
 
