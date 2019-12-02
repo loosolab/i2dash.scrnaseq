@@ -117,15 +117,19 @@ colour_{{ env_id }} <- shiny::reactive({
     # "No colour" in radio menu
     if(input$radio_{{ env_id }} == 0){ 
       return(list(colour = NULL, annotation = NULL))
+      return(list(colour = NULL, annotation = NULL, colour_title = NULL))
     
     # "Colour by metadata" in radio menu
     } else if(input$radio_{{ env_id }} == 1){
       if(!{{ env_id }}$colour_by_selection){
         data <- {{ env_id }}$colour_by[[1]]
+        title <- colnames({{ env_id }}$colour_by)[1]
       } else {
         data <- {{ env_id }}$colour_by[[input$select_colour_{{ env_id }}]]
+        title <- input$select_colour_{{ env_id }}
       }
       return(list(colour = data, annotation = NULL))
+      return(list(colour = data, annotation = NULL, colour_title = title))
     
     # "Colour by label" in radio menu
     } else if(input$radio_{{ env_id }} == 2){
@@ -143,16 +147,20 @@ colour_{{ env_id }} <- shiny::reactive({
         ay = -40
       )
       return(list(colour = NULL, annotation = a))
+      return(list(colour = NULL, annotation = a, colour_title = NULL))
       
     # "Colour by expression" in radio menu
     } else if(input$radio_{{ env_id }} == 3){
       data <- {{ env_id }}$exprs_values[input$select_feature_{{ env_id }},]
       return(list(colour = data, annotation = NULL))
+      return(list(colour = data, annotation = NULL, colour_title = input$select_feature_{{ env_id }}))
     }
   } else {
     return(list(colour = NULL, annotation = NULL))
+    return(list(colour = NULL, annotation = NULL, colour_title = NULL))
   }
 })
+
 
 #
 # Download data.frame
@@ -175,10 +183,11 @@ output$downloadData_{{ env_id }} <- downloadHandler(
 output$plot_{{ env_id }} <- plotly::renderPlotly({
   # compare with colormaps
   if(is.factor(colour_{{ env_id }}()$colour)){
-    if(input$select_colour_{{ env_id }} %in% names(colormaps)) colors <- colormaps[[input$select_colour_{{ env_id }}]] else colors <- NULL
+    if(colour_{{ env_id }}()$colour_title %in% names(colormaps)) colors <- colormaps[[input$select_colour_{{ env_id }}]] else colors <- "Set1"
   } else {
     colors <- NULL
   }
+
   
   if(!is.null({{ env_id }}$y_title)) y_title <- {{ env_id }}$y_title else y_title <- y_{{ env_id }}()$title
   if(!is.null({{ env_id }}$x_title)) x_title <- {{ env_id }}$x_title else x_title <- x_{{ env_id }}()$title
