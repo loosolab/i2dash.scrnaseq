@@ -43,9 +43,10 @@ if(!is.null({{ env_id }}$group_by_title)) group_by_title_{{ env_id }} <- {{ env_
 plot_{{ env_id }} <- i2dash.scrnaseq::plotly_boxplot(x = x_{{ env_id }}[,1], group_by = group_by_{{ env_id }}[,1], x_title = x_title_{{ env_id }}, group_by_title = group_by_title_{{ env_id }}, colors = colors_{{ env_id }})
 
 # Provide data for download
-if(!is.null({{ env_id }}$group_by)) download_df <- data.frame(x_{{ env_id }}, group_by_{{ env_id }}) else download_df <- data.frame(x_{{ env_id }})
+if(!is.null({{ env_id }}$group_by)) download_df_{{ env_id }} <- data.frame(x_{{ env_id }}, group_by_{{ env_id }}) else download_df_{{ env_id }} <- data.frame(x_{{ env_id }})
+rownames(download_df_{{ env_id }}) <- rownames({{ env_id }}$x)
 htmltools::div(style="display:block;float:left;width:100%;height:90%;",
-  htmltools::tags$button(i2dash::embed_var(download_df)), plot_{{ env_id }}
+  htmltools::tags$button(i2dash::embed_var(download_df_{{ env_id }})), plot_{{ env_id }}
 )
 ```
 
@@ -94,25 +95,29 @@ if( !{{ env_id }}$x_selection){
 
 if( !{{ env_id }}$group_by_selection ) {
   group_by_{{ env_id }} <- shiny::reactive({
-    data <- {{ env_id }}$group_by[[1]]
-    title <- colnames({{ env_id }}$group_by)[1]
-    return(list(data = data, title = title))
-  })
-} else {
-  group_by_{{ env_id }} <- shiny::reactive({
-    data <- {{ env_id }}$group_by[[input$select_group_by_{{ env_id }}]]
-    title <- input$select_group_by_{{ env_id }}
-    return(list(data = data, title = title))
+    if(is.null({{ env_id }}$group_by)){
+      return(list(data = NULL, title = NULL))
+    } else {
+      data <- {{ env_id }}$group_by[[1]]
+      title <- colnames({{ env_id }}$group_by)[1]
+      return(list(data = data, title = title))
+    }
   })
 }
-
+  
 #
-# Download data.frame
+# Download
 #
 output$downloadData_{{ env_id }} <- downloadHandler(
   filename =  paste('data-', Sys.Date(), '.csv', sep=''),
   content = function(file) {
-    write.csv(data.frame(x_{{ env_id }}()$data, group_by_{{ env_id }}()$data), file)
+    if(is.null({{ env_id }}$group_by)){
+      df <- x_{{ env_id }}()$data
+    } else {
+      df <- data.frame(x_{{ env_id }}()$data, group_by_{{ env_id }}()$data)
+    }
+    rownames(df) <- rownames({{ env_id }}$x)
+    write.csv(df, file)
   }
 )
 
