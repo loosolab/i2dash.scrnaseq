@@ -24,7 +24,10 @@ if(is.factor(colour_by_{{ env_id }})){
 }
 
 # creating the plot object
-plot_{{ env_id }} <- i2dash.scrnaseq::plotly_scatterplot(x = {{ env_id }}$x[,1], y = {{ env_id }}$y[,1], color = colour_by_{{ env_id }}, text = labels_{{ env_id }}, y_title = y_title_{{ env_id }}, x_title = x_title_{{ env_id }}, colors = colors_{{ env_id }}, type = "scatter") %>% plotly::toWebGL()
+plot_{{ env_id }} <- i2dash.scrnaseq::plotly_scatterplot(x = {{ env_id }}$x[,1], y = {{ env_id }}$y[,1], color = colour_by_{{ env_id }}, text = labels_{{ env_id }}, y_title = y_title_{{ env_id }}, x_title = x_title_{{ env_id }}, colors = colors_{{ env_id }}, type = "scatter") %>%
+  plotly::layout(
+    title = {{ env_id }}$plot_title
+  ) %>% plotly::toWebGL()
 
 # Provide data for download
 if(is.null({{ env_id }}$colour_by)){
@@ -115,8 +118,7 @@ y_{{ env_id }} <- shiny::reactive({
 colour_{{ env_id }} <- shiny::reactive({
   if(length({{ env_id }}$colouring) > 1){
     # "No colour" in radio menu
-    if(input$radio_{{ env_id }} == 0){ 
-      return(list(colour = NULL, annotation = NULL))
+    if(input$radio_{{ env_id }} == 0){
       return(list(colour = NULL, annotation = NULL, colour_title = NULL))
     
     # "Colour by metadata" in radio menu
@@ -128,7 +130,6 @@ colour_{{ env_id }} <- shiny::reactive({
         data <- {{ env_id }}$colour_by[[input$select_colour_{{ env_id }}]]
         title <- input$select_colour_{{ env_id }}
       }
-      return(list(colour = data, annotation = NULL))
       return(list(colour = data, annotation = NULL, colour_title = title))
     
     # "Colour by label" in radio menu
@@ -146,17 +147,14 @@ colour_{{ env_id }} <- shiny::reactive({
         ax = 20,
         ay = -40
       )
-      return(list(colour = NULL, annotation = a))
       return(list(colour = NULL, annotation = a, colour_title = NULL))
       
     # "Colour by expression" in radio menu
     } else if(input$radio_{{ env_id }} == 3){
       data <- {{ env_id }}$exprs_values[input$select_feature_{{ env_id }},]
-      return(list(colour = data, annotation = NULL))
       return(list(colour = data, annotation = NULL, colour_title = input$select_feature_{{ env_id }}))
     }
   } else {
-    return(list(colour = NULL, annotation = NULL))
     return(list(colour = NULL, annotation = NULL, colour_title = NULL))
   }
 })
@@ -195,7 +193,8 @@ output$plot_{{ env_id }} <- plotly::renderPlotly({
   
   i2dash.scrnaseq::plotly_scatterplot(x = x_{{ env_id }}()$data, y = y_{{ env_id }}()$data, color = colour_{{ env_id }}()$colour, text = labels, y_title = y_title, x_title = x_title, colors = colors, type = "scatter") %>%
     plotly::layout(
-      annotations = colour_{{ env_id }}()$annotation
+      annotations = colour_{{ env_id }}()$annotation,
+      title = {{ env_id }}$plot_title
     ) %>% plotly::toWebGL()
 })
 
