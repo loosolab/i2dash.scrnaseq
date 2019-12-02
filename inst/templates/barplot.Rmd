@@ -22,7 +22,7 @@ create_barplot_df <- function(y_group_by, x_group_by = NULL){
     df <- as.data.frame(tab)
     x <- df[2]
     y <- df[1]
-    names <- NULL
+    names <- df[1]
     showlegend <- F
     return(list("df" = df, "x" = x, "y" = y, "names" = names, "showlegend" = showlegend))
   } else {
@@ -61,14 +61,23 @@ if(!is.null({{ env_id }}$y_group_by_title)) y_group_by_title_{{ env_id }} <- {{ 
 if(!is.null({{ env_id }}$x_group_by_title)) x_group_by_title_{{ env_id }} <- {{ env_id }}$x_group_by_title
 
 # Function to create a dataframe for bar plot
-output_list <- create_barplot_df(y_group_by = y_group_by_{{ env_id }}[,1], x_group_by = x_group_by_{{ env_id }}[,1])
+output_list_{{ env_id }} <- create_barplot_df(y_group_by = y_group_by_{{ env_id }}[,1], x_group_by = x_group_by_{{ env_id }}[,1])
 
 # creating the plot object
-plot_{{ env_id }} <- i2dash.scrnaseq::plotly_barplot(x = output_list$x[[1]], y = output_list$y[[1]], name = output_list$names[[1]], showlegend = output_list$showlegend, x_group_by_title = x_group_by_title_{{ env_id }}, y_group_by_title = y_group_by_title_{{ env_id }})
+plot_{{ env_id }} <-
+  i2dash.scrnaseq::plotly_barplot(
+    x = output_list_{{ env_id }}$x[[1]],
+    y = output_list_{{ env_id }}$y[[1]],
+    showlegend = output_list_{{ env_id }}$showlegend,
+    x_group_by_title = x_group_by_title_{{ env_id }},
+    y_group_by_title = y_group_by_title_{{ env_id }},
+    color = output_list_{{ env_id }}$names[[1]]
+  )
+
 
 # Provide data for download
 htmltools::div(style="display:block;float:left;width:100%;height:90%;",
-  htmltools::tags$button(i2dash::embed_var(output_list$df)), plot_{{ env_id }}
+  htmltools::tags$button(i2dash::embed_var(output_list_{{ env_id }}$df)), plot_{{ env_id }}
 )
 ```
 
@@ -80,7 +89,7 @@ ui_list <- list()
 #
 if ({{ env_id }}$y_group_by_selection){
   ui_list <- rlist::list.append(ui_list,
-                                selectInput("select_y_group_by_{{ env_id }}", label = "Group x_group_by by:",
+                                selectInput("select_y_group_by_{{ env_id }}", label = "Select grouping for y axis:",
                                             choices = colnames({{ env_id }}$y_group_by[lapply({{ env_id }}$y_group_by, class) =="factor"])))
 }
 
@@ -89,7 +98,7 @@ if ({{ env_id }}$y_group_by_selection){
 #
 if ({{ env_id }}$x_group_by_selection){
   ui_list <- rlist::list.append(ui_list,
-                                selectInput("select_x_group_by_{{ env_id }}", label = "Select x_group_by:",
+                                selectInput("select_x_group_by_{{ env_id }}", label = "Select grouping for x axis:",
                                             choices = colnames({{ env_id }}$x_group_by[lapply({{ env_id }}$x_group_by, class) =="factor"])))
 }
 
@@ -140,7 +149,14 @@ output$plot_{{ env_id }} <- plotly::renderPlotly({
   if(!is.null({{ env_id }}$y_group_by_title)) y_group_by_title <- {{ env_id }}$y_group_by_title else y_group_by_title <- reactive_{{ env_id }}()$y_group_by_title
   if(!is.null({{ env_id }}$x_group_by_title)) x_group_by_title <- {{ env_id }}$x_group_by_title else x_group_by_title <- reactive_{{ env_id }}()$x_group_by_title
 
-  i2dash.scrnaseq::plotly_barplot(x = reactive_{{ env_id }}()$barplot_input_list$x[[1]], y = reactive_{{ env_id }}()$barplot_input_list$y[[1]], name = reactive_{{ env_id }}()$barplot_input_list$names[[1]], showlegend = reactive_{{ env_id }}()$barplot_input_list$showlegend, x_group_by_title = x_group_by_title, y_group_by_title = y_group_by_title)
+  i2dash.scrnaseq::plotly_barplot(
+    x = reactive_{{ env_id }}()$barplot_input_list$x[[1]],
+    y = reactive_{{ env_id }}()$barplot_input_list$y[[1]],
+    showlegend = reactive_{{ env_id }}()$barplot_input_list$showlegend,
+    x_group_by_title = x_group_by_title,
+    y_group_by_title = y_group_by_title,
+    color = reactive_{{ env_id }}()$barplot_input_list$names[[1]]
+  )
 })
 
 #
