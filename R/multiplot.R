@@ -63,5 +63,5 @@ multiplot <- function(object, plot_title, x, y, color_by) {
   # }
 
   # save environment as rds-object
-  saveRDS(env, file = file.path(object@workdir, "envs", sprintf("%s.rds", env_id)))
+  saveRDS(env, file = file.path(object@datadir, sprintf("%s.rds", env_id)))
 }
