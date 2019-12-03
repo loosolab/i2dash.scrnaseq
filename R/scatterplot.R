@@ -27,7 +27,6 @@ setMethod("scatterplot",
               colour_by %<>%
                 as.data.frame() %>%
                 dplyr::select_if(function(col) is.integer(col) | is.numeric(col) | is.factor(col))
-
               if(is.null(colnames(colour_by))) colnames(colour_by) <- paste0("Colour_by_", 1:ncol(colour_by))
               if(nrow(x) != nrow(colour_by)) stop("The number of rows in 'x' and 'colour_by' is not equal.")
               colouring["Colour by metadata"] <- 1
