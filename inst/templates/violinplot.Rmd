@@ -111,6 +111,7 @@ output$downloadData_{{ env_id }} <- downloadHandler(
     }
     rownames(df) <- rownames({{ env_id }}$y)
     write.csv(df, file)
+    
   }
 )
 
