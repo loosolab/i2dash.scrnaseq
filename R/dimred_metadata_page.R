@@ -1,8 +1,8 @@
 #' @name dimred-metadata-page
 #' @rdname dimred-metadata-page
-#' @aliases add_dimred_metadata_page
+#' @aliases add_dimred_feature_page
 #' @export
-setMethod("add_dimred_metadata_page",
+setMethod("add_dimred_feature_page",
           signature = signature(dashboard = "i2dashboard", object = "missing"),
           function(dashboard, use_dimred, exprs_values, feature_metadata, title = "Marker gene expression", menu = NULL) {
 
@@ -10,6 +10,8 @@ setMethod("add_dimred_metadata_page",
             env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
 
             # Input validation
+            exprs_values <- as.matrix(exprs_values)
+
             assertive.types::assert_is_any_of(use_dimred, c("data.frame", "matrix"))
             assertive.types::assert_is_any_of(exprs_values, c("data.frame", "matrix"))
             assertive.types::assert_is_any_of(feature_metadata, c("data.frame", "matrix"))
@@ -19,6 +21,8 @@ setMethod("add_dimred_metadata_page",
             if(is.null(colnames(feature_metadata))) {
               colnames(feature_metadata) <- paste0("V", 1:ncol(feature_metadata))
             }
+
+            if(is.null(rownames(exprs_values))) rownames(exprs_values) <- 1:nrow(exprs_values)
 
             # Create component environment
             env <- new.env()
@@ -32,17 +36,16 @@ setMethod("add_dimred_metadata_page",
             # Render component
             timestamp <- Sys.time()
 
-            component <- knitr::knit_expand(file = system.file("templates", "dimred_metadata.Rmd", package = "i2dash.scrnaseq"), env_id = env_id, date = timestamp)
+            component <- knitr::knit_expand(file = system.file("templates", "dimred_feature_page.Rmd", package = "i2dash.scrnaseq"), env_id = env_id, date = timestamp)
 
             dashboard@pages[["dimred_metadata_page"]] <- list(title = title, layout = "default", menu = menu, components = component, max_components = 1)
             return(dashboard)
           })
 
-
 #' @name dimred-metadata-page
 #' @rdname dimred-metadata-page
 #' @export
-setMethod("add_dimred_metadata_page",
+setMethod("add_dimred_feature_page",
           signature = signature(dashboard = "i2dashboard", object = "SingleCellExperiment"),
           function(dashboard, object, use_dimred, exprs_values, feature_metadata, subset_row, title = "Marker gene expression", menu = NULL) {
 
@@ -62,7 +65,7 @@ setMethod("add_dimred_metadata_page",
               metadata <- metadata[subset_row, ]
             }
 
-            dashboard <- add_dimred_metadata_page(dashboard = dashboard,
+            dashboard <- add_dimred_feature_page(dashboard = dashboard,
                                                use_dimred = use_dimred,
                                                exprs_values = exprs_values,
                                                metadata = metadata,
@@ -74,7 +77,7 @@ setMethod("add_dimred_metadata_page",
 #' @name dimred-metadata-page
 #' @rdname dimred-metadata-page
 #' @export
-setMethod("add_dimred_metadata_page",
+setMethod("add_dimred_feature_page",
           signature = signature(dashboard = "i2dashboard", object = "Seurat"),
           function(dashboard, object, use_dimred, exprs_values, feature_metadata, subset_row, assay, assay_slot = "data", title = "Marker gene expression", menu = NULL) {
 
@@ -95,7 +98,7 @@ setMethod("add_dimred_metadata_page",
               Seurat::Embeddings(object, reduction = dimred)[, 1:2]
             })
 
-            dashboard <- add_dimred_metadata_page(dashboard = dashboard,
+            dashboard <- add_dimred_feature_page(dashboard = dashboard,
                                                use_dimred = use_dimred,
                                                exprs_values = expression,
                                                metadata = metadata,
