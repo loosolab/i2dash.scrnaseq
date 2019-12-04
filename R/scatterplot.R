@@ -41,6 +41,7 @@ setMethod("scatterplot",
               colour_by %<>%
                 as.data.frame() %>%
                 dplyr::mutate_if(is.character, as.factor) %>%
+                dplyr::mutate_if(is.logical, as.factor) %>%
                 dplyr::select_if(function(col) is.integer(col) | is.numeric(col) | is.factor(col))
 
               if(is.null(colnames(colour_by))) colnames(colour_by) <- paste0("Colour_by_", 1:ncol(colour_by))
