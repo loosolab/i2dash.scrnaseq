@@ -10,6 +10,7 @@ setMethod("scatterplot",
             # handle single numeric vector:
             if(is.numeric(x)) x <- data.frame("X" <- x)
             if(is.numeric(y)) y <- data.frame("Y" <- y)
+            if(is.character(colour_by) | is.numeric(colour_by) | is.factor(colour_by)) colour_by <- data.frame("Colour_by" <- colour_by)
 
             assertive.types::assert_is_any_of(x, c("data.frame", "matrix"))
             assertive.types::assert_is_any_of(y, c("data.frame", "matrix"))
@@ -39,6 +40,7 @@ setMethod("scatterplot",
               assertive.types::assert_is_any_of(colour_by, c("data.frame", "matrix"))
               colour_by %<>%
                 as.data.frame() %>%
+                dplyr::mutate_if(is.character, as.factor) %>%
                 dplyr::select_if(function(col) is.integer(col) | is.numeric(col) | is.factor(col))
 
               if(is.null(colnames(colour_by))) colnames(colour_by) <- paste0("Colour_by_", 1:ncol(colour_by))
