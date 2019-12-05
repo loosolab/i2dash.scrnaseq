@@ -226,3 +226,23 @@ setGeneric("heatmap", function(dashboard, object, ...) standardGeneric("heatmap"
 #' @exportMethod add_dimred_metadata_page
 setGeneric("add_dimred_metadata_page", function(dashboard, object, ...) standardGeneric("add_dimred_metadata_page"))
 
+#' Renders a component containing a violinplot with column- or row-level metadata.(This method is a wrapepr for the function \code{scater::plotColData} or \code{scater::plotRowData})
+#'
+#' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
+#' @param object An object of class \linkS4class{Seurat::Seurat} or \linkS4class{SingleCellExperiment::SingleCellExperiment}.
+#' @param y A single characters or vector of characters specifying the metadata to show on the y-axis.
+#' @param x A single characters or vector of characters specifying the metadata to show on the x-axis.
+#' @param metadata A single characters or vector of characters specifying the metadata that is used to colour, size, shape the observations.
+#' @param group_by A single character specifying the metadata from \code{metadata} that is used to to group the observations.
+#' @param from A character specifying whether the function \code{scater::plotColData} or \code{scater::plotRowData} is used.
+#' @param as_plotly
+#' @param plot_title The title of the component.
+#' @param y_title The title of the y-axis.
+#' @param x_title The title of the x-axis.
+#'
+#' @details For further information see \code{?scater::plotColData()} / \code{?scater::plotRowData()}
+#'
+#' @name plotMetadata
+#' @rdname plotMetadata
+#' @exportMethod plotMetadata
+setGeneric("plotMetadata", function(dashboard, object, ...) standardGeneric("plotMetadata"))
