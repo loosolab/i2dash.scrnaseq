@@ -34,24 +34,23 @@ setMethod("plotMetadata",
             }
             sce <- SingleCellExperiment::SingleCellExperiment(assays = list(counts = counts))
 
-            # data <- switch(from,
-            #                "colData" = SummarizedExperiment::colData(sce),
-            #                "rowData" = SummarizedExperiment::rowData(sce))
-            # data <- cbind(data, y)
-            # if(!is.null(x)) data <- cbind(data, x[, setdiff(colnames(x), colnames(data))])
-            # if(!is.null(metadata)) data <- cbind(data, metadata[, setdiff(colnames(metadata), colnames(data))])
+            # create SingleCellExperiment
+            if(from == "colData"){
+              counts <- matrix(rep(0,nrow(y)), ncol=nrow(y), nrow=1)
+            } else {
+              counts <- matrix(rep(0,nrow(y)), ncol=1, nrow=nrow(y))
+            }
+            sce <- SingleCellExperiment::SingleCellExperiment(assays = list(counts = counts))
+
+            data <- y
+            if(!is.null(x)) data <- dplyr::bind_cols(data, x[setdiff(colnames(x), colnames(data))])
+            if(!is.null(metadata)) data <- dplyr::bind_cols(data, metadata[setdiff(colnames(metadata), colnames(data))])
 
             if (from == "colData"){
-              SummarizedExperiment::colData(sce) <- cbind(SummarizedExperiment::colData(sce), y)
-              if(!is.null(x)) SummarizedExperiment::colData(sce) <- cbind(SummarizedExperiment::colData(sce), x[, setdiff(colnames(x), colnames(SummarizedExperiment::colData(sce)))])
-              if(!is.null(metadata)) SummarizedExperiment::colData(sce) <- cbind(SummarizedExperiment::colData(sce), metadata[, setdiff(colnames(metadata), colnames(SummarizedExperiment::colData(sce)))])
+              SummarizedExperiment::colData(sce) <- cbind(SummarizedExperiment::colData(sce), data)
             } else {
-              SummarizedExperiment::rowData(sce) <- cbind(SummarizedExperiment::rowData(sce), y)
-              if(!is.null(x)) SummarizedExperiment::rowData(sce) <- cbind(SummarizedExperiment::rowData(sce), x[, setdiff(colnames(x), colnames(SummarizedExperiment::rowData(sce)))])
-              if(!is.null(metadata)) SummarizedExperiment::rowData(sce) <- cbind(SummarizedExperiment::rowData(sce), metadata[, setdiff(colnames(metadata), colnames(SummarizedExperiment::rowData(sce)))])
+              SummarizedExperiment::rowData(sce) <- cbind(SummarizedExperiment::colData(sce), data)
             }
-
-            print(sce)
 
             plotMetadata(
               dashboard = dashboard,
