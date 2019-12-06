@@ -4,6 +4,7 @@
 \alias{scatterplot}
 \alias{scatterplot,i2dashboard,missing-method}
 \alias{scatterplot,i2dashboard,SingleCellExperiment-method}
+\alias{scatterplot,i2dashboard,Seurat-method}
 \title{Renders a component containing a scatterplot with optional selection options}
 \usage{
 scatterplot(dashboard, object, ...)
@@ -17,34 +18,51 @@ scatterplot(dashboard, object, ...)
   exprs_values = NULL,
   title = NULL,
   x_title = NULL,
-  y_title = NULL
+  y_title = NULL,
+  plot_title = NULL
 )
 
 \S4method{scatterplot}{i2dashboard,SingleCellExperiment}(
   dashboard,
   object,
-  use = "colData",
+  from = c("colData", "rowData", "reducedDim"),
   x = NULL,
   y = NULL,
   colour_by = NULL,
-  reduced_dim = NULL,
+  use_dimred = NULL,
+  exprs_values = NULL,
+  subset_row = NULL,
+  ...
+)
+
+\S4method{scatterplot}{i2dashboard,Seurat}(
+  dashboard,
+  object,
+  from = c("meta.data", "meta.features", "reduction"),
+  x = NULL,
+  y = NULL,
+  colour_by = NULL,
+  use_dimred = NULL,
+  assay = "RNA",
+  slot = NULL,
+  subset_row = NULL,
   ...
 )
 }
 \arguments{
 \item{dashboard}{An object of class \linkS4class{i2dash::i2dashboard}.}
 
-\item{object}{A valid \linkS4class{SingleCellExperiment::SingleCellExperiment} object.}
+\item{object}{An object of class \linkS4class{Seurat::Seurat} or \linkS4class{SingleCellExperiment::SingleCellExperiment}.}
 
-\item{x}{A data.frame (matrix) containing columns with numeric values that will be mapped to the x-axis.}
+\item{x}{Data that will be mapped to the x-axis (see Details).}
 
-\item{y}{A data.frame (matrix) containing columns with numeric values that will be mapped to the y-axis.}
+\item{y}{Data that will be mapped to the y-axis (see Details).}
 
-\item{colour_by}{An optional data.frame (matrix) containing columns with numeric or factorial values that will be used for colouring.}
+\item{colour_by}{Numeric or factorial values that will be used for colouring.}
 
 \item{labels}{An optional vector with sample names. A dropdown menu for colouring by label will be provided.}
 
-\item{exprs_values}{An optional data.frame (matrix) containing expression data of features of interest in rows and samples in columns.}
+\item{exprs_values}{Expression data of features of interest in rows and samples in columns (see Details).}
 
 \item{title}{The title of the components junk.}
 
@@ -52,15 +70,41 @@ scatterplot(dashboard, object, ...)
 
 \item{y_title}{An optional title of the y-axis. If not provided the column names from \code{y}  are used instead.}
 
-\item{use}{A character specifying where to obtain the data from. One of \code{"colData"}, \code{"rowData"}, \code{"reducedDim"}.}
+\item{plot_title}{An optional title of the plot.}
 
-\item{reducedDim}{A character vector indicating the reduced dimension to use from \code{"reducedDim"}}
+\item{from}{A character specifying where to obtain the data from \code{object} (see Details).}
+
+\item{use_dimred}{A character vector indicating the reduced dimension to use from \code{"object"} (see Details).}
+
+\item{assay}{A character defining the assay of \code{object} and is used for obtaining the \code{exprs_values} (default "RNA") (see Details).}
+
+\item{slot}{A character defining the data slot of \code{assay}.}
 }
 \value{
 A string containing markdown code for the rendered component
 
 An object of class \linkS4class{i2dash::i2dashboard}.
+
+An object of class \linkS4class{i2dash::i2dashboard}.
 }
 \description{
 Renders a component containing a scatterplot with optional selection options
+}
+\details{
+The parameters \code{x}, \code{y}, \code{colour_by}, \code{use_dimred}, \code{exprs_values}, \code{assay} and \code{slot}) take different arguments depending on the class of \code{object}.
+  In case the \emph{i2dashboard,missing}-method, the parameters \code{x}, \code{y}, \code{colour_by} and \code{exprs_values} are expected to be of class \code{data.frame} or \code{matrix}. The parameters \code{x}, \code{y} can also be numeric vectors. The parameters \code{use}, \code{use_dimred}, \code{assay} and \code{slot} can be ignored.
+  In case the \emph{i2dashboard,SingleCellExperiment}-method, the parameters are expected to be of class \code{character}:
+  \itemize{
+    \item the parameter \code{from} can be either \code{"colData"}, \code{"rowData"} or \code{"reducedDim"}
+    \item \code{use_dimred} the name of an item in \code{reducedDims(object)}
+    \item \code{exprs_values} a valid assay name from \code{assayNames(object)}
+  }
+  In case of the \emph{i2dashboard,Seurat}-method, the parameters are expected to be of class \code{character}:
+  \itemize{
+    \item the parameter \code{from} can be either \code{"meta.data"} for sample metadata, \code{"meta.feature"} for feature metadata, \code{"reduction"} for a dimension reduction
+    \item \code{use_dimred} the name of an item in \code{object@reductions}
+    \item \code{assay} a valid assay name from \code{names(object@assays)}
+    \item \code{slot} a valid data slot from \code{assay}
+  }
+  In both cases, \code{x}, \code{y}, \code{colour_by} take column names of \code{from}.
 }
