@@ -163,7 +163,7 @@ output$downloadData_{{ env_id }} <- downloadHandler(
       df <- data.frame(x = x_{{ env_id }}()$data, y = y_{{ env_id }}()$data, colour_by = colour_{{ env_id }}()$colour)
     }
     if(!is.null({{ env_id }}$labels)) labels <- {{ env_id }}$labels else labels <- rownames({{ env_id }}$x)
-    rownames(df) <- labels)
+    rownames(df) <- labels
     write.csv(df, file)
   }
 )
