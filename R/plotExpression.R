@@ -89,6 +89,7 @@ setMethod("plotExpression",
 
             # Validate input
             assertive.sets::assert_is_subset(features, rownames(object))
+            object <- object[features,]
             assertive.sets::assert_is_subset(exprs_values, SummarizedExperiment::assayNames(object))
             if(!is.null(x)) # todo: check if in colnames(colData(object)) or rownames(object)
             if(!is.null(metadata)) assertive.sets::assert_is_subset(metadata, colnames(SummarizedExperiment::colData(object)))
