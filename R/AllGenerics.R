@@ -226,3 +226,26 @@ setGeneric("heatmap", function(dashboard, object, ...) standardGeneric("heatmap"
 #' @exportMethod add_dimred_metadata_page
 setGeneric("add_dimred_metadata_page", function(dashboard, object, ...) standardGeneric("add_dimred_metadata_page"))
 
+#' Renders a component containing a plot of the expression values for a set of features (e.g. genes or transcripts), against a continuous or categorical covariate for all cells.(This method is a wrapepr for the function \code{scater::plotExpression})
+#'
+#' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
+#' @param object An object of class \linkS4class{Seurat::Seurat} or \linkS4class{SingleCellExperiment::SingleCellExperiment}.
+#' @param exprs_values A data.frame (matrix) containing expression data of features of interest in rows and samples in columns, or a string representing the name of an \code{assay} of \code{object}.
+#' @param features A character vector specifying the features to plot.
+#' @param metadata A single characters or vector of characters specifying the metadata that is used to group, colour, size, shape the observations.
+#' @param x A single character specifying a feature or column name from "\code{metadata}" to show on the x-axis.
+#' @param title The title of the component.
+#' @param as_plotly Logical whether the ggplot2 plot should be converted into a plotly plot.
+#' @param plot_title The title of the plot.
+#' @param y_title The title of the y-axis.
+#' @param x_title The title of the x-axis.
+#' @param ncol Integer scalar, specifying the number of columns to be used for the panels of a multi-facet plot.
+#' @param scales String indicating whether should multi-facet scales be fixed ("\code{fixed}"), free ("\code{free}"), or free in one dimension ("\code{free_x}", "\code{free_y}").
+#' @param ... Parameter for \code{scater::plotExpression}.
+#'
+#' @details For further information see \code{?scater::plotColData()} / \code{?scater::plotRowData()}
+#'
+#' @name plotExpression
+#' @rdname plotExpression
+#' @exportMethod plotExpression
+setGeneric("plotExpression", function(dashboard, object, ...) standardGeneric("plotExpression"))
