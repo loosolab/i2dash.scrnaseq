@@ -18,9 +18,12 @@ heatmap(dashboard, object, ...)
   legend = NULL,
   cluster_rows = FALSE,
   cluster_columns = FALSE,
+  show_column_labels = FALSE,
   clustering_distance = c("euclidean", "maximum", "manhattan", "binary", "minkowski"),
   clustering_method = c("average", "ward.D", "ward.D2", "single", "complete",
-    "mcquitty", "median", "centroid")
+    "mcquitty", "median", "centroid"),
+  column_title = NULL,
+  row_title = NULL
 )
 
 \S4method{heatmap}{i2dashboard,SingleCellExperiment}(
@@ -63,9 +66,15 @@ heatmap(dashboard, object, ...)
 
 \item{cluster_columns}{A logical controls whether to make cluster on columns.}
 
+\item{show_column_labels}{A logical controls whether the column lables should be displayed. Pay attention that a large number of columns with column lables can cause visualization problems.}
+
 \item{clustering_distance}{The distance measure to use for hierarchical clustering.}
 
 \item{clustering_method}{Method to perform hierarchical clustering, passed to \link[stats]{hclust}.}
+
+\item{column_title}{The column title of the heatmap.}
+
+\item{row_title}{The row title of the heatmap.}
 
 \item{subset_row}{An optional character vector (of feature names), a logical vector or numeric vector (of indices) specifying the features to use. The default of NULL will use the first 100 features.}
 }
