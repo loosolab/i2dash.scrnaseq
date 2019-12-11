@@ -5,7 +5,7 @@
 
 ```{r, eval=!is_shiny}
 sil_plot <- plotly::plot_ly(sd_{{ env_id }}, colors = "Set1") %>%
-  plotly::add_bars(color = df_{{ env_id }}[[grouping]], name = df_{{ env_id }}[[grouping]], orientation = 'h', mode = "bar", y = ~cell, x = ~silhouette) %>%
+  plotly::add_bars(color = df_{{ env_id }}[[grouping_{{ env_id }}]], name = df_{{ env_id }}[[grouping_{{ env_id }}]], orientation = 'h', y = ~cell, x = ~silhouette) %>%
   plotly::layout(yaxis = list(showticklabels = FALSE), showlegend = FALSE) %>%
   plotly::highlight(on = "plotly_selected", dynamic = F, selectize = F)
 sil_plot
@@ -28,3 +28,4 @@ output$plot_sil_{{ env_id }} <- plotly::renderPlotly({
 #
 plotly::plotlyOutput("plot_sil_{{ env_id }}", height = "100%")
 ```
+
