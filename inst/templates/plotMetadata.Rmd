@@ -30,7 +30,7 @@ if({{ env_id }}$from == "colData"){
 }
 # handle grouping
 if(!is.null({{ env_id }}$group_by)){
-  if(is.numeric(SummarizedExperiment::colData({{ env_id }}$object)[{{ env_id }}$y][[3]]) | is.numeric(SummarizedExperiment::colData({{ env_id }}$object)[{{ env_id }}$x][[1]])){
+  if(is.numeric(SummarizedExperiment::colData({{ env_id }}$object)[{{ env_id }}$y][[1]]) | is.numeric(SummarizedExperiment::colData({{ env_id }}$object)[{{ env_id }}$x][[1]])){
     plot_{{ env_id }} <- plot_{{ env_id }} + facet_wrap({{ env_id }}$object[[{{ env_id }}$group_by]])
   }
 }
@@ -44,7 +44,11 @@ if(!is.null({{ env_id }}$x_title)){
 if(!is.null({{ env_id }}$y_title)){
   plot_{{ env_id }} <- plot_{{ env_id }} + ggplot2::ylab({{ env_id }}$y_title)
 }
-# handle if as_plotly = TRUE
+# compare with colormaps
+if(!is.null({{ env_id }}$metadata[1])){
+  if({{ env_id }}$metadata[1] %in% names(colormaps)) plot_{{ env_id }} <- plot_{{ env_id }} + ggplot2::scale_fill_manual(values=colormaps[[{{ env_id }}$metadata[1]]])
+}
+# convert into a plotly object if as_plotly = TRUE
 if({{ env_id }}$as_plotly){
   plot_{{ env_id }} <- plotly::ggplotly(plot_{{ env_id }})
 }
@@ -140,6 +144,11 @@ reactive_{{ env_id }} <- shiny::reactive({
   if(!is.null({{ env_id }}$y_title)){
     plot <- plot + ggplot2::ylab({{ env_id }}$y_title)
   }
+  # compare with colormaps
+  if(!is.null(colour_by)){
+    if(colour_by %in% names(colormaps)) plot <- plot + ggplot2::scale_fill_manual(values=colormaps[[colour_by]])
+  }
+  
   return(plot)
 })
 
