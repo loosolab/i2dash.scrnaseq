@@ -7,20 +7,29 @@ NULL
 #'
 #' Users can select features and a dimension reduction to plot feature expression values.
 #'
-#' @param report A \linkS4class{i2dash::i2dashboard} report.
+#' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
 #' @param object A \linkS4class{SingleCellExperiment::SingleCellExperiment} object or a \linkS4class{Seurat::Seurat} object.
-#' @param use_dimred A list of data.frames (matrices) or a single data.frame (matrix) containing coordinates of the reduced dimensions, a character vector representing valid \code{reducedDim} slots of \code{object} or names of the \linkS4class{Seurat::DimReduc} object in \code{object@reductions}.
-#' @param exprs_values A data.frame (matrix) containing expression data of features of interest in rows and samples in columns, or a string representing the name of an \code{assay} of \code{object}.
+#' @param use_dimred Coordinates of the reduced dimensions, used for the scatterplot (see Details).
+#' @param exprs_values Expression data of features of interest in rows and samples in columns (see Details).
+#' @param page The name of the page to be added.
 #' @param assay A character vector specifying which assay from \code{object@assays} to obtain expression values from.
 #' @param slot A character vector specifying the name of the slot in the assay.
 #' @param subset_row A character vector (of feature names), a logical vector or numeric vector (of indices) specifying the features to use. The default of NULL will use all features.
 #' @param title The title of the page.
 #' @param menu (Optional) The name of the menu, under which the page should appear.
 #'
+#' @details The parameters \code{use_dimred}, \code{exprs_values} (or \code{assay}) and \code{group_by} take different arguments depending on the class of \code{object}.
+#'   In case no object is supplied (\emph{i2dashboard,missing}-method), the parameters are expected to be of class \code{data.frame} or \code{matrix}.
+#'   In case a \linkS4class{SingleCellExperiment::SingleCellExperiment} or \linkS4class{Seurat::Seurat} object is supplied, the parameters are expected to be of class \code{character}, containing
+#'   \itemize{
+#'     \item the name of an item in \code{reducedDims(object)} or \code{object@reductions},
+#'     \item a valid assay name from \code{assayNames(object)} or \code{names(object@assays)},
+#'     \item column names of \code{colData(object)} or \code{object@meta.data}.
+#'   }
 #' @name feature-grid-page
 #' @rdname feature-grid-page
 #' @exportMethod add_feature_grid_page
-setGeneric("add_feature_grid_page", function(report, object, ...) standardGeneric("add_feature_grid_page"))
+setGeneric("add_feature_grid_page", function(dashboard, object, ...) standardGeneric("add_feature_grid_page"))
 
 #' View a dimension reduction side-by-side with feature metadata
 #'
