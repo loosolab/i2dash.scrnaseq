@@ -26,8 +26,7 @@ add_feature_expression_page(dashboard, object, ...)
   exprs_values,
   group_by = NULL,
   subset_row = NULL,
-  title = "Feature expression",
-  menu = NULL
+  ...
 )
 
 \S4method{add_feature_expression_page}{i2dashboard,Seurat}(
@@ -38,8 +37,7 @@ add_feature_expression_page(dashboard, object, ...)
   group_by,
   slot = "data",
   subset_row = NULL,
-  title = "Feature expression",
-  menu = NULL
+  ...
 )
 }
 \arguments{
