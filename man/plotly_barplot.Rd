@@ -12,7 +12,7 @@ plotly_barplot(
 )
 }
 \arguments{
-\item{...}{these arguments are of either the form value or tag = value and should be valid for the 'plotly::plot_ly()' method.}
+\item{...}{Additional arguments passed on to \code{plotly::plot_ly}.}
 
 \item{showlegend}{(Optional) Boolean value that describes if the legend should be shown.}
 

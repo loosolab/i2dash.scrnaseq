@@ -16,8 +16,15 @@ if(!is.null({{ env_id }}$y_title)) y_title_{{ env_id }} <- {{ env_id }}$y_title 
 if(!is.null({{ env_id }}$colour_by)) colour_by_{{ env_id }} <- {{ env_id }}$colour_by[,1] else colour_by_{{ env_id }} <- NULL
 if(!is.null({{ env_id }}$labels)) labels_{{ env_id }} <- {{ env_id }}$labels else labels_{{ env_id }} <- rownames({{ env_id }}$x)
 
+# compare with colormaps
+if(is.factor(colour_by_{{ env_id }})){
+  if(colnames({{ env_id }}$colour_by)[1] %in% names(colormaps)) colors_{{ env_id }} <- colormaps[[colnames({{ env_id }}$colour_by)[1]]] else colors_{{ env_id }} <- NULL
+} else {
+  colors_{{ env_id }} <- NULL
+}
+
 # creating the plot object
-plot_{{ env_id }} <- i2dash.scrnaseq::plotly_scatterplot(x = {{ env_id }}$x[,1], y = {{ env_id }}$y[,1], color = colour_by_{{ env_id }}, text = labels_{{ env_id }}, y_title = y_title_{{ env_id }}, x_title = x_title_{{ env_id }}) %>%
+plot_{{ env_id }} <- i2dash.scrnaseq::plotly_scatterplot(x = {{ env_id }}$x[,1], y = {{ env_id }}$y[,1], color = colour_by_{{ env_id }}, text = labels_{{ env_id }}, y_title = y_title_{{ env_id }}, x_title = x_title_{{ env_id }}, colors = colors_{{ env_id }}) %>%
   plotly::layout(
     title = {{ env_id }}$plot_title
   ) %>% plotly::toWebGL()
@@ -113,16 +120,18 @@ colour_{{ env_id }} <- shiny::reactive({
   if(length({{ env_id }}$colouring) > 1){
     # "No colour" in radio menu
     if(input$radio_{{ env_id }} == 0){ 
-      return(list(colour = NULL, annotation = NULL))
+      return(list(colour = NULL, annotation = NULL, colour_title = NULL))
     
     # "Colour by metadata" in radio menu
     } else if(input$radio_{{ env_id }} == 1){
       if(!{{ env_id }}$colour_by_selection){
         data <- {{ env_id }}$colour_by[[1]]
+        title <- colnames({{ env_id }}$colour_by)[1]
       } else {
         data <- {{ env_id }}$colour_by[[input$select_colour_{{ env_id }}]]
+        title <- input$select_colour_{{ env_id }}
       }
-      return(list(colour = data, annotation = NULL))
+      return(list(colour = data, annotation = NULL, colour_title = title))
     
     # "Colour by label" in radio menu
     } else if(input$radio_{{ env_id }} == 2){
@@ -139,15 +148,15 @@ colour_{{ env_id }} <- shiny::reactive({
         ax = 20,
         ay = -40
       )
-      return(list(colour = NULL, annotation = a))
+      return(list(colour = NULL, annotation = a, colour_title = NULL))
       
     # "Colour by expression" in radio menu
     } else if(input$radio_{{ env_id }} == 3){
       data <- {{ env_id }}$exprs_values[input$select_feature_{{ env_id }},]
-      return(list(colour = data, annotation = NULL))
+      return(list(colour = data, annotation = NULL, colour_title = input$select_feature_{{ env_id }}))
     }
   } else {
-    return(list(colour = NULL, annotation = NULL))
+    return(list(colour = NULL, annotation = NULL, colour_title = NULL))
   }
 })
 
@@ -172,11 +181,18 @@ output$downloadData_{{ env_id }} <- downloadHandler(
 # reactive plot creation
 #
 output$plot_{{ env_id }} <- plotly::renderPlotly({
+  # compare with colormaps
+  if(is.factor(colour_{{ env_id }}()$colour)){
+    if(colour_{{ env_id }}()$colour_title %in% names(colormaps)) colors <- colormaps[[colour_{{ env_id }}()$colour_title]] else colors <- "Set1"
+  } else {
+    colors <- NULL
+  }
+
   if(!is.null({{ env_id }}$y_title)) y_title <- {{ env_id }}$y_title else y_title <- y_{{ env_id }}()$title
   if(!is.null({{ env_id }}$x_title)) x_title <- {{ env_id }}$x_title else x_title <- x_{{ env_id }}()$title
   if(!is.null({{ env_id }}$labels)) labels <- {{ env_id }}$labels else labels <- rownames({{ env_id }}$x)
   
-  i2dash.scrnaseq::plotly_scatterplot(x = x_{{ env_id }}()$data, y = y_{{ env_id }}()$data, color = colour_{{ env_id }}()$colour, text = labels, y_title = y_title, x_title = x_title) %>%
+  i2dash.scrnaseq::plotly_scatterplot(x = x_{{ env_id }}()$data, y = y_{{ env_id }}()$data, color = colour_{{ env_id }}()$colour, text = labels, y_title = y_title, x_title = x_title, colors = colors, type = "scatter") %>%
     plotly::layout(
       annotations = colour_{{ env_id }}()$annotation,
       title = {{ env_id }}$plot_title
