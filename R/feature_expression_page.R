@@ -1,4 +1,4 @@
-#' @rdname add_feature_expression_page
+#' @rdname feature-expression-page
 #' @return An object of class \linkS4class{i2dash::i2dashboard}.
 #' @export
 setMethod("add_feature_expression_page",
@@ -10,7 +10,7 @@ setMethod("add_feature_expression_page",
 
             # Input validation
             assertive.types::assert_is_any_of(use_dimred, c("data.frame", "matrix"))
-            assertive.types::assert_is_any_of(exprs_values, c("data.frame", "matrix"))
+            exprs_values <- as.matrix(exprs_values)
 
             if(ncol(use_dimred) < 2 ) stop("'use_dimred' should contain at least two columns.")
 
@@ -32,6 +32,7 @@ setMethod("add_feature_expression_page",
               group_by <- data.frame(default = group_by)
             } else {
               group_by %<>% dplyr::select_if(is.factor)
+              if(ncol(group_by) == 0) group_by <- data.frame(default = factor(rep(1, nrow(use_dimred))))
             }
 
             # Create plot data
@@ -56,20 +57,20 @@ setMethod("add_feature_expression_page",
             return(dashboard)
           })
 
-#' @rdname add_feature_expression_page
+#' @rdname feature-expression-page
 #' @return An object of class \linkS4class{i2dash::i2dashboard}.
 #' @export
 setMethod("add_feature_expression_page",
           signature = signature(dashboard = "i2dashboard", object = "SingleCellExperiment"),
-          function(dashboard, object, use_dimred, exprs_values, group_by = NULL, subset_row = NULL, title = "Feature expression", menu = NULL) {
+          function(dashboard, object, use_dimred, exprs_values, group_by = NULL, subset_row = NULL, ...) {
 
             assertive.sets::assert_is_subset(use_dimred, SingleCellExperiment::reducedDimNames(object))
             assertive.sets::assert_is_subset(exprs_values, SummarizedExperiment::assayNames(object))
             assertive.sets::assert_is_subset(group_by, colnames(SummarizedExperiment::colData(object)))
 
-            expression <- SummarizedExperiment::assay(object, i = exprs_values)
-            if(!is.null(features)) {
-              expression <- SummarizedExperiment::assay(object, i = exprs_values)[features, ]
+            exprs_values <- SummarizedExperiment::assay(object, i = exprs_values)
+            if(!is.null(subset_row)) {
+              exprs_values <- exprs_values[subset_row, ]
             }
 
             SummarizedExperiment::colData(object) %>%
@@ -77,29 +78,27 @@ setMethod("add_feature_expression_page",
               dplyr::select(!!group_by) -> metadata
 
             add_feature_expression_page(dashboard,
-                                     use_dimred = SingleCellExperiment::reducedDim(object, dimred),
-                                     exprs_values = expression,
+                                     use_dimred = SingleCellExperiment::reducedDim(object, use_dimred),
+                                     exprs_values = exprs_values,
                                      group_by = metadata,
-                                     labels = colnames(object),
-                                     title = title,
-                                     menu = menu)
+                                     ...)
           })
 
-#' @rdname add_feature_expression_page
+#' @rdname feature-expression-page
 #' @return An object of class \linkS4class{i2dash::i2dashboard}.
 #' @export
 setMethod("add_feature_expression_page",
           signature = signature(dashboard = "i2dashboard", object = "Seurat"),
-          function(dashboard, object, use_dimred, assay, group_by, slot = "data", subset_row = NULL, title = "Feature expression", menu = NULL) {
+          function(dashboard, object, use_dimred, assay, group_by, slot = "data", subset_row = NULL, ...) {
 
             assertive.sets::assert_is_subset(use_dimred, names(object@reductions))
             assertive.sets::assert_is_subset(assay, names(object@assays))
             assertive.sets::assert_is_subset(group_by, names(object@meta.data))
 
             assay_obj <- Seurat::GetAssay(object = object, assay = assay)
-            expression <- Seurat::GetAssayData(object = assay_obj, slot = slot)
+            exprs_values <- Seurat::GetAssayData(object = assay_obj, slot = slot)
             if(!is.null(subset_row)) {
-              expression <- Seurat::GetAssayData(object = assay_obj, slot = slot)[feature, ]
+              exprs_values <- exprs_values[subset_row, ]
             }
 
             object@meta.data[metadata] %>%
@@ -108,9 +107,7 @@ setMethod("add_feature_expression_page",
 
             add_feature_expression_page(dashboard,
                                      use_dimred = Seurat::Embeddings(object, reduction = dimred),
-                                     exprs_values = expression,
+                                     exprs_values = exprs_values,
                                      group_by = metadata,
-                                     labels = colnames(expression),
-                                     title = title,
-                                     menu = menu)
+                                     ...)
           })
