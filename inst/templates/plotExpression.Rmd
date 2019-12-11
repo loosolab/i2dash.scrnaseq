@@ -122,7 +122,8 @@ reactive_{{ env_id }} <- shiny::reactive({
     colour_by = colour_by,
     shape_by = shape_by,
     size_by = size_by,
-    ncol = ncols
+    ncol = ncols,
+    scales = scales
   )
   params <- append(params, {{ env_id }}$params)
   return(params)
