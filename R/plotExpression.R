@@ -3,64 +3,34 @@
 setMethod("plotExpression",
           signature = signature(dashboard = "i2dashboard", object = "missing"),
           function(dashboard,
-                   y,
-                   x = NULL,
-                   from = c("colData", "rowData"),
-                   metadata = NULL,
-                   ...) {
+                   exprs_values,
+                   features = NULL, # vector of features (like subset_row)
+                   metadata = NULL, # data.frame
+                   x = NULL, # a feature or column name from "metadata"
+                   ... # further parameter provided to scater::plotExpression
+          ) {
+            # validate input
+            assertive.types::assert_is_any_of(exprs_values, c("data.frame", "matrix"))
+            if(!is.null(features) & all(feautres %in% rownames(exprs_values))){
+              exprs_values <- exprs_values[features,]
+            }
+            if(!is.null(metadata)){
+              assertive.types::assert_is_any_of(metadata, c("data.frame", "matrix"))
+              if(is.null(colnames(metadata))) colnames(metadata) <- paste0("V", 1:ncol(metadata))
+              if(ncol(exprs_values) != nrow(metadata)) stop("The number of rows in 'exprs_values' and the number of columns in 'metadata' should be equal.")
+            }
+            # create SingleCellExperiment
+            sce <- SingleCellExperiment::SingleCellExperiment(assays = list(counts = exprs_values), colData = metadata)
 
-            # from <- match.arg(from)
-            #
-            # # Validate input
-            # assertive.types::assert_is_any_of(y, c("data.frame", "matrix"))
-            # if(is.null(colnames(y))) colnames(y) <- paste0("V", 1:ncol(y))
-            #
-            # if(!is.null(x)){
-            #   assertive.types::assert_is_any_of(x, c("data.frame", "matrix"))
-            #   if(is.null(colnames(x))) colnames(x) <- paste0("V", 1:ncol(x))
-            #   if(nrow(y) != nrow(x)) stop("The numbers of rows of 'y' and 'x' should be equal.")
-            # }
-            # if(!is.null(metadata)){
-            #   assertive.types::assert_is_any_of(metadata, c("data.frame", "matrix"))
-            #   if(is.null(colnames(metadata))) colnames(metadata) <- paste0("V", 1:ncol(metadata))
-            #   if(nrow(y) != nrow(x)) stop("The numbers of rows of 'y' and 'metadata' should be equal.")
-            # }
-            #
-            # # create SingleCellExperiment
-            # if(from == "colData"){
-            #   counts <- matrix(rep(0,nrow(y)), ncol=nrow(y), nrow=1)
-            # } else {
-            #   counts <- matrix(rep(0,nrow(y)), ncol=1, nrow=nrow(y))
-            # }
-            # sce <- SingleCellExperiment::SingleCellExperiment(assays = list(counts = counts))
-            #
-            # # create SingleCellExperiment
-            # if(from == "colData"){
-            #   counts <- matrix(rep(0,nrow(y)), ncol=nrow(y), nrow=1)
-            # } else {
-            #   counts <- matrix(rep(0,nrow(y)), ncol=1, nrow=nrow(y))
-            # }
-            # sce <- SingleCellExperiment::SingleCellExperiment(assays = list(counts = counts))
-            #
-            # data <- y
-            # if(!is.null(x)) data <- dplyr::bind_cols(data, x[setdiff(colnames(x), colnames(data))])
-            # if(!is.null(metadata)) data <- dplyr::bind_cols(data, metadata[setdiff(colnames(metadata), colnames(data))])
-            #
-            # if (from == "colData"){
-            #   SummarizedExperiment::colData(sce) <- cbind(SummarizedExperiment::colData(sce), data)
-            # } else {
-            #   SummarizedExperiment::rowData(sce) <- cbind(SummarizedExperiment::colData(sce), data)
-            # }
-
-            # plotExpression(
-            #   dashboard = dashboard,
-            #   object = sce,
-            #   from = from,
-            #   y = colnames(y),
-            #   x = colnames(x),
-            #   metadata = colnames(metadata),
-            #   ...
-            # )
+            plotExpression(
+              dashboard = dashboard,
+              object = sce,
+              exprs_values = "counts",
+              features = colnames(exprs_values),
+              x = x,
+              metadata = colnames(SingleCellExperiment::colData(sce)),
+              ...
+            )
           })
 
 #' @rdname plotExpression
@@ -93,7 +63,11 @@ setMethod("plotExpression",
             assertive.sets::assert_is_subset(exprs_values, SummarizedExperiment::assayNames(object))
             if(!is.null(x)) # todo: check if in colnames(colData(object)) or rownames(object)
             if(!is.null(metadata)) assertive.sets::assert_is_subset(metadata, colnames(SummarizedExperiment::colData(object)))
+            valid_arguments <- names(as.list(args(scater::plotExpression)))
             params <- list(...)
+            params <- list("col" = 2, "by" = "a")
+            common <- intersect(names(params), valid_arguments)
+            if(length(common) == 0) common <- list() else common <- params[common]
 
             # Create component environment
             env <- new.env()
@@ -108,7 +82,7 @@ setMethod("plotExpression",
             env$plot_title <- plot_title
             env$ncol <- ncol
             env$scales <- scales
-            env$params <- params
+            env$params <- common
 
             # save environment
             saveRDS(env, file = file.path(dashboard@datadir, paste0(env_id, ".rds")))
