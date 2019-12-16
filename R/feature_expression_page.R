@@ -53,7 +53,7 @@ setMethod("add_feature_expression_page",
             timestamp <- Sys.time()
             expanded_component <- list(knitr::knit_expand(file = system.file("templates", "feature_expression_page.Rmd", package = "i2dash.scrnaseq"), env_id = env_id, date = timestamp))
 
-            dashboard@pages[["feature_expression_page"]] <- list(title = title, layout = "default", menu = menu, components = expanded_component, max_components = 1, sidebar = NULL)
+            dashboard@pages[["feature_expression_page"]] <- list(title = title, layout = "empty", menu = menu, components = expanded_component, max_components = 1, sidebar = NULL)
             return(dashboard)
           })
 
