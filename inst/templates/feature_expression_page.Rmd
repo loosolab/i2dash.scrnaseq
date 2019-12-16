@@ -1,6 +1,9 @@
-### Table shows features and the number of samples with expression > 0/ total number of samples grouped by metadata:
+<!-- Page created on <% date %> -->
 
-<!-- Component created on 2019-09-02 13:41:13 -->
+Column
+----------------------------------------------------
+
+### {data-height=600}
 
 ```{r}
 {{ env_id }} <- readRDS(file.path(datadir, "{{ env_id }}.rds"))
@@ -215,7 +218,8 @@ shinyWidgets::dropdownButton(div(style='height: 300px; overflow-x: auto;',do.cal
 # DT::datatable with calculated statistic
 #
 output$tbl_{{ env_id }} <- DT::renderDataTable({
-  options(DT.options = list(scrollY="400px",scrollX="300px", pageLength = 10, autoWidth = TRUE))
+  #options(DT.options = list(scrollY="400px",scrollX="300px", pageLength = 100, autoWidth = TRUE))
+  options(DT.options = list(scrollY="20vh", scrollX="300px", pageLength = 100, autoWidth = TRUE))
   df_table_{{ env_id }}() %>%
     dplyr::group_by(level, feature) %>%
     dplyr::mutate(is_non_zero_exprs = expression > 0) %>%
@@ -225,20 +229,17 @@ output$tbl_{{ env_id }} <- DT::renderDataTable({
     dplyr::select(level, feature, info) %>%
     tidyr::spread(level, info) %>%
     dplyr::mutate(feature = row.names(exprs_values_{{ env_id }})) %>%
-    DT::datatable(filter = 'top', selection = list(mode = 'single', selected = 1, target = 'row'))
+    DT::datatable(filter = 'top', selection = list(mode = 'single', selected = 1, target = 'row'), caption = 'Table: No. of cells with positive expression (>0)')
 })
 DT::dataTableOutput('tbl_{{ env_id }}')
 ```
 
-Column
--------------------------------------
 
 ###
 
-<!-- Component created on 2019-09-02 13:41:13 -->
 
 ```{r, eval=!is_shiny}
-i2dash.scrnaseq::plotly_violinplot(y = exprs_values_{{ env_id }}[1,], group_by = group_by_{{ env_id }}[,1], y_title = "Expression", group_by_title = colnames(group_by_{{ env_id }})[1]) %>%
+i2dash.scrnaseq::plotly_violinplot(y = exprs_values_{{ env_id }}[1,], group_by = group_by_{{ env_id }}[,1], y_title = "Expression", group_by_title = "Group") %>%
   plotly::layout(
     title = row.names(exprs_values_{{ env_id }})[1]
   ) -> violin_{{ env_id }}
@@ -254,6 +255,7 @@ violin_{{ env_id }}
 #
 df2_{{ env_id }} <- shiny::reactive({
   keys <- plotly::event_data("plotly_selected", source = "scatter_{{ env_id }}")$key
+  if(!is.null(plotly::event_data("plotly_selected", source = "scatter_2_{{ env_id }}")$key)) keys <- plotly::event_data("plotly_selected", source = "scatter_2_{{ env_id }}")$key
   df <- data.frame(df_{{ env_id }}()$df, "level" = as.factor(group_by_{{ env_id }}[[input$select_grouping_{{ env_id }}]]))
   if(!is.null(keys)) {
     return(df[keys, ])
@@ -270,6 +272,10 @@ output$violin_{{ env_id }} <- plotly::renderPlotly({
 })
 plotly::plotlyOutput("violin_{{ env_id }}", height = "100%")
 ```
+
+
+Column
+-------------------------------------
 
 ### Select points to recalculate the violin plot according to selection:
 
@@ -388,9 +394,42 @@ output$scatter_{{ env_id }} <- plotly::renderPlotly({
     plotly::layout(
       title = df_{{ env_id }}()$feature
     ) %>% 
-    plotly::event_register("plotly_selected") -> plot
+    plotly::event_register("plotly_selected") %>%
+    plotly::toWebGL() -> plot
   plot
 })
 plotly::plotlyOutput("scatter_{{ env_id }}", height = "100%")
 ```
+
+###
+
+```{r, eval=!is_shiny}
+i2dash.scrnaseq::plotly_scatterplot(x =reduced_dim_{{ env_id }}[,1], y = reduced_dim_{{ env_id }}[,2], color = group_by_{{ env_id }}[,1], text = row.names(reduced_dim_{{ env_id }}), hoverinfo = "x+y+text", y_title = "Dimension 2", x_title = "Dimension 1") %>%
+  plotly::layout(
+    title = paste0("Coloured by: ", colnames(group_by_{{ env_id }})[1])
+  ) -> scatter_2_{{ env_id }}
+
+# %>%
+#   plotly::config(fillFrame = TRUE) -> scatter_{{ env_id }}
+
+scatter_2_{{ env_id }}$elementId <- "scatter_2_{{ env_id }}"
+scatter_2_{{ env_id }}
+```
+
+```{r, eval=is_shiny}
+#
+# Output
+#
+output$scatter_2_{{ env_id }} <- plotly::renderPlotly({
+  i2dash.scrnaseq::plotly_scatterplot(x = reduced_dim_{{ env_id }}[,1], y = reduced_dim_{{ env_id }}[,2], color = as.factor(group_by_{{ env_id }}[[input$select_grouping_{{ env_id }}]]), text = rownames(reduced_dim_{{ env_id }}[,1]), hoverinfo = "x+y+text", source = "scatter_2_{{ env_id }}", key = rownames(reduced_dim_{{ env_id }}), y_title = "Dimension 2", x_title = "Dimension 1") %>% 
+    plotly::layout(
+      title = paste0("Coloured by: ", input$select_grouping_{{ env_id }})
+    ) %>% 
+    plotly::event_register("plotly_selected") %>%
+    plotly::toWebGL() -> plot
+  plot
+})
+plotly::plotlyOutput("scatter_2_{{ env_id }}", height = "100%")
+```
+
 
