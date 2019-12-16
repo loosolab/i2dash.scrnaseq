@@ -1,3 +1,4 @@
+
 ### {{ title }}
 
 <!-- Component created on {{ date }} -->
@@ -12,7 +13,6 @@ library(SummarizedExperiment)
 
 ```{r, eval=!is_shiny}
 # create plot
-
 params_{{ env_id }} <- list(
   object = {{ env_id }}$object,
   features = {{ env_id }}$features,
@@ -30,6 +30,13 @@ if(!is.null({{ env_id }}$plot_title)) plot_{{ env_id }} <- plot_{{ env_id }} + g
 if(!is.null({{ env_id }}$x_title)) plot_{{ env_id }} <- plot_{{ env_id }} + ggplot2::xlab({{ env_id }}$x_title)
 if(!is.null({{ env_id }}$y_title)) plot_{{ env_id }} <- plot_{{ env_id }} + ggplot2::ylab({{ env_id }}$y_title)
 
+# # handle colormaps
+if("colour_by" %in% names({{ env_id }}$params)){
+  if(is.factor(SummarizedExperiment::colData({{ env_id }}$object)[[{{ env_id }}$params$colour_by]]) | is.logical(SummarizedExperiment::colData({{ env_id }}$object)[[{{ env_id }}$params$colour_by]])){
+    if({{ env_id }}$params$colour_by %in% names(colormaps)) plot <- plot + ggplot2::scale_fill_manual(values=colormaps[[{{ env_id }}$params$colour_by]])
+  }
+}
+
 # handle if as_plotly = TRUE
 if({{ env_id }}$as_plotly){
   plot_{{ env_id }} <- plotly::ggplotly(plot_{{ env_id }})
@@ -38,7 +45,6 @@ if({{ env_id }}$as_plotly){
 # Provide data for download
 download_{{ env_id }} <- data.frame(SummarizedExperiment::assay({{ env_id }}$object, {{ env_id }}$exprs_values)[{{ env_id }}$features,])
 # todo: add metadata to the df
-
 
 plot_{{ env_id }}
 
@@ -145,6 +151,14 @@ reactive_plot_{{ env_id }} <- shiny::eventReactive(input$generate_{{ env_id }},{
   if(!is.null({{ env_id }}$plot_title)) plot <- plot + ggplot2::ggtitle({{ env_id }}$plot_title)
   if(!is.null({{ env_id }}$x_title)) plot <- plot + ggplot2::xlab({{ env_id }}$x_title)
   if(!is.null({{ env_id }}$y_title)) plot <- plot + ggplot2::ylab({{ env_id }}$y_title)
+  
+  # handle colormaps
+  if(!is.null(reactive_{{ env_id }}()$colour_by)){
+    if(is.factor(SummarizedExperiment::colData({{ env_id }}$object)[[reactive_{{ env_id }}()$colour_by]]) | is.logical(SummarizedExperiment::colData({{ env_id }}$object)[[reactive_{{ env_id }}()$colour_by]])){
+      if(reactive_{{ env_id }}()$colour_by %in% names(colormaps)) plot <- plot + ggplot2::scale_fill_manual(values=colormaps[[reactive_{{ env_id }}()$colour_by]])
+    }
+  }
+  
   return(plot)
 })
 
@@ -158,28 +172,26 @@ output$downloadData_{{ env_id }} <- downloadHandler(
   }
 )
 
-# Plot output as plotly or ggplot2
-if(!{{ env_id }}$as_plotly){
-  # plot output
-  output$plot_{{ env_id }} <- renderPlot({
-    if(default_plot()){
-      plot <- scater::plotExpression(
-        object = {{ env_id }}$object,
-        features = {{ env_id }}$features[1],
-        x = {{ env_id }}$x,
-        exprs_values = {{ env_id }}$exprs_values,
-        ncol = {{ env_id }}$ncols
-      )
-      # handle titles
-      if(!is.null({{ env_id }}$plot_title)) plot <- plot + ggplot2::ggtitle({{ env_id }}$plot_title)
-      if(!is.null({{ env_id }}$x_title)) plot <- plot + ggplot2::xlab({{ env_id }}$x_title)
-      if(!is.null({{ env_id }}$y_title)) plot <- plot + ggplot2::ylab({{ env_id }}$y_title)
-      plot
-    } else {
-      reactive_plot_{{ env_id }}()
-    }
-  })
-  # lauyout
+renderPlot_{{ env_id }} %<a-% {
+  if(default_plot()){
+    plot <- scater::plotExpression(
+      object = {{ env_id }}$object,
+      features = {{ env_id }}$features[1],
+      x = {{ env_id }}$x,
+      exprs_values = {{ env_id }}$exprs_values,
+      ncol = {{ env_id }}$ncols
+    )
+    # handle titles
+    if(!is.null({{ env_id }}$plot_title)) plot <- plot + ggplot2::ggtitle({{ env_id }}$plot_title)
+    if(!is.null({{ env_id }}$x_title)) plot <- plot + ggplot2::xlab({{ env_id }}$x_title)
+    if(!is.null({{ env_id }}$y_title)) plot <- plot + ggplot2::ylab({{ env_id }}$y_title)
+    plot
+  } else {
+    reactive_plot_{{ env_id }}()
+  }
+}
+
+layout_{{ env_id }} %<a-% {
   shiny::fillRow(
     flex = c(NA, 1),
     shinyWidgets::dropdownButton(
@@ -192,39 +204,23 @@ if(!{{ env_id }}$as_plotly){
     ),
     plotOutput("plot_{{ env_id }}")
   )
+}
+
+# Plot output as plotly or ggplot2
+if(!{{ env_id }}$as_plotly){
+  # plot output
+  output$plot_{{ env_id }} <- renderPlot({
+    renderPlot_{{ env_id }}
+  })
+  # lauyout
+  layout_{{ env_id }}
 } else if ({{ env_id }}$as_plotly){
   # plot output
   output$plot_{{ env_id }} <- plotly::renderPlotly({
-    if(default_plot()){
-      plot <- scater::plotExpression(
-        object = {{ env_id }}$object,
-        features = {{ env_id }}$features[1],
-        x = {{ env_id }}$x,
-        exprs_values = {{ env_id }}$exprs_values,
-        ncol = {{ env_id }}$ncols
-      )
-      # handle titles
-      if(!is.null({{ env_id }}$plot_title)) plot <- plot + ggplot2::ggtitle({{ env_id }}$plot_title)
-      if(!is.null({{ env_id }}$x_title)) plot <- plot + ggplot2::xlab({{ env_id }}$x_title)
-      if(!is.null({{ env_id }}$y_title)) plot <- plot + ggplot2::ylab({{ env_id }}$y_title)
-      plot
-    } else {
-      reactive_plot_{{ env_id }}()
-    }
+    renderPlot_{{ env_id }}
   })
   # lauyout
-  shiny::fillRow(
-    flex = c(NA, 1),
-    shinyWidgets::dropdownButton(
-      div(style = 'max-height: 350px; overflow-x: auto;', do.call(shiny::inputPanel, ui_list)),
-      circle = TRUE,
-      status = "danger",
-      icon = icon("gear"),
-      width = "300px",
-      tooltip = shinyWidgets::tooltipOptions(title = "Click, to change plot settings:")
-    ),
-    plotly::plotlyOutput("plot_{{ env_id }}", height = "100%")
-  )
+  layout_{{ env_id }}
 }
 ```
 
