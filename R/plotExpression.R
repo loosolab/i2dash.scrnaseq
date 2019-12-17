@@ -10,7 +10,7 @@ setMethod("plotExpression",
                    ... # further parameter provided to scater::plotExpression
           ) {
             # validate input
-            assertive.types::assert_is_any_of(exprs_values, c("data.frame", "matrix"))
+            exprs_values <- as.matrix(exprs_values)
             if(!is.null(features) & all(feautres %in% rownames(exprs_values))){
               exprs_values <- exprs_values[features,]
             }
