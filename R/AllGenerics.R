@@ -325,3 +325,22 @@ setGeneric("plotMetadata", function(dashboard, object, ...) standardGeneric("plo
 #' @exportMethod plotExpression
 setGeneric("plotExpression", function(dashboard, object, ...) standardGeneric("plotExpression"))
 
+#' Characterize and visualize dimension reductions and sample groupings / metadata.
+#'
+#' Creates a page with up to four different linked components, including a scatterplot for dimension reductions, a bar plot showing numbers of observations by group, and a silhouette plot to assess grouping consistency.
+#' Additional sample metadata is visualized using boxplots and barplots, depending on the data type of the underlying variable.
+#'
+#' @param dashboard A \linkS4class{i2dash::i2dashboard}.
+#' @param object An object of class \linkS4class{Seurat::Seurat} or \linkS4class{SingleCellExperiment::SingleCellExperiment}.
+#' @param exprs_values A numeric matrix of log-counts, or a string indicating the assay of \code{object}.
+#' @param use_function Choose the \code{scran} method to model the variance of the log-expression profiles for each gene.
+#' @param title The title of the page.
+#' @param menu The name of the menu, under which the page should appear.
+#' @param assay In case of a \code{Seurat}-class \code{object} a string indicating the assay to use.
+#' @param slot In case of a \code{Seurat}-class \code{object} a string indicating the assay to use.
+#' @param ... Further parameters provided to the method specified in \code{use_function}.
+#'
+#' @name feature-selection-page
+#' @rdname feature-selection-page
+#' @exportMethod add_feature_selection_page
+setGeneric("add_feature_selection_page", function(dashboard, object, ...) standardGeneric("add_feature_selection_page"))

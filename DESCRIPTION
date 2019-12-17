@@ -23,6 +23,8 @@ Imports:
     SummarizedExperiment,
     SingleCellExperiment,
     scater,
-    pryr
+    pryr,
+    scran,
+    S4Vectors
 Suggests: 
     kableExtra

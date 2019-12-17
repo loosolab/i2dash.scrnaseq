@@ -11,10 +11,10 @@ plotExpression(dashboard, object, ...)
 
 \S4method{plotExpression}{i2dashboard,missing}(
   dashboard,
-  y,
-  x = NULL,
-  from = c("colData", "rowData"),
+  exprs_values,
+  features = NULL,
   metadata = NULL,
+  x = NULL,
   ...
 )
 
@@ -44,13 +44,13 @@ plotExpression(dashboard, object, ...)
 
 \item{...}{Parameter for \code{scater::plotExpression}.}
 
-\item{x}{A single character specifying a feature or column name from "\code{metadata}" to show on the x-axis.}
-
-\item{metadata}{A single characters or vector of characters specifying the metadata that is used to group, colour, size, shape the observations.}
-
 \item{exprs_values}{A data.frame (matrix) containing expression data of features of interest in rows and samples in columns, or a string representing the name of an \code{assay} of \code{object}.}
 
 \item{features}{A character vector specifying the features to plot.}
+
+\item{metadata}{A single characters or vector of characters specifying the metadata that is used to group, colour, size, shape the observations.}
+
+\item{x}{A single character specifying a feature or column name from "\code{metadata}" to show on the x-axis.}
 
 \item{as_plotly}{Logical whether the ggplot2 plot should be converted into a plotly plot.}
 
