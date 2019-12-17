@@ -21,6 +21,8 @@ Imports:
     tidyr,
     dplyr,
     SummarizedExperiment,
-    SingleCellExperiment
+    SingleCellExperiment,
+    scran,
+    S4Vectors
 Suggests: 
     kableExtra

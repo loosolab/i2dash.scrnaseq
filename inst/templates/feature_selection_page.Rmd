@@ -1,0 +1,112 @@
+
+<!-- Page created on  2019-12-16 15:16:10  -->
+
+```{r}
+{{ env_id }} = readRDS(file.path(datadir, "{{ env_id }}.rds"))
+
+is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
+
+library(magrittr)
+library(scran)
+library(S4Vectors)
+```
+
+UI elements {.sidebar}
+-------------------------------------
+    
+###
+
+```{r, eval=is_shiny}
+# var.field
+selectInput("selected_var.field_{{ env_id }}", label = "Select column containing the relevant metric of variation:", choices = colnames({{ env_id }}$data), selected = {{ env_id }}$default)
+
+sliderInput("selected_prop_{{ env_id }}", label = "Set the proportion of genes to report as HVGs:", min = 0, max = 1, value = 0.1, step = 0.01)
+
+# Maximum number of columns depends on selected features
+output$range_{{ env_id }} <- renderUI({
+  max <- round(max({{ env_id }}$data[[input$selected_var.field_{{ env_id }}]], na.rm = TRUE), 1)
+  #max <- max({{ env_id }}$data[[input$selected_var.field_{{ env_id }}]])
+  min <- 0
+  sliderInput("selected_threshold_{{ env_id }}", label = "Set the minimum threshold on the metric of variation:", value = 0, min = min, max = max)
+})
+uiOutput("range_{{ env_id }}")
+
+# download data
+htmltools::div(style="display:block;float:left;margin-top:20px",
+               downloadButton("download_data_{{ env_id }}", "Download data"))
+# download hvgs
+htmltools::div(style="display:block;float:left;margin-top:20px",
+               downloadButton("download_hvgs_{{ env_id }}", "Download list of HVGs"))
+```
+
+Column
+-------------------------------------
+    
+### 
+
+```{r, eval=!is_shiny}
+htmltools::HTML("<div class='alert alert-warning' role='alert'>
+  <h4>This page can only be used with the shiny-based interactive mode.</h4>
+</div>")
+```
+
+```{r, eval=is_shiny}
+reactive_{{ env_id }} <- shiny::reactive({
+  df <- {{ env_id }}$data
+  hvgs <- scran::getTopHVGs(
+    stats = df,
+    var.field = input$selected_var.field_{{ env_id }},
+    prop = input$selected_prop_{{ env_id }},
+    var.threshold = input$selected_threshold_{{ env_id }})
+  df$HVGs <- "normal"
+  if(length(hvgs)>0) df[hvgs,]$HVGs <- "HVG"
+  df$HVGs <- as.factor(df$HVGs)
+  if(length(hvgs)>0) hvg_df <- df[hvgs, -ncol(df)] else hvg_df <- df[0, -ncol(df)]
+  return(list(complete_df = df, hvg_df = hvg_df, hvg_names = hvgs))
+})
+
+output$plot_{{ env_id }} <- plotly::renderPlotly({
+  if({{ env_id }}$default == "bio") y_title <- "Variance of log-expression" else y_title <- "Squared coefficient of variation (CV^2)"
+  if({{ env_id }}$default == "bio") type <- "-" else type <- "log"
+  i2dash.scrnaseq::plotly_scatterplot(reactive_{{ env_id }}()$complete_df, x = ~mean, y = ~total, color = ~HVGs, text = names({{ env_id }}$fit$mean), y_title = y_title, x_title = "Mean of log-expression", type = "scatter", colors = c("normal" = "#28BBD7", "HVG" = "#ED90A4")) %>%
+    plotly::add_lines(x=reactive_{{ env_id }}()$complete_df$mean, y={{ env_id }}$fit$trend(reactive_{{ env_id }}()$complete_df$mean), type = 'scatter', mode = 'lines', name = "trendline", inherit = F, color = I('red')) %>% 
+    plotly::layout(xaxis = list(type = type),
+                   yaxis = list(type = type)) %>%
+    plotly::toWebGL()
+})
+
+plotly::plotlyOutput("plot_{{ env_id }}", height = "100%")
+
+# Download data.frame
+output$download_data_{{ env_id }} <- downloadHandler(
+  filename =  paste('data-', Sys.Date(), '.csv', sep=''),
+  content = function(file) {
+    df <- reactive_{{ env_id }}()$complete_df
+    write.csv(df, file)
+  }
+)
+
+output$download_hvgs_{{ env_id }} <- downloadHandler(
+  filename =  paste('data-', Sys.Date(), '.csv', sep=''),
+  content = function(file) {
+    df <- data.frame(hvgs = reactive_{{ env_id }}()$hvg_names)
+    write.csv(df, file)
+  }
+)
+```
+
+Column
+-------------------------------------
+
+### Table of highly variable genes
+
+```{r}
+output$tbl_env_waOb0F <- DT::renderDataTable({
+  options(DT.options = list(scrollY="50vh",scrollX="300px", pageLength = 100, autoWidth = TRUE))
+  DT::datatable(reactive_{{ env_id }}()$hvg_df, filter = 'top')
+})
+DT::dataTableOutput('tbl_env_waOb0F')
+
+```
+
+
