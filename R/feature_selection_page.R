@@ -9,10 +9,13 @@ setMethod("add_feature_selection_page",
                    exprs_values,
                    use_function = c("modelGeneVar", "modelGeneVarByPoisson", "modelGeneCV2", "modelGeneCV2WithSpikes", "modelGeneVarWithSpikes"),
                    title = "Feature selection",
-                   menu = "Tools"
-                   #,
-                   #... # further parapeter for use_function
+                   menu = "Tools",
+                   ... # further parapeter for use_function
                    ) {
+
+            # warn if no interactive mode is used
+            if(!dashboard@interactive) warning("This page can only be used during interactive shiny sessions. Consider setting interactivity(dashboard) <- TRUE.")
+
 
             # Create random env id
             env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
@@ -28,8 +31,7 @@ setMethod("add_feature_selection_page",
                               "modelGeneCV2WithSpikes" = "ratio",
                               "modelGeneVarWithSpikes" = "bio")
 
-            #data <- do.call(use_function, list(x = exprs_values, ...))
-            data <- do.call(use_function, list(x = exprs_values))
+            data <- do.call(use_function, list(x = exprs_values, ...))
 
             # Create component environment
             env <- new.env()
@@ -60,7 +62,7 @@ setMethod("add_feature_selection_page",
 
             dashboard <- add_feature_selection_page(
               dashboard = dashboard,
-              exprs_values <- exprs_values,
+              exprs_values = exprs_values,
               ...
             )
           })
@@ -80,7 +82,7 @@ setMethod("add_feature_selection_page",
 
             dashboard <- add_feature_selection_page(
               dashboard = dashboard,
-              exprs_values <- exprs_values,
+              exprs_values = exprs_values,
               ...
             )
           })
