@@ -25,24 +25,23 @@ aggregate_data <- function(data, group) {
 exprs_values_{{ env_id }} <- {{ env_id }}$exprs_values
 split_by_{{ env_id }} <- NULL
 cell_fun_{{ env_id }} <- NULL
-column_names_rot_{{ env_id }} <- NULL
+column_names_rot_{{ env_id }} <- 45
 
 # Handle column split
 if (!is.null({{ env_id }}$split_by)) {
   split_by_{{ env_id }} <- {{ env_id }}$split_by[,1]
 }
 
+# Remove column names
+if (!{{ env_id }}$show_column_labels) colnames(exprs_values_{{ env_id }}) <- c()
+
 # Handle data aggregation
 if (!is.null({{ env_id }}$aggregate_by)) {
   exprs_values_{{ env_id }} <- aggregate_data({{ env_id }}$exprs_values, {{ env_id }}$aggregate_by[,1])
-  column_names_rot_{{ env_id }} <- 45
   cell_fun_{{ env_id }} <- function(j, i, x, y, width, height, fill) {
       grid::grid.text(sprintf("%.1f", exprs_values_{{ env_id }}[i, j]), x, y, gp = grid::gpar(fontsize = 10))
-    }
+  }
 }
-
-# Remove column names
-colnames(exprs_values_{{ env_id }}) <- c()
 
 # Todo?
 row_split_{{ env_id }} <- NULL
@@ -64,7 +63,13 @@ i2dash.scrnaseq::ComplexHeatmap_heatmap(
     column_split = split_by_{{ env_id }},
     row_split = row_split_{{ env_id }},
     column_names_rot = column_names_rot_{{ env_id }},
-    cell_fun = cell_fun_{{ env_id }}
+    cell_fun = cell_fun_{{ env_id }},
+    column_title = {{ env_id }}$column_title,
+    row_title = {{ env_id }}$row_title,
+    row_names_gp = grid::gpar(fontsize = 7),
+    column_names_gp = grid::gpar(fontsize = 7),
+    column_title_gp = grid::gpar(fontsize = 10),
+    row_title_gp = grid::gpar(fontsize = 10)
   )
 ```
 
@@ -101,13 +106,13 @@ exprs_values_{{ env_id }} <- shiny::reactive({
   
   # Subset features
   exprs_values <- subset_features(exprs_values, input$select_subset_{{ env_id }})
+  if (!{{ env_id }}$show_column_labels) colnames(exprs_values) <- c()
   
   # Handle aggregation
   if (input$select_aggregate_by_{{ env_id }} != "None") {
     exprs_values <- aggregate_data(exprs_values, {{ env_id }}$aggregate_by[, input$select_aggregate_by_{{ env_id }}])
   }
   
-  colnames(exprs_values) <- c()
   return(exprs_values)
 })
 
@@ -130,10 +135,9 @@ clust_{{ env_id }} <- shiny::reactive({
 })
 
 split_by_{{ env_id }} <- shiny::reactive({
-  if(input$select_split_by_{{ env_id }} == "None") {
+  if(input$select_split_by_{{ env_id }} == "None" | input$select_aggregate_by_{{ env_id }} != "None") {
     return(NULL)
   }
-  
   return({{ env_id }}$split_by[[input$select_split_by_{{ env_id }}]])
 })
 
@@ -145,11 +149,10 @@ output$plot_{{ env_id }} <- shiny::renderPlot({
   clustdist <- input$select_clustdist_{{ env_id }}
   clustmethod <- input$select_clustmethod_{{ env_id }}
   cell_fun <- NULL
-  column_names_rot = NULL
+  column_names_rot = 45
       
   if (input$select_aggregate_by_{{ env_id }} != "None") {
     cell_fun <- function(j, i, x, y, width, height, fill) {grid::grid.text(sprintf("%.1f", exprs_values_{{ env_id }}()[i, j]), x, y, gp = grid::gpar(fontsize = 10))}
-    column_names_rot <- 45
   }
   
   i2dash.scrnaseq::ComplexHeatmap_heatmap(
@@ -163,7 +166,9 @@ output$plot_{{ env_id }} <- shiny::renderPlot({
     clustering_method_columns = clustmethod,
     column_split = split_by_{{ env_id }}(),
     column_names_rot = column_names_rot,
-    cell_fun = cell_fun
+    cell_fun = cell_fun,
+    column_title = {{ env_id }}$column_title,
+    row_title = {{ env_id }}$row_title
   )
 })
 
@@ -190,3 +195,4 @@ shiny::fillRow(flex = c(NA, 1),
       shiny::plotOutput("plot_{{ env_id }}", width = "100%", height = "400px")
 )
 ```
+
