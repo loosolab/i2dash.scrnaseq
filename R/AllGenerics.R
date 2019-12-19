@@ -169,17 +169,37 @@ setGeneric("boxplot", function(dashboard, object, ...) standardGeneric("boxplot"
 #' Renders a component containing a scatterplot with optional selection options
 #'
 #' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
-#' @param x A data.frame (matrix) containing columns with numeric values that will be mapped to the x-axis.
-#' @param y A data.frame (matrix) containing columns with numeric values that will be mapped to the y-axis.
-#' @param object A valid \linkS4class{SingleCellExperiment::SingleCellExperiment} object.
-#' @param use A character specifying where to obtain the data from. One of \code{"colData"}, \code{"rowData"}, \code{"reducedDim"}.
-#' @param reducedDim A character vector indicating the reduced dimension to use from \code{"reducedDim"}
-#' @param colour_by An optional data.frame (matrix) containing columns with numeric or factorial values that will be used for colouring.
+#' @param object An object of class \linkS4class{Seurat::Seurat} or \linkS4class{SingleCellExperiment::SingleCellExperiment}.
+#' @param x Data that will be mapped to the x-axis (see Details).
+#' @param y Data that will be mapped to the y-axis (see Details).
+#' @param from A character specifying where to obtain the data from \code{object} (see Details).
+#' @param use_dimred A character vector indicating the reduced dimension to use from \code{"object"} (see Details).
+#' @param assay A character defining the assay of \code{object} and is used for obtaining the \code{exprs_values} (default "RNA") (see Details).
+#' @param slot A character defining the data slot of \code{assay}.
+#' @param colour_by Numeric or factorial values that will be used for colouring.
 #' @param labels An optional vector with sample names. A dropdown menu for colouring by label will be provided.
-#' @param exprs_values An optional data.frame (matrix) containing expression data of features of interest in rows and samples in columns.
+#' @param exprs_values Expression data of features of interest in rows and samples in columns (see Details).
 #' @param title The title of the components junk.
 #' @param x_title An optional title of the x-axis. If not provided the column names from \code{x} are used instead.
 #' @param y_title An optional title of the y-axis. If not provided the column names from \code{y}  are used instead.
+#' @param plot_title An optional title of the plot.
+#'
+#' @details The parameters \code{x}, \code{y}, \code{colour_by}, \code{use_dimred}, \code{exprs_values}, \code{assay} and \code{slot}) take different arguments depending on the class of \code{object}.
+#'   In case the \emph{i2dashboard,missing}-method, the parameters \code{x}, \code{y}, \code{colour_by} and \code{exprs_values} are expected to be of class \code{data.frame} or \code{matrix}. The parameters \code{x}, \code{y} can also be numeric vectors. The parameters \code{use}, \code{use_dimred}, \code{assay} and \code{slot} can be ignored.
+#'   In case the \emph{i2dashboard,SingleCellExperiment}-method, the parameters are expected to be of class \code{character}:
+#'   \itemize{
+#'     \item the parameter \code{from} can be either \code{"colData"}, \code{"rowData"} or \code{"reducedDim"}
+#'     \item \code{use_dimred} the name of an item in \code{reducedDims(object)}
+#'     \item \code{exprs_values} a valid assay name from \code{assayNames(object)}
+#'   }
+#'   In case of the \emph{i2dashboard,Seurat}-method, the parameters are expected to be of class \code{character}:
+#'   \itemize{
+#'     \item the parameter \code{from} can be either \code{"meta.data"} for sample metadata, \code{"meta.feature"} for feature metadata, \code{"embedding"} for a dimension reduction
+#'     \item \code{reduction} the name of an item in \code{object@reductions}
+#'     \item \code{assay} a valid assay name from \code{names(object@assays)}
+#'     \item \code{slot} a valid data slot from \code{assay}
+#'   }
+#'   In both cases, \code{x}, \code{y}, \code{colour_by} take column names of \code{from}.
 #'
 #' @name scatterplot
 #' @rdname scatterplot
