@@ -191,15 +191,18 @@ setGeneric("scatterplot", function(dashboard, object, ...) standardGeneric("scat
 #' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
 #' @param exprs_values A data.frame (matrix) containing expression data of features of interest in rows and samples in columns or a string representing the name of an \code{assay} of \code{object}.
 #' @param object A valid \linkS4class{SingleCellExperiment::SingleCellExperiment} object.
-#' @param subset_row A character vector (of feature names), a logical vector or numeric vector (of indices) specifying the features to use. The default of NULL will use all features.
+#' @param subset_row An optional character vector (of feature names), a logical vector or numeric vector (of indices) specifying the features to use. The default of NULL will use the first 100 features.
 #' @param split_by An optional data.frame (matrix) containing grouping factors for spliting columns of the heatmap. In case of \code{i2dashboard,SingleCellExperiment}, should be column names of \code{colData(object)}.
 #' @param aggregate_by An optional data.frame (matrix) containing grouping factors for aggregating columns of the heatmap. In case of \code{i2dashboard,SingleCellExperiment}, should be column names of \code{colData(object)}.
 #' @param title Title of the component.
 #' @param legend Title of the heatmap legend.
-#' @param cluster_rows A logical controls whether to make cluster on rows.
-#' @param cluster_columns A logical controls whether to make cluster on columns.
+#' @param cluster_rows Whether or not to perform clustering on rows.
+#' @param cluster_columns Whether or not to perform clustering on columns
 #' @param clustering_method Method to perform hierarchical clustering, passed to \link[stats]{hclust}.
 #' @param clustering_distance The distance measure to use for hierarchical clustering.
+#' @param show_column_names Whether or not to show column names. Note that large number of column names can cause visualization problems.
+#' @param column_title The column title of the heatmap.
+#' @param row_title The row title of the heatmap.
 #'
 #' @name heatmap
 #' @rdname heatmap
