@@ -4,7 +4,8 @@
 \alias{plotly_boxplot}
 \title{Render a boxplot with plotly.}
 \usage{
-plotly_boxplot(x, group_by = NULL, x_title = NULL, group_by_title = NULL)
+plotly_boxplot(x, group_by = NULL, x_title = NULL,
+  group_by_title = NULL)
 }
 \arguments{
 \item{x}{Numeric observations for the boxplot.}

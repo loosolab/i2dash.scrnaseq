@@ -15,7 +15,7 @@ exprs_values_{{ env_id }} <- {{ env_id }}$exprs_values
 #
 create_feature_figure <- function(feature, data, mapping = viridis::scale_color_viridis()){
   data %>%
-    ggplot2::ggplot(ggplot2::aes_string(x = "dim1", y = "dim2", color = feature)) +
+    ggplot2::ggplot(ggplot2::aes_string(x = "dim1", y = "dim2", color = make.names(feature))) +
     ggplot2::geom_point() +
     mapping +
     ggplot2::labs(color = feature, x = "", y = "", title = "") +
