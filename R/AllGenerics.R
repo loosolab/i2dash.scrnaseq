@@ -37,16 +37,26 @@ setGeneric("add_feature_grid_page", function(dashboard, object, ...) standardGen
 #'
 #' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
 #' @param object A \linkS4class{SingleCellExperiment::SingleCellExperiment} object or a \linkS4class{Seurat::Seurat} object.
-#' @param use_dimred A list of data.frames (matrices) or a single data.frame (matrix) containing coordinates of the reduced dimensions, a character vector representing valid \code{reducedDim} slots of \code{object} or names of the \linkS4class{Seurat::DimReduc} object in \code{object@reductions}.
-#' @param exprs_values A data.frame (matrix) containing expression data of features of interest in rows and samples in columns, or a string representing the name of an \code{assay} of \code{object}.
-#' @param feature_metadata A data.frame (matrix) along rows of \code{exprs_values} containing feature metadata, or a character vector indicating columns from \code{rowData(object)} or \code{object@meta.data}.
-#' @param assay A character vector specifying which assay from \code{object@assays} to obtain expression values from.
-#' @param slot A character vector specifying the name of the slot in the assay.
+#' @param use_dimred Coordinates of the reduced dimensions, used for the scatterplot (see Details).
+#' @param exprs_values Expression data of features of interest in rows and samples in columns (see Details).
+#' @param feature_metadata A data.frame (matrix) along rows of \code{exprs_values} containing feature metadata, or a character vector indicating columns from \code{rowData(object)} or \code{object[[assay]]@feature.data}.
+#' @param page The name of the page to be added.
+#' @param assay A character specifying the assay (\code{object@assays}) to obtain expression values from.
+#' @param assay_slot A character specifying the name of the data slot in the assay.
 #' @param title The title of the page.
 #' @param menu (Optional) The name of the menu, under which the page should appear.
 #'
-#' @name dimred-metadata-page
-#' @rdname dimred-metadata-page
+#' @details The parameters \code{use_dimred}, \code{exprs_values} (or \code{assay}) and \code{group_by} take different arguments depending on the class of \code{object}.
+#'   In case no object is supplied (\emph{i2dashboard,missing}-method), the parameters are expected to be of class \code{data.frame} or \code{matrix}.
+#'   In case a \linkS4class{SingleCellExperiment::SingleCellExperiment} or \linkS4class{Seurat::Seurat} object is supplied, the parameters are expected to be of class \code{character}, containing
+#'   \itemize{
+#'     \item the name of an item in \code{reducedDims(object)} or \code{object@reductions},
+#'     \item a valid assay name from \code{assayNames(object)} or \code{names(object@assays)},
+#'     \item column names of \code{colData(object)} or \code{object@meta.data}.
+#'   }
+#'
+#' @name dimred-feature-page
+#' @rdname dimred-feature-page
 #' @exportMethod add_dimred_feature_page
 setGeneric("add_dimred_feature_page", function(dashboard, object, ...) standardGeneric("add_dimred_feature_page"))
 
@@ -68,11 +78,12 @@ setGeneric("summarize_samples", function(object, ...) standardGeneric("summarize
 #' @exportMethod summarize_features
 setGeneric("summarize_features", function(object, ...) standardGeneric("summarize_features"))
 
-#' Add a gene expression page.
+#' Add a feature expression page.
 #'
 #' This function adds a page with two linked components to the \code{dashboard} object: A scatterplot, showing samples in along two-dimensional coordinates, and a violin plot, showing feature expression values by groups defined in \code{group_by}.
 #'
 #' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
+#' @param page The name of the page to be added.
 #' @param use_dimred Coordinates of the reduced dimensions, used for the scatterplot (see Details).
 #' @param exprs_values Expression data of features of interest in rows and samples in columns (see Details).
 #' @param assay A character vector specifying which assay from \code{object@assays} to obtain expression values from (see Details).
@@ -93,8 +104,8 @@ setGeneric("summarize_features", function(object, ...) standardGeneric("summariz
 #'     \item column names of \code{colData(object)} or \code{object@meta.data}.
 #'   }
 #'
-#' @name add_feature_expression_page
-#' @rdname add_feature_expression_page
+#' @name feature-expression-page
+#' @rdname feature-expression-page
 #' @exportMethod add_feature_expression_page
 setGeneric("add_feature_expression_page", function(dashboard, object, ...) standardGeneric("add_feature_expression_page"))
 
@@ -244,17 +255,26 @@ setGeneric("heatmap", function(dashboard, object, ...) standardGeneric("heatmap"
 #' Additional sample metadata is visualized using boxplots and barplots, depending on the data type of the underlying variable.
 #'
 #' @param dashboard A \linkS4class{i2dash::i2dashboard}.
-#' @param use_dimred A data.frame (matrix) containing coordinates of the reduced dimensions. Rownames are used as sample labels.
-#' @param metadata A data.frame (matrix) containing metadata (e.g. cluster, timepoint, number of features, etc) along samples.
-#' @param group_by A string indicating a column in \code{metadata} that is used to group observations.
+#' @param object An object of class \linkS4class{Seurat::Seurat} or \linkS4class{SingleCellExperiment::SingleCellExperiment}.
+#' @param use_dimred Data containing coordinates of the reduced dimensions or a string indicating a dimension reduction from "reductions" of a Seurat \code{object}. Rownames are used as sample labels.
+#' @param sample_metadata  Sample metadata in columns and samples in rows (see Details).
+#' @param group_by A string indicating a column in \code{sample_metadata} that is used to group observations.
+#' @param page The name of the page to be added.
 #' @param title The title of the page.
 #' @param labels An optional vector with sample labels.
 #' @param show_group_sizes A logical value indicating if a barplot showing the number of observations from \code{group_by} will be creaed (default \code{TRUE}).
 #' @param show_silhouette A logical value indicating if a silhouette plot should be shown (default \code{FALSE}).
 #' @param menu The name of the menu, under which the page should appear.
 #'
-#' @name dimred-metadata-page
-#' @rdname dimred-metadata-page
-#' @exportMethod add_dimred_metadata_page
-setGeneric("add_dimred_metadata_page", function(dashboard, object, ...) standardGeneric("add_dimred_metadata_page"))
-
+#'@details The parameters \code{use_dimred}, \code{sample_metadata} (or \code{assay}) and \code{group_by} take different arguments depending on the class of \code{object}.
+#'   In case no object is supplied (\emph{i2dashboard,missing}-method), the parameters are expected to be of class \code{data.frame} or \code{matrix}.
+#'   In case a \linkS4class{SingleCellExperiment::SingleCellExperiment} or \linkS4class{Seurat::Seurat} object is supplied, the parameters are expected to be of class \code{character}, containing
+#'   \itemize{
+#'     \item the name of an item in \code{reducedDims(object)} or \code{object@reductions},
+#'     \item a valid assay name from \code{assayNames(object)} or \code{names(object@assays)},
+#'     \item column names of \code{colData(object)} or \code{object@meta.data}.
+#'   }
+#' @name dimred-sample-page
+#' @rdname dimred-sample-page
+#' @exportMethod add_dimred_sample_page
+setGeneric("add_dimred_sample_page", function(dashboard, object, ...) standardGeneric("add_dimred_sample_page"))
