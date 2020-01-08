@@ -244,17 +244,27 @@ setGeneric("heatmap", function(dashboard, object, ...) standardGeneric("heatmap"
 #' Additional sample metadata is visualized using boxplots and barplots, depending on the data type of the underlying variable.
 #'
 #' @param dashboard A \linkS4class{i2dash::i2dashboard}.
-#' @param use_dimred A data.frame (matrix) containing coordinates of the reduced dimensions. Rownames are used as sample labels.
-#' @param metadata A data.frame (matrix) containing metadata (e.g. cluster, timepoint, number of features, etc) along samples.
-#' @param group_by A string indicating a column in \code{metadata} that is used to group observations.
+#' @param object An object of class \linkS4class{Seurat::Seurat} or \linkS4class{SingleCellExperiment::SingleCellExperiment}.
+#' @param use_dimred Data containing coordinates of the reduced dimensions or a string indicating a dimension reduction from "reductions" of a Seurat \code{object}. Rownames are used as sample labels.
+#' @param sample_metadata  Sample metadata in columns and samples in rows (see Details).
+#' @param group_by A string indicating a column in \code{sample_metadata} that is used to group observations.
+#' @param page The name of the page to be added.
 #' @param title The title of the page.
 #' @param labels An optional vector with sample labels.
 #' @param show_group_sizes A logical value indicating if a barplot showing the number of observations from \code{group_by} will be creaed (default \code{TRUE}).
 #' @param show_silhouette A logical value indicating if a silhouette plot should be shown (default \code{FALSE}).
 #' @param menu The name of the menu, under which the page should appear.
 #'
-#' @name dimred-metadata-page
-#' @rdname dimred-metadata-page
-#' @exportMethod add_dimred_metadata_page
-setGeneric("add_dimred_metadata_page", function(dashboard, object, ...) standardGeneric("add_dimred_metadata_page"))
+#'@details The parameters \code{use_dimred}, \code{sample_metadata} (or \code{assay}) and \code{group_by} take different arguments depending on the class of \code{object}.
+#'   In case no object is supplied (\emph{i2dashboard,missing}-method), the parameters are expected to be of class \code{data.frame} or \code{matrix}.
+#'   In case a \linkS4class{SingleCellExperiment::SingleCellExperiment} or \linkS4class{Seurat::Seurat} object is supplied, the parameters are expected to be of class \code{character}, containing
+#'   \itemize{
+#'     \item the name of an item in \code{reducedDims(object)} or \code{object@reductions},
+#'     \item a valid assay name from \code{assayNames(object)} or \code{names(object@assays)},
+#'     \item column names of \code{colData(object)} or \code{object@meta.data}.
+#'   }
+#' @name dimred-sample-page
+#' @rdname dimred-sample-page
+#' @exportMethod add_dimred_sample_page
+setGeneric("add_dimred_sample_page", function(dashboard, object, ...) standardGeneric("add_dimred_sample_page"))
 
