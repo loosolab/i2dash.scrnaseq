@@ -2,24 +2,20 @@
 % Please edit documentation in R/visualization_functions.R
 \name{plotly_scatterplot}
 \alias{plotly_scatterplot}
-\title{Creates a plotly scatterplot}
+\title{Render a barplot with plotly.}
 \usage{
 plotly_scatterplot(..., y_title = NULL, x_title = NULL)
 }
 \arguments{
-\item{df}{A dataframe containing the data for the boxplot}
+\item{...}{Additional arguments passed on to \code{plotly::plot_ly}.}
 
-\item{labels}{A list with sample names, which should be of the same length as x and y.}
+\item{y_title}{The title of the x-axis.}
 
-\item{colour_by}{A list containing factorial values that will be used for colouring. In case of a named list, a dropdown menu will be provided in the interactive mode. Note: The length of all vectors in case of a named list should be of the same length as x and y.}
-
-\item{checkbox}{A boolean value as indicator for colouring by labels.}
-
-\item{selected_label}{The label (character) selected by the user.}
+\item{x_title}{The title of the y-axis.}
 }
 \value{
 An object of class \code{plotly}.
 }
 \description{
-Creates a plotly scatterplot
+Render a barplot with plotly.
 }

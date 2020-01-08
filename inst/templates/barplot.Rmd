@@ -56,6 +56,13 @@ if(!is.null({{ env_id }}$x_group_by)){
   x_group_by_{{ env_id }} <- NULL
 }
 
+# Handle colormaps
+if(is.null({{ env_id }}$x_group_by)){
+  if(colnames(y_group_by_{{ env_id }}) %in% names(colormaps)) colors_{{ env_id }} <- colormaps[[colnames(y_group_by_{{ env_id }})]] else colors_{{ env_id }} <- "Set1"
+} else {
+  if(x_group_by_title_{{ env_id }} %in% names(colormaps)) colors_{{ env_id }} <- colormaps[[x_group_by_title_{{ env_id }}]] else colors_{{ env_id }} <- "Set1"
+}
+
 # set title variables
 if(!is.null({{ env_id }}$y_group_by_title)) y_group_by_title_{{ env_id }} <- {{ env_id }}$y_group_by_title else y_group_by_title_{{ env_id }} <- colnames(y_group_by_{{ env_id }})
 if(!is.null({{ env_id }}$x_group_by_title)) x_group_by_title_{{ env_id }} <- {{ env_id }}$x_group_by_title
@@ -64,16 +71,15 @@ if(!is.null({{ env_id }}$x_group_by_title)) x_group_by_title_{{ env_id }} <- {{ 
 output_list_{{ env_id }} <- create_barplot_df(y_group_by = y_group_by_{{ env_id }}[,1], x_group_by = x_group_by_{{ env_id }}[,1])
 
 # creating the plot object
-plot_{{ env_id }} <-
-  i2dash.scrnaseq::plotly_barplot(
+plot_{{ env_id }} <- i2dash.scrnaseq::plotly_barplot(
     x = output_list_{{ env_id }}$x[[1]],
     y = output_list_{{ env_id }}$y[[1]],
     showlegend = output_list_{{ env_id }}$showlegend,
     x_group_by_title = x_group_by_title_{{ env_id }},
     y_group_by_title = y_group_by_title_{{ env_id }},
-    color = output_list_{{ env_id }}$names[[1]]
+    color = output_list_{{ env_id }}$names[[1]],
+    colors = colors_{{ env_id }}
   )
-
 
 # Provide data for download
 htmltools::div(style="display:block;float:left;width:100%;height:90%;",
@@ -111,7 +117,6 @@ ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downl
 # Create reactive dataframe
 #
 reactive_{{ env_id }} <- shiny::reactive({
-  
   if(!{{ env_id }}$y_group_by_selection){
     y_group_by <- {{ env_id }}$y_group_by[[1]]
     y_group_by_title <- colnames({{ env_id }}$y_group_by)[1]
@@ -146,6 +151,13 @@ output$downloadData_{{ env_id }} <- downloadHandler(
 # Reactive for plot creation
 #
 output$plot_{{ env_id }} <- plotly::renderPlotly({
+  # compare with colormaps
+  if(is.null({{ env_id }}$x_group_by)){
+    if(reactive_{{ env_id }}()$y_group_by_title %in% names(colormaps)) colors <- colormaps[[reactive_{{ env_id }}()$y_group_by_title]] else colors <- "Set1"
+  } else {
+    if(reactive_{{ env_id }}()$x_group_by_title %in% names(colormaps)) colors <- colormaps[[reactive_{{ env_id }}()$x_group_by_title]] else colors <- "Set1"
+  }
+
   if(!is.null({{ env_id }}$y_group_by_title)) y_group_by_title <- {{ env_id }}$y_group_by_title else y_group_by_title <- reactive_{{ env_id }}()$y_group_by_title
   if(!is.null({{ env_id }}$x_group_by_title)) x_group_by_title <- {{ env_id }}$x_group_by_title else x_group_by_title <- reactive_{{ env_id }}()$x_group_by_title
 
@@ -155,7 +167,8 @@ output$plot_{{ env_id }} <- plotly::renderPlotly({
     showlegend = reactive_{{ env_id }}()$barplot_input_list$showlegend,
     x_group_by_title = x_group_by_title,
     y_group_by_title = y_group_by_title,
-    color = reactive_{{ env_id }}()$barplot_input_list$names[[1]]
+    color = reactive_{{ env_id }}()$barplot_input_list$names[[1]],
+    colors = colors
   )
 })
 
