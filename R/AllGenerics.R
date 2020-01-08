@@ -78,11 +78,12 @@ setGeneric("summarize_samples", function(object, ...) standardGeneric("summarize
 #' @exportMethod summarize_features
 setGeneric("summarize_features", function(object, ...) standardGeneric("summarize_features"))
 
-#' Add a gene expression page.
+#' Add a feature expression page.
 #'
 #' This function adds a page with two linked components to the \code{dashboard} object: A scatterplot, showing samples in along two-dimensional coordinates, and a violin plot, showing feature expression values by groups defined in \code{group_by}.
 #'
 #' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
+#' @param page The name of the page to be added.
 #' @param use_dimred Coordinates of the reduced dimensions, used for the scatterplot (see Details).
 #' @param exprs_values Expression data of features of interest in rows and samples in columns (see Details).
 #' @param assay A character vector specifying which assay from \code{object@assays} to obtain expression values from (see Details).
@@ -103,8 +104,8 @@ setGeneric("summarize_features", function(object, ...) standardGeneric("summariz
 #'     \item column names of \code{colData(object)} or \code{object@meta.data}.
 #'   }
 #'
-#' @name add_feature_expression_page
-#' @rdname add_feature_expression_page
+#' @name feature-expression-page
+#' @rdname feature-expression-page
 #' @exportMethod add_feature_expression_page
 setGeneric("add_feature_expression_page", function(dashboard, object, ...) standardGeneric("add_feature_expression_page"))
 
