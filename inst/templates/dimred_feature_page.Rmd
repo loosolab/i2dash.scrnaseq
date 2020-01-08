@@ -77,7 +77,8 @@ default_expression <- expression_{{ env_id }}[1, ]
 i2dash.scrnaseq::plotly_scatterplot(x = reduced_dim_{{ env_id }}$x, y = reduced_dim_{{ env_id }}$y, color = default_expression, colors = "YlOrRd", text = row.names(reduced_dim_{{ env_id }}), hoverinfo = "x+y+text", y_title = "Dimension 2", x_title = "Dimension 1") %>%
   plotly::layout(
     title = featurenames[1]
-  ) -> plot_{{ env_id }}
+  ) %>%
+  plotly::toWebGL() -> plot_{{ env_id }}
 plot_{{ env_id }}$elementId <- "plot_{{ env_id }}"
 
 htmltools::div(style="display:block;float:left;width:100%;height:90%;padding-left:15px", htmltools::HTML("<p>Please select a feature in the left table to show its expression values.</p>"),plot_{{ env_id }})
@@ -124,7 +125,7 @@ output$plot_scatter_{{ env_id }} <- plotly::renderPlotly({
   i2dash.scrnaseq::plotly_scatterplot(x = df_{{ env_id }}()$df$x, y = df_{{ env_id }}()$df$y, color = df_{{ env_id }}()$df$expression, colors = "YlOrRd", text = df_{{ env_id }}()$df$label, hoverinfo = "x+y+text", y_title = "Dimension 2", x_title = "Dimension 1") %>%
   plotly::layout(
     title = df_{{ env_id }}()$feature
-  ) -> scatter
+  ) %>% plotly::toWebGL() -> scatter
   scatter
 })
 
