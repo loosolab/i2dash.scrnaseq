@@ -1,12 +1,12 @@
 
-### Number of cells per grouing
+### Number of observations per grouing
 
 <!-- Component created on {{ date }} -->
 
 ```{r, eval=!is_shiny}
-sp_bars <- plotly::plot_ly(sd_{{ env_id }}, colors = "Set1", x = df_{{ env_id }}[[grouping]], color = df_{{ env_id }}[[grouping]]) %>%
+sp_bars <- plotly::plot_ly(sd_{{ env_id }}, colors = "Set1", x = df_{{ env_id }}[[grouping_{{ env_id }}]], color = df_{{ env_id }}[[grouping_{{ env_id }}]]) %>%
   plotly::layout(
-    xaxis = list(title = names(df_{{ env_id }}[grouping])),
+    xaxis = list(title = names(df_{{ env_id }}[grouping_{{ env_id }}])),
     yaxis = list(title = "Number of observations"),
     barmode = "overlay",
     showlegend = FALSE
