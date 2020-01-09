@@ -4,8 +4,12 @@
 \alias{plotly_barplot}
 \title{Render a bar plot with plotly.}
 \usage{
-plotly_barplot(..., showlegend = NULL, x_group_by_title = NULL,
-  y_group_by_title = NULL)
+plotly_barplot(
+  ...,
+  showlegend = NULL,
+  x_group_by_title = NULL,
+  y_group_by_title = NULL
+)
 }
 \arguments{
 \item{...}{Additional arguments passed on to \code{plotly::plot_ly}.}
