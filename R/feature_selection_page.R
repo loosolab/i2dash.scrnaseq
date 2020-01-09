@@ -30,7 +30,7 @@ setMethod("add_feature_selection_page",
                               "modelGeneCV2" = "ratio",
                               "modelGeneCV2WithSpikes" = "ratio",
                               "modelGeneVarWithSpikes" = "bio")
-
+            library(scran)
             data <- do.call(use_function, list(x = exprs_values, ...))
 
             # Create component environment
