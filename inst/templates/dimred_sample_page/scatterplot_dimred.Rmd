@@ -1,16 +1,17 @@
 
-### Dimension reduction plot:
+### Dimension reduction:
 
 <!-- Component created on {{ date }} -->
 
 ```{r}
 {{ env_id }} <- readRDS(file.path(datadir, "{{ env_id }}.rds"))
-
 is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
 
-########
 library(dplyr)
-########
+
+labels_{{ env_id }} <- {{ env_id }}$labels
+metadata_{{ env_id }} <- {{ env_id }}$metadata
+grouping_{{ env_id }} <- {{ env_id }}$grouping
 
 # function to create a data.frame
 create_df <- function(reduced_dim, metadata, grouping){
@@ -39,35 +40,33 @@ create_df <- function(reduced_dim, metadata, grouping){
 ```
 
 ```{r, eval=!is_shiny}
-grouping <- {{ env_id }}$grouping
-labels <- {{ env_id }}$labels
-
-df_{{ env_id }} <- create_df(reduced_dim = {{ env_id }}$reduced_dim, metadata = {{ env_id }}$metadata, grouping = {{ env_id }}$grouping)
+df_{{ env_id }} <- create_df(reduced_dim = {{ env_id }}$reduced_dim, metadata = metadata_{{ env_id }}, grouping = grouping_{{ env_id }})
 
 sd_{{ env_id }} <- plotly::highlight_key(df_{{ env_id }})
 
-dots <- plotly::plot_ly(sd_{{ env_id }}, colors = "Set1", color = df_{{ env_id }}[[grouping]], x = ~x, y = ~y, mode = "markers", textposition = "top", hoverinfo = "x+y+text", text = paste("grouping: ", df_{{ env_id }}[[grouping]], "</br> label: ", labels)) %>%
+# compare with colormaps
+if(grouping_{{ env_id }} %in% names(colormaps)) colors_{{ env_id }} <- colormaps[[grouping_{{ env_id }}]] else colors_{{ env_id }} <- "Set1"
+
+dots <- plotly::plot_ly(sd_{{ env_id }}, colors = colors_{{ env_id }}, color = df_{{ env_id }}[[grouping_{{ env_id }}]], x = ~x, y = ~y, mode = "markers", textposition = "top", hoverinfo = "x+y+text", text = paste("grouping: ", df_{{ env_id }}[[grouping_{{ env_id }}]], "</br> label: ", labels_{{ env_id }}), type = "scattergl") %>%
   plotly::layout(
-    xaxis = list(title = "Dim 1"),
-    yaxis = list(title = "Dim 2"),
+    xaxis = list(title = "Dimension 1"),
+    yaxis = list(title = "Dimension 2"),
     showlegend = FALSE
   ) %>%
-  plotly::highlight("plotly_selected")
+  plotly::highlight("plotly_selected") %>%
+  plotly::toWebGL()
+
 htmltools::div(style="display:block;float:left;width:100%;height:90%;",
   htmltools::tags$button(i2dash::embed_var(df_{{ env_id }})), dots
 )
 ```
 
 ```{r, eval=is_shiny}
-labels <- {{ env_id }}$labels
-metadata <- {{ env_id }}$metadata
-grouping <- {{ env_id }}$grouping
-
 # filter all factorial metadata columns
-factors <- c()
-for (name in colnames(metadata)){
-  if(is.factor(metadata[[name]])){
-    factors <- c(factors, name)
+factors_{{ env_id }} <- c()
+for (name in colnames(metadata_{{ env_id }})){
+  if(is.factor(metadata_{{ env_id }}[[name]])){
+    factors_{{ env_id }} <- c(factors_{{ env_id }}, name)
   }
 }
 ui_list <- list()
@@ -76,10 +75,8 @@ ui_list <- list()
 if ({{ env_id }}$multiple_meta){
   ui_list <- rlist::list.append(ui_list,
                                 selectInput("select_grouping_{{ env_id }}", label = "Select column for grouping:",
-                                            choices = factors, selected = grouping))
+                                            choices = factors_{{ env_id }}, selected = grouping_{{ env_id }}))
 }
-
-
 
 # Download link
 ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downloadData_{{ env_id }}', 'Download data')))
@@ -89,11 +86,11 @@ ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downl
 #
 df_{{ env_id }} <- shiny::reactive({
   if (!{{ env_id }}$multiple_meta){
-    grouping <- {{ env_id }}$grouping
+    grouping <- grouping_{{ env_id }}
   } else {
     grouping <- input$select_grouping_{{ env_id }}
   }
-  df_{{ env_id }} <- create_df(reduced_dim = {{ env_id }}$reduced_dim, metadata = {{ env_id }}$metadata, grouping = grouping)
+  df_{{ env_id }} <- create_df(reduced_dim = {{ env_id }}$reduced_dim, metadata = metadata_{{ env_id }}, grouping = grouping)
 
   sd_{{ env_id }} <- plotly::highlight_key(df_{{ env_id }})
   return(list("sd" = sd_{{ env_id }}, "df" = df_{{ env_id }}, "grouping" = grouping))
@@ -113,13 +110,17 @@ output$downloadData_{{ env_id }}<- downloadHandler(
 # Output
 #
 output$plot_scatter_{{ env_id }} <- plotly::renderPlotly({
-  dots <- plotly::plot_ly(df_{{ env_id }}()$sd, colors = "Set1", color = df_{{ env_id }}()$df[[df_{{ env_id }}()$grouping]], x = ~x, y = ~y, mode = "markers", textposition = "top", hoverinfo = "x+y+text", text = paste("grouping: ", df_{{ env_id }}()$df[[df_{{ env_id }}()$grouping]], "</br> label: ", labels)) %>%
+  # compare with colormaps
+  if(df_{{ env_id }}()$grouping %in% names(colormaps)) colors <- colormaps[[df_{{ env_id }}()$grouping]] else colors <- "Set1"
+  
+  dots <- plotly::plot_ly(df_{{ env_id }}()$sd, color = df_{{ env_id }}()$df[[df_{{ env_id }}()$grouping]], x = ~x, y = ~y, mode = "markers", textposition = "top", hoverinfo = "x+y+text", text = paste("grouping: ", df_{{ env_id }}()$df[[df_{{ env_id }}()$grouping]], "</br> label: ", labels_{{ env_id }}),  type = "scattergl", colors = colors) %>%
   plotly::layout(
-    xaxis = list(title = "Dim 1"),
-    yaxis = list(title = "Dim 2"),
+    xaxis = list(title = "Dimension 1"),
+    yaxis = list(title = "Dimension 2"),
     showlegend = FALSE
   ) %>%
-  plotly::highlight("plotly_selected")
+    plotly::highlight("plotly_selected") %>% 
+    plotly::toWebGL()
   dots
 })
 

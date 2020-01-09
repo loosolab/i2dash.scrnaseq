@@ -68,8 +68,8 @@ setMethod("add_feature_expression_page",
             assertive.sets::assert_is_subset(group_by, colnames(SummarizedExperiment::colData(object)))
 
             expression <- SummarizedExperiment::assay(object, i = exprs_values)
-            if(!is.null(features)) {
-              expression <- SummarizedExperiment::assay(object, i = exprs_values)[features, ]
+            if(!is.null(subset_row)) {
+              expression <- SummarizedExperiment::assay(object, i = exprs_values)[subset_row, ]
             }
 
             SummarizedExperiment::colData(object) %>%
@@ -99,7 +99,7 @@ setMethod("add_feature_expression_page",
             assay_obj <- Seurat::GetAssay(object = object, assay = assay)
             expression <- Seurat::GetAssayData(object = assay_obj, slot = slot)
             if(!is.null(subset_row)) {
-              expression <- Seurat::GetAssayData(object = assay_obj, slot = slot)[feature, ]
+              expression <- Seurat::GetAssayData(object = assay_obj, slot = slot)[subset_row, ]
             }
 
             object@meta.data[metadata] %>%

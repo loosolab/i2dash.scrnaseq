@@ -103,4 +103,3 @@ setMethod("violinplot",
                        group_by = group_by,
                        ...)
           })
-
