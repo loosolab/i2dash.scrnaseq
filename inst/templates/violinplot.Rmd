@@ -27,12 +27,19 @@ if(!is.null({{ env_id }}$group_by)){
   group_by_{{ env_id }} <- NULL
 }
 
+# compare with colormaps
+if(!is.null(group_by_title_{{ env_id }})){
+  if(group_by_title_{{ env_id }} %in% names(colormaps)) colors_{{ env_id }} <- colormaps[[group_by_title_{{ env_id }}]] else colors_{{ env_id }} <- "Set1"
+} else {
+  colors_{{ env_id }} <- "Set1"
+}
+
 # set title variables
 if(!is.null({{ env_id }}$y_title)) y_title_{{ env_id }} <- {{ env_id }}$y_title else y_title_{{ env_id }} <- colnames(y_{{ env_id }})
 if(!is.null({{ env_id }}$group_by_title)) group_by_title_{{ env_id }} <- {{ env_id }}$group_by_title
 
 # creating the plot object
-plot_{{ env_id }} <- i2dash.scrnaseq::plotly_violinplot(y = y_{{ env_id }}[,1], group_by = group_by_{{ env_id }}[,1], y_title = y_title_{{ env_id }}, group_by_title = group_by_title_{{ env_id }})
+plot_{{ env_id }} <- i2dash.scrnaseq::plotly_violinplot(y = y_{{ env_id }}[,1], group_by = group_by_{{ env_id }}[,1], y_title = y_title_{{ env_id }}, group_by_title = group_by_title_{{ env_id }}, colors = colors_{{ env_id }})
 
 # Provide data for download
 if(!is.null({{ env_id }}$group_by)) download_df_{{ env_id }} <- data.frame(y_{{ env_id }}, group_by_{{ env_id }}) else download_df_{{ env_id }} <- data.frame(y_{{ env_id }})
@@ -119,18 +126,18 @@ output$downloadData_{{ env_id }} <- downloadHandler(
 # reactive for plot creation
 #
 output$plot_{{ env_id }} <- plotly::renderPlotly({
-  if(!is.null({{ env_id }}$y_title)){
-    y_title <- {{ env_id }}$y_title
+  # compare with colormaps
+  if(!is.null(group_by_{{ env_id }}()$title)){
+    if(group_by_{{ env_id }}()$title %in% names(colormaps)) colors <- colormaps[[group_by_{{ env_id }}()$title]] else colors <- "Set1"
   } else {
-    y_title <- y_{{ env_id }}()$title
-  }
-  if(!is.null({{ env_id }}$group_by_title)){
-    group_by_title <- {{ env_id }}$group_by_title
-  } else {
-    group_by_title <- group_by_{{ env_id }}()$title
+    colors <- "Set1"
   }
   
-  i2dash.scrnaseq::plotly_violinplot(y = y_{{ env_id }}()$data, group_by = group_by_{{ env_id }}()$data, y_title = y_title, group_by_title = group_by_title)
+  # set custom axis titles if provided
+  if(!is.null({{ env_id }}$y_title)) y_title <- {{ env_id }}$y_title else y_title <- y_{{ env_id }}()$title
+  if(!is.null({{ env_id }}$group_by_title)) group_by_title <- {{ env_id }}$group_by_title else group_by_title <- group_by_{{ env_id }}()$title
+  
+  i2dash.scrnaseq::plotly_violinplot(y = y_{{ env_id }}()$data, group_by = group_by_{{ env_id }}()$data, y_title = y_title, group_by_title = group_by_title, colors = colors)
 })
 
 #
