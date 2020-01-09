@@ -47,7 +47,7 @@ sd_{{ env_id }} <- plotly::highlight_key(df_{{ env_id }})
 # compare with colormaps
 if(grouping_{{ env_id }} %in% names(colormaps)) colors_{{ env_id }} <- colormaps[[grouping_{{ env_id }}]] else colors_{{ env_id }} <- "Set1"
 
-dots <- plotly::plot_ly(sd_{{ env_id }}, colors = colors_{{ env_id }}, color = df_{{ env_id }}[[grouping_{{ env_id }}]], x = ~x, y = ~y, mode = "markers", textposition = "top", hoverinfo = "x+y+text", text = paste("grouping: ", df_{{ env_id }}[[grouping_{{ env_id }}]], "</br> label: ", labels_{{ env_id }}), type = "scatter") %>%
+dots <- plotly::plot_ly(sd_{{ env_id }}, colors = colors_{{ env_id }}, color = df_{{ env_id }}[[grouping_{{ env_id }}]], x = ~x, y = ~y, mode = "markers", textposition = "top", hoverinfo = "x+y+text", text = paste("grouping: ", df_{{ env_id }}[[grouping_{{ env_id }}]], "</br> label: ", labels_{{ env_id }}), type = "scattergl") %>%
   plotly::layout(
     xaxis = list(title = "Dimension 1"),
     yaxis = list(title = "Dimension 2"),
@@ -113,7 +113,7 @@ output$plot_scatter_{{ env_id }} <- plotly::renderPlotly({
   # compare with colormaps
   if(df_{{ env_id }}()$grouping %in% names(colormaps)) colors <- colormaps[[df_{{ env_id }}()$grouping]] else colors <- "Set1"
   
-  dots <- plotly::plot_ly(df_{{ env_id }}()$sd, color = df_{{ env_id }}()$df[[df_{{ env_id }}()$grouping]], x = ~x, y = ~y, mode = "markers", textposition = "top", hoverinfo = "x+y+text", text = paste("grouping: ", df_{{ env_id }}()$df[[df_{{ env_id }}()$grouping]], "</br> label: ", labels_{{ env_id }}),  type = "scatter", colors = colors) %>%
+  dots <- plotly::plot_ly(df_{{ env_id }}()$sd, color = df_{{ env_id }}()$df[[df_{{ env_id }}()$grouping]], x = ~x, y = ~y, mode = "markers", textposition = "top", hoverinfo = "x+y+text", text = paste("grouping: ", df_{{ env_id }}()$df[[df_{{ env_id }}()$grouping]], "</br> label: ", labels_{{ env_id }}),  type = "scattergl", colors = colors) %>%
   plotly::layout(
     xaxis = list(title = "Dimension 1"),
     yaxis = list(title = "Dimension 2"),

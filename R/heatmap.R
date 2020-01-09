@@ -10,7 +10,7 @@ setMethod("heatmap",
                    legend  = NULL,
                    cluster_rows = FALSE,
                    cluster_columns = FALSE,
-                   show_column_labels = FALSE,
+                   show_column_names = FALSE,
                    clustering_distance = c("euclidean", "maximum", "manhattan", "binary", "minkowski"),
                    clustering_method = c("average", "ward.D", "ward.D2", "single", "complete", "mcquitty", "median","centroid"),
                    column_title = NULL,
@@ -60,7 +60,7 @@ setMethod("heatmap",
             env$cluster_columns <- cluster_columns
             env$clustering_distance <- clustering_distance
             env$clustering_method <- clustering_method
-            env$show_column_labels <- show_column_labels
+            env$show_column_labels <- show_column_names
             env$column_title <- column_title
             env$row_title <- row_title
 
@@ -161,7 +161,7 @@ setMethod("heatmap",
 
             if(!is.null(aggregate_by)) {
               assertive.sets::assert_is_subset(aggregate_by, colnames(object@meta.data))
-              bject@meta.data %>%
+              object@meta.data %>%
                 as.data.frame() %>%
                 dplyr::select(!!aggregate_by) -> aggregate_by
             }

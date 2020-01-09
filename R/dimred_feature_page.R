@@ -60,7 +60,7 @@ setMethod("add_dimred_feature_page",
                    use_dimred,
                    exprs_values,
                    feature_metadata,
-                   subset_row,
+                   subset_row = NULL,
                    ...) {
 
             assertive.sets::assert_is_subset(use_dimred, SingleCellExperiment::reducedDimNames(object))
@@ -96,8 +96,8 @@ setMethod("add_dimred_feature_page",
                    use_dimred,
                    exprs_values,
                    feature_metadata,
-                   subset_row,
-                   assay,
+                   subset_row = NULL,
+                   assay = "RNA",
                    assay_slot = "data",
                    ...) {
 

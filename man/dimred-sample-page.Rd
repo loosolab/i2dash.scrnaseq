@@ -33,7 +33,7 @@ add_dimred_sample_page(dashboard, object, ...)
 
 \item{sample_metadata}{Sample metadata in columns and samples in rows (see Details).}
 
-\item{group_by}{A string indicating a column in \code{metadata} that is used to group observations.}
+\item{group_by}{A string indicating a column in \code{sample_metadata} that is used to group observations.}
 
 \item{page}{The name of the page to be added.}
 

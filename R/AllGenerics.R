@@ -22,7 +22,7 @@ NULL
 #'   In case no object is supplied (\emph{i2dashboard,missing}-method), the parameters are expected to be of class \code{data.frame} or \code{matrix}.
 #'   In case a \linkS4class{SingleCellExperiment::SingleCellExperiment} or \linkS4class{Seurat::Seurat} object is supplied, the parameters are expected to be of class \code{character}, containing
 #'   \itemize{
-#'     \item the name of an item in \code{reducedDims(object)} or \code{object@reductions},
+#'     \item the name item(s) in \code{reducedDims(object)} or \code{object@reductions},
 #'     \item a valid assay name from \code{assayNames(object)} or \code{names(object@assays)},
 #'     \item column names of \code{colData(object)} or \code{object@meta.data}.
 #'   }
@@ -41,8 +41,8 @@ setGeneric("add_feature_grid_page", function(dashboard, object, ...) standardGen
 #' @param exprs_values Expression data of features of interest in rows and samples in columns (see Details).
 #' @param feature_metadata A data.frame (matrix) along rows of \code{exprs_values} containing feature metadata, or a character vector indicating columns from \code{rowData(object)} or \code{object[[assay]]@feature.data}.
 #' @param page The name of the page to be added.
-#' @param assay A character specifying the assay (\code{object@assays}) to obtain expression values from. (Default: "RNA")
-#' @param assay_slot A character specifying the name of the data slot in the assay. (Default: "data")
+#' @param assay A character specifying the assay (\code{object@assays}) to obtain expression values from.
+#' @param assay_slot A character specifying the name of the data slot in the assay.
 #' @param title The title of the page.
 #' @param menu (Optional) The name of the menu, under which the page should appear.
 #'
@@ -79,7 +79,7 @@ setGeneric("summarize_samples", function(object, ...) standardGeneric("summarize
 #' @exportMethod summarize_features
 setGeneric("summarize_features", function(object, ...) standardGeneric("summarize_features"))
 
-#' Add a gene expression page.
+#' Add a feature expression page.
 #'
 #' This function adds a page with two linked components to the \code{dashboard} object: A scatterplot, showing samples in along two-dimensional coordinates, and a violin plot, showing feature expression values by groups defined in \code{group_by}.
 #'
@@ -215,8 +215,8 @@ setGeneric("boxplot", function(dashboard, object, ...) standardGeneric("boxplot"
 #'   }
 #'   In case of the \emph{i2dashboard,Seurat}-method, the parameters are expected to be of class \code{character}:
 #'   \itemize{
-#'     \item the parameter \code{from} can be either \code{"meta.data"} for sample metadata, \code{"meta.feature"} for feature metadata, \code{"reduction"} for a dimension reduction
-#'     \item \code{use_dimred} the name of an item in \code{object@reductions}
+#'     \item the parameter \code{from} can be either \code{"meta.data"} for sample metadata, \code{"meta.feature"} for feature metadata, \code{"embedding"} for a dimension reduction
+#'     \item \code{reduction} the name of an item in \code{object@reductions}
 #'     \item \code{assay} a valid assay name from \code{names(object@assays)}
 #'     \item \code{slot} a valid data slot from \code{assay}
 #'   }
@@ -237,11 +237,11 @@ setGeneric("scatterplot", function(dashboard, object, ...) standardGeneric("scat
 #' @param aggregate_by An optional data.frame (matrix) containing grouping factors for aggregating columns of the heatmap. In case of \code{i2dashboard,SingleCellExperiment}, should be column names of \code{colData(object)}.
 #' @param title Title of the component.
 #' @param legend Title of the heatmap legend.
-#' @param cluster_rows A logical controls whether to make cluster on rows.
-#' @param cluster_columns A logical controls whether to make cluster on columns.
+#' @param cluster_rows Whether or not to perform clustering on rows.
+#' @param cluster_columns Whether or not to perform clustering on columns
 #' @param clustering_method Method to perform hierarchical clustering, passed to \link[stats]{hclust}.
 #' @param clustering_distance The distance measure to use for hierarchical clustering.
-#' @param show_column_labels A logical controls whether the column lables should be displayed. Pay attention that a large number of columns with column lables can cause visualization problems.
+#' @param show_column_names Whether or not to show column names. Note that large number of column names can cause visualization problems.
 #' @param column_title The column title of the heatmap.
 #' @param row_title The row title of the heatmap.
 #'
@@ -259,7 +259,7 @@ setGeneric("heatmap", function(dashboard, object, ...) standardGeneric("heatmap"
 #' @param object An object of class \linkS4class{Seurat::Seurat} or \linkS4class{SingleCellExperiment::SingleCellExperiment}.
 #' @param use_dimred Data containing coordinates of the reduced dimensions or a string indicating a dimension reduction from "reductions" of a Seurat \code{object}. Rownames are used as sample labels.
 #' @param sample_metadata  Sample metadata in columns and samples in rows (see Details).
-#' @param group_by A string indicating a column in \code{metadata} that is used to group observations.
+#' @param group_by A string indicating a column in \code{sample_metadata} that is used to group observations.
 #' @param page The name of the page to be added.
 #' @param title The title of the page.
 #' @param labels An optional vector with sample labels.
@@ -344,3 +344,4 @@ setGeneric("plotExpression", function(dashboard, object, ...) standardGeneric("p
 #' @rdname feature-selection-page
 #' @exportMethod add_feature_selection_page
 setGeneric("add_feature_selection_page", function(dashboard, object, ...) standardGeneric("add_feature_selection_page"))
+

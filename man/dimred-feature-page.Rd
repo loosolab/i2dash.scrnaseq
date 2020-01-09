@@ -23,7 +23,7 @@ add_dimred_feature_page(dashboard, object, ...)
   use_dimred,
   exprs_values,
   feature_metadata,
-  subset_row,
+  subset_row = NULL,
   ...
 )
 
@@ -33,8 +33,8 @@ add_dimred_feature_page(dashboard, object, ...)
   use_dimred,
   exprs_values,
   feature_metadata,
-  subset_row,
-  assay,
+  subset_row = NULL,
+  assay = "RNA",
   assay_slot = "data",
   ...
 )
@@ -56,9 +56,9 @@ add_dimred_feature_page(dashboard, object, ...)
 
 \item{menu}{(Optional) The name of the menu, under which the page should appear.}
 
-\item{assay}{A character specifying the assay (\code{object@assays}) to obtain expression values from. (Default: "RNA")}
+\item{assay}{A character specifying the assay (\code{object@assays}) to obtain expression values from.}
 
-\item{assay_slot}{A character specifying the name of the data slot in the assay. (Default: "data")}
+\item{assay_slot}{A character specifying the name of the data slot in the assay.}
 }
 \value{
 An object of class \linkS4class{i2dash::i2dashboard}.

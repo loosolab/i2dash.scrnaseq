@@ -78,13 +78,13 @@ i2dash.scrnaseq::ComplexHeatmap_heatmap(
     row_split = row_split_{{ env_id }},
     column_names_rot = column_names_rot_{{ env_id }},
     cell_fun = cell_fun_{{ env_id }},
+    top_annotation = ha_{{ env_id }},
     column_title = {{ env_id }}$column_title,
     row_title = {{ env_id }}$row_title,
     row_names_gp = grid::gpar(fontsize = 7),
     column_names_gp = grid::gpar(fontsize = 7),
     column_title_gp = grid::gpar(fontsize = 10),
-    row_title_gp = grid::gpar(fontsize = 10),
-    top_annotation = ha_{{ env_id }}
+    row_title_gp = grid::gpar(fontsize = 10)
   )
 ```
 
@@ -164,8 +164,8 @@ output$plot_{{ env_id }} <- shiny::renderPlot({
   clustdist <- input$select_clustdist_{{ env_id }}
   clustmethod <- input$select_clustmethod_{{ env_id }}
   cell_fun <- NULL
-  column_names_rot = 45
-  ha = NULL
+  column_names_rot <- 45
+  ha <- NULL
       
   if (input$select_aggregate_by_{{ env_id }} != "None" & input$select_split_by_{{ env_id }} == "None") {
     cell_fun <- function(j, i, x, y, width, height, fill) {grid::grid.text(sprintf("%.1f", exprs_values_{{ env_id }}()[i, j]), x, y, gp = grid::gpar(fontsize = 10))}
@@ -198,9 +198,9 @@ output$plot_{{ env_id }} <- shiny::renderPlot({
     column_split = split_by_{{ env_id }}(),
     column_names_rot = column_names_rot,
     cell_fun = cell_fun,
+    top_annotation = ha,
     column_title = {{ env_id }}$column_title,
-    row_title = {{ env_id }}$row_title,
-    top_annotation = ha
+    row_title = {{ env_id }}$row_title
   )
 })
 

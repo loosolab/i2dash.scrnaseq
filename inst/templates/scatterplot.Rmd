@@ -24,7 +24,7 @@ if(is.factor(colour_by_{{ env_id }})){
 }
 
 # creating the plot object
-plot_{{ env_id }} <- i2dash.scrnaseq::plotly_scatterplot(x = {{ env_id }}$x[,1], y = {{ env_id }}$y[,1], color = colour_by_{{ env_id }}, text = labels_{{ env_id }}, y_title = y_title_{{ env_id }}, x_title = x_title_{{ env_id }}, colors = colors_{{ env_id }}) %>%
+plot_{{ env_id }} <- i2dash.scrnaseq::plotly_scatterplot(x = {{ env_id }}$x[,1], y = {{ env_id }}$y[,1], color = colour_by_{{ env_id }}, text = labels_{{ env_id }}, y_title = y_title_{{ env_id }}, x_title = x_title_{{ env_id }}, colors = colors_{{ env_id }}, type = "scatter") %>%
   plotly::layout(
     title = {{ env_id }}$plot_title
   ) %>% plotly::toWebGL()

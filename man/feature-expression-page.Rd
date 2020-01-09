@@ -5,7 +5,7 @@
 \alias{add_feature_expression_page,i2dashboard,missing-method}
 \alias{add_feature_expression_page,i2dashboard,SingleCellExperiment-method}
 \alias{add_feature_expression_page,i2dashboard,Seurat-method}
-\title{Add a gene expression page.}
+\title{Add a feature expression page.}
 \usage{
 add_feature_expression_page(dashboard, object, ...)
 

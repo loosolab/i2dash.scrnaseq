@@ -66,7 +66,7 @@ The parameters \code{use_dimred}, \code{exprs_values} (or \code{assay}) and \cod
   In case no object is supplied (\emph{i2dashboard,missing}-method), the parameters are expected to be of class \code{data.frame} or \code{matrix}.
   In case a \linkS4class{SingleCellExperiment::SingleCellExperiment} or \linkS4class{Seurat::Seurat} object is supplied, the parameters are expected to be of class \code{character}, containing
   \itemize{
-    \item the name of an item in \code{reducedDims(object)} or \code{object@reductions},
+    \item the name item(s) in \code{reducedDims(object)} or \code{object@reductions},
     \item a valid assay name from \code{assayNames(object)} or \code{names(object@assays)},
     \item column names of \code{colData(object)} or \code{object@meta.data}.
   }

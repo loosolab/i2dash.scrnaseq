@@ -43,6 +43,7 @@ setMethod("scatterplot",
                 dplyr::mutate_if(is.character, as.factor) %>%
                 dplyr::mutate_if(is.logical, as.factor) %>%
                 dplyr::select_if(function(col) is.integer(col) | is.numeric(col) | is.factor(col))
+
               if(is.null(colnames(colour_by))) colnames(colour_by) <- paste0("Colour_by_", 1:ncol(colour_by))
               if(nrow(x) != nrow(colour_by)) stop("The number of rows in 'x' and 'colour_by' is not equal.")
               colouring["Colour by metadata"] <- 1
@@ -98,46 +99,41 @@ setMethod("scatterplot",
 
             from <- match.arg(from)
 
+            # Prevent misuse of reducedDim mode
+            if(from == "reducedDim") {
+              if(is.null(use_dimred)) stop("use_dimred cannot be NULL when using data from reducedDim.")
+              x <- NULL
+              y <- NULL
+              colour_by <- NULL
+            }
+
             data <- switch(from,
                            "colData" = SummarizedExperiment::colData(object),
                            "rowData" = SummarizedExperiment::rowData(object),
-                           "reducedDim" = SingleCellExperiment::reducedDim(object)
-                           )
+                           "reducedDim" = SingleCellExperiment::reducedDim(object, use_dimred))
 
             labels <- rownames(data)
 
-            if(from == "reducedDim"){
-              if(!is.null(use_dimred)) {
-                assertive.sets::assert_is_subset(use_dimred, SingleCellExperiment::reducedDimNames(object))
-                labels <- rownames(SingleCellExperiment::reducedDim(object, use_dimred))
-                SingleCellExperiment::reducedDim(object, use_dimred) %>%
-                  as.data.frame() -> x -> y
-              } else {
-                data %>%
-                  as.data.frame() -> x -> y
-              }
+            # create data.frame for y
+            if(!is.null(y)) {
+              assertive.sets::assert_is_subset(y, colnames(data))
+              data %>%
+                as.data.frame() %>%
+                dplyr::select(!!y) -> y
             } else {
-              # create data.frame for y
-              if(!is.null(y)) {
-                assertive.sets::assert_is_subset(y, colnames(data))
-                data %>%
-                  as.data.frame() %>%
-                  dplyr::select(!!y) -> y
-              } else {
-                data %>%
-                  as.data.frame() -> y
-              }
+              data %>%
+                as.data.frame() -> y
+            }
 
-              # create data.frame for x
-              if(!is.null(x)) {
-                assertive.sets::assert_is_subset(x, colnames(data))
-                data %>%
-                  as.data.frame() %>%
-                  dplyr::select(!!x) -> x
-              } else {
-                data %>%
-                  as.data.frame() -> x
-              }
+            # create data.frame for x
+            if(!is.null(x)) {
+              assertive.sets::assert_is_subset(x, colnames(data))
+              data %>%
+                as.data.frame() %>%
+                dplyr::select(!!x) -> x
+            } else {
+              data %>%
+                as.data.frame() -> x
             }
 
             # create data.frame for colour_by
@@ -176,49 +172,45 @@ setMethod("scatterplot",
 #' @export
 setMethod("scatterplot",
           signature = signature(dashboard = "i2dashboard", object = "Seurat"),
-          function(dashboard, object, from = c("meta.data", "meta.features", "reduction"), x = NULL, y = NULL, colour_by = NULL, use_dimred = NULL, assay = "RNA", slot = NULL, subset_row = NULL, ...) {
+          function(dashboard, object, from = c("meta.data", "meta.features", "embedding"), x = NULL, y = NULL, colour_by = NULL, use_dimred = NULL, assay = "RNA", slot = NULL, subset_row = NULL, ...) {
 
             from <- match.arg(from)
+
+            # Prevent misuse of embedding mode
+            if(from == "embedding") {
+              if(is.null(use_dimred)) stop("reduction cannot be NULL when using data from embedding")
+              x <- NULL
+              y <- NULL
+              colour_by <- NULL
+            }
 
             data <- switch(from,
                            "meta.data" = object@meta.data,
                            "meta.features" = object[[assay]]@meta.features,
-                           "reduction" = Seurat::Embeddings(object)[, 1:2])
+                           "reduction" = Seurat::Embeddings(object, reduction = use_dimred))
 
             labels <- rownames(data)
 
-            if(from == "reducedDim"){
-              if(!is.null(use_dimred)) {
-                assertive.sets::assert_is_subset(use_dimred, SingleCellExperiment::reducedDimNames(object))
-                labels <- rownames(Seurat::Embeddings(object, reduction = use_dimred)[, 1:2])
-                Seurat::Embeddings(object, reduction = use_dimred)[, 1:2] %>%
-                  as.data.frame() -> x -> y
-              } else {
-                data %>%
-                  as.data.frame() -> x -> y
-              }
+            # create data.frame for y
+            if(!is.null(y)) {
+              assertive.sets::assert_is_subset(y, colnames(data))
+              data %>%
+                as.data.frame() %>%
+                dplyr::select(!!y) -> y
             } else {
-              # create data.frame for y
-              if(!is.null(y)) {
-                assertive.sets::assert_is_subset(y, colnames(data))
-                data %>%
-                  as.data.frame() %>%
-                  dplyr::select(!!y) -> y
-              } else {
-                data %>%
-                  as.data.frame() -> y
-              }
+              data %>%
+                as.data.frame() -> y
+            }
 
-              # create data.frame for x
-              if(!is.null(x)) {
-                assertive.sets::assert_is_subset(x, colnames(data))
-                data %>%
-                  as.data.frame() %>%
-                  dplyr::select(!!x) -> x
-              } else {
-                data %>%
-                  as.data.frame() -> x
-              }
+            # create data.frame for x
+            if(!is.null(x)) {
+              assertive.sets::assert_is_subset(x, colnames(data))
+              data %>%
+                as.data.frame() %>%
+                dplyr::select(!!x) -> x
+            } else {
+              data %>%
+                as.data.frame() -> x
             }
 
             # create data.frame for colour_by

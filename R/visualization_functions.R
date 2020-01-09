@@ -64,6 +64,23 @@ plotly_violinplot <- function(y, group_by = NULL, y_title = NULL, group_by_title
       yaxis = list(title = y_title))
 }
 
+#' Render a vertical violin plot with plotly.
+#'
+#' @param y Numeric observations.
+#' @param group_by A factor, by which observations can optionally be grouped.
+#' @param y_title A title that describes the observations.
+#' @param group_by_title A title that describes the grouping factor.
+#'
+#' @return An object of class \code{plotly}.
+#' @export
+ plotly_violinplot <- function(y, group_by = NULL, y_title = NULL, group_by_title = NULL){
+      plotly::plot_ly(colors = "Set1", x = group_by, y = y, color = group_by, type = "violin", box = list(visible = T), meanline = list(visible = T), points = "all", jitter = 0) %>%
+      plotly::layout(
+        xaxis = list(title = group_by_title),
+        yaxis = list(title = y_title)
+      )
+}
+
 #' Render a heatmap with ComplexHeatmap.
 #'
 #' @param ... Additional arguments passed on to \code{ComplexHeatmap::Heatmap}.

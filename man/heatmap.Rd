@@ -18,7 +18,7 @@ heatmap(dashboard, object, ...)
   legend = NULL,
   cluster_rows = FALSE,
   cluster_columns = FALSE,
-  show_column_labels = FALSE,
+  show_column_names = FALSE,
   clustering_distance = c("euclidean", "maximum", "manhattan", "binary", "minkowski"),
   clustering_method = c("average", "ward.D", "ward.D2", "single", "complete",
     "mcquitty", "median", "centroid"),
@@ -62,11 +62,11 @@ heatmap(dashboard, object, ...)
 
 \item{legend}{Title of the heatmap legend.}
 
-\item{cluster_rows}{A logical controls whether to make cluster on rows.}
+\item{cluster_rows}{Whether or not to perform clustering on rows.}
 
-\item{cluster_columns}{A logical controls whether to make cluster on columns.}
+\item{cluster_columns}{Whether or not to perform clustering on columns}
 
-\item{show_column_labels}{A logical controls whether the column lables should be displayed. Pay attention that a large number of columns with column lables can cause visualization problems.}
+\item{show_column_names}{Whether or not to show column names. Note that large number of column names can cause visualization problems.}
 
 \item{clustering_distance}{The distance measure to use for hierarchical clustering.}
 

@@ -38,7 +38,7 @@ scatterplot(dashboard, object, ...)
 \S4method{scatterplot}{i2dashboard,Seurat}(
   dashboard,
   object,
-  from = c("meta.data", "meta.features", "reduction"),
+  from = c("meta.data", "meta.features", "embedding"),
   x = NULL,
   y = NULL,
   colour_by = NULL,
@@ -101,8 +101,8 @@ The parameters \code{x}, \code{y}, \code{colour_by}, \code{use_dimred}, \code{ex
   }
   In case of the \emph{i2dashboard,Seurat}-method, the parameters are expected to be of class \code{character}:
   \itemize{
-    \item the parameter \code{from} can be either \code{"meta.data"} for sample metadata, \code{"meta.feature"} for feature metadata, \code{"reduction"} for a dimension reduction
-    \item \code{use_dimred} the name of an item in \code{object@reductions}
+    \item the parameter \code{from} can be either \code{"meta.data"} for sample metadata, \code{"meta.feature"} for feature metadata, \code{"embedding"} for a dimension reduction
+    \item \code{reduction} the name of an item in \code{object@reductions}
     \item \code{assay} a valid assay name from \code{names(object@assays)}
     \item \code{slot} a valid data slot from \code{assay}
   }

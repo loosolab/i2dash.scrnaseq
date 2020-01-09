@@ -100,7 +100,7 @@ setMethod("add_feature_grid_page",
               Seurat::Embeddings(object, reduction = dimred)[, 1:2]
             })
 
-            dashboard <- add_gene_grid_page(dashboard = dashboard,
+            dashboard <- add_feature_grid_page(dashboard = dashboard,
                                          use_dimred = use_dimreds,
                                          exprs_values = exprs_values,
                                          ...)
