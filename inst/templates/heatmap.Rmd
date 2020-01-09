@@ -26,10 +26,24 @@ exprs_values_{{ env_id }} <- {{ env_id }}$exprs_values
 split_by_{{ env_id }} <- NULL
 cell_fun_{{ env_id }} <- NULL
 column_names_rot_{{ env_id }} <- 45
+ha_{{ env_id }} <- NULL
 
 # Handle column split
 if (!is.null({{ env_id }}$split_by)) {
   split_by_{{ env_id }} <- {{ env_id }}$split_by[,1]
+  
+  # Handle annotation
+  # Use colors defined by colormap else use random colors
+  if (colnames({{ env_id }}$split_by)[1] %in% names(colormaps)){
+    ha_{{ env_id }} = ComplexHeatmap::HeatmapAnnotation(
+      group_by = split_by_{{ env_id }},
+      col = list(group_by = colormaps[[colnames({{ env_id }}$split_by)[1]]])
+    )
+  } else {
+    ha_{{ env_id }} = ComplexHeatmap::HeatmapAnnotation(
+      group_by = split_by_{{ env_id }}
+    )
+  }
 }
 
 # Remove column names
@@ -64,6 +78,7 @@ i2dash.scrnaseq::ComplexHeatmap_heatmap(
     row_split = row_split_{{ env_id }},
     column_names_rot = column_names_rot_{{ env_id }},
     cell_fun = cell_fun_{{ env_id }},
+    top_annotation = ha_{{ env_id }},
     column_title = {{ env_id }}$column_title,
     row_title = {{ env_id }}$row_title,
     row_names_gp = grid::gpar(fontsize = 7),
@@ -109,7 +124,7 @@ exprs_values_{{ env_id }} <- shiny::reactive({
   if (!{{ env_id }}$show_column_labels) colnames(exprs_values) <- c()
   
   # Handle aggregation
-  if (input$select_aggregate_by_{{ env_id }} != "None") {
+  if (input$select_aggregate_by_{{ env_id }} != "None" & input$select_split_by_{{ env_id }} == "None") {
     exprs_values <- aggregate_data(exprs_values, {{ env_id }}$aggregate_by[, input$select_aggregate_by_{{ env_id }}])
   }
   
@@ -149,10 +164,26 @@ output$plot_{{ env_id }} <- shiny::renderPlot({
   clustdist <- input$select_clustdist_{{ env_id }}
   clustmethod <- input$select_clustmethod_{{ env_id }}
   cell_fun <- NULL
-  column_names_rot = 45
+  column_names_rot <- 45
+  ha <- NULL
       
-  if (input$select_aggregate_by_{{ env_id }} != "None") {
+  if (input$select_aggregate_by_{{ env_id }} != "None" & input$select_split_by_{{ env_id }} == "None") {
     cell_fun <- function(j, i, x, y, width, height, fill) {grid::grid.text(sprintf("%.1f", exprs_values_{{ env_id }}()[i, j]), x, y, gp = grid::gpar(fontsize = 10))}
+  }
+  
+  # Handle annotation
+  if (input$select_split_by_{{ env_id }} != "None") {
+    # Use colors defined by colormap else use random colors
+    if (input$select_split_by_{{ env_id }} %in% names(colormaps)){
+      ha = ComplexHeatmap::HeatmapAnnotation(
+        group_by = split_by_{{ env_id }}(),
+        col = list(group_by = colormaps[[input$select_split_by_{{ env_id }}]])
+      )
+    } else {
+      ha = ComplexHeatmap::HeatmapAnnotation(
+        group_by = split_by_{{ env_id }}()
+      )
+    }
   }
   
   i2dash.scrnaseq::ComplexHeatmap_heatmap(
@@ -167,6 +198,7 @@ output$plot_{{ env_id }} <- shiny::renderPlot({
     column_split = split_by_{{ env_id }}(),
     column_names_rot = column_names_rot,
     cell_fun = cell_fun,
+    top_annotation = ha,
     column_title = {{ env_id }}$column_title,
     row_title = {{ env_id }}$row_title
   )

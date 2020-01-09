@@ -161,7 +161,7 @@ setMethod("heatmap",
 
             if(!is.null(aggregate_by)) {
               assertive.sets::assert_is_subset(aggregate_by, colnames(object@meta.data))
-              bject@meta.data %>%
+              object@meta.data %>%
                 as.data.frame() %>%
                 dplyr::select(!!aggregate_by) -> aggregate_by
             }
