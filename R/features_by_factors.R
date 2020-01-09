@@ -11,7 +11,7 @@ features_by_factors <- function(object, x, y, title = "Features by factor") {
   env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
 
   # validate input, create environment variables, save environment object
-  .validate_input_features_by_factors(object@workdir, env_id, x, y)
+  .validate_input_features_by_factors(object@datadir, env_id, x, y)
 
   timestamp <- Sys.time()
   expanded_component <- knitr::knit_expand(file = system.file("templates", "features_by_factors_template.Rmd", package = "i2dash.scrnaseq"), title = title, env_id = env_id, date = timestamp)
@@ -39,6 +39,6 @@ features_by_factors <- function(object, x, y, title = "Features by factor") {
   env$y_selection <- length(env$y) > 1
 
   # save environment as rds-object
-  saveRDS(env, file = file.path(workdir, "envs", paste0(env_id, ".rds")))
+  saveRDS(env, file = file.path(workdir, paste0(env_id, ".rds")))
   print("validation TRUE")
 }

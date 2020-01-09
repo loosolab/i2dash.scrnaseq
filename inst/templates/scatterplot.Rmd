@@ -1,0 +1,197 @@
+
+### {{ title }}
+
+<!-- Component created on {{ date }} -->
+
+```{r}
+{{ env_id }} <- readRDS(file.path(datadir, "{{ env_id }}.rds"))
+is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
+library(magrittr)
+```
+
+```{r, eval=!is_shiny}
+# set variables
+if(!is.null({{ env_id }}$x_title)) x_title_{{ env_id }} <- {{ env_id }}$x_title else x_title_{{ env_id }} <- colnames({{ env_id }}$x)[1]
+if(!is.null({{ env_id }}$y_title)) y_title_{{ env_id }} <- {{ env_id }}$y_title else y_title_{{ env_id }} <- colnames({{ env_id }}$y)[1]
+if(!is.null({{ env_id }}$colour_by)) colour_by_{{ env_id }} <- {{ env_id }}$colour_by[,1] else colour_by_{{ env_id }} <- NULL
+if(!is.null({{ env_id }}$labels)) labels_{{ env_id }} <- {{ env_id }}$labels else labels_{{ env_id }} <- rownames({{ env_id }}$x)
+
+# creating the plot object
+plot_{{ env_id }} <- i2dash.scrnaseq::plotly_scatterplot(x = {{ env_id }}$x[,1], y = {{ env_id }}$y[,1], color = colour_by_{{ env_id }}, text = labels_{{ env_id }}, y_title = y_title_{{ env_id }}, x_title = x_title_{{ env_id }}) %>%
+  plotly::layout(
+    title = {{ env_id }}$plot_title
+  ) %>% plotly::toWebGL()
+
+# Provide data for download
+if(is.null({{ env_id }}$colour_by)){
+  df_{{ env_id }} <- data.frame(x = {{ env_id }}$x[,1], y = {{ env_id }}$y[,1])
+} else {
+  df_{{ env_id }} <- data.frame(x = {{ env_id }}$x[,1], y = {{ env_id }}$y[,1], colour_by = {{ env_id }}$colour_by[,1])
+}
+rownames(df_{{ env_id }}) <- rownames({{ env_id }}$x)
+htmltools::div(style="display:block;float:left;width:100%;height:90%;",
+  htmltools::tags$button(i2dash::embed_var(df_{{ env_id }})), plot_{{ env_id }}
+)
+```
+
+```{r, eval=is_shiny}
+ui_list <- list()
+# selection field for x
+if ({{ env_id }}$x_selection){
+  ui_list <- rlist::list.append(ui_list,
+                                selectInput("select_x_{{ env_id }}", label = "Select data for x axis:",
+                                            choices = colnames({{ env_id }}$x)))
+}
+
+# selection field for y
+if ({{ env_id }}$y_selection){
+  ui_list <- rlist::list.append(ui_list,
+                                selectInput("select_y_{{ env_id }}", label = "Select data for y axis:",
+                                            choices = colnames({{ env_id }}$y)))
+}
+# Radio buttons for colouring
+if (length({{ env_id }}$colouring) > 1){
+  ui_list <- rlist::list.append(ui_list,
+                                radioButtons("radio_{{ env_id }}", label = "Select the colouring method:", 
+                                                      choices = {{ env_id }}$colouring, selected = NULL))
+}
+
+# selection field for colour_by_metadata
+if ({{ env_id }}$colour_by_selection){
+  ui_list <- rlist::list.append(ui_list,
+                                selectInput("select_colour_{{ env_id }}", label = "Select metadata:",
+                                            choices = colnames({{ env_id }}$colour_by)))
+}
+
+# selection field for colour_by_sample
+if (!is.null({{ env_id }}$labels)) {
+  ui_list <- rlist::list.append(ui_list,
+                                selectInput("select_label_{{ env_id }}", label = "Select label:",
+                                            choices = {{ env_id }}$labels))
+}
+
+# selection field for colour_by_feature
+if (!is.null({{ env_id }}$exprs_values)) {
+  ui_list <- rlist::list.append(ui_list,
+                                selectInput("select_feature_{{ env_id }}", label = "Select feature:", 
+                                            choices = rownames({{ env_id }}$exprs_values)))
+}
+
+
+
+# Download link
+ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downloadData_{{ env_id }}', 'Download data')))
+
+#
+# Handle inputs
+#
+x_{{ env_id }} <- shiny::reactive({
+  if(!{{ env_id }}$x_selection){
+    data <- {{ env_id }}$x[[1]]
+    title <- colnames({{ env_id }}$x)[1]
+    return(list(data = data, title = title))
+  } else {
+    data <- {{ env_id }}$x[[input$select_x_{{ env_id }}]]
+    title <- input$select_x_{{ env_id }}
+    return(list(data = data, title = title))
+  }
+})
+
+y_{{ env_id }} <- shiny::reactive({
+  if(!{{ env_id }}$y_selection){
+    data <- {{ env_id }}$y[[1]]
+    title <- colnames({{ env_id }}$y)[1]
+    return(list(data = data, title = title))
+  } else {
+    data <- {{ env_id }}$y[[input$select_y_{{ env_id }}]]
+    title <- input$select_y_{{ env_id }}
+    return(list(data = data, title = title))
+  }
+})
+
+colour_{{ env_id }} <- shiny::reactive({
+  if(length({{ env_id }}$colouring) > 1){
+    # "No colour" in radio menu
+    if(input$radio_{{ env_id }} == 0){ 
+      return(list(colour = NULL, annotation = NULL))
+    
+    # "Colour by metadata" in radio menu
+    } else if(input$radio_{{ env_id }} == 1){
+      if(!{{ env_id }}$colour_by_selection){
+        data <- {{ env_id }}$colour_by[[1]]
+      } else {
+        data <- {{ env_id }}$colour_by[[input$select_colour_{{ env_id }}]]
+      }
+      return(list(colour = data, annotation = NULL))
+    
+    # "Colour by label" in radio menu
+    } else if(input$radio_{{ env_id }} == 2){
+      point_index <- match(input$select_label_{{ env_id }}, {{ env_id }}$labels)
+      a <- list(
+        x = x_{{ env_id }}()$data[point_index],
+        y = y_{{ env_id }}()$data[point_index],
+        text = input$select_label_{{ env_id }},
+        xref = "x",
+        yref = "y",
+        showarrow = T,
+        arrowhead = 7,
+        arrowcolor = "red",
+        ax = 20,
+        ay = -40
+      )
+      return(list(colour = NULL, annotation = a))
+      
+    # "Colour by expression" in radio menu
+    } else if(input$radio_{{ env_id }} == 3){
+      data <- {{ env_id }}$exprs_values[input$select_feature_{{ env_id }},]
+      return(list(colour = data, annotation = NULL))
+    }
+  } else {
+    return(list(colour = NULL, annotation = NULL))
+  }
+})
+
+#
+# Download data.frame
+#
+output$downloadData_{{ env_id }} <- downloadHandler(
+  filename =  paste('data-', Sys.Date(), '.csv', sep=''),
+  content = function(file) {
+    if(is.null(colour_{{ env_id }}()$colour)){
+      df <- data.frame(x = x_{{ env_id }}()$data, y = y_{{ env_id }}()$data)
+    } else {
+      df <- data.frame(x = x_{{ env_id }}()$data, y = y_{{ env_id }}()$data, colour_by = colour_{{ env_id }}()$colour)
+    }
+    if(!is.null({{ env_id }}$labels)) labels <- {{ env_id }}$labels else labels <- rownames({{ env_id }}$x)
+    rownames(df) <- labels
+    write.csv(df, file)
+  }
+)
+
+#
+# reactive plot creation
+#
+output$plot_{{ env_id }} <- plotly::renderPlotly({
+  if(!is.null({{ env_id }}$y_title)) y_title <- {{ env_id }}$y_title else y_title <- y_{{ env_id }}()$title
+  if(!is.null({{ env_id }}$x_title)) x_title <- {{ env_id }}$x_title else x_title <- x_{{ env_id }}()$title
+  if(!is.null({{ env_id }}$labels)) labels <- {{ env_id }}$labels else labels <- rownames({{ env_id }}$x)
+  
+  i2dash.scrnaseq::plotly_scatterplot(x = x_{{ env_id }}()$data, y = y_{{ env_id }}()$data, color = colour_{{ env_id }}()$colour, text = labels, y_title = y_title, x_title = x_title) %>%
+    plotly::layout(
+      annotations = colour_{{ env_id }}()$annotation,
+      title = {{ env_id }}$plot_title
+    ) %>% plotly::toWebGL()
+})
+
+#
+# Layout of component
+#
+shiny::fillRow(flex = c(NA, 1),
+      shinyWidgets::dropdownButton(div(style='max-height: 350px; overflow-x: auto;',do.call(shiny::inputPanel, ui_list)),
+                       circle = TRUE, status = "danger", icon = icon("gear"), width = "300px",
+                       tooltip = shinyWidgets::tooltipOptions(title = "Click, to change plot settings:")),
+      plotly::plotlyOutput("plot_{{ env_id }}", height = "100%")
+)
+```
+
+

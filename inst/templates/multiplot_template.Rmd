@@ -3,7 +3,7 @@
 
 <!-- Component created on {{ date }} -->
 ```{r}
-{{ env_id }} = readRDS("envs/{{ env_id }}.rds")
+{{ env_id }} = readRDS(file.path(datadir, "{{ env_id }}.rds"))
 df <- data.frame({{ env_id }}$x, {{ env_id }}$y, {{ env_id }}$color_by)
 df.melted <- reshape::melt(df, id=c(names({{ env_id }}$y), names({{ env_id }}$color_by)))
 

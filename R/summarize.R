@@ -1,66 +1,57 @@
-#' Summarize samples or features of objects containing data from single-cell experiments.
-#'
-#' @param object A SingleCellExperiment or Seurat object.
-#' @param columns The metadata columns to summarize.
-#' @param FUNS A named vector indicating summary functions.
-#' @param group_by (Optional) A vector, which is used for grouping.
-#'
-#' @return A \code{kableExtra} object with one row for each \code{columns} and one column for each \code{FUNS}, containing the desired summary. Optionaly \code{group_by} can be provided. In this case for each level in \code{group_by} a column is created with the summerized values for each \code{FUNS}.
 #' @name summarize
-NULL
-#> NULL
-
-#' @export
 #' @rdname summarize
-setGeneric("summarize_samples", function(object, ...) standardGeneric("summarize_samples"))
-
 #' @export
-#' @rdname summarize
-setGeneric("summarize_features", function(object, ...) standardGeneric("summarize_features"))
-
-
 setMethod("summarize_samples",
           signature = signature(object = "SingleCellExperiment"),
-          definition = function(object, group_by = NULL, ...) {
+          definition = function(object, columns, FUNS, group_by = NULL, ...) {
             if(!is.null(group_by)) group_by <- SummarizedExperiment::colData(object)[[group_by]]
-            summarize_data_(data = SummarizedExperiment::colData(object), group_by = group_by, ...) %>%
-              kableExtra::kable_styling(bootstrap_options = "striped", full_width = F) %>%
+            summarize_data_(data = SummarizedExperiment::colData(object), group_by = group_by, columns = columns, FUNS = FUNS, ...) %>%
+              kableExtra::kable_styling(bootstrap_options = c("striped", "hover")) %>%
               kableExtra::footnote(general = "Summarized values from samples.",
                        general_title = "Note: ",
                        footnote_as_chunk = T, title_format = c("bold", "underline")
               )
           })
 
+#' @name summarize
+#' @rdname summarize
+#' @export
 setMethod("summarize_features",
           signature = signature(object = "SingleCellExperiment"),
-          definition = function(object, group_by = NULL, ...) {
+          definition = function(object, columns, FUNS, group_by = NULL, ...) {
             if(!is.null(group_by)) group_by <- SummarizedExperiment::rowData(object)[[group_by]]
-            summarize_data_(data = SummarizedExperiment::rowData(object), group_by = group_by, ...) %>%
-              kableExtra::kable_styling(bootstrap_options = "striped", full_width = F) %>%
+            summarize_data_(data = SummarizedExperiment::rowData(object), group_by = group_by, columns = columns, FUNS = FUNS, ...) %>%
+              kableExtra::kable_styling(bootstrap_options = c("striped", "hover")) %>%
               kableExtra::footnote(general = "Summarized values from features.",
                                    general_title = "Note: ",
                                    footnote_as_chunk = T, title_format = c("bold", "underline")
               )
           })
 
+#' @name summarize
+#' @rdname summarize
+#' @export
 setMethod("summarize_samples",
           signature = signature(object = "Seurat"),
-          definition = function(object, group_by = NULL, ...) {
+          definition = function(object, columns, FUNS, group_by = NULL, ...) {
             if(!is.null(group_by)) group_by <- object@meta.data[[group_by]]
-            summarize_data_(data = object@meta.data, group_by = group_by, ...) %>%
-              kableExtra::kable_styling(bootstrap_options = "striped", full_width = F) %>%
+            summarize_data_(data = object@meta.data, group_by = group_by, columns = columns, FUNS = FUNS, ...) %>%
+              kableExtra::kable_styling(bootstrap_options = c("striped", "hover")) %>%
               kableExtra::footnote(general = "Summarized values from samples.",
                                    general_title = "Note: ",
                                    footnote_as_chunk = T, title_format = c("bold", "underline")
               )
           })
 
+#' @name summarize
+#' @rdname summarize
+#' @export
 setMethod("summarize_features",
           signature = signature(object = "Seurat"),
-          definition = function(object, assay = "RNA", group_by = NULL, ...) {
+          definition = function(object, columns, FUNS, assay = "RNA", group_by = NULL, ...) {
             if(!is.null(group_by)) group_by <- object@assays[[assay]]@meta.features[[group_by]]
-            summarize_data_(data = object@assays[[assay]]@meta.features, group_by = group_by, ...) %>%
-              kableExtra::kable_styling(bootstrap_options = "striped", full_width = F) %>%
+            summarize_data_(data = object@assays[[assay]]@meta.features, group_by = group_by, columns = columns, FUNS = FUNS, ...) %>%
+              kableExtra::kable_styling(bootstrap_options = c("striped", "hover")) %>%
               kableExtra::footnote(general = "Summarized values from features.",
                                    general_title = "Note: ",
                                    footnote_as_chunk = T, title_format = c("bold", "underline")
@@ -76,10 +67,6 @@ setMethod("summarize_features",
 #'
 #' @return A \code{data.frame} that contains summary statistics.
 summarize_data_ <- function(data, columns, FUNS, group_by = NULL) {
-  #
-  # if 'group_by' provided, a data.frame per function is created and combined in a 'kable' object
-  # else
-  #
   if(is.null(group_by)){
     df <- df_without_grouping(data = data, columns = columns, FUNS = FUNS)
     return(df)
@@ -99,7 +86,7 @@ summarize_data_ <- function(data, columns, FUNS, group_by = NULL) {
     names(header_vector) <- c(" ", FUNS)
 
     kableExtra::kable(df) %>%
-      kableExtra::kable_styling("striped") %>%
+      kableExtra::kable_styling(bootstrap_options = c("striped", "hover")) %>%
       kableExtra::add_header_above(header_vector) -> kb
     return(kb)
   }
@@ -128,22 +115,20 @@ df_without_grouping <- function(data, columns, FUNS){
       dplyr::mutate(key = correct_name(key, columns)) %>%
       tidyr::separate(col = key, into = c("variable", "stat"), sep = separate_regex) %>%
       tidyr::spread(key = stat, value = value) %>%
-      dplyr::mutate(variable = columns) %>%
-      tibble::column_to_rownames("variable") %>%
-      round(3) %>%
-      kableExtra::kable() %>%
-      kableExtra::kable_styling("striped")
+      dplyr::mutate(variable = columns) -> df
   } else {
     data %>%
       as.data.frame() %>%
       dplyr::select(.dots = columns) %>%
       dplyr::summarise_if(is.numeric, .funs = FUNS) %>%
-      cbind("variable" = columns) %>%
-      tibble::column_to_rownames("variable") %>%
-      round(3) %>%
-      kableExtra::kable() %>%
-      kableExtra::kable_styling("striped")
+      cbind("variable" = columns) -> df
   }
+
+  df %>%
+    tibble::column_to_rownames("variable") %>%
+    round(3) %>%
+    kableExtra::kable() %>%
+    kableExtra::kable_styling(bootstrap_options = c("striped", "hover"))
 }
 
 
