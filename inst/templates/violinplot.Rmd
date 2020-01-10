@@ -45,7 +45,7 @@ plot_{{ env_id }} <- i2dash.scrnaseq::plotly_violinplot(y = y_{{ env_id }}[,1], 
 if(!is.null({{ env_id }}$group_by)) download_df_{{ env_id }} <- data.frame(y_{{ env_id }}, group_by_{{ env_id }}) else download_df_{{ env_id }} <- data.frame(y_{{ env_id }})
 rownames(download_df_{{ env_id }}) <- rownames({{ env_id }}$y)
 htmltools::div(style="display:block;float:left;width:100%;height:90%;",
-  htmltools::tags$button(i2dash::embed_var(download_df)), plot_{{ env_id }}
+  htmltools::tags$button(i2dash::embed_var(download_df_{{ env_id }})), plot_{{ env_id }}
 )
 ```
 

@@ -16,15 +16,28 @@ add_tsne_comparison_page(dashboard, object, ...)
   ...
 )
 
-\S4method{add_tsne_comparison_page}{i2dashboard,SingleCellExperiment}(dashboard, object, exprs_values = "logcounts", ...)
+\S4method{add_tsne_comparison_page}{i2dashboard,SingleCellExperiment}(
+  dashboard,
+  object,
+  exprs_values = "logcounts",
+  subset_row = NULL,
+  ...
+)
 
-\S4method{add_tsne_comparison_page}{i2dashboard,SummarizedExperiment}(dashboard, object, exprs_values = "logcounts", ...)
+\S4method{add_tsne_comparison_page}{i2dashboard,SummarizedExperiment}(
+  dashboard,
+  object,
+  exprs_values = "logcounts",
+  subset_row = NULL,
+  ...
+)
 
 \S4method{add_tsne_comparison_page}{i2dashboard,Seurat}(
   dashboard,
   object,
   assay = "RNA",
   assay_slot = "data",
+  subset_row = NULL,
   ...
 )
 }

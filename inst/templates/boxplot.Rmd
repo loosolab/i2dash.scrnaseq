@@ -103,6 +103,12 @@ if( !{{ env_id }}$group_by_selection ) {
       return(list(data = data, title = title))
     }
   })
+} else {
+  group_by_{{ env_id }} <- shiny::reactive({
+    data <- {{ env_id }}$group_by[[input$select_group_by_{{ env_id }}]]
+    title <- input$select_group_by_{{ env_id }}
+    return(list(data = data, title = title))
+  })
 }
   
 #
