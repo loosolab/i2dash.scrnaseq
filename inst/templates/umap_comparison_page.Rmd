@@ -1,0 +1,144 @@
+<!-- Component created on  {{ date }}  -->
+
+```{r}
+{{ env_id }} = readRDS(file.path(datadir, "{{ env_id }}.rds"))
+
+is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
+
+library(magrittr)
+library(scater)
+
+scater.calculateUMAP_{{ env_id }} <- {{ env_id }}$scater.calculateUMAP
+seed_{{ env_id }} <- {{ env_id }}$seed
+```
+
+Inputs {.sidebar}
+-------------------------------------
+    
+    
+###
+
+
+```{r, eval=is_shiny}
+# linking the "delete" buttons to shiny with js
+tags$script("$(document).on('click', '#tbl_{{ env_id }} button', function () {
+    Shiny.onInputChange('lastClickId',this.id);
+    Shiny.onInputChange('lastClick', Math.random())
+    });")
+
+# slider for theta
+sliderInput("select_n_neighbors_{{ env_id }}", label = "Set n_neighbors:", min = 2, max = 100, step = 1, value = 15)
+
+
+# action button
+actionButton("generate_{{ env_id }}", label = "Generate plot")
+
+# action button
+actionButton("add_{{ env_id }}", label = "Add plot for comparison")
+
+DT::dataTableOutput('tbl_{{ env_id }}')
+```
+
+
+Column {.tabset}
+----------------------------------------------------
+
+
+### Dimension reduction 
+
+<!-- Component created on 2019-09-11 15:38:18 -->
+
+```{r, eval=!is_shiny}
+htmltools::HTML("<div class='alert alert-warning' role='alert'>
+  <h4>This page can only be used with the shiny-based interactive mode.</h4>
+</div>")
+```
+
+```{r, eval=is_shiny}
+reactive_{{ env_id }} <- eventReactive(input$generate_{{ env_id }}, {
+  set.seed(seed_{{ env_id }})
+  
+  # calculate t-SNE
+  scater.calculateUMAP_{{ env_id }}$n_neighbors <- input$select_n_neighbors_{{ env_id }}
+  umap <- do.call(scater::calculateUMAP, scater.calculateUMAP_{{ env_id }})
+  
+  x <- umap[,1]
+  y <- umap[,2]
+  labels <- rownames(umap)
+  
+  # generate scatterplot
+  p <- i2dash.scrnaseq::plotly_scatterplot(x = x, y = y, color = NULL, text = labels, y_title = "Dimension 2", x_title = "Dimension 1", name = paste0("n_neighbors: ", input$select_n_neighbors_{{ env_id }}), type = "scatter")
+
+  return(list(plot = p, n_neighbors = input$select_n_neighbors_{{ env_id }}))
+})
+
+# render the plot of the main tab
+output$plot_{{ env_id }} <- plotly::renderPlotly({
+  reactive_{{ env_id }}()$plot %>%
+    plotly::layout(
+      title = paste0("n_neighbors: ", reactive_{{ env_id }}()$n_neighbors)
+    )
+})
+plotly::plotlyOutput("plot_{{ env_id }}")
+
+# a list with selected plots
+plot_list_{{ env_id }} <- reactiveValues(
+  plot_list = NULL
+)
+
+# add current plot to the list of plots
+observeEvent(input$add_{{ env_id }},{
+  plot_list_{{ env_id }}$plot_list[[paste0("n_neighbors=",reactive_{{ env_id }}()$n_neighbors)]] <- reactive_{{ env_id }}()$plot
+})
+
+# remove plot from list if button is clicked
+observeEvent(input$lastClick, {
+  row_to_del=as.numeric(gsub("delete_","",input$lastClickId))
+  plot_list_{{ env_id }}$plot_list=plot_list_{{ env_id }}$plot_list[-row_to_del]
+  
+})
+
+# render table with saved plots
+output$tbl_{{ env_id }} <- DT::renderDataTable({
+  if(!is.null(plot_list_{{ env_id }}$plot_list)){
+    if(length(plot_list_{{ env_id }}$plot_list) > 0){
+      df <- data.frame("plots" = names(plot_list_{{ env_id }}$plot_list))
+      df$plots <- gsub(pattern = "_", replacement = "<br/>", x = df$plots)
+      df[["Actions"]]<-
+  paste0('
+  <button type="button" class="btn btn-secondary delete" id=delete_',1:nrow(df),'>Delete</button>')
+      DT::datatable(df, options = list(searching = FALSE), escape=F)
+    }
+  }
+})
+```
+
+### Compare selected plots
+
+```{r, eval=!is_shiny}
+htmltools::HTML("<div class='alert alert-warning' role='alert'>
+  <h4>This page can only be used with the shiny-based interactive mode.</h4>
+</div>")
+```
+
+```{r, eval=is_shiny}
+# render the subplot
+output$subplot_{{ env_id }} <- plotly::renderPlotly({
+  plot_list <- NULL
+  if(!is.null(plot_list_{{ env_id }}$plot_list)){
+    plot_list <- plot_list_{{ env_id }}$plot_list
+    if(length(plot_list_{{ env_id }}$plot_list) ==  1 & names(plot_list[1]) != "nrows"){
+      return(do.call(plotly::subplot, plot_list))
+    } else if(length(plot_list_{{ env_id }}$plot_list) > 1) {
+      nrows <- ceiling(sqrt(length(plot_list_{{ env_id }}$plot_list)))
+      plot_list$nrows <- nrows
+      return(do.call(plotly::subplot, plot_list))
+    } else if(length(plot_list) ==  1 & names(plot_list[1]) == "nrows"){
+      plot_list <- list()
+      return(NULL)
+    }
+  }
+})
+plotly::plotlyOutput("subplot_{{ env_id }}")
+```
+
