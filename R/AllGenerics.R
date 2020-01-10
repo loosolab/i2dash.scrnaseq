@@ -344,3 +344,22 @@ setGeneric("plotExpression", function(dashboard, object, ...) standardGeneric("p
 #' @exportMethod add_feature_selection_page
 setGeneric("add_feature_selection_page", function(dashboard, object, ...) standardGeneric("add_feature_selection_page"))
 
+#' Explore the effects of the parameters "theta" and "perplexity" of a t-stochastic neighbour embedding.
+#'
+#' Creates a page with two tabs and a sidebar. The first tab generates the dimension reduction plot of the t-SNE with the parameters set in the sidebar by clicking the "Generate plot" button. It is possible to save the scatterplot with its parameters to compare it with another parameters by clicking the button "Add plot for comparison". The second tab "Compare selected plots" contains a grid layout with the saved reduced dimensions. A list in the sidebar shows the saved plots and enables the deletion of plots.
+#'
+#' @param dashboard A \linkS4class{i2dash::i2dashboard}.
+#' @param exprs_values A numeric matrix of log-expression values where rows are features and columns are cells. Alternatively, a character indicating which assay of the SummarizedExperiment, SingleCellExperiment or Seurat object provided in \code{object} to use.
+#' @param seed An integer vector, containing the random number generator (RNG) state for random number generation with \code{set.seed()}.
+#' @param page A page name to identify this page.
+#' @param title The title of the page.
+#' @param menu The menu tab to which this page is subordinated. Default "Tools"
+#' @param object An object of class \linkS4class{Seurat::Seurat}, \linkS4class{SingleCellExperiment::SingleCellExperiment} or \linkS4class{SummarizedExperiment::SummarizedExperiment}.
+#' @param assay A character specifying the assay (\code{object@assays}) to obtain expression values from. (Default: "RNA")
+#' @param assay_slot A character specifying the name of the data slot in the assay. (Default: "data")
+#'
+#' @name tsne-comparison-page
+#' @rdname tsne-comparison-page
+#' @exportMethod add_tsne_comparison_page
+setGeneric("add_tsne_comparison_page", function(dashboard, object, ...) standardGeneric("add_tsne_comparison_page"))
+
