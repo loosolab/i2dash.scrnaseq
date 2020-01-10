@@ -4,7 +4,7 @@
 \alias{feature-selection-page}
 \alias{add_feature_selection_page}
 \alias{add_feature_selection_page,i2dashboard,Seurat-method}
-\title{Characterize and visualize dimension reductions and sample groupings / metadata.}
+\title{Quantify per-gene variation and explore the threshold on the metric of variation to get the desired set of highly variable features.}
 \usage{
 add_feature_selection_page(dashboard, object, ...)
 
@@ -51,6 +51,5 @@ add_feature_selection_page(dashboard, object, ...)
 An object of class \linkS4class{i2dash::i2dashboard}.
 }
 \description{
-Creates a page with up to four different linked components, including a scatterplot for dimension reductions, a bar plot showing numbers of observations by group, and a silhouette plot to assess grouping consistency.
-Additional sample metadata is visualized using boxplots and barplots, depending on the data type of the underlying variable.
+Creates a page with a scatterplot of the variance of log-expression against the mean log-expression and a table with features and their metrics of variation. With shiny inputs you can color highlight the hvgs in dependency to the proportion and minimal threshold of the relevant variation metric. Also you can download the selcted hvgs or the entire variation metrics table.
 }
