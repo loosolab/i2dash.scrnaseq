@@ -1,4 +1,3 @@
-
 ### Metadata: {{ meta_column }}
 
 <!-- Component created on {{ date }} -->
@@ -14,7 +13,7 @@ if(is.factor(df_{{ env_id }}[["{{ meta_column }}"]])){
     showlegend = FALSE
   ) %>%
   plotly::highlight("plotly_selected")
-  bar_{{ meta_column }}
+  bars_{{ meta_column }}
 } else {
   if(grouping_{{ env_id }} %in% names(colormaps)) colors_{{ env_id }} <- colormaps[[grouping_{{ env_id }}]] else colors_{{ env_id }} <- "Set1"
   box_{{ meta_column }} <- plotly::plot_ly(sd_{{ env_id }}, colors = colors_{{ env_id }}, x = df_{{ env_id }}[[grouping_{{ env_id }}]], y = df_{{ env_id }}[["{{ meta_column }}"]], color = df_{{ env_id }}[[grouping_{{ env_id }}]]) %>%
