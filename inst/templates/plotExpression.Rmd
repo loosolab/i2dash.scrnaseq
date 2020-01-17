@@ -9,6 +9,7 @@ is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
 library(magrittr)
 library(scater)
 library(SummarizedExperiment)
+library(pryr)
 ```
 
 ```{r, eval=!is_shiny}
