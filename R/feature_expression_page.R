@@ -79,7 +79,7 @@ setMethod("add_feature_expression_page",
 
             add_feature_expression_page(dashboard,
                                      use_dimred = SingleCellExperiment::reducedDim(object, use_dimred),
-                                     exprs_values = exprs_values,
+                                     exprs_values = expression,
                                      group_by = metadata,
                                      ...)
           })
@@ -107,7 +107,7 @@ setMethod("add_feature_expression_page",
 
             add_feature_expression_page(dashboard,
                                      use_dimred = Seurat::Embeddings(object, reduction = dimred),
-                                     exprs_values = exprs_values,
+                                     exprs_values = expression,
                                      group_by = metadata,
                                      ...)
           })
