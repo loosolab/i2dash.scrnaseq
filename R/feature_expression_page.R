@@ -61,7 +61,7 @@ setMethod("add_feature_expression_page",
 #' @export
 setMethod("add_feature_expression_page",
           signature = signature(dashboard = "i2dashboard", object = "SingleCellExperiment"),
-          function(dashboard, object, use_dimred, exprs_values, group_by = NULL, subset_row = NULL, title = "Feature expression", menu = NULL) {
+          function(dashboard, object, use_dimred, exprs_values, group_by = NULL, subset_row = NULL, ...) {
 
             assertive.sets::assert_is_subset(use_dimred, SingleCellExperiment::reducedDimNames(object))
             assertive.sets::assert_is_subset(exprs_values, SummarizedExperiment::assayNames(object))
@@ -77,12 +77,10 @@ setMethod("add_feature_expression_page",
               dplyr::select(!!group_by) -> metadata
 
             add_feature_expression_page(dashboard,
-                                     use_dimred = SingleCellExperiment::reducedDim(object, dimred),
+                                     use_dimred = SingleCellExperiment::reducedDim(object, use_dimred),
                                      exprs_values = expression,
                                      group_by = metadata,
-                                     labels = colnames(object),
-                                     title = title,
-                                     menu = menu)
+                                     ...)
           })
 
 #' @rdname add_feature_expression_page
@@ -90,7 +88,7 @@ setMethod("add_feature_expression_page",
 #' @export
 setMethod("add_feature_expression_page",
           signature = signature(dashboard = "i2dashboard", object = "Seurat"),
-          function(dashboard, object, use_dimred, assay, group_by, slot = "data", subset_row = NULL, title = "Feature expression", menu = NULL) {
+          function(dashboard, object, use_dimred, assay, group_by, slot = "data", subset_row = NULL, ...) {
 
             assertive.sets::assert_is_subset(use_dimred, names(object@reductions))
             assertive.sets::assert_is_subset(assay, names(object@assays))
@@ -107,10 +105,8 @@ setMethod("add_feature_expression_page",
               dplyr::select(!!group_by) -> metadata
 
             add_feature_expression_page(dashboard,
-                                     use_dimred = Seurat::Embeddings(object, reduction = dimred),
+                                     use_dimred = Seurat::Embeddings(object, reduction = use_dimred),
                                      exprs_values = expression,
                                      group_by = metadata,
-                                     labels = colnames(expression),
-                                     title = title,
-                                     menu = menu)
+                                     ...)
           })
