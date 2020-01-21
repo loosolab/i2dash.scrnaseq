@@ -280,51 +280,6 @@ setGeneric("heatmap", function(dashboard, object, ...) standardGeneric("heatmap"
 #' @exportMethod add_dimred_sample_page
 setGeneric("add_dimred_sample_page", function(dashboard, object, ...) standardGeneric("add_dimred_sample_page"))
 
-#' Renders a component containing a violinplot with column- or row-level metadata.(This method is a wrapepr for the function \code{scater::plotColData} or \code{scater::plotRowData})
-#'
-#' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
-#' @param object An object of class \linkS4class{Seurat::Seurat} or \linkS4class{SingleCellExperiment::SingleCellExperiment}.
-#' @param y A single characters or vector of characters specifying the metadata to show on the y-axis.
-#' @param x A single characters or vector of characters specifying the metadata to show on the x-axis.
-#' @param metadata A single characters or vector of characters specifying the metadata that is used to colour, size, shape the observations.
-#' @param group_by A single character specifying the metadata from \code{metadata} that is used to to group the observations.
-#' @param from A character specifying whether the function \code{scater::plotColData} or \code{scater::plotRowData} is used.
-#' @param as_plotly
-#' @param plot_title The title of the component.
-#' @param y_title The title of the y-axis.
-#' @param x_title The title of the x-axis.
-#'
-#' @details For further information see \code{?scater::plotColData()} / \code{?scater::plotRowData()}
-#'
-#' @name plotMetadata
-#' @rdname plotMetadata
-#' @exportMethod plotMetadata
-setGeneric("plotMetadata", function(dashboard, object, ...) standardGeneric("plotMetadata"))
-
-#' Renders a component containing a plot of the expression values for a set of features (e.g. genes or transcripts), against a continuous or categorical covariate for all cells.(This method is a wrapepr for the function \code{scater::plotExpression})
-#'
-#' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
-#' @param object An object of class \linkS4class{Seurat::Seurat} or \linkS4class{SingleCellExperiment::SingleCellExperiment}.
-#' @param exprs_values A data.frame (matrix) containing expression data of features of interest in rows and samples in columns, or a string representing the name of an \code{assay} of \code{object}.
-#' @param features A character vector specifying the features to plot.
-#' @param metadata A single characters or vector of characters specifying the metadata that is used to group, colour, size, shape the observations.
-#' @param x A single character specifying a feature or column name from "\code{metadata}" to show on the x-axis.
-#' @param title The title of the component.
-#' @param as_plotly Logical whether the ggplot2 plot should be converted into a plotly plot.
-#' @param plot_title The title of the plot.
-#' @param y_title The title of the y-axis.
-#' @param x_title The title of the x-axis.
-#' @param ncol Integer scalar, specifying the number of columns to be used for the panels of a multi-facet plot.
-#' @param scales String indicating whether should multi-facet scales be fixed ("\code{fixed}"), free ("\code{free}"), or free in one dimension ("\code{free_x}", "\code{free_y}").
-#' @param ... Parameter for \code{scater::plotExpression}.
-#'
-#' @details For further information see \code{?scater::plotColData()} / \code{?scater::plotRowData()}
-#'
-#' @name plotExpression
-#' @rdname plotExpression
-#' @exportMethod plotExpression
-setGeneric("plotExpression", function(dashboard, object, ...) standardGeneric("plotExpression"))
-
 #' Quantify per-gene variation and explore the threshold on the metric of variation to get the desired set of highly variable features.
 #'
 #' Creates a page with a scatterplot of the variance of log-expression against the mean log-expression and a table with features and their metrics of variation. With shiny inputs you can color highlight the hvgs in dependency to the proportion and minimal threshold of the relevant variation metric. Also you can download the selcted hvgs or the entire variation metrics table.
@@ -344,13 +299,15 @@ setGeneric("plotExpression", function(dashboard, object, ...) standardGeneric("p
 #' @exportMethod add_feature_selection_page
 setGeneric("add_feature_selection_page", function(dashboard, object, ...) standardGeneric("add_feature_selection_page"))
 
-#' Explore the effects of the parameters "theta" and "perplexity" of a t-stochastic neighbour embedding.
+#' Explore the effects of the parameters "theta" and "perplexity" of a t-stochastic neighbour embedding or "n_neighors" of a UMAP embedding.
 #'
-#' Creates a page with two tabs and a sidebar. The first tab generates the dimension reduction plot of the t-SNE with the parameters set in the sidebar by clicking the "Generate plot" button. It is possible to save the scatterplot with its parameters to compare it with another parameters by clicking the button "Add plot for comparison". The second tab "Compare selected plots" contains a grid layout with the saved reduced dimensions. A list in the sidebar shows the saved plots and enables the deletion of plots.
+#' Creates a page with two tabs and a sidebar. The first tab generates the dimension reduction plot of the UMAP or t-SNE with the parameters set in the sidebar by clicking the "Generate plot" button. It is possible to save the scatterplot with its parameters to compare it with another parameters by clicking the button "Add plot for comparison". The second tab "Compare selected plots" contains a grid layout with the saved reduced dimensions. A list in the sidebar shows the saved plots and enables the deletion of plots.
 #'
 #' @param dashboard A \linkS4class{i2dash::i2dashboard}.
 #' @param exprs_values A numeric matrix of log-expression values where rows are features and columns are cells. Alternatively, a character indicating which assay of the SummarizedExperiment, SingleCellExperiment or Seurat object provided in \code{object} to use.
 #' @param seed An integer vector, containing the random number generator (RNG) state for random number generation with \code{set.seed()}.
+#' @param calculateUMAP Provide optional list with further parameter for \code{scater::calculateUMAP()} function.
+#' @param calculateTSNE Provide optional list with further parameter for \code{scater::calculateTSNE()} function.
 #' @param page A page name to identify this page.
 #' @param title The title of the page.
 #' @param menu The menu tab to which this page is subordinated. Default "Tools"
@@ -358,28 +315,8 @@ setGeneric("add_feature_selection_page", function(dashboard, object, ...) standa
 #' @param assay A character specifying the assay (\code{object@assays}) to obtain expression values from. (Default: "RNA")
 #' @param assay_slot A character specifying the name of the data slot in the assay. (Default: "data")
 #'
-#' @name tsne-comparison-page
-#' @rdname tsne-comparison-page
-#' @exportMethod add_tsne_comparison_page
-setGeneric("add_tsne_comparison_page", function(dashboard, object, ...) standardGeneric("add_tsne_comparison_page"))
-
-#' Explore the effect of the parameter "n_neighors" of a UMAP embedding.
-#'
-#' Creates a page with two tabs and a sidebar. The first tab generates the dimension reduction plot of the UMAP with the parameters set in the sidebar by clicking the "Generate plot" button. It is possible to save the scatterplot with its parameters to compare it with another parameters by clicking the button "Add plot for comparison". The second tab "Compare selected plots" contains a grid layout with the saved reduced dimensions. A list in the sidebar shows the saved plots and enables the deletion of plots.
-#'
-#' @param dashboard A \linkS4class{i2dash::i2dashboard}.
-#' @param exprs_values A numeric matrix of log-expression values where rows are features and columns are cells. Alternatively, a character indicating which assay of the SummarizedExperiment, SingleCellExperiment or Seurat object provided in \code{object} to use.
-#' @param seed An integer vector, containing the random number generator (RNG) state for random number generation with \code{set.seed()}.
-#' @param page A page name to identify this page.
-#' @param title The title of the page.
-#' @param menu The menu tab to which this page is subordinated. Default "Tools"
-#' @param object An object of class \linkS4class{Seurat::Seurat}, \linkS4class{SingleCellExperiment::SingleCellExperiment} or \linkS4class{SummarizedExperiment::SummarizedExperiment}.
-#' @param assay A character specifying the assay (\code{object@assays}) to obtain expression values from. (Default: "RNA")
-#' @param assay_slot A character specifying the name of the data slot in the assay. (Default: "data")
-#' @param ... Further parameter provided to \code{scater::calculateUMAP}
-#'
-#' @name umap-comparison-page
-#' @rdname umap-comparison-page
-#' @exportMethod add_umap_comparison_page
-setGeneric("add_umap_comparison_page", function(dashboard, object, ...) standardGeneric("add_umap_comparison_page"))
+#' @name dimred-comparison-page
+#' @rdname dimred-comparison-page
+#' @exportMethod add_dimred_comparison_page
+setGeneric("add_dimred_comparison_page", function(dashboard, object, ...) standardGeneric("add_dimred_comparison_page"))
 
