@@ -57,7 +57,6 @@ setMethod("add_feature_expression_page",
           })
 
 #' @rdname add_feature_expression_page
-#' @return An object of class \linkS4class{i2dash::i2dashboard}.
 #' @export
 setMethod("add_feature_expression_page",
           signature = signature(dashboard = "i2dashboard", object = "SingleCellExperiment"),
@@ -86,7 +85,6 @@ setMethod("add_feature_expression_page",
           })
 
 #' @rdname add_feature_expression_page
-#' @return An object of class \linkS4class{i2dash::i2dashboard}.
 #' @export
 setMethod("add_feature_expression_page",
           signature = signature(dashboard = "i2dashboard", object = "Seurat"),

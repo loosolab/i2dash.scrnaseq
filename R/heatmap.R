@@ -74,7 +74,6 @@ setMethod("heatmap",
           })
 
 #' @rdname heatmap
-#' @return An object of class \linkS4class{i2dash::i2dashboard}.
 #' @export
 setMethod("heatmap",
           signature = signature(dashboard = "i2dashboard", object = "SingleCellExperiment"),
@@ -121,7 +120,6 @@ setMethod("heatmap",
           })
 
 #' @rdname heatmap
-#' @return An object of class \linkS4class{i2dash::i2dashboard}.
 #' @export
 setMethod("heatmap",
           signature = signature(dashboard = "i2dashboard", object = "Seurat"),

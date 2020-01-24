@@ -91,7 +91,6 @@ setMethod("scatterplot",
 
 
 #' @rdname scatterplot
-#' @return An object of class \linkS4class{i2dash::i2dashboard}.
 #' @export
 setMethod("scatterplot",
           signature = signature(dashboard = "i2dashboard", object = "SingleCellExperiment"),
@@ -168,7 +167,6 @@ setMethod("scatterplot",
           })
 
 #' @rdname scatterplot
-#' @return An object of class \linkS4class{i2dash::i2dashboard}.
 #' @export
 setMethod("scatterplot",
           signature = signature(dashboard = "i2dashboard", object = "Seurat"),

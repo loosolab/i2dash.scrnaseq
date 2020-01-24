@@ -56,10 +56,6 @@ barplot(dashboard, object, ...)
 }
 \value{
 A string containing markdown code for the rendered component
-
-An object of class \linkS4class{i2dash::i2dashboard}.
-
-An object of class \linkS4class{i2dash::i2dashboard}.
 }
 \description{
 Renders a component containing a horizontal barplot.
