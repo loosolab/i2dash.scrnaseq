@@ -390,7 +390,7 @@ df_{{ env_id }} <- shiny::reactive({
 # Output
 #
 output$scatter_{{ env_id }} <- plotly::renderPlotly({
-  i2dash.scrnaseq::plotly_scatterplot(x = df_{{ env_id }}()$df$x, y = df_{{ env_id }}()$df$y, color = df_{{ env_id }}()$df$expression, colors = "YlOrRd", text = rownames(df_{{ env_id }}()$df), hoverinfo = "x+y+text", source = "scatter_{{ env_id }}", key = rownames(df_{{ env_id }}()$df), y_title = "Dimension 2", x_title = "Dimension 1") %>%
+  i2dash.scrnaseq::plotly_scatterplot(x = df_{{ env_id }}()$df$x, y = df_{{ env_id }}()$df$y, color = df_{{ env_id }}()$df$expression, colors = "YlOrRd", text = rownames(df_{{ env_id }}()$df), hoverinfo = "x+y+text", source = "scatter_{{ env_id }}", key = rownames(df_{{ env_id }}()$df), y_title = "Dimension 2", x_title = "Dimension 1", type = "scatter", mode = "markers") %>%
     plotly::layout(
       title = df_{{ env_id }}()$feature
     ) %>% 
@@ -404,7 +404,7 @@ plotly::plotlyOutput("scatter_{{ env_id }}", height = "100%")
 ###
 
 ```{r, eval=!is_shiny}
-i2dash.scrnaseq::plotly_scatterplot(x =reduced_dim_{{ env_id }}[,1], y = reduced_dim_{{ env_id }}[,2], color = group_by_{{ env_id }}[,1], text = row.names(reduced_dim_{{ env_id }}), hoverinfo = "x+y+text", y_title = "Dimension 2", x_title = "Dimension 1") %>%
+i2dash.scrnaseq::plotly_scatterplot(x =reduced_dim_{{ env_id }}[,1], y = reduced_dim_{{ env_id }}[,2], color = group_by_{{ env_id }}[,1], text = row.names(reduced_dim_{{ env_id }}), hoverinfo = "x+y+text", y_title = "Dimension 2", x_title = "Dimension 1", mode = "markers", type = "scatter") %>%
   plotly::layout(
     title = paste0("Coloured by: ", colnames(group_by_{{ env_id }})[1])
   ) -> scatter_2_{{ env_id }}
@@ -421,7 +421,7 @@ scatter_2_{{ env_id }}
 # Output
 #
 output$scatter_2_{{ env_id }} <- plotly::renderPlotly({
-  i2dash.scrnaseq::plotly_scatterplot(x = reduced_dim_{{ env_id }}[,1], y = reduced_dim_{{ env_id }}[,2], color = as.factor(group_by_{{ env_id }}[[input$select_grouping_{{ env_id }}]]), text = rownames(reduced_dim_{{ env_id }}[,1]), hoverinfo = "x+y+text", source = "scatter_2_{{ env_id }}", key = rownames(reduced_dim_{{ env_id }}), y_title = "Dimension 2", x_title = "Dimension 1") %>% 
+  i2dash.scrnaseq::plotly_scatterplot(x = reduced_dim_{{ env_id }}[,1], y = reduced_dim_{{ env_id }}[,2], color = as.factor(group_by_{{ env_id }}[[input$select_grouping_{{ env_id }}]]), text = rownames(reduced_dim_{{ env_id }}[,1]), hoverinfo = "x+y+text", source = "scatter_2_{{ env_id }}", key = rownames(reduced_dim_{{ env_id }}), y_title = "Dimension 2", x_title = "Dimension 1", mode = "markers", type = "scatter") %>% 
     plotly::layout(
       title = paste0("Coloured by: ", input$select_grouping_{{ env_id }})
     ) %>% 

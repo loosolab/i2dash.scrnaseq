@@ -74,7 +74,7 @@ function linking_plotly_scatter(plot_id, div_id, color_by_tag, title = "") {
 
 ```{r, eval=!is_shiny}
 default_expression <- expression_{{ env_id }}[1, ]
-i2dash.scrnaseq::plotly_scatterplot(x = reduced_dim_{{ env_id }}$x, y = reduced_dim_{{ env_id }}$y, color = default_expression, colors = "YlOrRd", text = row.names(reduced_dim_{{ env_id }}), hoverinfo = "x+y+text", y_title = "Dimension 2", x_title = "Dimension 1") %>%
+i2dash.scrnaseq::plotly_scatterplot(x = reduced_dim_{{ env_id }}$x, y = reduced_dim_{{ env_id }}$y, color = default_expression, colors = "YlOrRd", text = row.names(reduced_dim_{{ env_id }}), hoverinfo = "x+y+text", y_title = "Dimension 2", x_title = "Dimension 1", type = "scatter", mode = "markers") %>%
   plotly::layout(
     title = featurenames[1]
   ) %>%
@@ -122,7 +122,7 @@ output$downloadData_{{ env_id }}<- shiny::downloadHandler(
 # Output
 #
 output$plot_scatter_{{ env_id }} <- plotly::renderPlotly({
-  i2dash.scrnaseq::plotly_scatterplot(x = df_{{ env_id }}()$df$x, y = df_{{ env_id }}()$df$y, color = df_{{ env_id }}()$df$expression, colors = "YlOrRd", text = df_{{ env_id }}()$df$label, hoverinfo = "x+y+text", y_title = "Dimension 2", x_title = "Dimension 1") %>%
+  i2dash.scrnaseq::plotly_scatterplot(x = df_{{ env_id }}()$df$x, y = df_{{ env_id }}()$df$y, color = df_{{ env_id }}()$df$expression, colors = "YlOrRd", text = df_{{ env_id }}()$df$label, hoverinfo = "x+y+text", y_title = "Dimension 2", x_title = "Dimension 1", type = "scatter", mode = "markers") %>%
   plotly::layout(
     title = df_{{ env_id }}()$feature
   ) %>% plotly::toWebGL() -> scatter
