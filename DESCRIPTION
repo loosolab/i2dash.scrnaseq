@@ -17,15 +17,21 @@ Imports:
     i2dash,
     stringi,
     plotly,
+    ggplot2,
     shiny,
+    shinyWidgets,
+    rlist,
+    switchr,
+    scater,
+    scran,
+    multipanelfigure,
     knitr,
     tidyr,
     dplyr,
     SummarizedExperiment,
     SingleCellExperiment,
-    scater,
     pryr,
-    scran,
-    S4Vectors
+    htmltools,
+    magrittr
 Suggests: 
     kableExtra
