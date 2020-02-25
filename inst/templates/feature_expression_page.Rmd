@@ -239,7 +239,12 @@ DT::dataTableOutput('tbl_{{ env_id }}')
 
 
 ```{r, eval=!is_shiny}
-i2dash.scrnaseq::plotly_violinplot(y = exprs_values_{{ env_id }}[1,], group_by = group_by_{{ env_id }}[,1], y_title = "Expression", group_by_title = "Group") %>%
+# compare with colormaps
+if(is.factor(group_by_{{ env_id }}[,1])){
+  if(colnames(group_by_{{ env_id }})[1] %in% names(colormaps)) colors_{{ env_id }} <- colormaps[[colnames(group_by_{{ env_id }})[1]]] else colors_{{ env_id }} <- "Set1"
+}
+
+i2dash.scrnaseq::plotly_violinplot(y = exprs_values_{{ env_id }}[1,], group_by = group_by_{{ env_id }}[,1], y_title = "Expression", group_by_title = "Group", , colors = colors_{{ env_id }}) %>%
   plotly::layout(
     title = row.names(exprs_values_{{ env_id }})[1]
   ) -> violin_{{ env_id }}
@@ -267,7 +272,10 @@ df2_{{ env_id }} <- shiny::reactive({
 # creating a violinplot with the primitive function of i2dash.scrnaseq::plotly_violinplot
 #
 output$violin_{{ env_id }} <- plotly::renderPlotly({
-  i2dash.scrnaseq::plotly_violinplot(y = df2_{{ env_id }}()$expression, group_by = df2_{{ env_id }}()$level, y_title = "Expression", group_by_title = input$select_grouping_{{ env_id }}) %>%
+    # compare with colormaps
+  if(input$select_grouping_{{ env_id }} %in% names(colormaps)) colors <- colormaps[[input$select_grouping_{{ env_id }}]] else colors <- "Set1"
+  
+  i2dash.scrnaseq::plotly_violinplot(y = df2_{{ env_id }}()$expression, group_by = df2_{{ env_id }}()$level, y_title = "Expression", group_by_title = input$select_grouping_{{ env_id }}, colors = colors) %>%
   plotly::layout(title = df_{{ env_id }}()$feature) -> violin
 })
 plotly::plotlyOutput("violin_{{ env_id }}", height = "100%")
@@ -404,7 +412,12 @@ plotly::plotlyOutput("scatter_{{ env_id }}", height = "100%")
 ###
 
 ```{r, eval=!is_shiny}
-i2dash.scrnaseq::plotly_scatterplot(x =reduced_dim_{{ env_id }}[,1], y = reduced_dim_{{ env_id }}[,2], color = group_by_{{ env_id }}[,1], text = row.names(reduced_dim_{{ env_id }}), hoverinfo = "x+y+text", y_title = "Dimension 2", x_title = "Dimension 1") %>%
+# compare with colormaps
+if(is.factor(group_by_{{ env_id }}[,1])){
+  if(colnames(group_by_{{ env_id }})[1] %in% names(colormaps)) colors_{{ env_id }} <- colormaps[[colnames(group_by_{{ env_id }})[1]]] else colors_{{ env_id }} <- "Set1"
+}
+
+i2dash.scrnaseq::plotly_scatterplot(x =reduced_dim_{{ env_id }}[,1], y = reduced_dim_{{ env_id }}[,2], color = group_by_{{ env_id }}[,1], text = row.names(reduced_dim_{{ env_id }}), hoverinfo = "x+y+text", y_title = "Dimension 2", x_title = "Dimension 1", colors = colors_{{ env_id }}) %>%
   plotly::layout(
     title = paste0("Coloured by: ", colnames(group_by_{{ env_id }})[1])
   ) -> scatter_2_{{ env_id }}
@@ -421,7 +434,10 @@ scatter_2_{{ env_id }}
 # Output
 #
 output$scatter_2_{{ env_id }} <- plotly::renderPlotly({
-  i2dash.scrnaseq::plotly_scatterplot(x = reduced_dim_{{ env_id }}[,1], y = reduced_dim_{{ env_id }}[,2], color = as.factor(group_by_{{ env_id }}[[input$select_grouping_{{ env_id }}]]), text = rownames(reduced_dim_{{ env_id }}[,1]), hoverinfo = "x+y+text", source = "scatter_2_{{ env_id }}", key = rownames(reduced_dim_{{ env_id }}), y_title = "Dimension 2", x_title = "Dimension 1") %>% 
+    # compare with colormaps
+    if(input$select_grouping_{{ env_id }} %in% names(colormaps)) colors <- colormaps[[input$select_grouping_{{ env_id }}]] else colors <- "Set1"
+    
+    i2dash.scrnaseq::plotly_scatterplot(x = reduced_dim_{{ env_id }}[,1], y = reduced_dim_{{ env_id }}[,2], color = as.factor(group_by_{{ env_id }}[[input$select_grouping_{{ env_id }}]]), text = rownames(reduced_dim_{{ env_id }}[,1]), hoverinfo = "x+y+text", source = "scatter_2_{{ env_id }}", key = rownames(reduced_dim_{{ env_id }}), y_title = "Dimension 2", x_title = "Dimension 1", colors = colors) %>% 
     plotly::layout(
       title = paste0("Coloured by: ", input$select_grouping_{{ env_id }})
     ) %>% 
