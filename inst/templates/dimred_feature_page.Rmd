@@ -136,7 +136,8 @@ shiny::fillRow(flex = c(NA, 1),
       shinyWidgets::dropdownButton(div(style='max-height: 350px; overflow-x: auto;',do.call(shiny::inputPanel, ui_list)),
                        circle = TRUE, status = "danger", icon = icon("gear"), width = "300px",
                        tooltip = shinyWidgets::tooltipOptions(title = "Click, to change plot settings:")),
-      htmltools::div(style="display:block;float:left;width:100%;height:85%;padding-left:15px", htmltools::HTML("<p>Please select a feature in the left table to show its expression values.</p>"), plotly::plotlyOutput("plot_scatter_{{ env_id }}", height = "100%"))
+      htmltools::div(style="display:block;float:left;width:100%;height:85%;padding-left:15px", htmltools::HTML("<p>Please select a feature in the left table to show its expression values.</p>"), 
+                     renderUI({plotly::plotlyOutput("plot_scatter_{{ env_id }}", height = "100%")}))
 )
 ```
 
@@ -175,6 +176,6 @@ output$tbl_{{ env_id }} <- DT::renderDataTable({
   DT::datatable(metadata_{{ env_id }}, filter = 'top', selection = list(mode = 'single', selected = 1, target = 'row'))
 })
 
-DT::dataTableOutput('tbl_{{ env_id }}')
+renderUI({DT::dataTableOutput('tbl_{{ env_id }}')})
 ```
 
