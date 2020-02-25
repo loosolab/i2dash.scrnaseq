@@ -32,6 +32,6 @@ output$plot_sil_{{ env_id }} <- plotly::renderPlotly({
 #
 # Layout of component
 #
-plotly::plotlyOutput("plot_sil_{{ env_id }}", height = "100%")
+renderUI({plotly::plotlyOutput("plot_sil_{{ env_id }}", height = "100%")})
 ```
 
