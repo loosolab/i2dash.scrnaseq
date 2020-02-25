@@ -211,7 +211,7 @@ df_table_{{ env_id }} <- shiny::reactive({
 #
 # Dropdown menu with shiny input-widgets
 #
-shinyWidgets::dropdownButton(div(style='height: 300px; overflow-x: auto;',do.call(shiny::inputPanel, ui_list)),
+shinyWidgets::dropdownButton(div(style='height: 300px; overflow-x: auto;', do.call(shiny::inputPanel, ui_list)),
                  circle = TRUE, status = "danger", icon = icon("gear"), width = "300px",
                  tooltip = shinyWidgets::tooltipOptions(title = "Click, to change plot settings:"))
 #
@@ -231,7 +231,7 @@ output$tbl_{{ env_id }} <- DT::renderDataTable({
     dplyr::mutate(feature = row.names(exprs_values_{{ env_id }})) %>%
     DT::datatable(filter = 'top', selection = list(mode = 'single', selected = 1, target = 'row'), caption = 'Table: No. of cells with positive expression (>0)')
 })
-DT::dataTableOutput('tbl_{{ env_id }}')
+renderUI({DT::dataTableOutput('tbl_{{ env_id }}')})
 ```
 
 
@@ -270,7 +270,7 @@ output$violin_{{ env_id }} <- plotly::renderPlotly({
   i2dash.scrnaseq::plotly_violinplot(y = df2_{{ env_id }}()$expression, group_by = df2_{{ env_id }}()$level, y_title = "Expression", group_by_title = input$select_grouping_{{ env_id }}) %>%
   plotly::layout(title = df_{{ env_id }}()$feature) -> violin
 })
-plotly::plotlyOutput("violin_{{ env_id }}", height = "100%")
+renderUI({plotly::plotlyOutput("violin_{{ env_id }}", height = "100%")})
 ```
 
 
@@ -398,7 +398,7 @@ output$scatter_{{ env_id }} <- plotly::renderPlotly({
     plotly::toWebGL() -> plot
   plot
 })
-plotly::plotlyOutput("scatter_{{ env_id }}", height = "100%")
+renderUI({plotly::plotlyOutput("scatter_{{ env_id }}", height = "100%")})
 ```
 
 ###
@@ -429,7 +429,7 @@ output$scatter_2_{{ env_id }} <- plotly::renderPlotly({
     plotly::toWebGL() -> plot
   plot
 })
-plotly::plotlyOutput("scatter_2_{{ env_id }}", height = "100%")
+renderUI({plotly::plotlyOutput("scatter_2_{{ env_id }}", height = "100%")})
 ```
 
 

@@ -203,10 +203,10 @@ output$plot_{{ env_id }} <- plotly::renderPlotly({
 # Layout of component
 #
 shiny::fillRow(flex = c(NA, 1),
-      shinyWidgets::dropdownButton(div(style='max-height: 350px; overflow-x: auto;',do.call(shiny::inputPanel, ui_list)),
+      shinyWidgets::dropdownButton(div(style='max-height: 350px; overflow-x: auto;', do.call(shiny::inputPanel, ui_list)),
                        circle = TRUE, status = "danger", icon = icon("gear"), width = "300px",
                        tooltip = shinyWidgets::tooltipOptions(title = "Click, to change plot settings:")),
-      plotly::plotlyOutput("plot_{{ env_id }}", height = "100%")
+      renderUI({plotly::plotlyOutput("plot_{{ env_id }}", height = "100%")})
 )
 ```
 
