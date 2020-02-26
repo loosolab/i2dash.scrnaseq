@@ -282,9 +282,35 @@ Column
 ```{r, eval=!is_shiny}
 i2dash.scrnaseq::plotly_scatterplot(x =reduced_dim_{{ env_id }}[,1], y = reduced_dim_{{ env_id }}[,2], color = exprs_values_{{ env_id }}[1,], colors = "YlOrRd", text = row.names(reduced_dim_{{ env_id }}), hoverinfo = "x+y+text", y_title = "Dimension 2", x_title = "Dimension 1") %>%
   plotly::layout(
-    title = row.names(exprs_values_{{ env_id }})[1]
+    title = row.names(exprs_values_{{ env_id }})[1],
+    autosize = F, 
+    xaxis = list(title = "Dimension 1", automargin = T),
+    yaxis = list(title = "Dimension 2", automargin = T)
   ) %>%
   htmlwidgets::onRender("function(el) {
+    // --------------------
+    // workaround for plotly.js bug (https://github.com/ropensci/plotly/issues/1546)
+    // get size of parents div container
+    document.getElementById('scatter_{{ env_id }}').parentElement.id = 'parent_scatter_{{ env_id }}'
+    var clientHeight = document.getElementById('parent_scatter_{{ env_id }}').clientHeight;
+    var clientWidth = document.getElementById('parent_scatter_{{ env_id }}').clientWidth;
+    
+    // avoid errors at 0 width and height
+    if (clientHeight === 0){
+      clientHeight = 450 // plotly's default value 
+    }
+    if (clientWidth === 0){
+      clientWidth = 700 // plotly's default value 
+    }
+    
+    // get current layout and relayout plotly chart
+    var layout = el.layout;
+    layout.height = clientHeight;
+    layout.width = clientWidth;
+
+    Plotly.relayout(el, layout)
+    // --------------------
+    
     var id_violin = 'violin_{{ env_id }}';
     var violin_div = document.getElementById(id_violin);
 
@@ -360,7 +386,8 @@ i2dash.scrnaseq::plotly_scatterplot(x =reduced_dim_{{ env_id }}[,1], y = reduced
         })
       }
     });
-  }")  -> scatter_{{ env_id }}
+  }") %>% 
+  plotly::toWebGL() -> scatter_{{ env_id }}
 
 # %>%
 #   plotly::config(fillFrame = TRUE) -> scatter_{{ env_id }}
