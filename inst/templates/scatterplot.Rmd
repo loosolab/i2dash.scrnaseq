@@ -26,8 +26,37 @@ if(is.factor(colour_by_{{ env_id }})){
 # creating the plot object
 plot_{{ env_id }} <- i2dash.scrnaseq::plotly_scatterplot(x = {{ env_id }}$x[,1], y = {{ env_id }}$y[,1], color = colour_by_{{ env_id }}, text = labels_{{ env_id }}, y_title = y_title_{{ env_id }}, x_title = x_title_{{ env_id }}, colors = colors_{{ env_id }}, type = "scatter") %>%
   plotly::layout(
-    title = {{ env_id }}$plot_title
-  ) %>% plotly::toWebGL()
+    title = {{ env_id }}$plot_title,
+    autosize = F, 
+    yaxis = list(automargin = T), 
+    xaxis = list(automargin = T)
+  ) %>% 
+  htmlwidgets::onRender("
+                        function(el, x) {
+                        // workaround for plotly.js (https://github.com/ropensci/plotly/issues/1546)
+                          // get size of parents div container
+                          document.getElementById('scatter_{{ env_id }}').parentElement.id = 'parent_scatter_{{ env_id }}'
+                          var clientHeight = document.getElementById('parent_scatter_{{ env_id }}').clientHeight;
+                          var clientWidth = document.getElementById('parent_scatter_{{ env_id }}').clientWidth;
+                          
+                          // avoid errors at 0 width and height
+                          if (clientHeight === 0){
+                            clientHeight = 450 // plotly's default value 
+                          }
+                          if (clientWidth === 0){
+                            clientWidth = 700 // plotly's default value 
+                          }
+                          
+                          // get current layout and relayout plotly chart
+                          var layout = el.layout;
+                          layout.height = clientHeight;
+                          layout.width = clientWidth;
+  
+                          Plotly.relayout(el, layout)
+                        }
+                        ") %>% 
+  plotly::toWebGL()
+plot_{{ env_id }}$elementId <- "scatter_{{ env_id }}" 
 
 # Provide data for download
 if(is.null({{ env_id }}$colour_by)){

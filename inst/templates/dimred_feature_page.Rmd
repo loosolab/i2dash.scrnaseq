@@ -76,12 +76,39 @@ function linking_plotly_scatter(plot_id, div_id, color_by_tag, title = "") {
 default_expression <- expression_{{ env_id }}[1, ]
 i2dash.scrnaseq::plotly_scatterplot(x = reduced_dim_{{ env_id }}$x, y = reduced_dim_{{ env_id }}$y, color = default_expression, colors = "YlOrRd", text = row.names(reduced_dim_{{ env_id }}), hoverinfo = "x+y+text", y_title = "Dimension 2", x_title = "Dimension 1") %>%
   plotly::layout(
-    title = featurenames[1]
-  ) %>%
+    title = featurenames[1],
+    autosize = F, 
+    xaxis = list(title = "Dimension 1", automargin = T),
+    yaxis = list(title = "Dimension 2", automargin = T)
+  ) %>% 
+  htmlwidgets::onRender("
+                        function(el, x) {
+                        // workaround for plotly.js (https://github.com/ropensci/plotly/issues/1546)
+                          // get size of parents div container
+                          document.getElementById('plot_{{ env_id }}').parentElement.id = 'parent_scatter_{{ env_id }}'
+                          var clientHeight = document.getElementById('parent_scatter_{{ env_id }}').clientHeight;
+                          var clientWidth = document.getElementById('parent_scatter_{{ env_id }}').clientWidth;
+                          
+                          // avoid errors at 0 width and height
+                          if (clientHeight === 0){
+                            clientHeight = 450 // plotly's default value 
+                          }
+                          if (clientWidth === 0){
+                            clientWidth = 700 // plotly's default value 
+                          }
+                          
+                          // get current layout and relayout plotly chart
+                          var layout = el.layout;
+                          layout.height = clientHeight;
+                          layout.width = clientWidth;
+  
+                          Plotly.relayout(el, layout)
+                        }
+                        ") %>%
   plotly::toWebGL() -> plot_{{ env_id }}
 plot_{{ env_id }}$elementId <- "plot_{{ env_id }}"
 
-htmltools::div(style="display:block;float:left;width:100%;height:90%;padding-left:15px", htmltools::HTML("<p>Please select a feature in the left table to show its expression values.</p>"),plot_{{ env_id }})
+htmltools::div(style="display:block;float:left;width:100%;height:90%;padding-left:15px", htmltools::HTML("<p>Please select a feature in the left table to show its expression values.</p>"), plot_{{ env_id }})
 ```
 
 ```{r, eval=is_shiny}
