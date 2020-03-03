@@ -1,64 +1,3 @@
-#' @name summarize
-#' @rdname summarize
-#' @export
-setMethod("summarize_samples",
-          signature = signature(object = "SingleCellExperiment"),
-          definition = function(object, columns, FUNS, group_by = NULL, ...) {
-            if(!is.null(group_by)) group_by <- SummarizedExperiment::colData(object)[[group_by]]
-            summarize_data_(data = SummarizedExperiment::colData(object), group_by = group_by, columns = columns, FUNS = FUNS, ...) %>%
-              kableExtra::kable_styling(bootstrap_options = c("striped", "hover")) %>%
-              kableExtra::footnote(general = "Summarized values from samples.",
-                       general_title = "Note: ",
-                       footnote_as_chunk = T, title_format = c("bold", "underline")
-              )
-          })
-
-#' @name summarize
-#' @rdname summarize
-#' @export
-setMethod("summarize_features",
-          signature = signature(object = "SingleCellExperiment"),
-          definition = function(object, columns, FUNS, group_by = NULL, ...) {
-            if(!is.null(group_by)) group_by <- SummarizedExperiment::rowData(object)[[group_by]]
-            summarize_data_(data = SummarizedExperiment::rowData(object), group_by = group_by, columns = columns, FUNS = FUNS, ...) %>%
-              kableExtra::kable_styling(bootstrap_options = c("striped", "hover")) %>%
-              kableExtra::footnote(general = "Summarized values from features.",
-                                   general_title = "Note: ",
-                                   footnote_as_chunk = T, title_format = c("bold", "underline")
-              )
-          })
-
-#' @name summarize
-#' @rdname summarize
-#' @export
-setMethod("summarize_samples",
-          signature = signature(object = "Seurat"),
-          definition = function(object, columns, FUNS, group_by = NULL, ...) {
-            if(!is.null(group_by)) group_by <- object@meta.data[[group_by]]
-            summarize_data_(data = object@meta.data, group_by = group_by, columns = columns, FUNS = FUNS, ...) %>%
-              kableExtra::kable_styling(bootstrap_options = c("striped", "hover")) %>%
-              kableExtra::footnote(general = "Summarized values from samples.",
-                                   general_title = "Note: ",
-                                   footnote_as_chunk = T, title_format = c("bold", "underline")
-              )
-          })
-
-#' @name summarize
-#' @rdname summarize
-#' @export
-setMethod("summarize_features",
-          signature = signature(object = "Seurat"),
-          definition = function(object, columns, FUNS, assay = "RNA", group_by = NULL, ...) {
-            if(!is.null(group_by)) group_by <- object@assays[[assay]]@meta.features[[group_by]]
-            summarize_data_(data = object@assays[[assay]]@meta.features, group_by = group_by, columns = columns, FUNS = FUNS, ...) %>%
-              kableExtra::kable_styling(bootstrap_options = c("striped", "hover")) %>%
-              kableExtra::footnote(general = "Summarized values from features.",
-                                   general_title = "Note: ",
-                                   footnote_as_chunk = T, title_format = c("bold", "underline")
-              )
-          })
-
-
 #' Summarizes columns of \code{data} using \code{FUNS} and can be grouped by \code{group_by}.
 #'
 #' @param data A data.frame.
@@ -76,19 +15,7 @@ summarize_data_ <- function(data, columns, FUNS, group_by = NULL) {
       df_list[[func]] <- df_per_func(data = data, columns = columns, func = func, group_by = group_by)
     }
     df <- do.call("cbind", df_list)
-
-    #
-    # prepare a header vector for kableExtra::add_header_above
-    #
-    level_nr <- length(unique(group_by))
-    FUNS_nr <- length(FUNS)
-    header_vector <- c(1, rep(level_nr, FUNS_nr))
-    names(header_vector) <- c(" ", FUNS)
-
-    kableExtra::kable(df) %>%
-      kableExtra::kable_styling(bootstrap_options = c("striped", "hover")) %>%
-      kableExtra::add_header_above(header_vector) -> kb
-    return(kb)
+    return(df)
   }
 }
 
@@ -123,14 +50,11 @@ df_without_grouping <- function(data, columns, FUNS){
       dplyr::summarise_if(is.numeric, .funs = FUNS) %>%
       cbind("variable" = columns) -> df
   }
-
-  df %>%
+  df %<>%
     tibble::column_to_rownames("variable") %>%
-    round(3) %>%
-    kableExtra::kable() %>%
-    kableExtra::kable_styling(bootstrap_options = c("striped", "hover"))
+    round(3)
+  return(df)
 }
-
 
 #' Function to create a data.frame per function: rownames = selected colData | column for each level of group_by
 #' @param data A data.frame.
@@ -164,3 +88,127 @@ correct_name <- function(key, prefix) {
   if(length(prefix) > 1) return(key)
   return(paste(prefix, key, sep = "_"))
 }
+
+
+#' @rdname summarize_metadata
+#' @return A string containing markdown code for the rendered component
+setMethod("summarize_metadata",
+          signature = signature(dashboard = "i2dashboard", object = "missing"),
+          function(dashboard, data, columns = colnames(data), FUNS = c("min", "max", "mean", "median"), group_by = NULL, footnote_title = NULL, footnote_text = NULL, title = NULL) {
+
+            env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
+            data <- as.data.frame(data)
+            if(!all(sapply(data[columns], is.numeric))) stop("The provided columns of data should be numeric.")
+            df <- summarize_data_(data, columns, FUNS, group_by)
+
+            # Create component environment
+            env <- new.env()
+            env$df <- df
+            env$group_by <- group_by
+            env$FUNS <- FUNS
+            env$footnote_title <- footnote_title
+            env$footnote_text <- footnote_text
+
+            saveRDS(env, file = file.path(dashboard@datadir, paste0(env_id, ".rds")))
+
+            # Expand component
+            timestamp <- Sys.time()
+            print(title)
+            expanded_component <- knitr::knit_expand(file = system.file("templates", "summarize_metadata.Rmd", package = "i2dash.scrnaseq"), title = title, env_id = env_id, date = timestamp)
+            return(expanded_component)
+          })
+
+
+#' @rdname summarize_metadata
+#' @export
+setMethod("summarize_metadata",
+          signature = signature(dashboard = "i2dashboard", object = "SingleCellExperiment"),
+          function(dashboard, object, from = c("colData", "rowData"), columns = NULL, group_by = NULL, footnote_title = NULL, footnote_text = NULL, ...) {
+
+            from <- match.arg(from)
+            data <- switch(from,
+                           "colData" = SummarizedExperiment::colData(object),
+                           "rowData" = SummarizedExperiment::rowData(object))
+
+            if(is.null(columns)){
+              data %>%
+                as.data.frame %>%
+                dplyr::select_if(is.numeric) -> cols
+              columns <- colnames(cols)
+            }
+            assertive.sets::assert_is_subset(columns, colnames(data))
+
+            if(!is.null(group_by)){
+              assertive.sets::assert_is_subset(group_by, colnames(data))
+              group_by <- switch(from,
+                             "colData" = SummarizedExperiment::colData(object)[[group_by]],
+                             "rowData" = SummarizedExperiment::rowData(object)[[group_by]])
+            }
+            if(is.null(footnote_text)){
+              footnote_text <- switch(from,
+                           "colData" = "Summarized values from samples.",
+                           "rowData" = "Summarized values from features.")
+            }
+            if(is.null(footnote_title)){
+              footnote_title <- "Note: "
+            }
+
+
+            summarize_metadata(
+              dashboard = dashboard,
+              data = data,
+              columns = columns,
+              group_by = group_by,
+              footnote_title = footnote_title,
+              footnote_text = footnote_text,
+              ...
+            )
+          })
+
+#' @rdname summarize_metadata
+#' @export
+setMethod("summarize_metadata",
+          signature = signature(dashboard = "i2dashboard", object = "Seurat"),
+          function(dashboard, object, from = c("meta.data", "meta.features"), assay = "RNA", columns = NULL, group_by = NULL, footnote_title = NULL, footnote_text = NULL, ...) {
+
+            from <- match.arg(from)
+            data <- switch(from,
+                           "meta.data" = object@meta.data,
+                           "meta.features" = object[[assay]]@meta.features)
+
+            if(is.null(columns)){
+              data %>%
+                as.data.frame %>%
+                dplyr::select_if(is.numeric) -> cols
+              columns <- colnames(cols)
+            }
+            assertive.sets::assert_is_subset(columns, colnames(data))
+
+            if(!is.null(group_by)){
+              assertive.sets::assert_is_subset(group_by, colnames(data))
+              group_by <- switch(from,
+                                 "meta.data" = object@meta.data[[group_by]],
+                                 "meta.features" = object[[assay]]@meta.features[[group_by]])
+            }
+            if(is.null(footnote_text)){
+              footnote_text <- switch(from,
+                                      "meta.data" = "Summarized values from samples.",
+                                      "meta.features" = "Summarized values from features.")
+            }
+            if(is.null(footnote_title)){
+              footnote_title <- "Note: "
+            }
+
+
+            summarize_metadata(
+              dashboard = dashboard,
+              data = data,
+              columns = columns,
+              group_by = group_by,
+              footnote_title = footnote_title,
+              footnote_text = footnote_text,
+              ...
+            )
+          })
+
+
