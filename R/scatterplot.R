@@ -187,7 +187,7 @@ setMethod("scatterplot",
             data <- switch(from,
                            "meta.data" = object@meta.data,
                            "meta.features" = object[[assay]]@meta.features,
-                           "reduction" = Seurat::Embeddings(object, reduction = use_dimred))
+                           "embedding" = Seurat::Embeddings(object, reduction = use_dimred))
 
             labels <- rownames(data)
 
