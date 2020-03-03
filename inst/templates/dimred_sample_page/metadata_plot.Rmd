@@ -61,7 +61,7 @@ output$plot_box_bar_{{ meta_column }}_{{ env_id }} <- plotly::renderPlotly({
 #
 # Layout of component
 #
-plotly::plotlyOutput("plot_box_bar_{{ meta_column }}_{{ env_id }}", height = "100%")
+renderUI({plotly::plotlyOutput("plot_box_bar_{{ meta_column }}_{{ env_id }}", height = "100%")})
 ```
 
 
