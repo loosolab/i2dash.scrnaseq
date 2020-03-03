@@ -1,0 +1,14 @@
+### {{ title }}
+
+<!-- Component created on {{ date }} -->
+
+```{r}
+{{ env_id }} <- readRDS(file.path(datadir, "{{ env_id }}.rds"))
+```
+
+```{r}
+{{ env_id }}$kable
+htmltools::tags$button(i2dash::embed_var({{ env_id }}$df)) 
+```
+
+
