@@ -49,7 +49,6 @@ setMethod("barplot",
           })
 
 #' @rdname barplot
-#' @return An object of class \linkS4class{i2dash::i2dashboard}.
 #' @export
 setMethod("barplot",
           signature = signature(dashboard = "i2dashboard", object = "SingleCellExperiment"),
@@ -84,7 +83,6 @@ setMethod("barplot",
           })
 
 #' @rdname barplot
-#' @return An object of class \linkS4class{i2dash::i2dashboard}.
 #' @export
 setMethod("barplot",
           signature = signature(dashboard = "i2dashboard", object = "Seurat"),

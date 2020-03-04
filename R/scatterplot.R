@@ -91,7 +91,6 @@ setMethod("scatterplot",
 
 
 #' @rdname scatterplot
-#' @return An object of class \linkS4class{i2dash::i2dashboard}.
 #' @export
 setMethod("scatterplot",
           signature = signature(dashboard = "i2dashboard", object = "SingleCellExperiment"),
@@ -168,7 +167,6 @@ setMethod("scatterplot",
           })
 
 #' @rdname scatterplot
-#' @return An object of class \linkS4class{i2dash::i2dashboard}.
 #' @export
 setMethod("scatterplot",
           signature = signature(dashboard = "i2dashboard", object = "Seurat"),
@@ -187,7 +185,7 @@ setMethod("scatterplot",
             data <- switch(from,
                            "meta.data" = object@meta.data,
                            "meta.features" = object[[assay]]@meta.features,
-                           "reduction" = Seurat::Embeddings(object, reduction = use_dimred))
+                           "embedding" = Seurat::Embeddings(object, reduction = use_dimred))
 
             labels <- rownames(data)
 

@@ -1,4 +1,3 @@
-
 ### Metadata: {{ meta_column }}
 
 <!-- Component created on {{ date }} -->
