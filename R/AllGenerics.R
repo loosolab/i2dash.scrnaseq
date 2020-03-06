@@ -60,24 +60,6 @@ setGeneric("add_feature_grid_page", function(dashboard, object, ...) standardGen
 #' @exportMethod add_dimred_feature_page
 setGeneric("add_dimred_feature_page", function(dashboard, object, ...) standardGeneric("add_dimred_feature_page"))
 
-#' Summarize samples or features of objects containing data from single-cell experiments.
-#'
-#' @param object A SingleCellExperiment or Seurat object.
-#' @param columns The metadata columns to summarize.
-#' @param FUNS A named vector indicating summary functions.
-#' @param group_by (Optional) A vector, which is used for grouping.
-#'
-#' @return A \code{kableExtra} object with one row for each \code{columns} and one column for each \code{FUNS}, containing the desired summary. Optionaly \code{group_by} can be provided. In this case for each level in \code{group_by} a column is created with the summerized values for each \code{FUNS}.
-#'
-#' @name summarize
-#' @rdname summarize
-#' @exportMethod summarize_samples
-setGeneric("summarize_samples", function(object, ...) standardGeneric("summarize_samples"))
-
-#' @rdname summarize
-#' @exportMethod summarize_features
-setGeneric("summarize_features", function(object, ...) standardGeneric("summarize_features"))
-
 #' Add a feature expression page.
 #'
 #' This function adds a page with two linked components to the \code{dashboard} object: A scatterplot, showing samples in along two-dimensional coordinates, and a violin plot, showing feature expression values by groups defined in \code{group_by}.
@@ -278,3 +260,22 @@ setGeneric("heatmap", function(dashboard, object, ...) standardGeneric("heatmap"
 #' @rdname dimred-sample-page
 #' @exportMethod add_dimred_sample_page
 setGeneric("add_dimred_sample_page", function(dashboard, object, ...) standardGeneric("add_dimred_sample_page"))
+
+#' Renders a component containing an HTML table of summarized sample or feature metadata of single-cell experiment objects or data.frames.
+#'
+#' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
+#' @param object An object of class \linkS4class{Seurat::Seurat} or \linkS4class{SingleCellExperiment::SingleCellExperiment}.
+#' @param data Data.frame containing numeric observations to summarize.
+#' @param group_by A column name of a column containing grouping factors for grouping.
+#' @param FUNS A named vector indicating summary functions.
+#' @param caption The tables caption.
+#' @param description The tables description.
+#' @param title The title of the component.
+#' @param columns The metadata columns to summarize.
+#' @param assay A character defining the assay of \code{object}.
+#'
+#' @name summarize_metadata
+#' @rdname summarize_metadata
+#' @exportMethod summarize_metadata
+setGeneric("summarize_metadata", function(dashboard, object, ...) standardGeneric("summarize_metadata"))
+
