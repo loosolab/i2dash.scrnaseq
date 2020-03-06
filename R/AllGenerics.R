@@ -261,15 +261,15 @@ setGeneric("heatmap", function(dashboard, object, ...) standardGeneric("heatmap"
 #' @exportMethod add_dimred_sample_page
 setGeneric("add_dimred_sample_page", function(dashboard, object, ...) standardGeneric("add_dimred_sample_page"))
 
-#' Renders a componnet containing an HTML table of summarized sample or feature metadata of single-cell experiment objects or data.frames.
+#' Renders a component containing an HTML table of summarized sample or feature metadata of single-cell experiment objects or data.frames.
 #'
 #' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
 #' @param object An object of class \linkS4class{Seurat::Seurat} or \linkS4class{SingleCellExperiment::SingleCellExperiment}.
-#' @param data Data.frame containing numeric observations for summary.
-#' @param group_by Optionally provide data containing grouping factors for grouping.
+#' @param data Data.frame containing numeric observations to summarize.
+#' @param group_by A column name of a column containing grouping factors for grouping.
 #' @param FUNS A named vector indicating summary functions.
-#' @param footnote_title Provide a title for the table description.
-#' @param footnote_text Provide a string for table description.
+#' @param caption The tables caption.
+#' @param description The tables description.
 #' @param title The title of the component.
 #' @param columns The metadata columns to summarize.
 #' @param assay A character defining the assay of \code{object}.

@@ -7,15 +7,12 @@
 #' @return A \code{data.frame} that contains summary statistics.
 summarize_data_ <- function(data, columns, FUNS, group_by = NULL) {
   if(is.null(group_by)){
-    df <- df_without_grouping(data = data, columns = columns, FUNS = FUNS)
-    return(df)
+    df_without_grouping(data = data, columns = columns, FUNS = FUNS) %>%
+      return(.)
   } else {
-    df_list <- list()
-    for (func in FUNS){
-      df_list[[func]] <- df_per_func(data = data, columns = columns, func = func, group_by = group_by)
-    }
-    df <- do.call("cbind", df_list)
-    return(df)
+    lapply(FUNS, function(func) df_per_func(data = data, columns = columns, func = func, group_by = group_by)) %>%
+      do.call("cbind", .) %>%
+      return(.)
   }
 }
 
@@ -94,7 +91,7 @@ correct_name <- function(key, prefix) {
 #' @return A string containing markdown code for the rendered component
 setMethod("summarize_metadata",
           signature = signature(dashboard = "i2dashboard", object = "missing"),
-          function(dashboard, data, columns = colnames(data), FUNS = c("min", "max", "mean", "median"), group_by = NULL, footnote_title = NULL, footnote_text = NULL, title = NULL) {
+          function(dashboard, data, columns = colnames(data), FUNS = c("min", "max", "mean", "median"), group_by = NULL, caption = NULL, description = NULL, title = NULL) {
 
             env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
             data <- as.data.frame(data)
@@ -106,8 +103,8 @@ setMethod("summarize_metadata",
             env$df <- df
             env$group_by <- group_by
             env$FUNS <- FUNS
-            env$footnote_title <- footnote_title
-            env$footnote_text <- footnote_text
+            env$footnote_title <- caption
+            env$footnote_text <- description
 
             saveRDS(env, file = file.path(dashboard@datadir, paste0(env_id, ".rds")))
 
@@ -123,7 +120,7 @@ setMethod("summarize_metadata",
 #' @export
 setMethod("summarize_metadata",
           signature = signature(dashboard = "i2dashboard", object = "SingleCellExperiment"),
-          function(dashboard, object, from = c("colData", "rowData"), columns = NULL, group_by = NULL, footnote_title = NULL, footnote_text = NULL, ...) {
+          function(dashboard, object, from = c("colData", "rowData"), columns = NULL, group_by = NULL, caption = "Table: ", description = NULL, ...) {
 
             from <- match.arg(from)
             data <- switch(from,
@@ -144,23 +141,19 @@ setMethod("summarize_metadata",
                              "colData" = SummarizedExperiment::colData(object)[[group_by]],
                              "rowData" = SummarizedExperiment::rowData(object)[[group_by]])
             }
-            if(is.null(footnote_text)){
-              footnote_text <- switch(from,
+            if(is.null(description)){
+              description <- switch(from,
                            "colData" = "Summarized values from samples.",
                            "rowData" = "Summarized values from features.")
             }
-            if(is.null(footnote_title)){
-              footnote_title <- "Note: "
-            }
-
 
             summarize_metadata(
               dashboard = dashboard,
               data = data,
               columns = columns,
               group_by = group_by,
-              footnote_title = footnote_title,
-              footnote_text = footnote_text,
+              footnote_title = footnote,
+              footnote_text = description,
               ...
             )
           })
@@ -169,7 +162,7 @@ setMethod("summarize_metadata",
 #' @export
 setMethod("summarize_metadata",
           signature = signature(dashboard = "i2dashboard", object = "Seurat"),
-          function(dashboard, object, from = c("meta.data", "meta.features"), assay = "RNA", columns = NULL, group_by = NULL, footnote_title = NULL, footnote_text = NULL, ...) {
+          function(dashboard, object, from = c("meta.data", "meta.features"), assay = "RNA", columns = NULL, group_by = NULL, caption = "Table", description = NULL, ...) {
 
             from <- match.arg(from)
             data <- switch(from,
@@ -190,23 +183,19 @@ setMethod("summarize_metadata",
                                  "meta.data" = object@meta.data[[group_by]],
                                  "meta.features" = object[[assay]]@meta.features[[group_by]])
             }
-            if(is.null(footnote_text)){
-              footnote_text <- switch(from,
+            if(is.null(description)){
+              description <- switch(from,
                                       "meta.data" = "Summarized values from samples.",
                                       "meta.features" = "Summarized values from features.")
             }
-            if(is.null(footnote_title)){
-              footnote_title <- "Note: "
-            }
-
 
             summarize_metadata(
               dashboard = dashboard,
               data = data,
               columns = columns,
               group_by = group_by,
-              footnote_title = footnote_title,
-              footnote_text = footnote_text,
+              footnote_title = footnote,
+              footnote_text = description,
               ...
             )
           })

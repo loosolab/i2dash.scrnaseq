@@ -5,7 +5,7 @@
 \alias{summarize_metadata,i2dashboard,missing-method}
 \alias{summarize_metadata,i2dashboard,SingleCellExperiment-method}
 \alias{summarize_metadata,i2dashboard,Seurat-method}
-\title{Renders a componnet containing an HTML table of summarized sample or feature metadata of single-cell experiment objects or data.frames.}
+\title{Renders a component containing an HTML table of summarized sample or feature metadata of single-cell experiment objects or data.frames.}
 \usage{
 summarize_metadata(dashboard, object, ...)
 
@@ -15,8 +15,8 @@ summarize_metadata(dashboard, object, ...)
   columns = colnames(data),
   FUNS = c("min", "max", "mean", "median"),
   group_by = NULL,
-  footnote_title = NULL,
-  footnote_text = NULL,
+  caption = NULL,
+  description = NULL,
   title = NULL
 )
 
@@ -26,8 +26,8 @@ summarize_metadata(dashboard, object, ...)
   from = c("colData", "rowData"),
   columns = NULL,
   group_by = NULL,
-  footnote_title = NULL,
-  footnote_text = NULL,
+  caption = "Table: ",
+  description = NULL,
   ...
 )
 
@@ -38,8 +38,8 @@ summarize_metadata(dashboard, object, ...)
   assay = "RNA",
   columns = NULL,
   group_by = NULL,
-  footnote_title = NULL,
-  footnote_text = NULL,
+  caption = "Table",
+  description = NULL,
   ...
 )
 }
@@ -48,17 +48,17 @@ summarize_metadata(dashboard, object, ...)
 
 \item{object}{An object of class \linkS4class{Seurat::Seurat} or \linkS4class{SingleCellExperiment::SingleCellExperiment}.}
 
-\item{data}{Data.frame containing numeric observations for summary.}
+\item{data}{Data.frame containing numeric observations to summarize.}
 
 \item{columns}{The metadata columns to summarize.}
 
 \item{FUNS}{A named vector indicating summary functions.}
 
-\item{group_by}{Optionally provide data containing grouping factors for grouping.}
+\item{group_by}{A column name of a column containing grouping factors for grouping.}
 
-\item{footnote_title}{Provide a title for the table description.}
+\item{caption}{The tables caption.}
 
-\item{footnote_text}{Provide a string for table description.}
+\item{description}{The tables description.}
 
 \item{title}{The title of the component.}
 
@@ -68,5 +68,5 @@ summarize_metadata(dashboard, object, ...)
 A string containing markdown code for the rendered component
 }
 \description{
-Renders a componnet containing an HTML table of summarized sample or feature metadata of single-cell experiment objects or data.frames.
+Renders a component containing an HTML table of summarized sample or feature metadata of single-cell experiment objects or data.frames.
 }
