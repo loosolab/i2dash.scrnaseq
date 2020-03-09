@@ -261,27 +261,6 @@ setGeneric("heatmap", function(dashboard, object, ...) standardGeneric("heatmap"
 #' @exportMethod add_dimred_sample_page
 setGeneric("add_dimred_sample_page", function(dashboard, object, ...) standardGeneric("add_dimred_sample_page"))
 
-#' Explore the effects of the parameters "theta" and "perplexity" of a t-stochastic neighbour embedding or "n_neighors" of a UMAP embedding.
-#'
-#' Creates a page with two tabs and a sidebar. The first tab generates the dimension reduction plot of the UMAP or t-SNE with the parameters set in the sidebar by clicking the "Generate plot" button. It is possible to save the scatterplot with its parameters to compare it with another parameters by clicking the button "Add plot for comparison". The second tab "Compare selected plots" contains a grid layout with the saved reduced dimensions. A list in the sidebar shows the saved plots and enables the deletion of plots.
-#'
-#' @param dashboard A \linkS4class{i2dash::i2dashboard}.
-#' @param exprs_values A numeric matrix of log-expression values where rows are features and columns are cells. Alternatively, a character indicating which assay of the SummarizedExperiment, SingleCellExperiment or Seurat object provided in \code{object} to use.
-#' @param seed An integer vector, containing the random number generator (RNG) state for random number generation with \code{set.seed()}.
-#' @param calculateUMAP A list with parameters passed on to \code{scater::calculateUMAP()}.
-#' @param calculateTSNE A list with parameters passed on to \code{scater::calculateTSNE()}.
-#' @param page A page name to identify this page.
-#' @param title The title of the page.
-#' @param menu The menu tab to which this page is subordinated. Default "Tools"
-#' @param object An object of class \linkS4class{Seurat::Seurat}, \linkS4class{SingleCellExperiment::SingleCellExperiment} or \linkS4class{SummarizedExperiment::SummarizedExperiment}.
-#' @param assay A character specifying the assay (\code{object@assays}) to obtain expression values from. (Default: "RNA")
-#' @param assay_slot A character specifying the name of the data slot in the assay. (Default: "data")
-#'
-#' @name dimred-comparison-page
-#' @rdname dimred-comparison-page
-#' @exportMethod add_dimred_comparison_page
-setGeneric("add_dimred_comparison_page", function(dashboard, object, ...) standardGeneric("add_dimred_comparison_page"))
-
 #' Renders a component containing an HTML table of summarized sample or feature metadata of single-cell experiment objects or data.frames.
 #'
 #' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
@@ -299,5 +278,4 @@ setGeneric("add_dimred_comparison_page", function(dashboard, object, ...) standa
 #' @rdname summarize_metadata
 #' @exportMethod summarize_metadata
 setGeneric("summarize_metadata", function(dashboard, object, ...) standardGeneric("summarize_metadata"))
-
 
