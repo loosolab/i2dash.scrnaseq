@@ -152,8 +152,8 @@ setMethod("summarize_metadata",
               data = data,
               columns = columns,
               group_by = group_by,
-              footnote_title = footnote,
-              footnote_text = description,
+              caption = caption,
+              description = description,
               ...
             )
           })
@@ -194,8 +194,8 @@ setMethod("summarize_metadata",
               data = data,
               columns = columns,
               group_by = group_by,
-              footnote_title = footnote,
-              footnote_text = description,
+              caption = caption,
+              description = description,
               ...
             )
           })
