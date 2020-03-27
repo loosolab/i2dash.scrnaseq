@@ -294,6 +294,7 @@ setGeneric("summarize_metadata", function(dashboard, object, ...) standardGeneri
 #' @param object An object of class \linkS4class{Seurat::Seurat}, \linkS4class{SingleCellExperiment::SingleCellExperiment} or \linkS4class{SummarizedExperiment::SummarizedExperiment}.
 #' @param assay A character specifying the assay (\code{object@assays}) to obtain expression values from. (Default: "RNA")
 #' @param assay_slot A character specifying the name of the data slot in the assay. (Default: "data")
+#' @param subset_row A character vector (of feature names), a logical vector or numeric vector (of indices) specifying the features to use. The default of NULL will use all features.
 #'
 #' @name dimred-comparison-page
 #' @rdname dimred-comparison-page
