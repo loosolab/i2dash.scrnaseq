@@ -1,7 +1,5 @@
-#' @name dimred-comparison-page
 #' @rdname dimred-comparison-page
-#' @aliases dimred-comparison-page
-#' @return An object of class \linkS4class{i2dash::i2dashboard}.
+#' @return An object of class \linkS4class{i2dashboard}.
 #' @export
 setMethod("add_dimred_comparison_page",
           signature = signature(dashboard = "i2dashboard", object = "missing"),
@@ -13,6 +11,7 @@ setMethod("add_dimred_comparison_page",
                    page = "dimred_comparison_page",
                    title = "Explore UMAP/t-SNE parameter",
                    menu = "Tools") {
+            . <- NULL # see https://github.com/tidyverse/magrittr/issues/29
 
             page %>% tolower %>% gsub(x = ., pattern = " ", replacement = "_") %>% make.names -> name
 
@@ -40,7 +39,6 @@ setMethod("add_dimred_comparison_page",
             return(dashboard)
           })
 
-#' @name dimred-comparison-page
 #' @rdname dimred-comparison-page
 #' @export
 setMethod("add_dimred_comparison_page",
@@ -56,7 +54,6 @@ setMethod("add_dimred_comparison_page",
             add_dimred_comparison_page(dashboard, exprs_values = exprs_values, ...)
           })
 
-#' @name dimred-comparison-page
 #' @rdname dimred-comparison-page
 #' @export
 setMethod("add_dimred_comparison_page",
@@ -72,7 +69,6 @@ setMethod("add_dimred_comparison_page",
             add_dimred_comparison_page(dashboard, exprs_values = exprs_values, ...)
           })
 
-#' @name dimred-comparison-page
 #' @rdname dimred-comparison-page
 #' @export
 setMethod("add_dimred_comparison_page",

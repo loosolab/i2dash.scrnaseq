@@ -1,7 +1,5 @@
-#' @name dimred-sample-page
 #' @rdname dimred-sample-page
-#' @aliases add_dimred_sample_page
-#' @return An object of class \linkS4class{i2dash::i2dashboard}.
+#' @return An object of class \linkS4class{i2dashboard}.
 #' @export
 setMethod("add_dimred_sample_page",
           signature = signature(dashboard = "i2dashboard", object = "missing"),
@@ -16,6 +14,8 @@ setMethod("add_dimred_sample_page",
                    show_silhouette = FALSE,
                    menu = NULL
           ) {
+            . <- NULL # see https://github.com/tidyverse/magrittr/issues/29
+
             page %>% tolower %>% gsub(x = ., pattern = " ", replacement = "_") %>% make.names -> name
 
             # Create random env id
@@ -73,7 +73,6 @@ setMethod("add_dimred_sample_page",
             return(dashboard)
           })
 
-#' @name dimred-sample-page
 #' @rdname dimred-sample-page
 #' @export
 setMethod("add_dimred_sample_page",
@@ -97,7 +96,6 @@ setMethod("add_dimred_sample_page",
             )
           })
 
-#' @name dimred-sample-page
 #' @rdname dimred-sample-page
 #' @export
 setMethod("add_dimred_sample_page",

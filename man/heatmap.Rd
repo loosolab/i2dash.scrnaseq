@@ -48,9 +48,11 @@ heatmap(dashboard, object, ...)
 )
 }
 \arguments{
-\item{dashboard}{An object of class \linkS4class{i2dash::i2dashboard}.}
+\item{dashboard}{An object of class \linkS4class{i2dashboard}.}
 
-\item{object}{A valid \linkS4class{SingleCellExperiment::SingleCellExperiment} object.}
+\item{object}{A valid \linkS4class{SingleCellExperiment} object.}
+
+\item{...}{Further parameters passed to the core function.}
 
 \item{exprs_values}{A data.frame (matrix) containing expression data of features of interest in rows and samples in columns or a string representing the name of an \code{assay} of \code{object}.}
 
@@ -77,6 +79,10 @@ heatmap(dashboard, object, ...)
 \item{row_title}{The row title of the heatmap.}
 
 \item{subset_row}{An optional character vector (of feature names), a logical vector or numeric vector (of indices) specifying the features to use. The default of NULL will use the first 100 features.}
+
+\item{assay}{A character specifying the assay (\code{object@assays}) to obtain expression values from. (Default: "RNA")}
+
+\item{assay_slot}{A character specifying the name of the data slot in the assay. (Default: "data")}
 }
 \value{
 A string containing markdown code for the rendered component

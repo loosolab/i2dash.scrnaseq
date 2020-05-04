@@ -1,7 +1,5 @@
-#' @name dimred-feature-page
 #' @rdname dimred-feature-page
-#' @aliases add_dimred_feature_page
-#' @return An object of class \linkS4class{i2dash::i2dashboard}.
+#' @return An object of class \linkS4class{i2dashboard}.
 #' @export
 setMethod("add_dimred_feature_page",
           signature = signature(dashboard = "i2dashboard", object = "missing"),
@@ -12,6 +10,7 @@ setMethod("add_dimred_feature_page",
                    page = "dimred_feature_page",
                    title = "Dim. reduction & feature metadata",
                    menu = NULL) {
+            . <- NULL # see https://github.com/tidyverse/magrittr/issues/29
 
             page %>% tolower %>% gsub(x = ., pattern = " ", replacement = "_") %>% make.names -> name
 
@@ -50,7 +49,6 @@ setMethod("add_dimred_feature_page",
             return(dashboard)
           })
 
-#' @name dimred-feature-page
 #' @rdname dimred-feature-page
 #' @export
 setMethod("add_dimred_feature_page",
@@ -86,7 +84,6 @@ setMethod("add_dimred_feature_page",
                                                ...)
           })
 
-#' @name dimred-feature-page
 #' @rdname dimred-feature-page
 #' @export
 setMethod("add_dimred_feature_page",
@@ -109,7 +106,7 @@ setMethod("add_dimred_feature_page",
             assertive.sets::assert_is_subset(feature_metadata, names(object@meta.data))
 
             assay_obj <- Seurat::GetAssay(object = object, assay = assay)
-            exprs_values <- Seurat::GetAssayData(object = assay_obj, slot = slot)
+            exprs_values <- Seurat::GetAssayData(object = assay_obj, slot = assay_slot)
             metadata <- object@meta.data[metadata]
 
             # feature_metadata

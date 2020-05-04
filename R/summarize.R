@@ -3,9 +3,12 @@
 #' @param data A data.frame.
 #' @param columns The columns of \code{data} that are summarized.
 #' @param FUNS A named vector of summary functions
+#' @param group_by A vector of the same length as the number of rows in data, which is used for grouping.
 #'
 #' @return A \code{data.frame} that contains summary statistics.
 summarize_data_ <- function(data, columns, FUNS, group_by = NULL) {
+  . <- NULL # see https://github.com/tidyverse/magrittr/issues/29
+
   if(is.null(group_by)){
     df_without_grouping(data = data, columns = columns, FUNS = FUNS) %>%
       return(.)
@@ -19,11 +22,14 @@ summarize_data_ <- function(data, columns, FUNS, group_by = NULL) {
 #' Function to create a data.frame containing one column for each provided function (rownames = selected colData)
 #' @param data A data.frame.
 #' @param columns The columns of \code{data} that are summarized.
-#' @param func A character of one summary function.
-#' @param group_by A vector of the same length as the number of rows in data, which is used for grouping.
+#' @param FUNS A character of one summary function.
 #'
 #' @return data.frame
 df_without_grouping <- function(data, columns, FUNS){
+  key = NULL # workaround for R CMD check note
+  stat = NULL
+  value = NULL
+
   separate_regex <- paste0("_(?=[",paste0(FUNS, collapse = "|"),"])")
 
   if(!assertive.properties::has_names(FUNS)) {

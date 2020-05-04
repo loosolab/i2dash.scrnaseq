@@ -50,9 +50,11 @@ scatterplot(dashboard, object, ...)
 )
 }
 \arguments{
-\item{dashboard}{An object of class \linkS4class{i2dash::i2dashboard}.}
+\item{dashboard}{An object of class \linkS4class{i2dashboard}.}
 
-\item{object}{An object of class \linkS4class{Seurat::Seurat} or \linkS4class{SingleCellExperiment::SingleCellExperiment}.}
+\item{object}{An object of class \linkS4class{Seurat} or \linkS4class{SingleCellExperiment}.}
+
+\item{...}{Further parameters passed to the core function.}
 
 \item{x}{Data that will be mapped to the x-axis (see Details).}
 
@@ -75,6 +77,8 @@ scatterplot(dashboard, object, ...)
 \item{from}{A character specifying where to obtain the data from \code{object} (see Details).}
 
 \item{use_dimred}{A character vector indicating the reduced dimension to use from \code{"object"} (see Details).}
+
+\item{subset_row}{An optional character vector (of feature names), a logical vector or numeric vector (of indices) specifying the features to use. The default of NULL will use all features.}
 
 \item{assay}{A character defining the assay of \code{object} and is used for obtaining the \code{exprs_values} (default "RNA") (see Details).}
 

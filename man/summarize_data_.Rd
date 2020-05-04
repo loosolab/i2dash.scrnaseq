@@ -12,6 +12,8 @@ summarize_data_(data, columns, FUNS, group_by = NULL)
 \item{columns}{The columns of \code{data} that are summarized.}
 
 \item{FUNS}{A named vector of summary functions}
+
+\item{group_by}{A vector of the same length as the number of rows in data, which is used for grouping.}
 }
 \value{
 A \code{data.frame} that contains summary statistics.

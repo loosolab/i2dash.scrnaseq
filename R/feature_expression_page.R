@@ -1,9 +1,17 @@
-#' @rdname add_feature_expression_page
-#' @return An object of class \linkS4class{i2dash::i2dashboard}.
+#' @rdname feature-expression-page
+#' @return An object of class \linkS4class{i2dashboard}.
 #' @export
 setMethod("add_feature_expression_page",
           signature = signature(dashboard = "i2dashboard", object = "missing"),
-          function(dashboard, use_dimred, exprs_values, group_by = NULL, labels = rownames(use_dimred), title = "Feature expression", menu = NULL) {
+          function(dashboard, use_dimred, exprs_values, group_by = NULL, labels = rownames(use_dimred), title = "Feature expression", menu = NULL, page = "feature_expression_page") {
+            . <- NULL # see https://github.com/tidyverse/magrittr/issues/29
+
+            feature = NULL
+            x = NULL
+            y = NULL
+            label = NULL
+
+            page %>% tolower %>% gsub(x = ., pattern = " ", replacement = "_") %>% make.names -> name
 
             # Create random env id
             env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
@@ -52,11 +60,11 @@ setMethod("add_feature_expression_page",
             timestamp <- Sys.time()
             expanded_component <- list(knitr::knit_expand(file = system.file("templates", "feature_expression_page.Rmd", package = "i2dash.scrnaseq"), env_id = env_id, date = timestamp))
 
-            dashboard@pages[["feature_expression_page"]] <- list(title = title, layout = "empty", menu = menu, components = expanded_component, max_components = 1, sidebar = NULL)
+            dashboard@pages[[name]] <- list(title = title, layout = "empty", menu = menu, components = expanded_component, max_components = 1, sidebar = NULL)
             return(dashboard)
           })
 
-#' @rdname add_feature_expression_page
+#' @rdname feature-expression-page
 #' @export
 setMethod("add_feature_expression_page",
           signature = signature(dashboard = "i2dashboard", object = "SingleCellExperiment"),
@@ -82,7 +90,7 @@ setMethod("add_feature_expression_page",
                                      ...)
           })
 
-#' @rdname add_feature_expression_page
+#' @rdname feature-expression-page
 #' @export
 setMethod("add_feature_expression_page",
           signature = signature(dashboard = "i2dashboard", object = "Seurat"),

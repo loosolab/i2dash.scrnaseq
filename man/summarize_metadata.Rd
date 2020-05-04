@@ -44,9 +44,11 @@ summarize_metadata(dashboard, object, ...)
 )
 }
 \arguments{
-\item{dashboard}{An object of class \linkS4class{i2dash::i2dashboard}.}
+\item{dashboard}{An object of class \linkS4class{i2dashboard}.}
 
-\item{object}{An object of class \linkS4class{Seurat::Seurat} or \linkS4class{SingleCellExperiment::SingleCellExperiment}.}
+\item{object}{An object of class \linkS4class{Seurat} or \linkS4class{SingleCellExperiment}.}
+
+\item{...}{Further parameters passed to the core function.}
 
 \item{data}{Data.frame containing numeric observations to summarize.}
 
@@ -61,6 +63,8 @@ summarize_metadata(dashboard, object, ...)
 \item{description}{The tables description.}
 
 \item{title}{The title of the component.}
+
+\item{from}{A character specifying where to obtain the data from \code{object}, e.g. \code{colData}/\code{rowData}.}
 
 \item{assay}{A character defining the assay of \code{object}.}
 }
