@@ -20,7 +20,7 @@ aggregate_data <- function(data, group) {
 }
 ```
 
-```{r, eval=!is_shiny}
+```{r, eval=!is_shiny, include=FALSE}
 # Create defaults for heatmap
 exprs_values_{{ env_id }} <- {{ env_id }}$exprs_values
 split_by_{{ env_id }} <- NULL
@@ -61,13 +61,7 @@ if (!is.null({{ env_id }}$aggregate_by)) {
 
 # Todo?
 row_split_{{ env_id }} <- NULL
-
-# Provide data for download
-# htmltools::tags$button(i2dash::embed_var(exprs_values_{{ env_id }})) # prevents large size of the plot
-# htmltools::tags$br()
-
-# Render plot
-i2dash.scrnaseq::ComplexHeatmap_heatmap(
+heatmap_{{ env_id }} <- ComplexHeatmap::draw(i2dash.scrnaseq::ComplexHeatmap_heatmap(
     matrix = exprs_values_{{ env_id }},
     legend_title = {{ env_id }}$legend_title,
     cluster_rows = {{ env_id }}$cluster_rows,
@@ -87,7 +81,31 @@ i2dash.scrnaseq::ComplexHeatmap_heatmap(
     column_names_gp = grid::gpar(fontsize = 7),
     column_title_gp = grid::gpar(fontsize = 10),
     row_title_gp = grid::gpar(fontsize = 10)
-  )
+  ))
+
+# get image size
+width_{{ env_id }} <- grid::convertUnit(ComplexHeatmap:::width(heatmap_{{ env_id }}), "mm", valueOnly = T)
+height_{{ env_id }} <- grid::convertUnit(ComplexHeatmap:::height(heatmap_{{ env_id }}), "mm", valueOnly = T)
+
+# safe image as png
+png(file.path(datadir, "{{ env_id }}_heatmap.png"), width = width_{{ env_id }}, height = height_{{ env_id }}, units = "mm", res = 300)
+heatmap_{{ env_id }}
+dev.off()
+```
+
+```{r, eval=!is_shiny}
+# Provide data for download
+htmltools::div(htmltools::tags$button(i2dash::embed_var(exprs_values_{{ env_id }})), id = "{{ env_id }}_heatmap")
+
+# convert image in base64, create appropriate HTML tags, and remove png file
+file_{{ env_id }} <- file.path(datadir, "{{ env_id }}_heatmap.png")
+printImageURI<-function(file){
+  uri=knitr::image_uri(file)
+  file.remove(file)
+  return(sprintf("<p class='image-container' style='height:auto; margin-top: 40px; background: url(\"%s\") center center / contain no-repeat;'>\n <img src=\"%s\">\n", uri, uri))
+}
+HTMLheatmap_{{ env_id }} <- printImageURI(file_{{ env_id }})
+htmltools::HTML(HTMLheatmap_{{ env_id }})
 ```
 
 ```{r, eval=is_shiny}
