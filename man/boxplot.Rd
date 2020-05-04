@@ -38,9 +38,11 @@ boxplot(dashboard, object, ...)
 )
 }
 \arguments{
-\item{dashboard}{An object of class \linkS4class{i2dash::i2dashboard}.}
+\item{dashboard}{An object of class \linkS4class{i2dashboard}.}
 
-\item{object}{An object of class \linkS4class{Seurat::Seurat} or \linkS4class{SingleCellExperiment::SingleCellExperiment}.}
+\item{object}{An object of class \linkS4class{Seurat} or \linkS4class{SingleCellExperiment}.}
+
+\item{...}{Further parameters passed to the core function.}
 
 \item{x}{Data containing numeric observations for the horizontal axis.}
 
@@ -67,8 +69,8 @@ The parameters \code{x}, \code{group_by} take different arguments depending on t
   In case of the \emph{i2dashboard,missing}-method, the parameters are expected to be of class \code{data.frame} or \code{matrix}.
   In case of the \emph{i2dashboard,SingleCellExperiment}- or \emph{i2dashboard,Seurat}-method, the parameters are expected to be of class \code{character} and
   \itemize{
-    \item the parameter \code{from} can be either \code{"colData"} or \code{"rowData"} for a \linkS4class{SingleCellExperiment::SingleCellExperiment} object or
-    \item \code{"meta.data"} or \code{"meta.features"} for a \linkS4class{Seurat::Seurat} object.
+    \item the parameter \code{from} can be either \code{"colData"} or \code{"rowData"} for a \linkS4class{SingleCellExperiment} object or
+    \item \code{"meta.data"} or \code{"meta.features"} for a \linkS4class{Seurat} object.
   }
   In both cases, \code{x} and \code{group_by} take column names of \code{from}.
 }

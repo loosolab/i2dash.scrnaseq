@@ -11,9 +11,7 @@ df_without_grouping(data, columns, FUNS)
 
 \item{columns}{The columns of \code{data} that are summarized.}
 
-\item{func}{A character of one summary function.}
-
-\item{group_by}{A vector of the same length as the number of rows in data, which is used for grouping.}
+\item{FUNS}{A character of one summary function.}
 }
 \value{
 data.frame

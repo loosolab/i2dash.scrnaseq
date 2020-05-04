@@ -16,9 +16,9 @@ plotly_barplot(
 
 \item{showlegend}{(Optional) Boolean value that describes if the legend should be shown.}
 
-\item{title_x}{(Optional) A title that describes the observations.}
+\item{x_group_by_title}{(Optional) A title that describes the grouping factor along the x-axis.}
 
-\item{title_group_by}{(Optional) A title that describes the grouping factor.}
+\item{y_group_by_title}{(Optional) A title that describes the grouping factor along the y-axis.}
 }
 \value{
 An object of class \code{plotly}.

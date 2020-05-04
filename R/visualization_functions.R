@@ -17,8 +17,8 @@ plotly_scatterplot <- function(..., y_title = NULL, x_title = NULL){
 #'
 #' @param ... Additional arguments passed on to \code{plotly::plot_ly}.
 #' @param showlegend (Optional) Boolean value that describes if the legend should be shown.
-#' @param title_x (Optional) A title that describes the observations.
-#' @param title_group_by (Optional) A title that describes the grouping factor.
+#' @param x_group_by_title (Optional) A title that describes the grouping factor along the x-axis.
+#' @param y_group_by_title (Optional) A title that describes the grouping factor along the y-axis.
 #'
 #' @return An object of class \code{plotly}.
 #' @export

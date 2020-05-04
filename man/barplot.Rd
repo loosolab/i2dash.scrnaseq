@@ -38,9 +38,11 @@ barplot(dashboard, object, ...)
 )
 }
 \arguments{
-\item{dashboard}{An object of class \linkS4class{i2dash::i2dashboard}.}
+\item{dashboard}{An object of class \linkS4class{i2dashboard}.}
 
-\item{object}{An object of class \linkS4class{Seurat::Seurat} or \linkS4class{SingleCellExperiment::SingleCellExperiment}.}
+\item{object}{An object of class \linkS4class{Seurat} or \linkS4class{SingleCellExperiment}.}
+
+\item{...}{Further parameters passed to the core function.}
 
 \item{y_group_by}{Data containing grouping factors for the vertical axis.}
 
@@ -53,6 +55,8 @@ barplot(dashboard, object, ...)
 \item{y_group_by_title}{The title of the y-axis.}
 
 \item{from}{A character specifying where to obtain the data from (see Details).}
+
+\item{assay}{A character defining the assay of \code{object} and is used for obtaining the meta data of the respective assay (default "RNA") (see Details).}
 }
 \value{
 A string containing markdown code for the rendered component
@@ -65,8 +69,8 @@ The parameters \code{y_group_by}, \code{x_group_by} take different arguments dep
   In case of the \emph{i2dashboard,missing}-method, the parameters are expected to be of class \code{data.frame} or \code{matrix}.
   In case of the \emph{i2dashboard,SingleCellExperiment} or \emph{i2dashboard,Seurat} method, the parameters are expected to be of class \code{character} and
   \itemize{
-    \item \code{from} can either be \code{"colData"} or \code{"rowData"} for a \linkS4class{SingleCellExperiment::SingleCellExperiment} object or
-    \item \code{"meta.data"} or \code{"meta.features"} for a \linkS4class{Seurat::Seurat} object.
+    \item \code{from} can either be \code{"colData"} or \code{"rowData"} for a \linkS4class{SingleCellExperiment} object or
+    \item \code{"meta.data"} or \code{"meta.features"} for a \linkS4class{Seurat} object.
   }
   In both cases, \code{y_group_by} and \code{x_group_by} take column names of \code{from}.
 }

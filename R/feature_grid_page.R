@@ -1,7 +1,5 @@
-#' @name feature-grid-page
 #' @rdname feature-grid-page
-#' @aliases add_feature_grid_page
-#' @return An object of class \linkS4class{i2dash::i2dashboard}.
+#' @return An object of class \linkS4class{i2dashboard}.
 #' @export
 setMethod("add_feature_grid_page",
           signature = signature(dashboard = "i2dashboard", object = "missing"),
@@ -42,7 +40,6 @@ setMethod("add_feature_grid_page",
             return(dashboard)
           })
 
-#' @name feature-grid-page
 #' @rdname feature-grid-page
 #' @export
 setMethod("add_feature_grid_page",
@@ -75,7 +72,6 @@ setMethod("add_feature_grid_page",
             return(dashboard)
           })
 
-#' @name feature-grid-page
 #' @rdname feature-grid-page
 #' @export
 setMethod("add_feature_grid_page",
@@ -85,13 +81,14 @@ setMethod("add_feature_grid_page",
                    use_dimred,
                    assay,
                    slot = "data",
-                   subset_row = NULL) {
+                   subset_row = NULL,
+                   ...) {
 
             assertive.sets::assert_is_subset(use_dimred, names(object@reductions))
             assertive.sets::assert_is_subset(assay, names(object@assays))
 
             assay_obj <- Seurat::GetAssay(object = object, assay = assay)
-            exprs_values <- Seurat::GetAssayData(object = assay_obj, slot = assay_slot)
+            exprs_values <- Seurat::GetAssayData(object = assay_obj, slot = slot)
             if(!is.null(subset_row)) {
               exprs_values <- exprs_values[subset_row, ]
             }
