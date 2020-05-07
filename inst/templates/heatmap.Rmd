@@ -133,22 +133,56 @@ subset_features <- function(matrix, features){
   return(matrix)
 }
 
+# Function for subsetting a matrix accoriding to a vector of samples
+subset_samples <- function(matrix, samples){
+  if(length(samples) > 1){
+    matrix <- matrix[,samples]
+  } else if(length(samples) == 1){
+    matrix <- matrix[,samples, drop = FALSE]
+  }
+  return(matrix)
+}
+
 #
 # Handle inputs
 #
 exprs_values_{{ env_id }} <- shiny::reactive({
   exprs_values <- {{ env_id }}$exprs_values
   
+  # Handle eventdata
+  eventdata <- plotly::event_data("plotly_selected", source = {{ env_id }}$transmitter)
+  samples_used <- F
+  indexes <- NULL
+  if (!is.null(eventdata)){
+    # check if rows or columns should be subsetted
+    keys_samples <- colnames(exprs_values)
+    keys_features <- rownames(exprs_values)
+    if (all(eventdata$key %in% keys_samples)){
+      exprs_values <- subset_samples(exprs_values, eventdata$key)
+      samples_used <- T
+      indexes <- which(keys_samples %in% eventdata$key)
+    } else if (all(eventdata$key %in% keys_features)){ # problematic if the eventdata is not part of subset_row
+      exprs_values <- subset_features(exprs_values, eventdata$key)
+    }
+  }
+  
   # Subset features
-  exprs_values <- subset_features(exprs_values, input$select_subset_{{ env_id }})
+  if(length(input$select_subset_{{ env_id }}) > 0) exprs_values <- subset_features({{ env_id }}$exprs_values, input$select_subset_{{ env_id }})
   if (!{{ env_id }}$show_column_labels) colnames(exprs_values) <- c()
   
   # Handle aggregation
   if (input$select_aggregate_by_{{ env_id }} != "None") {
-    exprs_values <- aggregate_data(exprs_values, {{ env_id }}$aggregate_by[, input$select_aggregate_by_{{ env_id }}])
+    # if eventdata is used and aggregate_by should be subsetted
+    if (!is.null(eventdata) & samples_used){
+      aggregate_by <- {{ env_id }}$aggregate_by[, input$select_aggregate_by_{{ env_id }}]
+      aggregate_by <- aggregate_by[indexes]
+      exprs_values <- aggregate_data(exprs_values, aggregate_by)
+    } else {
+      exprs_values <- aggregate_data(exprs_values, {{ env_id }}$aggregate_by[, input$select_aggregate_by_{{ env_id }}])
+    }
   }
   
-  return(exprs_values)
+  return(list("data" = exprs_values, "index" = indexes, "if_samples" = samples_used))
 })
 
 clust_{{ env_id }} <- shiny::reactive({
@@ -173,7 +207,15 @@ split_by_{{ env_id }} <- shiny::reactive({
   if(input$select_split_by_{{ env_id }} == "None" | input$select_aggregate_by_{{ env_id }} != "None") {
     return(NULL)
   }
-  return({{ env_id }}$split_by[[input$select_split_by_{{ env_id }}]])
+  # subset according eventdata
+  eventdata <- plotly::event_data("plotly_selected", source = {{ env_id }}$transmitter)
+  if (!is.null(eventdata) & exprs_values_{{ env_id }}()$if_samples){
+    split_by <- {{ env_id }}$split_by[[input$select_split_by_{{ env_id }}]]
+    split_by <- split_by[exprs_values_{{ env_id }}()$index]
+  } else {
+    split_by <- {{ env_id }}$split_by[[input$select_split_by_{{ env_id }}]]
+  }
+  return(split_by)
 })
 
 #
@@ -187,7 +229,7 @@ output$plot_{{ env_id }} <- shiny::renderPlot({
   ha <- NULL
       
   if (input$select_aggregate_by_{{ env_id }} != "None") {
-    cell_fun <- function(j, i, x, y, width, height, fill) {grid::grid.text(sprintf("%.1f", exprs_values_{{ env_id }}()[i, j]), x, y, gp = grid::gpar(fontsize = 10))}
+    cell_fun <- function(j, i, x, y, width, height, fill) {grid::grid.text(sprintf("%.1f", exprs_values_{{ env_id }}()$data[i, j]), x, y, gp = grid::gpar(fontsize = 10))}
   }
   
   # Handle annotation
@@ -206,7 +248,7 @@ output$plot_{{ env_id }} <- shiny::renderPlot({
   }
   
   i2dash.scrnaseq::ComplexHeatmap_heatmap(
-    matrix = exprs_values_{{ env_id }}(),
+    matrix = exprs_values_{{ env_id }}()$data,
     legend_title = {{ env_id }}$legend_title,
     cluster_rows = clust_{{ env_id }}()$rows,
     cluster_columns = clust_{{ env_id }}()$columns,
@@ -229,7 +271,7 @@ output$plot_{{ env_id }} <- shiny::renderPlot({
 output$downloadData_{{ env_id }} <- downloadHandler(
   filename =  paste('data-', Sys.Date(), '.csv', sep=''),
   content = function(file) {
-    write.csv(exprs_values_{{ env_id }}(), file)
+    write.csv(exprs_values_{{ env_id }}()$data, file)
   }
 )
 

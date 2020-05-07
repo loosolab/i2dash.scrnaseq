@@ -2,11 +2,19 @@
 #' @return A string containing markdown code for the rendered component
 setMethod("scatterplot",
           signature = signature(dashboard = "i2dashboard", object = "missing"),
-          function(dashboard, x, y, colour_by = NULL, labels = NULL, exprs_values = NULL, title = NULL, x_title = NULL, y_title = NULL, plot_title = NULL) {
+          function(dashboard, x, y, colour_by = NULL, labels = NULL, exprs_values = NULL, title = NULL, x_title = NULL, y_title = NULL, plot_title = NULL, source = "A", transmitter = NULL) {
             # Create random env id
             env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
 
             # Validate input
+            # create valid names
+            assertive.types::assert_is_character(source)
+            source %>% gsub(x = ., pattern = " ", replacement = "_") %>% make.names -> source
+            if(!is.null(transmitter)){
+              assertive.types::assert_is_character(transmitter)
+              transmitter %>% gsub(x = ., pattern = " ", replacement = "_") %>% make.names -> transmitter
+            }
+
             # handle single numeric vector:
             if(is.numeric(x)) x <- data.frame("X" <- x)
             if(is.numeric(y)) y <- data.frame("Y" <- y)
@@ -80,6 +88,9 @@ setMethod("scatterplot",
             env$x_title <- x_title
             env$y_title <- y_title
             env$plot_title <- plot_title
+
+            env$source <- source # the id used in plotly's source argument of the component
+            env$transmitter <- transmitter # the id of an existing transmitter to obtain the data from
 
             saveRDS(env, file = file.path(dashboard@datadir, paste0(env_id, ".rds")))
 

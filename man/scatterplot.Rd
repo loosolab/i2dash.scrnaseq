@@ -19,7 +19,9 @@ scatterplot(dashboard, object, ...)
   title = NULL,
   x_title = NULL,
   y_title = NULL,
-  plot_title = NULL
+  plot_title = NULL,
+  source = "A",
+  transmitter = NULL
 )
 
 \S4method{scatterplot}{i2dashboard,SingleCellExperiment}(
@@ -73,6 +75,10 @@ scatterplot(dashboard, object, ...)
 \item{y_title}{An optional title of the y-axis. If not provided the column names from \code{y}  are used instead.}
 
 \item{plot_title}{An optional title of the plot.}
+
+\item{source}{A character defining the id used in plotly's source argument of the component.}
+
+\item{transmitter}{A character defining the id of an existing transmitter to obtain the data from.}
 
 \item{from}{A character specifying where to obtain the data from \code{object} (see Details).}
 

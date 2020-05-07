@@ -2,17 +2,24 @@
 #' @return A string containing markdown code for the rendered component
 setMethod("violinplot",
           signature = signature(dashboard = "i2dashboard", object = "missing"),
-          function(dashboard, y, group_by = NULL,  title = NULL, y_title = NULL, group_by_title = NULL) {
+          function(dashboard, y, group_by = NULL,  title = NULL, y_title = NULL, group_by_title = NULL, transmitter = NULL) {
             # Create random env id
             env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
 
             # Validate input
+            if(!is.null(transmitter)){
+              assertive.types::assert_is_character(transmitter)
+              transmitter %>% gsub(x = ., pattern = " ", replacement = "_") %>% make.names -> transmitter
+            }
+
             assertive.types::assert_is_any_of(y, c("data.frame", "matrix"))
             if(is.null(colnames(y))) colnames(y) <- paste0("V", 1:ncol(y))
+            if(is.null(rownames(y))) rownames(y) <- 1:nrow(y)
 
             if(!is.null(group_by)){
               assertive.types::assert_is_any_of(group_by, c("data.frame", "matrix"))
               if(is.null(colnames(group_by))) colnames(group_by) <- paste0("V", 1:ncol(group_by))
+              if(is.null(rownames(group_by))) rownames(group_by) <- 1:nrow(group_by)
               if(nrow(y) != nrow(group_by)) stop("The numbers of rows in 'y' and 'group_by' are not equal.")
             }
 
@@ -27,6 +34,7 @@ setMethod("violinplot",
 
             env$y_title <- y_title
             env$group_by_title <- group_by_title
+            env$transmitter <- transmitter
 
             # save environment
             saveRDS(env, file = file.path(dashboard@datadir, paste0(env_id, ".rds")))
