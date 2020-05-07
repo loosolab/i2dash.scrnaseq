@@ -1,0 +1,41 @@
+### {{ title }}
+
+<!-- Component created on {{ date }} -->
+
+```{r}
+{{ env_id }} <- readRDS(file.path(datadir, "{{ env_id }}.rds"))
+is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
+library(magrittr)
+```
+
+```{r, eval=!is_shiny}
+
+```
+
+```{r, eval=is_shiny}
+#
+# Handle event data from transmitter
+#
+output${{ env_id }} <- renderPrint({
+  eventdata <- plotly::event_data({{ env_id }}$event, source = {{ env_id }}$transmitter)
+})
+#
+# Download data.frame
+#
+output$downloadData_{{ env_id }} <- downloadHandler(
+  filename =  paste('data-', Sys.Date(), '.csv', sep=''),
+  content = function(file) {
+    df <- plotly::event_data({{ env_id }}$event, source = {{ env_id }}$transmitter)
+    write.csv(df[, c("x", "y", "key")], file)
+  }
+)
+#
+# Layout of component
+#
+shiny::fillCol(flex = c(NA, 1),
+      downloadButton('downloadData_{{ env_id }}', 'Download data'),
+      verbatimTextOutput("{{ env_id }}")
+)
+```
+
+

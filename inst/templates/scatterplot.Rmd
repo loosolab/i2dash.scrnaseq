@@ -221,7 +221,22 @@ output$plot_{{ env_id }} <- plotly::renderPlotly({
   if(!is.null({{ env_id }}$x_title)) x_title <- {{ env_id }}$x_title else x_title <- x_{{ env_id }}()$title
   if(!is.null({{ env_id }}$labels)) labels <- {{ env_id }}$labels else labels <- rownames({{ env_id }}$x)
   
-  i2dash.scrnaseq::plotly_scatterplot(x = x_{{ env_id }}()$data, y = y_{{ env_id }}()$data, color = colour_{{ env_id }}()$colour, text = labels, y_title = y_title, x_title = x_title, colors = colors, type = "scatter") %>%
+  #
+  # handle eventdata for highlighting
+  #
+  eventdata <- plotly::event_data("plotly_selected", source = {{ env_id }}$transmitter)$key
+  if(!is.null(eventdata)){
+    color <- c(rep(1, length(x_{{ env_id }}()$data)))
+    indexes <- which(labels %in% eventdata)
+    color[indexes] <- 2
+    color <- as.factor(color)
+    colors <- c("1"="#1f77b4", "2"="red")
+  } else {
+    color <- colour_{{ env_id }}()$colour
+    colors <- colors
+  }
+   
+  i2dash.scrnaseq::plotly_scatterplot(x = x_{{ env_id }}()$data, y = y_{{ env_id }}()$data, color = color, text = labels, y_title = y_title, x_title = x_title, colors = colors, type = "scatter", source = {{ env_id }}$source, key = labels) %>%
     plotly::layout(
       annotations = colour_{{ env_id }}()$annotation,
       title = {{ env_id }}$plot_title

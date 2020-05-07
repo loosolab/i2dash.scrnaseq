@@ -142,7 +142,22 @@ output$plot_{{ env_id }} <- plotly::renderPlotly({
   if(!is.null({{ env_id }}$x_title)) x_title <- {{ env_id }}$x_title else x_title <- x_{{ env_id }}()$title
   if(!is.null({{ env_id }}$group_by_title)) group_by_title <- {{ env_id }}$group_by_title else group_by_title <- group_by_{{ env_id }}()$title
 
-  i2dash.scrnaseq::plotly_boxplot(x = x_{{ env_id }}()$data, group_by = group_by_{{ env_id }}()$data, x_title = x_title, group_by_title = group_by_title, colors = colors)
+  #
+  # Handle eventdata
+  #
+  eventdata <- plotly::event_data("plotly_selected", source = {{ env_id }}$transmitter)
+  if(!is.null(eventdata)){
+    keys <- rownames({{ env_id }}$x)
+    indexes <- which(keys %in% eventdata$key)
+    x <- x_{{ env_id }}()$data[indexes]
+    if(!is.null(group_by_{{ env_id }}())) group_by <- group_by_{{ env_id }}()$data[indexes]
+  } else {
+    x <- x_{{ env_id }}()$data
+    group_by <- group_by_{{ env_id }}()$data
+  }
+  
+  i2dash.scrnaseq::plotly_boxplot(x = x, group_by = group_by, x_title = x_title, group_by_title = group_by_title, colors = colors)
+
 })
 
 #

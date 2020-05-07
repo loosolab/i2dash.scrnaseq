@@ -23,7 +23,8 @@ heatmap(dashboard, object, ...)
   clustering_method = c("average", "ward.D", "ward.D2", "single", "complete",
     "mcquitty", "median", "centroid"),
   column_title = NULL,
-  row_title = NULL
+  row_title = NULL,
+  transmitter = NULL
 )
 
 \S4method{heatmap}{i2dashboard,SingleCellExperiment}(
@@ -77,6 +78,8 @@ heatmap(dashboard, object, ...)
 \item{column_title}{The column title of the heatmap.}
 
 \item{row_title}{The row title of the heatmap.}
+
+\item{transmitter}{A character defining the id of an existing transmitter to obtain the data from.}
 
 \item{subset_row}{An optional character vector (of feature names), a logical vector or numeric vector (of indices) specifying the features to use. The default of NULL will use the first 100 features.}
 

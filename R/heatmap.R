@@ -14,15 +14,23 @@ setMethod("heatmap",
                    clustering_distance = c("euclidean", "maximum", "manhattan", "binary", "minkowski"),
                    clustering_method = c("average", "ward.D", "ward.D2", "single", "complete", "mcquitty", "median","centroid"),
                    column_title = NULL,
-                   row_title = NULL) {
+                   row_title = NULL,
+                   transmitter = NULL
+          ) {
 
             # Create random env id
             env_id <- paste0("env_", stringi::stri_rand_strings(1, 6, pattern = "[A-Za-z0-9]"))
 
             # Input validation
+            if(!is.null(transmitter)){
+              assertive.types::assert_is_character(transmitter)
+              transmitter %>% gsub(x = ., pattern = " ", replacement = "_") %>% make.names -> transmitter
+            }
+
             exprs_values <- as.matrix(exprs_values)
             assertive.types::assert_is_any_of(exprs_values, c("data.frame", "matrix"))
             if(is.null(colnames(exprs_values))) colnames(exprs_values) <- paste0("V", 1:ncol(exprs_values))
+            if(is.null(rownames(exprs_values))) rownames(exprs_values) <- 1:nrow(exprs_values)
 
             if(!is.null(split_by)) {
               assertive.types::assert_is_any_of(split_by, c("data.frame", "matrix"))
@@ -32,6 +40,7 @@ setMethod("heatmap",
                 as.data.frame() %>%
                 dplyr::select_if(is.factor)
               if(is.null(colnames(split_by))) colnames(split_by) <- paste0("C", 1:ncol(split_by))
+              if(is.null(rownames(split_by))) rownames(split_by) <- 1:nrow(split_by)
               if(ncol(exprs_values) != nrow(split_by)) stop("The number of columns in 'exprs_values' and rows in 'split_by' are not equal.")
             }
 
@@ -43,6 +52,7 @@ setMethod("heatmap",
                 as.data.frame() %>%
                 dplyr::select_if(is.factor)
               if(is.null(colnames(aggregate_by))) colnames(aggregate_by) <- paste0("C", 1:ncol(aggregate_by))
+              if(is.null(rownames(aggregate_by))) rownames(aggregate_by) <- 1:nrow(aggregate_by)
               if(ncol(exprs_values) != nrow(aggregate_by)) stop("The number of columns in 'exprs_values' and rows in 'split_by' are not equal.")
             }
 
@@ -63,6 +73,7 @@ setMethod("heatmap",
             env$show_column_labels <- show_column_names
             env$column_title <- column_title
             env$row_title <- row_title
+            env$transmitter <- transmitter
 
             # save environment
             saveRDS(env, file = file.path(dashboard@datadir, paste0(env_id, ".rds")))

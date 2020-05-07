@@ -104,6 +104,7 @@ setGeneric("add_feature_expression_page", function(dashboard, object, ...) stand
 #' @param title The title of the component.
 #' @param y_title The title of the y-axis.
 #' @param group_by_title The title of the x-axis.
+#' @param transmitter A character defining the id of an existing transmitter to obtain the data from.
 #' @param ... Further parameters passed to the core function.
 #'
 #' @details The parameters \code{y}, \code{group_by} take different arguments depending on the class of \code{object}.
@@ -130,6 +131,7 @@ setGeneric("violinplot", function(dashboard, object, ...) standardGeneric("violi
 #' @param title The title of the components junk.
 #' @param y_group_by_title The title of the y-axis.
 #' @param x_group_by_title The title of the x-axis.
+#' @param transmitter A character defining the id of an existing transmitter to obtain the data from.
 #' @param assay A character defining the assay of \code{object} and is used for obtaining the meta data of the respective assay (default "RNA") (see Details).
 #' @param ... Further parameters passed to the core function.
 #'
@@ -158,6 +160,7 @@ setGeneric("barplot", function(dashboard, object, ...) standardGeneric("barplot"
 #' @param title The title of the components junk.
 #' @param x_title The title of the x-axis.
 #' @param group_by_title The title of the y-axis.
+#' @param transmitter A character defining the id of an existing transmitter to obtain the data from.
 #' @param ... Further parameters passed to the core function.
 #'
 #' @details The parameters \code{x}, \code{group_by} take different arguments depending on the class of \code{object}.
@@ -191,6 +194,8 @@ setGeneric("boxplot", function(dashboard, object, ...) standardGeneric("boxplot"
 #' @param x_title An optional title of the x-axis. If not provided the column names from \code{x} are used instead.
 #' @param y_title An optional title of the y-axis. If not provided the column names from \code{y}  are used instead.
 #' @param plot_title An optional title of the plot.
+#' @param source A character defining the id used in plotly's source argument of the component.
+#' @param transmitter A character defining the id of an existing transmitter to obtain the data from.
 #' @param subset_row An optional character vector (of feature names), a logical vector or numeric vector (of indices) specifying the features to use. The default of NULL will use all features.
 #' @param ... Further parameters passed to the core function.
 #'
@@ -233,6 +238,7 @@ setGeneric("scatterplot", function(dashboard, object, ...) standardGeneric("scat
 #' @param show_column_names Whether or not to show column names. Note that large number of column names can cause visualization problems.
 #' @param column_title The column title of the heatmap.
 #' @param row_title The row title of the heatmap.
+#' @param transmitter A character defining the id of an existing transmitter to obtain the data from.
 #' @param assay A character specifying the assay (\code{object@assays}) to obtain expression values from. (Default: "RNA")
 #' @param assay_slot A character specifying the name of the data slot in the assay. (Default: "data")
 #' @param ... Further parameters passed to the core function.
@@ -271,6 +277,18 @@ setGeneric("heatmap", function(dashboard, object, ...) standardGeneric("heatmap"
 #' @rdname dimred-sample-page
 #' @exportMethod add_dimred_sample_page
 setGeneric("add_dimred_sample_page", function(dashboard, object, ...) standardGeneric("add_dimred_sample_page"))
+
+#' Renders a component containing output from \link[shiny]{verbatimTextOutput}.
+#'
+#' @param dashboard An object of class \linkS4class{i2dash::i2dashboard}.
+#' @param transmitter A character defining the id of an existing transmitter to obtain the data from.
+#' @param event The type of plotly event. (see \code{?plotly::event_data()}.
+#' @param title Title of the component.
+#'
+#' @name text_output
+#' @rdname text_output
+#' @exportMethod text_output
+setGeneric("text_output", function(dashboard, object, ...) standardGeneric("text_output"))
 
 #' Quantify per-gene variation and explore the threshold on the metric of variation to get the desired set of highly variable features.
 #'
