@@ -1,4 +1,4 @@
-#' Render a barplot with plotly.
+#' Render a scatterplot with plotly.
 #'
 #' @param ... Additional arguments passed on to \code{plotly::plot_ly}.
 #' @param y_title The title of the x-axis.
@@ -83,5 +83,23 @@ ComplexHeatmap_heatmap <- function(..., legend_title = NULL){
                             title = legend_title
                           ))
 
+}
+
+#' Render a bubbleplot with plotly.
+#'
+#' @param x Numeric observations mapped to the x-axis.
+#' @param y Numeric observations mapped to the y-axis.
+#' @param size Numeric values defining the size of the dots.
+#' @param x_title The title of the x-axis.
+#' @param y_title The title of the y-axis.
+#' @param ... these arguments are of either the form \code{value} or \code{tag = value} and should be valid for the \code{plotly::plot_ly()} method.
+#'
+#' @return An object of class \code{plotly}.
+#' @export
+plotly_bubbleplot <- function(x, y, size, x_title = NULL, y_title = NULL, ...){
+  plotly::plot_ly(x = x, y = y, size = size, type = 'scatter', mode = 'markers', marker = list( oparcity = 0.5), ...) %>%
+    plotly::layout(xaxis = list(title = x_title, showgrid = FALSE),
+                   yaxis = list(title = y_title, showgrid = FALSE)
+    )
 }
 

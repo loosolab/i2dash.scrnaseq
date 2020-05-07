@@ -2,7 +2,7 @@
 % Please edit documentation in R/visualization_functions.R
 \name{plotly_scatterplot}
 \alias{plotly_scatterplot}
-\title{Render a barplot with plotly.}
+\title{Render a scatterplot with plotly.}
 \usage{
 plotly_scatterplot(..., y_title = NULL, x_title = NULL)
 }
@@ -17,5 +17,5 @@ plotly_scatterplot(..., y_title = NULL, x_title = NULL)
 An object of class \code{plotly}.
 }
 \description{
-Render a barplot with plotly.
+Render a scatterplot with plotly.
 }
