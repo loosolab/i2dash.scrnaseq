@@ -18,6 +18,7 @@ library(magrittr)
 #
 output${{ env_id }} <- renderPrint({
   eventdata <- plotly::event_data({{ env_id }}$event, source = {{ env_id }}$transmitter)
+  eventdata[, c("x", "y", "key")]
 })
 #
 # Download data.frame
