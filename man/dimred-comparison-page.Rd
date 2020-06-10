@@ -61,7 +61,7 @@ add_dimred_comparison_page(dashboard, object, ...)
 
 \item{calculateTSNE}{A list with parameters passed on to \code{scater::calculateTSNE()}}
 
-\item{page}{A page name to identify this page.}
+\item{page}{The name of the page to be added.}
 
 \item{title}{The title of the page.}
 
