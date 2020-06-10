@@ -84,18 +84,24 @@ dashboard <- i2dash::add_component(
 )
 
 #########################################
-# Quality controll - Gene level
-
-library(scater)
-library(scran)
-
-he <- plotHighestExprs(sce, exprs_values = "counts")
-
-dashboard <- i2dash::add_component(
-  dashboard = dashboard,
-  component = he,
+# barplots of libraries
+dashboard %<>% i2dash::add_component(
+  component = i2dash.scrnaseq::barplot,
+  object = sce,
+  from = "colData",
+  y_group_by  = "Library",
+  x_group_by  = NULL,
   page      = "qc",
-  title     = "Gene level: top 50 most-expressed features. Each row corresponds to a gene; each bar corresponds to the expression of a gene in a single cell; the circle indicates the median expression of each gene."
+  title     = "Plot the library sizes as a barplot to see whether there are any discrepancies between the samples."
+)
+
+dashboard %<>% i2dash::add_component(
+  component = i2dash.scrnaseq::boxplot,
+  from = cpm(colData(sce)$sum, log=TRUE),
+  x = "sum",
+  group_by  = "Library",
+  page      = "qc",
+  title     = "Plot the library sizes as a barplot to see whether there are any discrepancies between the samples."
 )
 
 #########################################
