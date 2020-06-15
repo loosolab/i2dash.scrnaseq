@@ -1,17 +1,36 @@
 library(i2dash)
 library(i2dash.scrnaseq)
 library(SingleCellExperiment)
+library(DropletUtils)
+library(plotly)
+library(scater)
+library(scran)
 
 #########################################
 # Load Data
 #########################################
+
 # Read the SingleCellExperiment
-sce_full <- readRDS(system.file(package="i2dash.scrnaseq", "data/GSM3635304_mouse_sce.Rds"))
-# For better readability we rename the levels of Tumor.or.healthy
-levels(colData(sce_full)$Tumor.or.healthy) <- c("healthy", "tumor")
+sce_full <- scRNAseq::ZilionisLungData("mouse")
+sce_full <- sce_full[, colData(sce_full)$Used==TRUE]
+# make uique sample names
+colnames(sce_full) <- paste0(colnames(sce_full),"_", colData(sce_full)$Library)
+# convert to factors
+as_factor <- c("Library", "Animal", "Run", "Tissue", "Library prep batch", "Most likely Immgen cell type", "Major cell type", "Minor subset")
+colData(sce_full)[as_factor] <- lapply(colData(sce_full)[as_factor], as.factor)
+colnames(colData(sce_full))[11] <- c("Major.cell.type")
 # optional downsampling for better performance
 sce <- sce_full[, sample(ncol(sce_full), 2000)]
 sce
+
+# Cell-level QC
+per.cell     <- perCellQCMetrics(sce, subsets = list(Mito = grep("mt-", rownames(sce))))
+colData(sce) <- cbind(colData(sce), per.cell)
+
+# Detect outliers
+qc.stats     <- quickPerCellQC(sce, percent_subsets="subsets_Mito_percent")
+colData(sce) <- cbind(colData(sce), qc.stats)
+
 
 #########################################
 # Create i2dashboard
@@ -35,11 +54,11 @@ dashboard %<>% i2dash::add_page(
   i2dash::add_component(
     component = "descr.md",
     page      = "intro"
-) %>%
+  ) %>%
   i2dash::add_component(
     component = "descr2.md",
     page      = "intro"
-)
+  )
 
 #########################################
 # Quality controll
@@ -53,10 +72,6 @@ dashboard <- i2dash::add_page(
 
 #########################################
 # Quality controll - Plot of Rank / total UMI
-
-library(DropletUtils)
-library(plotly)
-
 # Calculate barcode ranks
 bcrank <- barcodeRanks(counts(sce))
 
@@ -84,27 +99,6 @@ dashboard <- i2dash::add_component(
 )
 
 #########################################
-# barplots of libraries
-dashboard %<>% i2dash::add_component(
-  component = i2dash.scrnaseq::barplot,
-  object = sce,
-  from = "colData",
-  y_group_by  = "Library",
-  x_group_by  = NULL,
-  page      = "qc",
-  title     = "Plot the library sizes as a barplot to see whether there are any discrepancies between the samples."
-)
-
-dashboard %<>% i2dash::add_component(
-  component = i2dash.scrnaseq::boxplot,
-  from = cpm(colData(sce)$sum, log=TRUE),
-  x = "sum",
-  group_by  = "Library",
-  page      = "qc",
-  title     = "Plot the library sizes as a barplot to see whether there are any discrepancies between the samples."
-)
-
-#########################################
 # Quality controll - scatterplot
 dashboard %<>% i2dash::add_component(
   component = i2dash.scrnaseq::scatterplot,
@@ -112,10 +106,9 @@ dashboard %<>% i2dash::add_component(
   from = "colData",
   y = "sum",
   x = "detected",
-  colour_by = c("Tumor.or.healthy", "Biological.replicate", "Library"),
+  colour_by = c("Tissue", "Animal", "Library"),
   page      = "qc",
-  title     = "Key quality metrics (total counts per cell,
-proportion of mitochondrial reads, number of detected features) grouped by condition."
+  title     = "Ration between detected genes and total count. Each point represents a cell that can be coloured by tissue, library, or biological replicate."
 )
 
 #########################################
@@ -125,10 +118,9 @@ dashboard %<>% i2dash::add_component(
   object = sce,
   from = "colData",
   y = c("sum", "detected", "subsets_Mito_percent"),
-  group_by = c("Tumor.or.healthy", "Library"),
+  group_by = c("Tissue", "Library", "Animal"),
   page      = "qc",
-  title     = "Key quality metrics (total counts per cell,
-proportion of mitochondrial reads, number of detected features) grouped by condition."
+  title     = "Key quality metrics (total counts per cell, proportion of mitochondrial reads, number of detected features) grouped by condition."
 )
 
 #########################################
@@ -167,11 +159,11 @@ dashboard <- i2dash::add_component(
   object    = sce,
   from      = "colData",
   columns  = c("sum", "detected", "subsets_Mito_percent"),
-  group_by  = "Tumor.or.healthy",
+  group_by  = "Tissue",
   page      = "summary",
   title     = "Metadata statistic"
 )
- library(kableExtra)
+library(kableExtra)
 CellFilterStat <- t(apply(colData(sce)[c("low_n_features", "high_subsets_Mito_percent", "discard")], 2, summary))
 colnames(CellFilterStat) <- c("reason", "kept", "discarded")
 summary3 <- kable(CellFilterStat[,2:3], caption = "Number of kept / discarded cells per reason for filtering")%>%
@@ -180,11 +172,8 @@ summary3 <- kable(CellFilterStat[,2:3], caption = "Number of kept / discarded ce
 dashboard %<>% i2dash::add_component(
   component = summary3,
   page      = "summary",
-  title     = "Cell filtering 2"
+  title     = "Cell filtering"
 )
-
-
-
 
 #########################################
 # Filtering
@@ -209,8 +198,8 @@ hvg      <- getTopHVGs(gene.var, prop=0.1)
 
 dashboard %<>% i2dash.scrnaseq::add_dimred_sample_page(
   object           = sce2,
-  use_dimred       = "Spring_redDim",
-  sample_metadata  = c("Major.cell.type", "subsets_Mito_percent", "Tumor.or.healthy", "Biological.replicate", "Library"),
+  use_dimred       = "SPRING",
+  sample_metadata  = c("Major.cell.type", "subsets_Mito_percent", "Tissue", "Animal", "Library"),
   group_by         = "Major.cell.type",
   show_group_sizes = TRUE,
   show_silhouette  = TRUE,
@@ -222,8 +211,8 @@ dashboard %<>% i2dash.scrnaseq::add_dimred_sample_page(
 # Page for metadata exploration with show_group_sizes = FALSE and show_silhouette = FALSE (see right image below)
 dashboard %<>% i2dash.scrnaseq::add_dimred_sample_page(
   object           = sce2,
-  use_dimred       = "Spring_redDim",
-  sample_metadata  = c("Major.cell.type", "Tumor.or.healthy", "sum", "detected"),
+  use_dimred       = "SPRING",
+  sample_metadata  = c("Major.cell.type", "Tissue", "sum", "detected", "Animal", "Library"),
   group_by         = "Major.cell.type",
   show_group_sizes = FALSE,
   show_silhouette  = FALSE,
@@ -237,9 +226,9 @@ dashboard %<>% i2dash.scrnaseq::add_dimred_sample_page(
 #########################################
 dashboard %<>% i2dash.scrnaseq::add_feature_expression_page(
   object       = sce2,
-  use_dimred   = "Spring_redDim",
+  use_dimred   = "SPRING",
   exprs_values = "logcounts",
-  group_by     = c("Major.cell.type", "Tumor.or.healthy", "Biological.replicate", "Library"),
+  group_by     = c("Major.cell.type", "Tissue", "Animal", "Library"),
   subset_row   = hvg[1:100],
   title        = "Gene explorer"
 )
@@ -247,7 +236,6 @@ dashboard %<>% i2dash.scrnaseq::add_feature_expression_page(
 #########################################
 # Marker genes page
 #########################################
-
 markers <- findMarkers(sce2, colData(sce2)$Major.cell.type)
 marker_list <- lapply(markers, function(x){rownames(x)[1:10]})
 marker_names <- unique(unlist(marker_list, recursive = F, use.names = F))
@@ -262,8 +250,8 @@ dashboard %<>% i2dash::add_page(
   object = sce2,
   exprs_values = "logcounts",
   subset_row = marker_names,
-  split_by = c("Major.cell.type", "Tumor.or.healthy", "Biological.replicate", "Library"),
-  aggregate_by = c("Major.cell.type", "Tumor.or.healthy", "Biological.replicate", "Library"),
+  split_by = c("Major.cell.type", "Tissue", "Animal", "Library"),
+  aggregate_by = c("Major.cell.type", "Tissue", "Animal", "Library"),
   title = "Expression of marker genes"
 )
 
@@ -273,7 +261,7 @@ dashboard %<>% i2dash::add_page(
 
 dashboard %<>% i2dash.scrnaseq::add_feature_grid_page(
   object       = sce2,
-  use_dimred   = "Spring_redDim",
+  use_dimred   = "SPRING",
   exprs_values = "logcounts",
   subset_row   = hvg[1:100]
 )

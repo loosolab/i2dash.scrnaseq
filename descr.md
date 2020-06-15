@@ -21,8 +21,8 @@ metadata(0):
 assays(1): counts
 rownames(28205): 0610007P14Rik 0610009B22Rik ... mt-Nd5 mt-Nd6
 rowData names(0):
-colnames(2000): bc1351_h_2_3 bc0897_t_1_1 ... bc0979_t_1_1 bc155_t_1_5
-colData names(24): Tumor.or.healthy Biological.replicate ... high_subsets_Mito_percent discard
-reducedDimNames(1): Spring_redDim
+colnames(2000): bc0517_h_1_1 bc0723_t_1_4 ... bc0010_t_1_4 bc0405_t_2_4
+colData names(12): Library Barcode ... Major.cell.type Minor subset
+reducedDimNames(1): SPRING
 altExpNames(0):
 ```
