@@ -1,0 +1,65 @@
+url:
+
+template:
+  params:
+    bootswatch: cerulean
+
+reference:
+  - title: "Components"
+    desc: "Functions for creating components, which are added with 'i2dash::add_component()' function:"
+    contents:
+      - barplot
+      - boxplot
+      - heatmap
+      - scatterplot
+      - violinplot
+      #- bubbleplot
+  - title: "Pre-defined Pages"
+    desc: "Functions for adding pre-defined pages to the dashboard."
+    contents:
+      - add_dimred_feature_page
+      - add_dimred_sample_page
+      - feature-expression-page
+      - add_feature_grid_page
+      #- add_dimred_comparison_page
+      #- add_feature_selection_page
+
+navbar:
+  structure:
+    left: [home, articles, reference]
+    right: [github]
+  components:
+    articles:
+      text: Tutorials
+      menu:
+        - text: "Get started"
+        - text: "Use-case 1: Quality metrics"
+          href: articles/Quality_metrics.html
+        - text: "Use-case 2: Single-cell Data explorer"
+          href: articles/sc_data_explorer.html
+        - text: "Use-case 3: Visualized parameter selection"
+          href: articles/vis_parameterselection.html
+        - text: -------
+        - text: "Further reading"
+        - text: "Documentation"
+          href: articles/Documentation.html
+        - text: "Developer guide"
+          href: articles/Developer_guide.html
+
+home:
+  links:
+  - text: "Download from CRAN"
+    href: https://cloud.r-project.org/web/packages/
+  - text: "Browse source code"
+    href: https://gitlab.gwdg.de/loosolab/software/i2dash.scrnaseq
+  - text: "Report a bug"
+    href: https://gitlab.gwdg.de/loosolab/software/i2dash.scrnaseq/issues
+  - text: "Bioinformatics lab of the Max Planck Institute for Heart and Lung Research"
+    href: https://github.molgen.mpg.de/pages/loosolab/www/
+  - text: "i2dash - Interactive & Iterative dashboards"
+    href: https://gitlab.gwdg.de/loosolab/software/i2dash
+
+toc:
+  depth: 2
+
+
