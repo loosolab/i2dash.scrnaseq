@@ -24,23 +24,23 @@ Based on three common use-cases for single-cell data analysis you can explore th
 
 ### Use-cases:
 
-1. [**Quality metrics**]()
+1. **Quality metrics** (see vignette "Quality_metrics.Rmd")
 
-   This use-case shows how to build a SingleCellExperiment object from a count-matrix, calculate quality metrics and create a simple dashboard to visualize different quality aspects of an scRNA-seq dataset. [Demo]()
+   This use-case shows how to build a SingleCellExperiment object from a count-matrix, calculate quality metrics and create a simple dashboard to visualize different quality aspects of an scRNA-seq dataset. [Demo](http://mpibn-mampok.134.176.27.161.xip.io/use-case-1/i2dash/)
 
-2. [**Single-cell data explorer**]()
+2. **Single-cell data explorer** (see vignette "sc_data_explorer.Rmd")
 
-   The second use-case demonstrates how to build a dashboard, which enables the exploration of gene expression values and metadata coupled with reduced dimension plots. Mainly native tools and pre-defined pages from the i2dash.scrnaseq package are used. [Demo]()
+   The second use-case demonstrates how to build a dashboard, which enables the exploration of gene expression values and metadata coupled with reduced dimension plots. Mainly native tools and pre-defined pages from the i2dash.scrnaseq package are used. [Demo](http://mpibn-mampok.134.176.27.161.xip.io/use-case-2/i2dash/)
 
-3. [**Visualized parameter selection for experts**]()
+3. **Visualized parameter selection for experts** (see vignette "vis_parameter_selection.Rmd")
 
-   The third use-case provides tools of i2dash.scrnaseq, which are useful during the process of data analysis but are not reasonable for the final report. The pre-defined pages enable the selection of features, the inspection of the normalisazion and the selection of optimal paramters for a dimensionality reduction. [Demo]()
+   The third use-case provides tools of i2dash.scrnaseq, which are useful during the process of data analysis but are not reasonable for the final report. The pre-defined pages enable the selection of features, the inspection of the normalisazion and the selection of optimal paramters for a dimensionality reduction. [Demo](http://mpibn-mampok.134.176.27.161.xip.io/use-case-3/i2dash/)
 
 ### Further reading:
 
-- [**Documentation**]() This page gives you an overview over all features containing in the **i2dash.scrnaseq** package.
+- **Documentation** (see vignette "Documetation.Rmd") This page gives you an overview over all features containing in the **i2dash.scrnaseq** package.
 
-- [**Developer guide**]() This tutorial explains how to build a customized componentor a pre-defined page from scratch and how to link the components of your page together.
+- **Developer guide** (see vignette "Developer_guide.Rmd") This tutorial explains how to build a customized componentor a pre-defined page from scratch and how to link the components of your page together.
 
 
 ## How to cite
