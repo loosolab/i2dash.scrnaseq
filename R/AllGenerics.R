@@ -337,7 +337,7 @@ setGeneric("summarize_metadata", function(dashboard, object, ...) standardGeneri
 #' @param seed An integer vector, containing the random number generator (RNG) state for random number generation with \code{set.seed()}.
 #' @param calculateUMAP A list with parameters passed on to \code{scater::calculateUMAP()}
 #' @param calculateTSNE A list with parameters passed on to \code{scater::calculateTSNE()}
-#' @param page A page name to identify this page.
+#' @param page The name of the page to be added.
 #' @param title The title of the page.
 #' @param menu The menu tab to which this page is subordinated. Default "Tools"
 #' @param object An object of class \linkS4class{Seurat}, \linkS4class{SingleCellExperiment} or \linkS4class{SummarizedExperiment}.

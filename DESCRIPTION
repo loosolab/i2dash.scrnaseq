@@ -14,18 +14,30 @@ RoxygenNote: 7.1.0
 Imports:
     assertive.properties,
     ComplexHeatmap,
-    dplyr,
     i2dash,
-    knitr,
     magrittr,
     methods,
     plotly,
-    Seurat,
+    ggplot2,
     shiny,
-    SingleCellExperiment,
-    stringi,
+    shinyWidgets,
+    ComplexHeatmap,
+    assertive.sets,
+    assertive.types,
+    knitr,
+    tidyr,
+    dplyr,
     tibble,
-    tidyr
-Suggests:
-    kableExtra,
-    scran
+    magrittr,
+    scran,
+    scater,
+    stringi,
+    htmltools,
+    rlist,
+    data.table,
+    multipanelfigure,
+    DT,
+    SingleCellExperiment,
+    kableExtra
+Suggests: 
+    Seurat
