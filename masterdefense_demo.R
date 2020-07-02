@@ -59,6 +59,7 @@ dashboard %<>% i2dash::add_page(
     component = "descr2.md",
     page      = "intro"
   )
+dashboard %<>% i2dash::add_to_sidebar(component="Processing.png", page="intro")
 
 #########################################
 # Quality controll
@@ -252,7 +253,8 @@ dashboard %<>% i2dash::add_page(
   subset_row = marker_names,
   split_by = c("Major.cell.type", "Tissue", "Animal", "Library"),
   aggregate_by = c("Major.cell.type", "Tissue", "Animal", "Library"),
-  title = "Expression of marker genes"
+  title = "Expression of marker genes",
+  legend = "log-transformed normalized"
 )
 
 #########################################

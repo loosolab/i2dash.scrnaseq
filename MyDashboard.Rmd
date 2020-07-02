@@ -29,7 +29,14 @@ colormaps <- list()
 Introduction {data-navmenu=""}
 ====================================================
 
-<!-- Page created on 2020-06-15 11:19:36 -->
+<!-- Page created on 2020-07-02 17:51:04 -->
+Inputs {.sidebar data-width=250}
+-------------------------------------
+
+### 
+
+<img src="Processing.png" alt="Processing.png" style="height:auto;width:100%"/><br/>
+
 
 
 Column
@@ -92,18 +99,18 @@ Column
 Quality Control {.storyboard data-navmenu=""}
 ====================================================
 
-<!-- Page created on 2020-06-15 11:19:36 -->
+<!-- Page created on 2020-07-02 17:51:04 -->
 
 ### Total UMI count for each barcode in the dataset, plotted against its rank in decreasing order of total counts (Blue line = inflection; Green line = knee).
 
-<!-- Component created on 2020-06-15 11:17:03 -->
+<!-- Component created on 2020-07-02 17:48:47 -->
 
 ```{r}
 if (!requireNamespace("plotly", quietly = TRUE)) {
     stop('The package "plotly" is needed to embed objects of class "plotly".', call. = FALSE)
 }
 
-vis_obj_B814hy <- readRDS(file.path(datadir, 'obj_B814hy.rds'))
+vis_obj_fsmiRq <- readRDS(file.path(datadir, 'obj_fsmiRq.rds'))
 
 # workaround for plotly dependencies issue (https://github.com/ropensci/plotly/issues/1044)
 # 
@@ -115,41 +122,41 @@ fix_dependency <- function(dependency){
   return(dependency)
 }
 if ("plotly" == "plotly"){
-  vis_obj_B814hy$dependencies <- lapply(vis_obj_B814hy$dependencies, fix_dependency)  
+  vis_obj_fsmiRq$dependencies <- lapply(vis_obj_fsmiRq$dependencies, fix_dependency)  
 }
 
-vis_obj_B814hy
+vis_obj_fsmiRq
 ```
 
 
 ### Ration between detected genes and total count. Each point represents a cell that can be coloured by tissue, library, or biological replicate.
 
-<!-- Component created on 2020-06-15 11:17:19 -->
+<!-- Component created on 2020-07-02 17:49:03 -->
 
 ```{r}
-env_dMJi6E <- readRDS(file.path(datadir, "env_dMJi6E.rds"))
+env_adFsR8 <- readRDS(file.path(datadir, "env_adFsR8.rds"))
 is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
 library(magrittr)
 ```
 
 ```{r, eval=!is_shiny}
 # set variables
-if(!is.null(env_dMJi6E$x_title)) x_title_env_dMJi6E <- env_dMJi6E$x_title else x_title_env_dMJi6E <- colnames(env_dMJi6E$x)[1]
-if(!is.null(env_dMJi6E$y_title)) y_title_env_dMJi6E <- env_dMJi6E$y_title else y_title_env_dMJi6E <- colnames(env_dMJi6E$y)[1]
-if(!is.null(env_dMJi6E$colour_by)) colour_by_env_dMJi6E <- env_dMJi6E$colour_by[,1] else colour_by_env_dMJi6E <- NULL
-if(!is.null(env_dMJi6E$labels)) labels_env_dMJi6E <- env_dMJi6E$labels else labels_env_dMJi6E <- rownames(env_dMJi6E$x)
+if(!is.null(env_adFsR8$x_title)) x_title_env_adFsR8 <- env_adFsR8$x_title else x_title_env_adFsR8 <- colnames(env_adFsR8$x)[1]
+if(!is.null(env_adFsR8$y_title)) y_title_env_adFsR8 <- env_adFsR8$y_title else y_title_env_adFsR8 <- colnames(env_adFsR8$y)[1]
+if(!is.null(env_adFsR8$colour_by)) colour_by_env_adFsR8 <- env_adFsR8$colour_by[,1] else colour_by_env_adFsR8 <- NULL
+if(!is.null(env_adFsR8$labels)) labels_env_adFsR8 <- env_adFsR8$labels else labels_env_adFsR8 <- rownames(env_adFsR8$x)
 
 # compare with colormaps
-if(is.factor(colour_by_env_dMJi6E)){
-  if(colnames(env_dMJi6E$colour_by)[1] %in% names(colormaps)) colors_env_dMJi6E <- colormaps[[colnames(env_dMJi6E$colour_by)[1]]] else colors_env_dMJi6E <- NULL
+if(is.factor(colour_by_env_adFsR8)){
+  if(colnames(env_adFsR8$colour_by)[1] %in% names(colormaps)) colors_env_adFsR8 <- colormaps[[colnames(env_adFsR8$colour_by)[1]]] else colors_env_adFsR8 <- NULL
 } else {
-  colors_env_dMJi6E <- NULL
+  colors_env_adFsR8 <- NULL
 }
 
 # creating the plot object
-plot_env_dMJi6E <- i2dash.scrnaseq::plotly_scatterplot(x = env_dMJi6E$x[,1], y = env_dMJi6E$y[,1], color = colour_by_env_dMJi6E, text = labels_env_dMJi6E, y_title = y_title_env_dMJi6E, x_title = x_title_env_dMJi6E, colors = colors_env_dMJi6E, type = "scatter") %>%
+plot_env_adFsR8 <- i2dash.scrnaseq::plotly_scatterplot(x = env_adFsR8$x[,1], y = env_adFsR8$y[,1], color = colour_by_env_adFsR8, text = labels_env_adFsR8, y_title = y_title_env_adFsR8, x_title = x_title_env_adFsR8, colors = colors_env_adFsR8, type = "scatter") %>%
   plotly::layout(
-    title = env_dMJi6E$plot_title,
+    title = env_adFsR8$plot_title,
     autosize = F, 
     yaxis = list(automargin = T), 
     xaxis = list(automargin = T)
@@ -158,9 +165,9 @@ plot_env_dMJi6E <- i2dash.scrnaseq::plotly_scatterplot(x = env_dMJi6E$x[,1], y =
                         function(el, x) {
                         // workaround for plotly.js (https://github.com/ropensci/plotly/issues/1546)
                           // get size of parents div container
-                          document.getElementById('scatter_env_dMJi6E').parentElement.id = 'parent_scatter_env_dMJi6E'
-                          var clientHeight = document.getElementById('parent_scatter_env_dMJi6E').clientHeight;
-                          var clientWidth = document.getElementById('parent_scatter_env_dMJi6E').clientWidth;
+                          document.getElementById('scatter_env_adFsR8').parentElement.id = 'parent_scatter_env_adFsR8'
+                          var clientHeight = document.getElementById('parent_scatter_env_adFsR8').clientHeight;
+                          var clientWidth = document.getElementById('parent_scatter_env_adFsR8').clientWidth;
                           
                           // avoid errors at 0 width and height
                           if (clientHeight === 0){
@@ -179,119 +186,119 @@ plot_env_dMJi6E <- i2dash.scrnaseq::plotly_scatterplot(x = env_dMJi6E$x[,1], y =
                         }
                         ") %>% 
   plotly::toWebGL()
-plot_env_dMJi6E$elementId <- "scatter_env_dMJi6E" 
+plot_env_adFsR8$elementId <- "scatter_env_adFsR8" 
 
 # Provide data for download
-if(is.null(env_dMJi6E$colour_by)){
-  df_env_dMJi6E <- data.frame(x = env_dMJi6E$x[,1], y = env_dMJi6E$y[,1])
+if(is.null(env_adFsR8$colour_by)){
+  df_env_adFsR8 <- data.frame(x = env_adFsR8$x[,1], y = env_adFsR8$y[,1])
 } else {
-  df_env_dMJi6E <- data.frame(x = env_dMJi6E$x[,1], y = env_dMJi6E$y[,1], colour_by = env_dMJi6E$colour_by[,1])
+  df_env_adFsR8 <- data.frame(x = env_adFsR8$x[,1], y = env_adFsR8$y[,1], colour_by = env_adFsR8$colour_by[,1])
 }
-rownames(df_env_dMJi6E) <- rownames(env_dMJi6E$x)
+rownames(df_env_adFsR8) <- rownames(env_adFsR8$x)
 htmltools::div(style="display:block;float:left;width:100%;height:90%;",
-  htmltools::tags$button(i2dash::embed_var(df_env_dMJi6E)), plot_env_dMJi6E
+  htmltools::tags$button(i2dash::embed_var(df_env_adFsR8)), plot_env_adFsR8
 )
 ```
 
 ```{r, eval=is_shiny}
 ui_list <- list()
 # selection field for x
-if (env_dMJi6E$x_selection){
+if (env_adFsR8$x_selection){
   ui_list <- rlist::list.append(ui_list,
-                                selectInput("select_x_env_dMJi6E", label = "Select data for x axis:",
-                                            choices = colnames(env_dMJi6E$x)))
+                                selectInput("select_x_env_adFsR8", label = "Select data for x axis:",
+                                            choices = colnames(env_adFsR8$x)))
 }
 
 # selection field for y
-if (env_dMJi6E$y_selection){
+if (env_adFsR8$y_selection){
   ui_list <- rlist::list.append(ui_list,
-                                selectInput("select_y_env_dMJi6E", label = "Select data for y axis:",
-                                            choices = colnames(env_dMJi6E$y)))
+                                selectInput("select_y_env_adFsR8", label = "Select data for y axis:",
+                                            choices = colnames(env_adFsR8$y)))
 }
 # Radio buttons for colouring
-if (length(env_dMJi6E$colouring) > 1){
+if (length(env_adFsR8$colouring) > 1){
   ui_list <- rlist::list.append(ui_list,
-                                radioButtons("radio_env_dMJi6E", label = "Select the colouring method:", 
-                                                      choices = env_dMJi6E$colouring, selected = NULL))
+                                radioButtons("radio_env_adFsR8", label = "Select the colouring method:", 
+                                                      choices = env_adFsR8$colouring, selected = NULL))
 }
 
 # selection field for colour_by_metadata
-if (env_dMJi6E$colour_by_selection){
+if (env_adFsR8$colour_by_selection){
   ui_list <- rlist::list.append(ui_list,
-                                selectInput("select_colour_env_dMJi6E", label = "Select metadata:",
-                                            choices = colnames(env_dMJi6E$colour_by)))
+                                selectInput("select_colour_env_adFsR8", label = "Select metadata:",
+                                            choices = colnames(env_adFsR8$colour_by)))
 }
 
 # selection field for colour_by_sample
-if (!is.null(env_dMJi6E$labels)) {
+if (!is.null(env_adFsR8$labels)) {
   ui_list <- rlist::list.append(ui_list,
-                                selectInput("select_label_env_dMJi6E", label = "Select label:",
-                                            choices = env_dMJi6E$labels))
+                                selectInput("select_label_env_adFsR8", label = "Select label:",
+                                            choices = env_adFsR8$labels))
 }
 
 # selection field for colour_by_feature
-if (!is.null(env_dMJi6E$exprs_values)) {
+if (!is.null(env_adFsR8$exprs_values)) {
   ui_list <- rlist::list.append(ui_list,
-                                selectInput("select_feature_env_dMJi6E", label = "Select feature:", 
-                                            choices = rownames(env_dMJi6E$exprs_values)))
+                                selectInput("select_feature_env_adFsR8", label = "Select feature:", 
+                                            choices = rownames(env_adFsR8$exprs_values)))
 }
 
 
 
 # Download link
-ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downloadData_env_dMJi6E', 'Download data')))
+ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downloadData_env_adFsR8', 'Download data')))
 
 #
 # Handle inputs
 #
-x_env_dMJi6E <- shiny::reactive({
-  if(!env_dMJi6E$x_selection){
-    data <- env_dMJi6E$x[[1]]
-    title <- colnames(env_dMJi6E$x)[1]
+x_env_adFsR8 <- shiny::reactive({
+  if(!env_adFsR8$x_selection){
+    data <- env_adFsR8$x[[1]]
+    title <- colnames(env_adFsR8$x)[1]
     return(list(data = data, title = title))
   } else {
-    data <- env_dMJi6E$x[[input$select_x_env_dMJi6E]]
-    title <- input$select_x_env_dMJi6E
+    data <- env_adFsR8$x[[input$select_x_env_adFsR8]]
+    title <- input$select_x_env_adFsR8
     return(list(data = data, title = title))
   }
 })
 
-y_env_dMJi6E <- shiny::reactive({
-  if(!env_dMJi6E$y_selection){
-    data <- env_dMJi6E$y[[1]]
-    title <- colnames(env_dMJi6E$y)[1]
+y_env_adFsR8 <- shiny::reactive({
+  if(!env_adFsR8$y_selection){
+    data <- env_adFsR8$y[[1]]
+    title <- colnames(env_adFsR8$y)[1]
     return(list(data = data, title = title))
   } else {
-    data <- env_dMJi6E$y[[input$select_y_env_dMJi6E]]
-    title <- input$select_y_env_dMJi6E
+    data <- env_adFsR8$y[[input$select_y_env_adFsR8]]
+    title <- input$select_y_env_adFsR8
     return(list(data = data, title = title))
   }
 })
 
-colour_env_dMJi6E <- shiny::reactive({
-  if(length(env_dMJi6E$colouring) > 1){
+colour_env_adFsR8 <- shiny::reactive({
+  if(length(env_adFsR8$colouring) > 1){
     # "No colour" in radio menu
-    if(input$radio_env_dMJi6E == 0){ 
+    if(input$radio_env_adFsR8 == 0){ 
       return(list(colour = NULL, annotation = NULL, colour_title = NULL))
     
     # "Colour by metadata" in radio menu
-    } else if(input$radio_env_dMJi6E == 1){
-      if(!env_dMJi6E$colour_by_selection){
-        data <- env_dMJi6E$colour_by[[1]]
-        title <- colnames(env_dMJi6E$colour_by)[1]
+    } else if(input$radio_env_adFsR8 == 1){
+      if(!env_adFsR8$colour_by_selection){
+        data <- env_adFsR8$colour_by[[1]]
+        title <- colnames(env_adFsR8$colour_by)[1]
       } else {
-        data <- env_dMJi6E$colour_by[[input$select_colour_env_dMJi6E]]
-        title <- input$select_colour_env_dMJi6E
+        data <- env_adFsR8$colour_by[[input$select_colour_env_adFsR8]]
+        title <- input$select_colour_env_adFsR8
       }
       return(list(colour = data, annotation = NULL, colour_title = title))
     
     # "Colour by label" in radio menu
-    } else if(input$radio_env_dMJi6E == 2){
-      point_index <- match(input$select_label_env_dMJi6E, env_dMJi6E$labels)
+    } else if(input$radio_env_adFsR8 == 2){
+      point_index <- match(input$select_label_env_adFsR8, env_adFsR8$labels)
       a <- list(
-        x = x_env_dMJi6E()$data[point_index],
-        y = y_env_dMJi6E()$data[point_index],
-        text = input$select_label_env_dMJi6E,
+        x = x_env_adFsR8()$data[point_index],
+        y = y_env_adFsR8()$data[point_index],
+        text = input$select_label_env_adFsR8,
         xref = "x",
         yref = "y",
         showarrow = T,
@@ -303,9 +310,9 @@ colour_env_dMJi6E <- shiny::reactive({
       return(list(colour = NULL, annotation = a, colour_title = NULL))
       
     # "Colour by expression" in radio menu
-    } else if(input$radio_env_dMJi6E == 3){
-      data <- env_dMJi6E$exprs_values[input$select_feature_env_dMJi6E,]
-      return(list(colour = data, annotation = NULL, colour_title = input$select_feature_env_dMJi6E))
+    } else if(input$radio_env_adFsR8 == 3){
+      data <- env_adFsR8$exprs_values[input$select_feature_env_adFsR8,]
+      return(list(colour = data, annotation = NULL, colour_title = input$select_feature_env_adFsR8))
     }
   } else {
     return(list(colour = NULL, annotation = NULL, colour_title = NULL))
@@ -315,15 +322,15 @@ colour_env_dMJi6E <- shiny::reactive({
 #
 # Download data.frame
 #
-output$downloadData_env_dMJi6E <- downloadHandler(
+output$downloadData_env_adFsR8 <- downloadHandler(
   filename =  paste('data-', Sys.Date(), '.csv', sep=''),
   content = function(file) {
-    if(is.null(colour_env_dMJi6E()$colour)){
-      df <- data.frame(x = x_env_dMJi6E()$data, y = y_env_dMJi6E()$data)
+    if(is.null(colour_env_adFsR8()$colour)){
+      df <- data.frame(x = x_env_adFsR8()$data, y = y_env_adFsR8()$data)
     } else {
-      df <- data.frame(x = x_env_dMJi6E()$data, y = y_env_dMJi6E()$data, colour_by = colour_env_dMJi6E()$colour)
+      df <- data.frame(x = x_env_adFsR8()$data, y = y_env_adFsR8()$data, colour_by = colour_env_adFsR8()$colour)
     }
-    if(!is.null(env_dMJi6E$labels)) labels <- env_dMJi6E$labels else labels <- rownames(env_dMJi6E$x)
+    if(!is.null(env_adFsR8$labels)) labels <- env_adFsR8$labels else labels <- rownames(env_adFsR8$x)
     rownames(df) <- labels
     write.csv(df, file)
   }
@@ -332,22 +339,22 @@ output$downloadData_env_dMJi6E <- downloadHandler(
 #
 # reactive plot creation
 #
-output$plot_env_dMJi6E <- plotly::renderPlotly({
+output$plot_env_adFsR8 <- plotly::renderPlotly({
   # compare with colormaps
-  if(is.factor(colour_env_dMJi6E()$colour)){
-    if(colour_env_dMJi6E()$colour_title %in% names(colormaps)) colors <- colormaps[[colour_env_dMJi6E()$colour_title]] else colors <- "Set1"
+  if(is.factor(colour_env_adFsR8()$colour)){
+    if(colour_env_adFsR8()$colour_title %in% names(colormaps)) colors <- colormaps[[colour_env_adFsR8()$colour_title]] else colors <- "Set1"
   } else {
     colors <- NULL
   }
 
-  if(!is.null(env_dMJi6E$y_title)) y_title <- env_dMJi6E$y_title else y_title <- y_env_dMJi6E()$title
-  if(!is.null(env_dMJi6E$x_title)) x_title <- env_dMJi6E$x_title else x_title <- x_env_dMJi6E()$title
-  if(!is.null(env_dMJi6E$labels)) labels <- env_dMJi6E$labels else labels <- rownames(env_dMJi6E$x)
+  if(!is.null(env_adFsR8$y_title)) y_title <- env_adFsR8$y_title else y_title <- y_env_adFsR8()$title
+  if(!is.null(env_adFsR8$x_title)) x_title <- env_adFsR8$x_title else x_title <- x_env_adFsR8()$title
+  if(!is.null(env_adFsR8$labels)) labels <- env_adFsR8$labels else labels <- rownames(env_adFsR8$x)
   
-  i2dash.scrnaseq::plotly_scatterplot(x = x_env_dMJi6E()$data, y = y_env_dMJi6E()$data, color = colour_env_dMJi6E()$colour, text = labels, y_title = y_title, x_title = x_title, colors = colors, type = "scatter") %>%
+  i2dash.scrnaseq::plotly_scatterplot(x = x_env_adFsR8()$data, y = y_env_adFsR8()$data, color = colour_env_adFsR8()$colour, text = labels, y_title = y_title, x_title = x_title, colors = colors, type = "scatter") %>%
     plotly::layout(
-      annotations = colour_env_dMJi6E()$annotation,
-      title = env_dMJi6E$plot_title
+      annotations = colour_env_adFsR8()$annotation,
+      title = env_adFsR8$plot_title
     ) %>% plotly::toWebGL()
 })
 
@@ -358,58 +365,58 @@ shiny::fillRow(flex = c(NA, 1),
       shinyWidgets::dropdownButton(div(style='max-height: 350px; overflow-x: auto;',do.call(shiny::inputPanel, ui_list)),
                        circle = TRUE, status = "danger", icon = icon("gear"), width = "300px",
                        tooltip = shinyWidgets::tooltipOptions(title = "Click, to change plot settings:")),
-      renderUI({plotly::plotlyOutput("plot_env_dMJi6E", height = "100%")})
+      renderUI({plotly::plotlyOutput("plot_env_adFsR8", height = "100%")})
 )
 ```
 
 
 ### Key quality metrics (total counts per cell, proportion of mitochondrial reads, number of detected features) grouped by condition.
 
-<!-- Component created on 2020-06-15 11:17:37 -->
+<!-- Component created on 2020-07-02 17:49:19 -->
 
 ```{r}
-env_B2G4a1 <- readRDS(file.path(datadir, "env_B2G4a1.rds"))
+env_kb0GsU <- readRDS(file.path(datadir, "env_kb0GsU.rds"))
 is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
 library(magrittr)
 ```
 
 ```{r, eval=!is_shiny}
 # selecting the first numeric and factor column for object wrapper 
-env_B2G4a1$y %>%
+env_kb0GsU$y %>%
   as.data.frame() %>%
   dplyr::select_if(function(col) is.integer(col) | is.numeric(col)) %>%
-  dplyr::select(1) -> y_env_B2G4a1
+  dplyr::select(1) -> y_env_kb0GsU
 
-if(!is.null(env_B2G4a1$group_by)){
-  env_B2G4a1$group_by %>%
+if(!is.null(env_kb0GsU$group_by)){
+  env_kb0GsU$group_by %>%
     as.data.frame() %>%
     dplyr::select_if(is.factor) %>%
-    dplyr::select(1) -> group_by_env_B2G4a1
-  group_by_title_env_B2G4a1 <- colnames(group_by_env_B2G4a1)
+    dplyr::select(1) -> group_by_env_kb0GsU
+  group_by_title_env_kb0GsU <- colnames(group_by_env_kb0GsU)
 } else {
-  group_by_title_env_B2G4a1 <- NULL
-  group_by_env_B2G4a1 <- NULL
+  group_by_title_env_kb0GsU <- NULL
+  group_by_env_kb0GsU <- NULL
 }
 
 # compare with colormaps
-if(!is.null(group_by_title_env_B2G4a1)){
-  if(group_by_title_env_B2G4a1 %in% names(colormaps)) colors_env_B2G4a1 <- colormaps[[group_by_title_env_B2G4a1]] else colors_env_B2G4a1 <- "Set1"
+if(!is.null(group_by_title_env_kb0GsU)){
+  if(group_by_title_env_kb0GsU %in% names(colormaps)) colors_env_kb0GsU <- colormaps[[group_by_title_env_kb0GsU]] else colors_env_kb0GsU <- "Set1"
 } else {
-  colors_env_B2G4a1 <- "Set1"
+  colors_env_kb0GsU <- "Set1"
 }
 
 # set title variables
-if(!is.null(env_B2G4a1$y_title)) y_title_env_B2G4a1 <- env_B2G4a1$y_title else y_title_env_B2G4a1 <- colnames(y_env_B2G4a1)
-if(!is.null(env_B2G4a1$group_by_title)) group_by_title_env_B2G4a1 <- env_B2G4a1$group_by_title
+if(!is.null(env_kb0GsU$y_title)) y_title_env_kb0GsU <- env_kb0GsU$y_title else y_title_env_kb0GsU <- colnames(y_env_kb0GsU)
+if(!is.null(env_kb0GsU$group_by_title)) group_by_title_env_kb0GsU <- env_kb0GsU$group_by_title
 
 # creating the plot object
-plot_env_B2G4a1 <- i2dash.scrnaseq::plotly_violinplot(y = y_env_B2G4a1[,1], group_by = group_by_env_B2G4a1[,1], y_title = y_title_env_B2G4a1, group_by_title = group_by_title_env_B2G4a1, colors = colors_env_B2G4a1)
+plot_env_kb0GsU <- i2dash.scrnaseq::plotly_violinplot(y = y_env_kb0GsU[,1], group_by = group_by_env_kb0GsU[,1], y_title = y_title_env_kb0GsU, group_by_title = group_by_title_env_kb0GsU, colors = colors_env_kb0GsU)
 
 # Provide data for download
-if(!is.null(env_B2G4a1$group_by)) download_df_env_B2G4a1 <- data.frame(y_env_B2G4a1, group_by_env_B2G4a1) else download_df_env_B2G4a1 <- data.frame(y_env_B2G4a1)
-rownames(download_df_env_B2G4a1) <- rownames(env_B2G4a1$y)
+if(!is.null(env_kb0GsU$group_by)) download_df_env_kb0GsU <- data.frame(y_env_kb0GsU, group_by_env_kb0GsU) else download_df_env_kb0GsU <- data.frame(y_env_kb0GsU)
+rownames(download_df_env_kb0GsU) <- rownames(env_kb0GsU$y)
 htmltools::div(style="display:block;float:left;width:100%;height:90%;",
-  htmltools::tags$button(i2dash::embed_var(download_df_env_B2G4a1)), plot_env_B2G4a1
+  htmltools::tags$button(i2dash::embed_var(download_df_env_kb0GsU)), plot_env_kb0GsU
 )
 ```
 
@@ -419,52 +426,52 @@ ui_list <- list()
 #
 # shiny input widget for y
 #
-if (env_B2G4a1$y_selection){
+if (env_kb0GsU$y_selection){
   ui_list <- rlist::list.append(ui_list,
-                                selectInput("select_y_env_B2G4a1", label = "Select observations:",
-                                            choices = colnames(env_B2G4a1$y[lapply(env_B2G4a1$y,class) =="numeric" | lapply(env_B2G4a1$y,class) =="integer"])))
+                                selectInput("select_y_env_kb0GsU", label = "Select observations:",
+                                            choices = colnames(env_kb0GsU$y[lapply(env_kb0GsU$y,class) =="numeric" | lapply(env_kb0GsU$y,class) =="integer"])))
 }
 
 #
 # shiny input widget for group_by
 #
-if (env_B2G4a1$group_by_selection){
+if (env_kb0GsU$group_by_selection){
   ui_list <- rlist::list.append(ui_list,
-                                selectInput("select_group_by_env_B2G4a1", label = "Group observations by:",
-                                            choices = colnames(env_B2G4a1$group_by[lapply(env_B2G4a1$group_by,class) =="factor"])))
+                                selectInput("select_group_by_env_kb0GsU", label = "Group observations by:",
+                                            choices = colnames(env_kb0GsU$group_by[lapply(env_kb0GsU$group_by,class) =="factor"])))
 }
 #
 # shiny download button
 #
-ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downloadData_env_B2G4a1', 'Download data')))
+ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downloadData_env_kb0GsU', 'Download data')))
 
 #
 # Handle inputs
 #
-if( !env_B2G4a1$y_selection){
-  y_env_B2G4a1 <- shiny::reactive({
-    data <- env_B2G4a1$y[[1]]
-    title <- colnames(env_B2G4a1$y)[1]
+if( !env_kb0GsU$y_selection){
+  y_env_kb0GsU <- shiny::reactive({
+    data <- env_kb0GsU$y[[1]]
+    title <- colnames(env_kb0GsU$y)[1]
     return(list(data = data, title = title))
   })
 } else {
-  y_env_B2G4a1 <- shiny::reactive({
-    data <- env_B2G4a1$y[[input$select_y_env_B2G4a1]]
-    title <- input$select_y_env_B2G4a1
+  y_env_kb0GsU <- shiny::reactive({
+    data <- env_kb0GsU$y[[input$select_y_env_kb0GsU]]
+    title <- input$select_y_env_kb0GsU
     return(list(data = data, title = title))
   })
 }
 
-if( !env_B2G4a1$group_by_selection ) {
-  group_by_env_B2G4a1 <- shiny::reactive({
-    data <- env_B2G4a1$group_by[[1]]
-    title <- colnames(env_B2G4a1$group_by)[1]
+if( !env_kb0GsU$group_by_selection ) {
+  group_by_env_kb0GsU <- shiny::reactive({
+    data <- env_kb0GsU$group_by[[1]]
+    title <- colnames(env_kb0GsU$group_by)[1]
     return(list(data = data, title = title))
   })
 } else {
-  group_by_env_B2G4a1 <- shiny::reactive({
-    data <- env_B2G4a1$group_by[[input$select_group_by_env_B2G4a1]]
-    title <- input$select_group_by_env_B2G4a1
+  group_by_env_kb0GsU <- shiny::reactive({
+    data <- env_kb0GsU$group_by[[input$select_group_by_env_kb0GsU]]
+    title <- input$select_group_by_env_kb0GsU
     return(list(data = data, title = title))
   })
 }
@@ -472,15 +479,15 @@ if( !env_B2G4a1$group_by_selection ) {
 #
 # Download data.frame
 #
-output$downloadData_env_B2G4a1 <- downloadHandler(
+output$downloadData_env_kb0GsU <- downloadHandler(
   filename =  paste('data-', Sys.Date(), '.csv', sep=''),
   content = function(file) {
-    if(is.null(env_B2G4a1$group_by)){
-      df <- y_env_B2G4a1()$data
+    if(is.null(env_kb0GsU$group_by)){
+      df <- y_env_kb0GsU()$data
     } else {
-      df <- data.frame(y_env_B2G4a1()$data, group_by_env_B2G4a1()$data)
+      df <- data.frame(y_env_kb0GsU()$data, group_by_env_kb0GsU()$data)
     }
-    rownames(df) <- rownames(env_B2G4a1$y)
+    rownames(df) <- rownames(env_kb0GsU$y)
     write.csv(df, file)
     
   }
@@ -489,19 +496,19 @@ output$downloadData_env_B2G4a1 <- downloadHandler(
 #
 # reactive for plot creation
 #
-output$plot_env_B2G4a1 <- plotly::renderPlotly({
+output$plot_env_kb0GsU <- plotly::renderPlotly({
   # compare with colormaps
-  if(!is.null(group_by_env_B2G4a1()$title)){
-    if(group_by_env_B2G4a1()$title %in% names(colormaps)) colors <- colormaps[[group_by_env_B2G4a1()$title]] else colors <- "Set1"
+  if(!is.null(group_by_env_kb0GsU()$title)){
+    if(group_by_env_kb0GsU()$title %in% names(colormaps)) colors <- colormaps[[group_by_env_kb0GsU()$title]] else colors <- "Set1"
   } else {
     colors <- "Set1"
   }
   
   # set custom axis titles if provided
-  if(!is.null(env_B2G4a1$y_title)) y_title <- env_B2G4a1$y_title else y_title <- y_env_B2G4a1()$title
-  if(!is.null(env_B2G4a1$group_by_title)) group_by_title <- env_B2G4a1$group_by_title else group_by_title <- group_by_env_B2G4a1()$title
+  if(!is.null(env_kb0GsU$y_title)) y_title <- env_kb0GsU$y_title else y_title <- y_env_kb0GsU()$title
+  if(!is.null(env_kb0GsU$group_by_title)) group_by_title <- env_kb0GsU$group_by_title else group_by_title <- group_by_env_kb0GsU()$title
   
-  i2dash.scrnaseq::plotly_violinplot(y = y_env_B2G4a1()$data, group_by = group_by_env_B2G4a1()$data, y_title = y_title, group_by_title = group_by_title, colors = colors)
+  i2dash.scrnaseq::plotly_violinplot(y = y_env_kb0GsU()$data, group_by = group_by_env_kb0GsU()$data, y_title = y_title, group_by_title = group_by_title, colors = colors)
 })
 
 #
@@ -511,20 +518,20 @@ shiny::fillRow(flex = c(NA, 1),
       shinyWidgets::dropdownButton(div(style='max-height: 350px; overflow-x: auto;',do.call(shiny::inputPanel, ui_list)),
                        circle = TRUE, status = "danger", icon = icon("gear"), width = "300px",
                        tooltip = shinyWidgets::tooltipOptions(title = "Click, to change plot settings:")),
-      plotly::plotlyOutput("plot_env_B2G4a1", height = "100%")
+      plotly::plotlyOutput("plot_env_kb0GsU", height = "100%")
 )
 ```
 
 ### Scatterplot of reads mapped to mitochondrial transcripts (%) against detected genes, coloured by discarded cells (red). Each point represents a cell.
 
-<!-- Component created on 2020-06-15 11:17:40 -->
+<!-- Component created on 2020-07-02 17:49:19 -->
 
 ```{r}
 if (!requireNamespace("plotly", quietly = TRUE)) {
     stop('The package "plotly" is needed to embed objects of class "plotly".', call. = FALSE)
 }
 
-vis_obj_xorEM5 <- readRDS(file.path(datadir, 'obj_xorEM5.rds'))
+vis_obj_VWIjEV <- readRDS(file.path(datadir, 'obj_VWIjEV.rds'))
 
 # workaround for plotly dependencies issue (https://github.com/ropensci/plotly/issues/1044)
 # 
@@ -536,17 +543,17 @@ fix_dependency <- function(dependency){
   return(dependency)
 }
 if ("plotly" == "plotly"){
-  vis_obj_xorEM5$dependencies <- lapply(vis_obj_xorEM5$dependencies, fix_dependency)  
+  vis_obj_VWIjEV$dependencies <- lapply(vis_obj_VWIjEV$dependencies, fix_dependency)  
 }
 
-vis_obj_xorEM5
+vis_obj_VWIjEV
 ```
 
 
 Summary {data-navmenu=""}
 ====================================================
 
-<!-- Page created on 2020-06-15 11:19:36 -->
+<!-- Page created on 2020-07-02 17:51:04 -->
 
 
 Column
@@ -555,41 +562,41 @@ Column
 
 ### Metadata statistic
 
-<!-- Component created on 2020-06-15 11:17:56 -->
+<!-- Component created on 2020-07-02 17:49:35 -->
 
 ```{r}
-env_rdAnr3 <- readRDS(file.path(datadir, "env_rdAnr3.rds"))
+env_SzLhgd <- readRDS(file.path(datadir, "env_SzLhgd.rds"))
 library(magrittr)
 ```
 
 ```{r}
 # selecting the first numeric and factor column for object wrapper 
-env_rdAnr3$df %>%
+env_SzLhgd$df %>%
   kableExtra::kable() %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover")) %>%
-  kableExtra::footnote(general = env_rdAnr3$footnote_text,
-                       general_title = env_rdAnr3$footnote_title,
+  kableExtra::footnote(general = env_SzLhgd$footnote_text,
+                       general_title = env_SzLhgd$footnote_title,
                        footnote_as_chunk = T,
-                       title_format = c("bold", "underline")) -> env_rdAnr3_kable
+                       title_format = c("bold", "underline")) -> env_SzLhgd_kable
 
 # prepare a header vector for kableExtra::add_header_above
-if(!is.null(env_rdAnr3$group_by)){
-  env_rdAnr3_level_nr <- length(unique(env_rdAnr3$group_by))
-  env_rdAnr3_FUNS_nr <- length(env_rdAnr3$FUNS)
-  env_rdAnr3_header_vector <- c(1, rep(env_rdAnr3_level_nr, env_rdAnr3_FUNS_nr))
-  names(env_rdAnr3_header_vector) <- c(" ", env_rdAnr3$FUNS)
-  env_rdAnr3_kable %<>%
-    kableExtra::add_header_above(env_rdAnr3_header_vector)
+if(!is.null(env_SzLhgd$group_by)){
+  env_SzLhgd_level_nr <- length(unique(env_SzLhgd$group_by))
+  env_SzLhgd_FUNS_nr <- length(env_SzLhgd$FUNS)
+  env_SzLhgd_header_vector <- c(1, rep(env_SzLhgd_level_nr, env_SzLhgd_FUNS_nr))
+  names(env_SzLhgd_header_vector) <- c(" ", env_SzLhgd$FUNS)
+  env_SzLhgd_kable %<>%
+    kableExtra::add_header_above(env_SzLhgd_header_vector)
 }
 
 # Provide data for download
-env_rdAnr3_df <- env_rdAnr3$df
-if(!is.null(env_rdAnr3$group_by)){
-  fun_vector <- unlist(lapply(env_rdAnr3$FUNS, rep, times = length(unique(env_rdAnr3$group_by))))
-  colnames(env_rdAnr3_df) <- paste0(colnames(env_rdAnr3_df),"_", fun_vector)
+env_SzLhgd_df <- env_SzLhgd$df
+if(!is.null(env_SzLhgd$group_by)){
+  fun_vector <- unlist(lapply(env_SzLhgd$FUNS, rep, times = length(unique(env_SzLhgd$group_by))))
+  colnames(env_SzLhgd_df) <- paste0(colnames(env_SzLhgd_df),"_", fun_vector)
 }
-env_rdAnr3_kable
-htmltools::tags$button(i2dash::embed_var(env_rdAnr3_df)) 
+env_SzLhgd_kable
+htmltools::tags$button(i2dash::embed_var(env_SzLhgd_df)) 
 ```
 
 
@@ -601,14 +608,14 @@ Column
     
 ### Cell filtering
 
-<!-- Component created on 2020-06-15 11:17:59 -->
+<!-- Component created on 2020-07-02 17:49:35 -->
 
 ```{r}
 if (!requireNamespace("kableExtra", quietly = TRUE)) {
     stop('The package "kableExtra" is needed to embed objects of class "kableExtra".', call. = FALSE)
 }
 
-vis_obj_CkG1Y9 <- readRDS(file.path(datadir, 'obj_CkG1Y9.rds'))
+vis_obj_v70c9A <- readRDS(file.path(datadir, 'obj_v70c9A.rds'))
 
 # workaround for plotly dependencies issue (https://github.com/ropensci/plotly/issues/1044)
 # 
@@ -620,10 +627,10 @@ fix_dependency <- function(dependency){
   return(dependency)
 }
 if ("kableExtra" == "plotly"){
-  vis_obj_CkG1Y9$dependencies <- lapply(vis_obj_CkG1Y9$dependencies, fix_dependency)  
+  vis_obj_v70c9A$dependencies <- lapply(vis_obj_v70c9A$dependencies, fix_dependency)  
 }
 
-vis_obj_CkG1Y9
+vis_obj_v70c9A
 ```
 
 
@@ -632,7 +639,7 @@ vis_obj_CkG1Y9
 Cell metadata 1 {data-navmenu="Cell metadata"}
 ====================================================
 
-<!-- Page created on 2020-06-15 11:19:37 -->
+<!-- Page created on 2020-07-02 17:51:04 -->
 
 
 Column
@@ -641,17 +648,17 @@ Column
 
 ### Dimension reduction:
 
-<!-- Component created on 2020-06-15 11:18:14 -->
+<!-- Component created on 2020-07-02 17:49:50 -->
 
 ```{r}
-env_puM6L2 <- readRDS(file.path(datadir, "env_puM6L2.rds"))
+env_uZD4GZ <- readRDS(file.path(datadir, "env_uZD4GZ.rds"))
 is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
 
 library(dplyr)
 
-labels_env_puM6L2 <- env_puM6L2$labels
-metadata_env_puM6L2 <- env_puM6L2$metadata
-grouping_env_puM6L2 <- env_puM6L2$grouping
+labels_env_uZD4GZ <- env_uZD4GZ$labels
+metadata_env_uZD4GZ <- env_uZD4GZ$metadata
+grouping_env_uZD4GZ <- env_uZD4GZ$grouping
 
 # function to create a data.frame
 create_df <- function(reduced_dim, metadata, grouping){
@@ -680,14 +687,14 @@ create_df <- function(reduced_dim, metadata, grouping){
 ```
 
 ```{r, eval=!is_shiny}
-df_env_puM6L2 <- create_df(reduced_dim = env_puM6L2$reduced_dim, metadata = metadata_env_puM6L2, grouping = grouping_env_puM6L2)
+df_env_uZD4GZ <- create_df(reduced_dim = env_uZD4GZ$reduced_dim, metadata = metadata_env_uZD4GZ, grouping = grouping_env_uZD4GZ)
 
-sd_env_puM6L2 <- plotly::highlight_key(df_env_puM6L2)
+sd_env_uZD4GZ <- plotly::highlight_key(df_env_uZD4GZ)
 
 # compare with colormaps
-if(grouping_env_puM6L2 %in% names(colormaps)) colors_env_puM6L2 <- colormaps[[grouping_env_puM6L2]] else colors_env_puM6L2 <- "Set1"
+if(grouping_env_uZD4GZ %in% names(colormaps)) colors_env_uZD4GZ <- colormaps[[grouping_env_uZD4GZ]] else colors_env_uZD4GZ <- "Set1"
 
-dots <- plotly::plot_ly(sd_env_puM6L2, colors = colors_env_puM6L2, color = df_env_puM6L2[[grouping_env_puM6L2]], x = ~x, y = ~y, mode = "markers", textposition = "top", hoverinfo = "x+y+text", text = paste("grouping: ", df_env_puM6L2[[grouping_env_puM6L2]], "</br> label: ", labels_env_puM6L2), type = "scattergl") %>%
+dots <- plotly::plot_ly(sd_env_uZD4GZ, colors = colors_env_uZD4GZ, color = df_env_uZD4GZ[[grouping_env_uZD4GZ]], x = ~x, y = ~y, mode = "markers", textposition = "top", hoverinfo = "x+y+text", text = paste("grouping: ", df_env_uZD4GZ[[grouping_env_uZD4GZ]], "</br> label: ", labels_env_uZD4GZ), type = "scattergl") %>%
   plotly::layout(
     xaxis = list(title = "Dimension 1"),
     yaxis = list(title = "Dimension 2"),
@@ -697,63 +704,63 @@ dots <- plotly::plot_ly(sd_env_puM6L2, colors = colors_env_puM6L2, color = df_en
   plotly::toWebGL()
 
 htmltools::div(style="display:block;float:left;width:100%;height:90%;",
-  htmltools::tags$button(i2dash::embed_var(df_env_puM6L2)), dots
+  htmltools::tags$button(i2dash::embed_var(df_env_uZD4GZ)), dots
 )
 ```
 
 ```{r, eval=is_shiny}
 # filter all factorial metadata columns
-factors_env_puM6L2 <- c()
-for (name in colnames(metadata_env_puM6L2)){
-  if(is.factor(metadata_env_puM6L2[[name]])){
-    factors_env_puM6L2 <- c(factors_env_puM6L2, name)
+factors_env_uZD4GZ <- c()
+for (name in colnames(metadata_env_uZD4GZ)){
+  if(is.factor(metadata_env_uZD4GZ[[name]])){
+    factors_env_uZD4GZ <- c(factors_env_uZD4GZ, name)
   }
 }
 ui_list <- list()
 
 # selection field for x
-if (env_puM6L2$multiple_meta){
+if (env_uZD4GZ$multiple_meta){
   ui_list <- rlist::list.append(ui_list,
-                                selectInput("select_grouping_env_puM6L2", label = "Select column for grouping:",
-                                            choices = factors_env_puM6L2, selected = grouping_env_puM6L2))
+                                selectInput("select_grouping_env_uZD4GZ", label = "Select column for grouping:",
+                                            choices = factors_env_uZD4GZ, selected = grouping_env_uZD4GZ))
 }
 
 # Download link
-ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downloadData_env_puM6L2', 'Download data')))
+ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downloadData_env_uZD4GZ', 'Download data')))
 
 #
 # Create reactive data table
 #
-df_env_puM6L2 <- shiny::reactive({
-  if (!env_puM6L2$multiple_meta){
-    grouping <- grouping_env_puM6L2
+df_env_uZD4GZ <- shiny::reactive({
+  if (!env_uZD4GZ$multiple_meta){
+    grouping <- grouping_env_uZD4GZ
   } else {
-    grouping <- input$select_grouping_env_puM6L2
+    grouping <- input$select_grouping_env_uZD4GZ
   }
-  df_env_puM6L2 <- create_df(reduced_dim = env_puM6L2$reduced_dim, metadata = metadata_env_puM6L2, grouping = grouping)
+  df_env_uZD4GZ <- create_df(reduced_dim = env_uZD4GZ$reduced_dim, metadata = metadata_env_uZD4GZ, grouping = grouping)
 
-  sd_env_puM6L2 <- plotly::highlight_key(df_env_puM6L2)
-  return(list("sd" = sd_env_puM6L2, "df" = df_env_puM6L2, "grouping" = grouping))
+  sd_env_uZD4GZ <- plotly::highlight_key(df_env_uZD4GZ)
+  return(list("sd" = sd_env_uZD4GZ, "df" = df_env_uZD4GZ, "grouping" = grouping))
 })
 
 #
 # Download
 #
-output$downloadData_env_puM6L2<- downloadHandler(
+output$downloadData_env_uZD4GZ<- downloadHandler(
   filename =  paste('data-', Sys.Date(), '.csv', sep=''),
   content = function(file) {
-    write.csv(df_env_puM6L2()$df, file)
+    write.csv(df_env_uZD4GZ()$df, file)
   }
 )
 
 #
 # Output
 #
-output$plot_scatter_env_puM6L2 <- plotly::renderPlotly({
+output$plot_scatter_env_uZD4GZ <- plotly::renderPlotly({
   # compare with colormaps
-  if(df_env_puM6L2()$grouping %in% names(colormaps)) colors <- colormaps[[df_env_puM6L2()$grouping]] else colors <- "Set1"
+  if(df_env_uZD4GZ()$grouping %in% names(colormaps)) colors <- colormaps[[df_env_uZD4GZ()$grouping]] else colors <- "Set1"
   
-  dots <- plotly::plot_ly(df_env_puM6L2()$sd, color = df_env_puM6L2()$df[[df_env_puM6L2()$grouping]], x = ~x, y = ~y, mode = "markers", textposition = "top", hoverinfo = "x+y+text", text = paste("grouping: ", df_env_puM6L2()$df[[df_env_puM6L2()$grouping]], "</br> label: ", labels_env_puM6L2),  type = "scattergl", colors = colors) %>%
+  dots <- plotly::plot_ly(df_env_uZD4GZ()$sd, color = df_env_uZD4GZ()$df[[df_env_uZD4GZ()$grouping]], x = ~x, y = ~y, mode = "markers", textposition = "top", hoverinfo = "x+y+text", text = paste("grouping: ", df_env_uZD4GZ()$df[[df_env_uZD4GZ()$grouping]], "</br> label: ", labels_env_uZD4GZ),  type = "scattergl", colors = colors) %>%
   plotly::layout(
     xaxis = list(title = "Dimension 1"),
     yaxis = list(title = "Dimension 2"),
@@ -771,7 +778,7 @@ shiny::fillRow(flex = c(NA, 1),
       shinyWidgets::dropdownButton(div(style='max-height: 350px; overflow-x: auto;',do.call(shiny::inputPanel, ui_list)),
                        circle = TRUE, status = "danger", icon = icon("gear"), width = "300px",
                        tooltip = shinyWidgets::tooltipOptions(title = "Click, to change plot settings:")),
-      renderUI({plotly::plotlyOutput("plot_scatter_env_puM6L2", height = "100%")})
+      renderUI({plotly::plotlyOutput("plot_scatter_env_uZD4GZ", height = "100%")})
 )
 ```
 
@@ -780,14 +787,14 @@ shiny::fillRow(flex = c(NA, 1),
 
 ### Silhouette plot
 
-<!-- Component created on 2020-06-15 11:18:14 -->
+<!-- Component created on 2020-07-02 17:49:50 -->
 
 ```{r, eval=!is_shiny}
 # Handle colormaps
-if(grouping_env_puM6L2 %in% names(colormaps)) colors_env_puM6L2 <- colormaps[[grouping_env_puM6L2]] else colors_env_puM6L2 <- "Set1"
+if(grouping_env_uZD4GZ %in% names(colormaps)) colors_env_uZD4GZ <- colormaps[[grouping_env_uZD4GZ]] else colors_env_uZD4GZ <- "Set1"
 
-sil_plot <- plotly::plot_ly(sd_env_puM6L2, colors = colors_env_puM6L2) %>%
-  plotly::add_bars(color = df_env_puM6L2[[grouping_env_puM6L2]], name = df_env_puM6L2[[grouping_env_puM6L2]], orientation = 'h', y = ~cell, x = ~silhouette) %>%
+sil_plot <- plotly::plot_ly(sd_env_uZD4GZ, colors = colors_env_uZD4GZ) %>%
+  plotly::add_bars(color = df_env_uZD4GZ[[grouping_env_uZD4GZ]], name = df_env_uZD4GZ[[grouping_env_uZD4GZ]], orientation = 'h', y = ~cell, x = ~silhouette) %>%
   plotly::layout(yaxis = list(showticklabels = FALSE), showlegend = FALSE) %>%
   plotly::highlight(on = "plotly_selected", dynamic = F, selectize = F)
 sil_plot
@@ -797,12 +804,12 @@ sil_plot
 #
 # Output
 #
-output$plot_sil_env_puM6L2 <- plotly::renderPlotly({
+output$plot_sil_env_uZD4GZ <- plotly::renderPlotly({
   # Handle colormaps
-  if(df_env_puM6L2()$grouping %in% names(colormaps)) colors <- colormaps[[df_env_puM6L2()$grouping]] else colors <- "Set1"
+  if(df_env_uZD4GZ()$grouping %in% names(colormaps)) colors <- colormaps[[df_env_uZD4GZ()$grouping]] else colors <- "Set1"
   
-  sil_plot <- plotly::plot_ly(df_env_puM6L2()$sd, colors = colors) %>%
-  plotly::add_bars(color = df_env_puM6L2()$df[[df_env_puM6L2()$grouping]], name = df_env_puM6L2()$df[[df_env_puM6L2()$grouping]], orientation = 'h', y = ~cell, x = ~silhouette) %>%
+  sil_plot <- plotly::plot_ly(df_env_uZD4GZ()$sd, colors = colors) %>%
+  plotly::add_bars(color = df_env_uZD4GZ()$df[[df_env_uZD4GZ()$grouping]], name = df_env_uZD4GZ()$df[[df_env_uZD4GZ()$grouping]], orientation = 'h', y = ~cell, x = ~silhouette) %>%
   plotly::layout(yaxis = list(showticklabels = FALSE), showlegend = FALSE) %>%
   plotly::highlight(on = "plotly_selected", dynamic = F, selectize = F)
   sil_plot
@@ -811,7 +818,7 @@ output$plot_sil_env_puM6L2 <- plotly::renderPlotly({
 #
 # Layout of component
 #
-renderUI({plotly::plotlyOutput("plot_sil_env_puM6L2", height = "100%")})
+renderUI({plotly::plotlyOutput("plot_sil_env_uZD4GZ", height = "100%")})
 ```
 
 
@@ -821,13 +828,13 @@ Column
 
 ### Number of observations per grouing
 
-<!-- Component created on 2020-06-15 11:18:14 -->
+<!-- Component created on 2020-07-02 17:49:50 -->
 
 ```{r, eval=!is_shiny}
-if(grouping_env_puM6L2 %in% names(colormaps)) colors_env_puM6L2 <- colormaps[[grouping_env_puM6L2]] else colors_env_puM6L2 <- "Set1"
-sp_bars <- plotly::plot_ly(sd_env_puM6L2, colors = colors_env_puM6L2, x = df_env_puM6L2[[grouping_env_puM6L2]], color = df_env_puM6L2[[grouping_env_puM6L2]]) %>%
+if(grouping_env_uZD4GZ %in% names(colormaps)) colors_env_uZD4GZ <- colormaps[[grouping_env_uZD4GZ]] else colors_env_uZD4GZ <- "Set1"
+sp_bars <- plotly::plot_ly(sd_env_uZD4GZ, colors = colors_env_uZD4GZ, x = df_env_uZD4GZ[[grouping_env_uZD4GZ]], color = df_env_uZD4GZ[[grouping_env_uZD4GZ]]) %>%
   plotly::layout(
-    xaxis = list(title = names(df_env_puM6L2[grouping_env_puM6L2])),
+    xaxis = list(title = names(df_env_uZD4GZ[grouping_env_uZD4GZ])),
     yaxis = list(title = "Number of observations"),
     barmode = "overlay",
     showlegend = FALSE
@@ -840,11 +847,11 @@ sp_bars
 #
 # Output
 #
-output$plot_sp_bars_env_puM6L2 <- plotly::renderPlotly({
-  if(df_env_puM6L2()$grouping %in% names(colormaps)) colors <- colormaps[[df_env_puM6L2()$grouping]] else colors <- "Set1"
-  sp_bars <- plotly::plot_ly(df_env_puM6L2()$sd, colors = colors, x = df_env_puM6L2()$df[[df_env_puM6L2()$grouping]], color = df_env_puM6L2()$df[[df_env_puM6L2()$grouping]]) %>%
+output$plot_sp_bars_env_uZD4GZ <- plotly::renderPlotly({
+  if(df_env_uZD4GZ()$grouping %in% names(colormaps)) colors <- colormaps[[df_env_uZD4GZ()$grouping]] else colors <- "Set1"
+  sp_bars <- plotly::plot_ly(df_env_uZD4GZ()$sd, colors = colors, x = df_env_uZD4GZ()$df[[df_env_uZD4GZ()$grouping]], color = df_env_uZD4GZ()$df[[df_env_uZD4GZ()$grouping]]) %>%
   plotly::layout(
-    xaxis = list(title = names(df_env_puM6L2()$df[df_env_puM6L2()$grouping])),
+    xaxis = list(title = names(df_env_uZD4GZ()$df[df_env_uZD4GZ()$grouping])),
     yaxis = list(title = "Number of observations"),
     barmode = "overlay",
     showlegend = FALSE
@@ -856,21 +863,21 @@ output$plot_sp_bars_env_puM6L2 <- plotly::renderPlotly({
 #
 # Layout of component
 #
-renderUI({plotly::plotlyOutput("plot_sp_bars_env_puM6L2", height = "100%")})
+renderUI({plotly::plotlyOutput("plot_sp_bars_env_uZD4GZ", height = "100%")})
 ```
 
 
     
 ### Metadata: subsets_Mito_percent
 
-<!-- Component created on 2020-06-15 11:18:14 -->
+<!-- Component created on 2020-07-02 17:49:50 -->
 
 ```{r, eval=!is_shiny}
-if(is.factor(df_env_puM6L2[["subsets_Mito_percent"]])){
-  if("subsets_Mito_percent" %in% names(colormaps)) colors_env_puM6L2 <- colormaps[["subsets_Mito_percent"]] else colors_env_puM6L2 <- "Set1"
-  bars_subsets_Mito_percent <- plotly::plot_ly(sd_env_puM6L2, colors = colors_env_puM6L2, x = df_env_puM6L2[["subsets_Mito_percent"]], color = df_env_puM6L2[["subsets_Mito_percent"]]) %>%
+if(is.factor(df_env_uZD4GZ[["subsets_Mito_percent"]])){
+  if("subsets_Mito_percent" %in% names(colormaps)) colors_env_uZD4GZ <- colormaps[["subsets_Mito_percent"]] else colors_env_uZD4GZ <- "Set1"
+  bars_subsets_Mito_percent <- plotly::plot_ly(sd_env_uZD4GZ, colors = colors_env_uZD4GZ, x = df_env_uZD4GZ[["subsets_Mito_percent"]], color = df_env_uZD4GZ[["subsets_Mito_percent"]]) %>%
   plotly::layout(
-    xaxis = list(title = names(df_env_puM6L2["subsets_Mito_percent"])),
+    xaxis = list(title = names(df_env_uZD4GZ["subsets_Mito_percent"])),
     yaxis = list(title = "Number of observations"),
     barmode = "overlay",
     showlegend = FALSE
@@ -878,12 +885,12 @@ if(is.factor(df_env_puM6L2[["subsets_Mito_percent"]])){
   plotly::highlight("plotly_selected")
   bars_subsets_Mito_percent
 } else {
-  if(grouping_env_puM6L2 %in% names(colormaps)) colors_env_puM6L2 <- colormaps[[grouping_env_puM6L2]] else colors_env_puM6L2 <- "Set1"
-  box_subsets_Mito_percent <- plotly::plot_ly(sd_env_puM6L2, colors = colors_env_puM6L2, x = df_env_puM6L2[[grouping_env_puM6L2]], y = df_env_puM6L2[["subsets_Mito_percent"]], color = df_env_puM6L2[[grouping_env_puM6L2]]) %>%
+  if(grouping_env_uZD4GZ %in% names(colormaps)) colors_env_uZD4GZ <- colormaps[[grouping_env_uZD4GZ]] else colors_env_uZD4GZ <- "Set1"
+  box_subsets_Mito_percent <- plotly::plot_ly(sd_env_uZD4GZ, colors = colors_env_uZD4GZ, x = df_env_uZD4GZ[[grouping_env_uZD4GZ]], y = df_env_uZD4GZ[["subsets_Mito_percent"]], color = df_env_uZD4GZ[[grouping_env_uZD4GZ]]) %>%
   plotly::add_boxplot() %>%
   plotly::layout(
-    xaxis = list(title = grouping_env_puM6L2),
-    yaxis = list(title = names(df_env_puM6L2["subsets_Mito_percent"])),
+    xaxis = list(title = grouping_env_uZD4GZ),
+    yaxis = list(title = names(df_env_uZD4GZ["subsets_Mito_percent"])),
     showlegend = FALSE
   ) %>%
   plotly::highlight("plotly_selected")
@@ -895,12 +902,12 @@ if(is.factor(df_env_puM6L2[["subsets_Mito_percent"]])){
 #
 # Output
 #
-output$plot_box_bar_subsets_Mito_percent_env_puM6L2 <- plotly::renderPlotly({
-  if(is.factor(df_env_puM6L2()$df[["subsets_Mito_percent"]])){
+output$plot_box_bar_subsets_Mito_percent_env_uZD4GZ <- plotly::renderPlotly({
+  if(is.factor(df_env_uZD4GZ()$df[["subsets_Mito_percent"]])){
     if("subsets_Mito_percent" %in% names(colormaps)) colors <- colormaps[["subsets_Mito_percent"]] else colors <- "Set1"
-    bars <- plotly::plot_ly(df_env_puM6L2()$sd, colors = colors, x = df_env_puM6L2()$df[["subsets_Mito_percent"]], color = df_env_puM6L2()$df[["subsets_Mito_percent"]]) %>%
+    bars <- plotly::plot_ly(df_env_uZD4GZ()$sd, colors = colors, x = df_env_uZD4GZ()$df[["subsets_Mito_percent"]], color = df_env_uZD4GZ()$df[["subsets_Mito_percent"]]) %>%
     plotly::layout(
-      xaxis = list(title = names(df_env_puM6L2()$df["subsets_Mito_percent"])),
+      xaxis = list(title = names(df_env_uZD4GZ()$df["subsets_Mito_percent"])),
       yaxis = list(title = "Number of observations"),
       barmode = "overlay",
       showlegend = FALSE
@@ -908,12 +915,12 @@ output$plot_box_bar_subsets_Mito_percent_env_puM6L2 <- plotly::renderPlotly({
     plotly::highlight("plotly_selected")
     bars
   } else {
-    if(df_env_puM6L2()$grouping %in% names(colormaps)) colors <- colormaps[[df_env_puM6L2()$grouping]] else colors <- "Set1"
-    box <- plotly::plot_ly(df_env_puM6L2()$sd, colors = colors, x = df_env_puM6L2()$df[[df_env_puM6L2()$grouping]], y = df_env_puM6L2()$df[["subsets_Mito_percent"]], color = df_env_puM6L2()$df[[df_env_puM6L2()$grouping]]) %>%
+    if(df_env_uZD4GZ()$grouping %in% names(colormaps)) colors <- colormaps[[df_env_uZD4GZ()$grouping]] else colors <- "Set1"
+    box <- plotly::plot_ly(df_env_uZD4GZ()$sd, colors = colors, x = df_env_uZD4GZ()$df[[df_env_uZD4GZ()$grouping]], y = df_env_uZD4GZ()$df[["subsets_Mito_percent"]], color = df_env_uZD4GZ()$df[[df_env_uZD4GZ()$grouping]]) %>%
     plotly::add_boxplot() %>%
     plotly::layout(
-      xaxis = list(title = df_env_puM6L2()$grouping),
-      yaxis = list(title = names(df_env_puM6L2()$df["subsets_Mito_percent"])),
+      xaxis = list(title = df_env_uZD4GZ()$grouping),
+      yaxis = list(title = names(df_env_uZD4GZ()$df["subsets_Mito_percent"])),
       showlegend = FALSE
     ) %>%
     plotly::highlight("plotly_selected")
@@ -924,14 +931,14 @@ output$plot_box_bar_subsets_Mito_percent_env_puM6L2 <- plotly::renderPlotly({
 #
 # Layout of component
 #
-renderUI({plotly::plotlyOutput("plot_box_bar_subsets_Mito_percent_env_puM6L2", height = "100%")})
+renderUI({plotly::plotlyOutput("plot_box_bar_subsets_Mito_percent_env_uZD4GZ", height = "100%")})
 ```
 
 
 Cell metadata 2 {data-navmenu="Cell metadata"}
 ====================================================
 
-<!-- Page created on 2020-06-15 11:19:37 -->
+<!-- Page created on 2020-07-02 17:51:04 -->
 
 
 Column
@@ -940,17 +947,17 @@ Column
 
 ### Dimension reduction:
 
-<!-- Component created on 2020-06-15 11:18:29 -->
+<!-- Component created on 2020-07-02 17:50:03 -->
 
 ```{r}
-env_euYx8b <- readRDS(file.path(datadir, "env_euYx8b.rds"))
+env_xyQR5H <- readRDS(file.path(datadir, "env_xyQR5H.rds"))
 is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
 
 library(dplyr)
 
-labels_env_euYx8b <- env_euYx8b$labels
-metadata_env_euYx8b <- env_euYx8b$metadata
-grouping_env_euYx8b <- env_euYx8b$grouping
+labels_env_xyQR5H <- env_xyQR5H$labels
+metadata_env_xyQR5H <- env_xyQR5H$metadata
+grouping_env_xyQR5H <- env_xyQR5H$grouping
 
 # function to create a data.frame
 create_df <- function(reduced_dim, metadata, grouping){
@@ -979,14 +986,14 @@ create_df <- function(reduced_dim, metadata, grouping){
 ```
 
 ```{r, eval=!is_shiny}
-df_env_euYx8b <- create_df(reduced_dim = env_euYx8b$reduced_dim, metadata = metadata_env_euYx8b, grouping = grouping_env_euYx8b)
+df_env_xyQR5H <- create_df(reduced_dim = env_xyQR5H$reduced_dim, metadata = metadata_env_xyQR5H, grouping = grouping_env_xyQR5H)
 
-sd_env_euYx8b <- plotly::highlight_key(df_env_euYx8b)
+sd_env_xyQR5H <- plotly::highlight_key(df_env_xyQR5H)
 
 # compare with colormaps
-if(grouping_env_euYx8b %in% names(colormaps)) colors_env_euYx8b <- colormaps[[grouping_env_euYx8b]] else colors_env_euYx8b <- "Set1"
+if(grouping_env_xyQR5H %in% names(colormaps)) colors_env_xyQR5H <- colormaps[[grouping_env_xyQR5H]] else colors_env_xyQR5H <- "Set1"
 
-dots <- plotly::plot_ly(sd_env_euYx8b, colors = colors_env_euYx8b, color = df_env_euYx8b[[grouping_env_euYx8b]], x = ~x, y = ~y, mode = "markers", textposition = "top", hoverinfo = "x+y+text", text = paste("grouping: ", df_env_euYx8b[[grouping_env_euYx8b]], "</br> label: ", labels_env_euYx8b), type = "scattergl") %>%
+dots <- plotly::plot_ly(sd_env_xyQR5H, colors = colors_env_xyQR5H, color = df_env_xyQR5H[[grouping_env_xyQR5H]], x = ~x, y = ~y, mode = "markers", textposition = "top", hoverinfo = "x+y+text", text = paste("grouping: ", df_env_xyQR5H[[grouping_env_xyQR5H]], "</br> label: ", labels_env_xyQR5H), type = "scattergl") %>%
   plotly::layout(
     xaxis = list(title = "Dimension 1"),
     yaxis = list(title = "Dimension 2"),
@@ -996,63 +1003,63 @@ dots <- plotly::plot_ly(sd_env_euYx8b, colors = colors_env_euYx8b, color = df_en
   plotly::toWebGL()
 
 htmltools::div(style="display:block;float:left;width:100%;height:90%;",
-  htmltools::tags$button(i2dash::embed_var(df_env_euYx8b)), dots
+  htmltools::tags$button(i2dash::embed_var(df_env_xyQR5H)), dots
 )
 ```
 
 ```{r, eval=is_shiny}
 # filter all factorial metadata columns
-factors_env_euYx8b <- c()
-for (name in colnames(metadata_env_euYx8b)){
-  if(is.factor(metadata_env_euYx8b[[name]])){
-    factors_env_euYx8b <- c(factors_env_euYx8b, name)
+factors_env_xyQR5H <- c()
+for (name in colnames(metadata_env_xyQR5H)){
+  if(is.factor(metadata_env_xyQR5H[[name]])){
+    factors_env_xyQR5H <- c(factors_env_xyQR5H, name)
   }
 }
 ui_list <- list()
 
 # selection field for x
-if (env_euYx8b$multiple_meta){
+if (env_xyQR5H$multiple_meta){
   ui_list <- rlist::list.append(ui_list,
-                                selectInput("select_grouping_env_euYx8b", label = "Select column for grouping:",
-                                            choices = factors_env_euYx8b, selected = grouping_env_euYx8b))
+                                selectInput("select_grouping_env_xyQR5H", label = "Select column for grouping:",
+                                            choices = factors_env_xyQR5H, selected = grouping_env_xyQR5H))
 }
 
 # Download link
-ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downloadData_env_euYx8b', 'Download data')))
+ui_list <- rlist::list.append(ui_list, tags$div(tags$br(), downloadButton('downloadData_env_xyQR5H', 'Download data')))
 
 #
 # Create reactive data table
 #
-df_env_euYx8b <- shiny::reactive({
-  if (!env_euYx8b$multiple_meta){
-    grouping <- grouping_env_euYx8b
+df_env_xyQR5H <- shiny::reactive({
+  if (!env_xyQR5H$multiple_meta){
+    grouping <- grouping_env_xyQR5H
   } else {
-    grouping <- input$select_grouping_env_euYx8b
+    grouping <- input$select_grouping_env_xyQR5H
   }
-  df_env_euYx8b <- create_df(reduced_dim = env_euYx8b$reduced_dim, metadata = metadata_env_euYx8b, grouping = grouping)
+  df_env_xyQR5H <- create_df(reduced_dim = env_xyQR5H$reduced_dim, metadata = metadata_env_xyQR5H, grouping = grouping)
 
-  sd_env_euYx8b <- plotly::highlight_key(df_env_euYx8b)
-  return(list("sd" = sd_env_euYx8b, "df" = df_env_euYx8b, "grouping" = grouping))
+  sd_env_xyQR5H <- plotly::highlight_key(df_env_xyQR5H)
+  return(list("sd" = sd_env_xyQR5H, "df" = df_env_xyQR5H, "grouping" = grouping))
 })
 
 #
 # Download
 #
-output$downloadData_env_euYx8b<- downloadHandler(
+output$downloadData_env_xyQR5H<- downloadHandler(
   filename =  paste('data-', Sys.Date(), '.csv', sep=''),
   content = function(file) {
-    write.csv(df_env_euYx8b()$df, file)
+    write.csv(df_env_xyQR5H()$df, file)
   }
 )
 
 #
 # Output
 #
-output$plot_scatter_env_euYx8b <- plotly::renderPlotly({
+output$plot_scatter_env_xyQR5H <- plotly::renderPlotly({
   # compare with colormaps
-  if(df_env_euYx8b()$grouping %in% names(colormaps)) colors <- colormaps[[df_env_euYx8b()$grouping]] else colors <- "Set1"
+  if(df_env_xyQR5H()$grouping %in% names(colormaps)) colors <- colormaps[[df_env_xyQR5H()$grouping]] else colors <- "Set1"
   
-  dots <- plotly::plot_ly(df_env_euYx8b()$sd, color = df_env_euYx8b()$df[[df_env_euYx8b()$grouping]], x = ~x, y = ~y, mode = "markers", textposition = "top", hoverinfo = "x+y+text", text = paste("grouping: ", df_env_euYx8b()$df[[df_env_euYx8b()$grouping]], "</br> label: ", labels_env_euYx8b),  type = "scattergl", colors = colors) %>%
+  dots <- plotly::plot_ly(df_env_xyQR5H()$sd, color = df_env_xyQR5H()$df[[df_env_xyQR5H()$grouping]], x = ~x, y = ~y, mode = "markers", textposition = "top", hoverinfo = "x+y+text", text = paste("grouping: ", df_env_xyQR5H()$df[[df_env_xyQR5H()$grouping]], "</br> label: ", labels_env_xyQR5H),  type = "scattergl", colors = colors) %>%
   plotly::layout(
     xaxis = list(title = "Dimension 1"),
     yaxis = list(title = "Dimension 2"),
@@ -1070,7 +1077,7 @@ shiny::fillRow(flex = c(NA, 1),
       shinyWidgets::dropdownButton(div(style='max-height: 350px; overflow-x: auto;',do.call(shiny::inputPanel, ui_list)),
                        circle = TRUE, status = "danger", icon = icon("gear"), width = "300px",
                        tooltip = shinyWidgets::tooltipOptions(title = "Click, to change plot settings:")),
-      renderUI({plotly::plotlyOutput("plot_scatter_env_euYx8b", height = "100%")})
+      renderUI({plotly::plotlyOutput("plot_scatter_env_xyQR5H", height = "100%")})
 )
 ```
 
@@ -1078,14 +1085,14 @@ shiny::fillRow(flex = c(NA, 1),
  
 ### Metadata: sum
 
-<!-- Component created on 2020-06-15 11:18:29 -->
+<!-- Component created on 2020-07-02 17:50:03 -->
 
 ```{r, eval=!is_shiny}
-if(is.factor(df_env_euYx8b[["sum"]])){
-  if("sum" %in% names(colormaps)) colors_env_euYx8b <- colormaps[["sum"]] else colors_env_euYx8b <- "Set1"
-  bars_sum <- plotly::plot_ly(sd_env_euYx8b, colors = colors_env_euYx8b, x = df_env_euYx8b[["sum"]], color = df_env_euYx8b[["sum"]]) %>%
+if(is.factor(df_env_xyQR5H[["sum"]])){
+  if("sum" %in% names(colormaps)) colors_env_xyQR5H <- colormaps[["sum"]] else colors_env_xyQR5H <- "Set1"
+  bars_sum <- plotly::plot_ly(sd_env_xyQR5H, colors = colors_env_xyQR5H, x = df_env_xyQR5H[["sum"]], color = df_env_xyQR5H[["sum"]]) %>%
   plotly::layout(
-    xaxis = list(title = names(df_env_euYx8b["sum"])),
+    xaxis = list(title = names(df_env_xyQR5H["sum"])),
     yaxis = list(title = "Number of observations"),
     barmode = "overlay",
     showlegend = FALSE
@@ -1093,12 +1100,12 @@ if(is.factor(df_env_euYx8b[["sum"]])){
   plotly::highlight("plotly_selected")
   bars_sum
 } else {
-  if(grouping_env_euYx8b %in% names(colormaps)) colors_env_euYx8b <- colormaps[[grouping_env_euYx8b]] else colors_env_euYx8b <- "Set1"
-  box_sum <- plotly::plot_ly(sd_env_euYx8b, colors = colors_env_euYx8b, x = df_env_euYx8b[[grouping_env_euYx8b]], y = df_env_euYx8b[["sum"]], color = df_env_euYx8b[[grouping_env_euYx8b]]) %>%
+  if(grouping_env_xyQR5H %in% names(colormaps)) colors_env_xyQR5H <- colormaps[[grouping_env_xyQR5H]] else colors_env_xyQR5H <- "Set1"
+  box_sum <- plotly::plot_ly(sd_env_xyQR5H, colors = colors_env_xyQR5H, x = df_env_xyQR5H[[grouping_env_xyQR5H]], y = df_env_xyQR5H[["sum"]], color = df_env_xyQR5H[[grouping_env_xyQR5H]]) %>%
   plotly::add_boxplot() %>%
   plotly::layout(
-    xaxis = list(title = grouping_env_euYx8b),
-    yaxis = list(title = names(df_env_euYx8b["sum"])),
+    xaxis = list(title = grouping_env_xyQR5H),
+    yaxis = list(title = names(df_env_xyQR5H["sum"])),
     showlegend = FALSE
   ) %>%
   plotly::highlight("plotly_selected")
@@ -1110,12 +1117,12 @@ if(is.factor(df_env_euYx8b[["sum"]])){
 #
 # Output
 #
-output$plot_box_bar_sum_env_euYx8b <- plotly::renderPlotly({
-  if(is.factor(df_env_euYx8b()$df[["sum"]])){
+output$plot_box_bar_sum_env_xyQR5H <- plotly::renderPlotly({
+  if(is.factor(df_env_xyQR5H()$df[["sum"]])){
     if("sum" %in% names(colormaps)) colors <- colormaps[["sum"]] else colors <- "Set1"
-    bars <- plotly::plot_ly(df_env_euYx8b()$sd, colors = colors, x = df_env_euYx8b()$df[["sum"]], color = df_env_euYx8b()$df[["sum"]]) %>%
+    bars <- plotly::plot_ly(df_env_xyQR5H()$sd, colors = colors, x = df_env_xyQR5H()$df[["sum"]], color = df_env_xyQR5H()$df[["sum"]]) %>%
     plotly::layout(
-      xaxis = list(title = names(df_env_euYx8b()$df["sum"])),
+      xaxis = list(title = names(df_env_xyQR5H()$df["sum"])),
       yaxis = list(title = "Number of observations"),
       barmode = "overlay",
       showlegend = FALSE
@@ -1123,12 +1130,12 @@ output$plot_box_bar_sum_env_euYx8b <- plotly::renderPlotly({
     plotly::highlight("plotly_selected")
     bars
   } else {
-    if(df_env_euYx8b()$grouping %in% names(colormaps)) colors <- colormaps[[df_env_euYx8b()$grouping]] else colors <- "Set1"
-    box <- plotly::plot_ly(df_env_euYx8b()$sd, colors = colors, x = df_env_euYx8b()$df[[df_env_euYx8b()$grouping]], y = df_env_euYx8b()$df[["sum"]], color = df_env_euYx8b()$df[[df_env_euYx8b()$grouping]]) %>%
+    if(df_env_xyQR5H()$grouping %in% names(colormaps)) colors <- colormaps[[df_env_xyQR5H()$grouping]] else colors <- "Set1"
+    box <- plotly::plot_ly(df_env_xyQR5H()$sd, colors = colors, x = df_env_xyQR5H()$df[[df_env_xyQR5H()$grouping]], y = df_env_xyQR5H()$df[["sum"]], color = df_env_xyQR5H()$df[[df_env_xyQR5H()$grouping]]) %>%
     plotly::add_boxplot() %>%
     plotly::layout(
-      xaxis = list(title = df_env_euYx8b()$grouping),
-      yaxis = list(title = names(df_env_euYx8b()$df["sum"])),
+      xaxis = list(title = df_env_xyQR5H()$grouping),
+      yaxis = list(title = names(df_env_xyQR5H()$df["sum"])),
       showlegend = FALSE
     ) %>%
     plotly::highlight("plotly_selected")
@@ -1139,7 +1146,7 @@ output$plot_box_bar_sum_env_euYx8b <- plotly::renderPlotly({
 #
 # Layout of component
 #
-renderUI({plotly::plotlyOutput("plot_box_bar_sum_env_euYx8b", height = "100%")})
+renderUI({plotly::plotlyOutput("plot_box_bar_sum_env_xyQR5H", height = "100%")})
 ```
 
 
@@ -1149,14 +1156,14 @@ Column
     
 ### Metadata: Tissue
 
-<!-- Component created on 2020-06-15 11:18:29 -->
+<!-- Component created on 2020-07-02 17:50:03 -->
 
 ```{r, eval=!is_shiny}
-if(is.factor(df_env_euYx8b[["Tissue"]])){
-  if("Tissue" %in% names(colormaps)) colors_env_euYx8b <- colormaps[["Tissue"]] else colors_env_euYx8b <- "Set1"
-  bars_Tissue <- plotly::plot_ly(sd_env_euYx8b, colors = colors_env_euYx8b, x = df_env_euYx8b[["Tissue"]], color = df_env_euYx8b[["Tissue"]]) %>%
+if(is.factor(df_env_xyQR5H[["Tissue"]])){
+  if("Tissue" %in% names(colormaps)) colors_env_xyQR5H <- colormaps[["Tissue"]] else colors_env_xyQR5H <- "Set1"
+  bars_Tissue <- plotly::plot_ly(sd_env_xyQR5H, colors = colors_env_xyQR5H, x = df_env_xyQR5H[["Tissue"]], color = df_env_xyQR5H[["Tissue"]]) %>%
   plotly::layout(
-    xaxis = list(title = names(df_env_euYx8b["Tissue"])),
+    xaxis = list(title = names(df_env_xyQR5H["Tissue"])),
     yaxis = list(title = "Number of observations"),
     barmode = "overlay",
     showlegend = FALSE
@@ -1164,12 +1171,12 @@ if(is.factor(df_env_euYx8b[["Tissue"]])){
   plotly::highlight("plotly_selected")
   bars_Tissue
 } else {
-  if(grouping_env_euYx8b %in% names(colormaps)) colors_env_euYx8b <- colormaps[[grouping_env_euYx8b]] else colors_env_euYx8b <- "Set1"
-  box_Tissue <- plotly::plot_ly(sd_env_euYx8b, colors = colors_env_euYx8b, x = df_env_euYx8b[[grouping_env_euYx8b]], y = df_env_euYx8b[["Tissue"]], color = df_env_euYx8b[[grouping_env_euYx8b]]) %>%
+  if(grouping_env_xyQR5H %in% names(colormaps)) colors_env_xyQR5H <- colormaps[[grouping_env_xyQR5H]] else colors_env_xyQR5H <- "Set1"
+  box_Tissue <- plotly::plot_ly(sd_env_xyQR5H, colors = colors_env_xyQR5H, x = df_env_xyQR5H[[grouping_env_xyQR5H]], y = df_env_xyQR5H[["Tissue"]], color = df_env_xyQR5H[[grouping_env_xyQR5H]]) %>%
   plotly::add_boxplot() %>%
   plotly::layout(
-    xaxis = list(title = grouping_env_euYx8b),
-    yaxis = list(title = names(df_env_euYx8b["Tissue"])),
+    xaxis = list(title = grouping_env_xyQR5H),
+    yaxis = list(title = names(df_env_xyQR5H["Tissue"])),
     showlegend = FALSE
   ) %>%
   plotly::highlight("plotly_selected")
@@ -1181,12 +1188,12 @@ if(is.factor(df_env_euYx8b[["Tissue"]])){
 #
 # Output
 #
-output$plot_box_bar_Tissue_env_euYx8b <- plotly::renderPlotly({
-  if(is.factor(df_env_euYx8b()$df[["Tissue"]])){
+output$plot_box_bar_Tissue_env_xyQR5H <- plotly::renderPlotly({
+  if(is.factor(df_env_xyQR5H()$df[["Tissue"]])){
     if("Tissue" %in% names(colormaps)) colors <- colormaps[["Tissue"]] else colors <- "Set1"
-    bars <- plotly::plot_ly(df_env_euYx8b()$sd, colors = colors, x = df_env_euYx8b()$df[["Tissue"]], color = df_env_euYx8b()$df[["Tissue"]]) %>%
+    bars <- plotly::plot_ly(df_env_xyQR5H()$sd, colors = colors, x = df_env_xyQR5H()$df[["Tissue"]], color = df_env_xyQR5H()$df[["Tissue"]]) %>%
     plotly::layout(
-      xaxis = list(title = names(df_env_euYx8b()$df["Tissue"])),
+      xaxis = list(title = names(df_env_xyQR5H()$df["Tissue"])),
       yaxis = list(title = "Number of observations"),
       barmode = "overlay",
       showlegend = FALSE
@@ -1194,12 +1201,12 @@ output$plot_box_bar_Tissue_env_euYx8b <- plotly::renderPlotly({
     plotly::highlight("plotly_selected")
     bars
   } else {
-    if(df_env_euYx8b()$grouping %in% names(colormaps)) colors <- colormaps[[df_env_euYx8b()$grouping]] else colors <- "Set1"
-    box <- plotly::plot_ly(df_env_euYx8b()$sd, colors = colors, x = df_env_euYx8b()$df[[df_env_euYx8b()$grouping]], y = df_env_euYx8b()$df[["Tissue"]], color = df_env_euYx8b()$df[[df_env_euYx8b()$grouping]]) %>%
+    if(df_env_xyQR5H()$grouping %in% names(colormaps)) colors <- colormaps[[df_env_xyQR5H()$grouping]] else colors <- "Set1"
+    box <- plotly::plot_ly(df_env_xyQR5H()$sd, colors = colors, x = df_env_xyQR5H()$df[[df_env_xyQR5H()$grouping]], y = df_env_xyQR5H()$df[["Tissue"]], color = df_env_xyQR5H()$df[[df_env_xyQR5H()$grouping]]) %>%
     plotly::add_boxplot() %>%
     plotly::layout(
-      xaxis = list(title = df_env_euYx8b()$grouping),
-      yaxis = list(title = names(df_env_euYx8b()$df["Tissue"])),
+      xaxis = list(title = df_env_xyQR5H()$grouping),
+      yaxis = list(title = names(df_env_xyQR5H()$df["Tissue"])),
       showlegend = FALSE
     ) %>%
     plotly::highlight("plotly_selected")
@@ -1210,21 +1217,21 @@ output$plot_box_bar_Tissue_env_euYx8b <- plotly::renderPlotly({
 #
 # Layout of component
 #
-renderUI({plotly::plotlyOutput("plot_box_bar_Tissue_env_euYx8b", height = "100%")})
+renderUI({plotly::plotlyOutput("plot_box_bar_Tissue_env_xyQR5H", height = "100%")})
 ```
 
 
     
 ### Metadata: detected
 
-<!-- Component created on 2020-06-15 11:18:29 -->
+<!-- Component created on 2020-07-02 17:50:03 -->
 
 ```{r, eval=!is_shiny}
-if(is.factor(df_env_euYx8b[["detected"]])){
-  if("detected" %in% names(colormaps)) colors_env_euYx8b <- colormaps[["detected"]] else colors_env_euYx8b <- "Set1"
-  bars_detected <- plotly::plot_ly(sd_env_euYx8b, colors = colors_env_euYx8b, x = df_env_euYx8b[["detected"]], color = df_env_euYx8b[["detected"]]) %>%
+if(is.factor(df_env_xyQR5H[["detected"]])){
+  if("detected" %in% names(colormaps)) colors_env_xyQR5H <- colormaps[["detected"]] else colors_env_xyQR5H <- "Set1"
+  bars_detected <- plotly::plot_ly(sd_env_xyQR5H, colors = colors_env_xyQR5H, x = df_env_xyQR5H[["detected"]], color = df_env_xyQR5H[["detected"]]) %>%
   plotly::layout(
-    xaxis = list(title = names(df_env_euYx8b["detected"])),
+    xaxis = list(title = names(df_env_xyQR5H["detected"])),
     yaxis = list(title = "Number of observations"),
     barmode = "overlay",
     showlegend = FALSE
@@ -1232,12 +1239,12 @@ if(is.factor(df_env_euYx8b[["detected"]])){
   plotly::highlight("plotly_selected")
   bars_detected
 } else {
-  if(grouping_env_euYx8b %in% names(colormaps)) colors_env_euYx8b <- colormaps[[grouping_env_euYx8b]] else colors_env_euYx8b <- "Set1"
-  box_detected <- plotly::plot_ly(sd_env_euYx8b, colors = colors_env_euYx8b, x = df_env_euYx8b[[grouping_env_euYx8b]], y = df_env_euYx8b[["detected"]], color = df_env_euYx8b[[grouping_env_euYx8b]]) %>%
+  if(grouping_env_xyQR5H %in% names(colormaps)) colors_env_xyQR5H <- colormaps[[grouping_env_xyQR5H]] else colors_env_xyQR5H <- "Set1"
+  box_detected <- plotly::plot_ly(sd_env_xyQR5H, colors = colors_env_xyQR5H, x = df_env_xyQR5H[[grouping_env_xyQR5H]], y = df_env_xyQR5H[["detected"]], color = df_env_xyQR5H[[grouping_env_xyQR5H]]) %>%
   plotly::add_boxplot() %>%
   plotly::layout(
-    xaxis = list(title = grouping_env_euYx8b),
-    yaxis = list(title = names(df_env_euYx8b["detected"])),
+    xaxis = list(title = grouping_env_xyQR5H),
+    yaxis = list(title = names(df_env_xyQR5H["detected"])),
     showlegend = FALSE
   ) %>%
   plotly::highlight("plotly_selected")
@@ -1249,12 +1256,12 @@ if(is.factor(df_env_euYx8b[["detected"]])){
 #
 # Output
 #
-output$plot_box_bar_detected_env_euYx8b <- plotly::renderPlotly({
-  if(is.factor(df_env_euYx8b()$df[["detected"]])){
+output$plot_box_bar_detected_env_xyQR5H <- plotly::renderPlotly({
+  if(is.factor(df_env_xyQR5H()$df[["detected"]])){
     if("detected" %in% names(colormaps)) colors <- colormaps[["detected"]] else colors <- "Set1"
-    bars <- plotly::plot_ly(df_env_euYx8b()$sd, colors = colors, x = df_env_euYx8b()$df[["detected"]], color = df_env_euYx8b()$df[["detected"]]) %>%
+    bars <- plotly::plot_ly(df_env_xyQR5H()$sd, colors = colors, x = df_env_xyQR5H()$df[["detected"]], color = df_env_xyQR5H()$df[["detected"]]) %>%
     plotly::layout(
-      xaxis = list(title = names(df_env_euYx8b()$df["detected"])),
+      xaxis = list(title = names(df_env_xyQR5H()$df["detected"])),
       yaxis = list(title = "Number of observations"),
       barmode = "overlay",
       showlegend = FALSE
@@ -1262,12 +1269,12 @@ output$plot_box_bar_detected_env_euYx8b <- plotly::renderPlotly({
     plotly::highlight("plotly_selected")
     bars
   } else {
-    if(df_env_euYx8b()$grouping %in% names(colormaps)) colors <- colormaps[[df_env_euYx8b()$grouping]] else colors <- "Set1"
-    box <- plotly::plot_ly(df_env_euYx8b()$sd, colors = colors, x = df_env_euYx8b()$df[[df_env_euYx8b()$grouping]], y = df_env_euYx8b()$df[["detected"]], color = df_env_euYx8b()$df[[df_env_euYx8b()$grouping]]) %>%
+    if(df_env_xyQR5H()$grouping %in% names(colormaps)) colors <- colormaps[[df_env_xyQR5H()$grouping]] else colors <- "Set1"
+    box <- plotly::plot_ly(df_env_xyQR5H()$sd, colors = colors, x = df_env_xyQR5H()$df[[df_env_xyQR5H()$grouping]], y = df_env_xyQR5H()$df[["detected"]], color = df_env_xyQR5H()$df[[df_env_xyQR5H()$grouping]]) %>%
     plotly::add_boxplot() %>%
     plotly::layout(
-      xaxis = list(title = df_env_euYx8b()$grouping),
-      yaxis = list(title = names(df_env_euYx8b()$df["detected"])),
+      xaxis = list(title = df_env_xyQR5H()$grouping),
+      yaxis = list(title = names(df_env_xyQR5H()$df["detected"])),
       showlegend = FALSE
     ) %>%
     plotly::highlight("plotly_selected")
@@ -1278,7 +1285,7 @@ output$plot_box_bar_detected_env_euYx8b <- plotly::renderPlotly({
 #
 # Layout of component
 #
-renderUI({plotly::plotlyOutput("plot_box_bar_detected_env_euYx8b", height = "100%")})
+renderUI({plotly::plotlyOutput("plot_box_bar_detected_env_xyQR5H", height = "100%")})
 ```
 
 
@@ -1293,22 +1300,22 @@ Column
 ### {data-height=600}
 
 ```{r}
-env_l5XroL <- readRDS(file.path(datadir, "env_l5XroL.rds"))
+env_oygrdI <- readRDS(file.path(datadir, "env_oygrdI.rds"))
 is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
 
 library(magrittr)
 
-data_env_l5XroL <- env_l5XroL$data
-group_filter_env_l5XroL <- env_l5XroL$group_filter
+data_env_oygrdI <- env_oygrdI$data
+group_filter_env_oygrdI <- env_oygrdI$group_filter
 
-exprs_values_env_l5XroL <- round(env_l5XroL$exprs_values,3)
-featurenames <- rownames(exprs_values_env_l5XroL)
+exprs_values_env_oygrdI <- round(env_oygrdI$exprs_values,3)
+featurenames <- rownames(exprs_values_env_oygrdI)
 
-reduced_dim_env_l5XroL <- env_l5XroL$use_dimred
-group_by_env_l5XroL <- env_l5XroL$group_by
+reduced_dim_env_oygrdI <- env_oygrdI$use_dimred
+group_by_env_oygrdI <- env_oygrdI$group_by
 
-string_counts_env_l5XroL <- apply(exprs_values_env_l5XroL, 1, paste0, collapse = ";")
-string_group_by_env_l5XroL <- paste0(group_by_env_l5XroL[,1], collapse = ";")
+string_counts_env_oygrdI <- apply(exprs_values_env_oygrdI, 1, paste0, collapse = ";")
+string_group_by_env_oygrdI <- paste0(group_by_env_oygrdI[,1], collapse = ";")
 ```
 
 ```{r, eval=!is_shiny, results='asis'}
@@ -1316,12 +1323,12 @@ string_group_by_env_l5XroL <- paste0(group_by_env_l5XroL[,1], collapse = ";")
 # Store expression data in <div> elements
 #
 data_divs <- lapply(featurenames, function(feature) {
-  e <- string_counts_env_l5XroL[[feature]]
+  e <- string_counts_env_oygrdI[[feature]]
   htmltools::div(id = paste0("expression-", feature), `data-feature` = feature, `data-expression` = e)
 })
 htmltools::div(data_divs)
 
-htmltools::HTML(paste0("<div id='group_by_env_l5XroL' data-grouping='",string_group_by_env_l5XroL,"'></div>"))
+htmltools::HTML(paste0("<div id='group_by_env_oygrdI' data-grouping='",string_group_by_env_oygrdI,"'></div>"))
 ```
 
 ```{js, eval=!is_shiny}
@@ -1428,8 +1435,8 @@ function getAllIndexes(arr, val) {
 ```
 
 ```{r, eval=!is_shiny}
-data_env_l5XroL %>%
-  dplyr::filter(group_by == !!group_filter_env_l5XroL) %>%
+data_env_oygrdI %>%
+  dplyr::filter(group_by == !!group_filter_env_oygrdI) %>%
   dplyr::group_by(level, feature) %>%
   dplyr::mutate(is_non_zero_exprs = expression > 0) %>%
   dplyr::summarise(n_samples = dplyr::n(), n_nonzero = sum(is_non_zero_exprs)) %>%
@@ -1437,11 +1444,11 @@ data_env_l5XroL %>%
   dplyr::mutate(info = paste0(n_nonzero, " / ", n_samples, " (", freq, "%)")) %>%
   dplyr::select(level, feature, info) %>%
   tidyr::spread(level, info) %>%
-  as.data.frame -> metadata_env_l5XroL
+  as.data.frame -> metadata_env_oygrdI
 
-  row.names(metadata_env_l5XroL) <- row.names(exprs_values_env_l5XroL)
-  DT::datatable(metadata_env_l5XroL, 
-                elementId = "dt_env_l5XroL", 
+  row.names(metadata_env_oygrdI) <- row.names(exprs_values_env_oygrdI)
+  DT::datatable(metadata_env_oygrdI, 
+                elementId = "dt_env_oygrdI", 
                 filter = 'top', 
                 caption = 'Table: No. of cells with positive expression (>0)', 
                 selection = list(mode = 'single', target = 'row'), 
@@ -1464,13 +1471,13 @@ data_env_l5XroL %>%
       feature_div_id = 'expression-'.concat(feature_name);
       
       // changing the scatterplot
-      var id_scatter = 'scatter_env_l5XroL';
+      var id_scatter = 'scatter_env_oygrdI';
 
       linking_plotly_scatter(plot_id = id_scatter, div_id = feature_div_id, color_by_tag = 'data-expression', title = feature_name);
       
       //changing the violinplot
-      var id_violin = 'violin_env_l5XroL',
-      id_group = 'group_by_env_l5XroL';
+      var id_violin = 'violin_env_oygrdI',
+      id_group = 'group_by_env_oygrdI';
       
       linking_plotly_violin(plot_id = id_violin, samples_div_id = feature_div_id, samples_attribute = 'data-expression', group_div_id = id_group, group_attribute = 'data-grouping', title = feature_name);
       })
@@ -1483,15 +1490,15 @@ ui_list <- list()
 
 # selection field for grouping
 ui_list <- rlist::list.append(ui_list,
-                                selectInput("select_grouping_env_l5XroL", label = "Select column for grouping:",
-                                            choices = unique(data_env_l5XroL$group_by), selected = group_filter_env_l5XroL))
+                                selectInput("select_grouping_env_oygrdI", label = "Select column for grouping:",
+                                            choices = unique(data_env_oygrdI$group_by), selected = group_filter_env_oygrdI))
 #
 # subsetting data according to the selected grouping column
 #
-df_table_env_l5XroL <- shiny::reactive({
-  selected_group <- input$select_grouping_env_l5XroL
+df_table_env_oygrdI <- shiny::reactive({
+  selected_group <- input$select_grouping_env_oygrdI
 
-  data_env_l5XroL %>%
+  data_env_oygrdI %>%
     dplyr::filter(group_by == !!selected_group) 
 })
 
@@ -1504,10 +1511,10 @@ shinyWidgets::dropdownButton(div(style='height: 300px; overflow-x: auto;',do.cal
 #
 # DT::datatable with calculated statistic
 #
-output$tbl_env_l5XroL <- DT::renderDataTable({
+output$tbl_env_oygrdI <- DT::renderDataTable({
   #options(DT.options = list(scrollY="400px",scrollX="300px", pageLength = 100, autoWidth = TRUE))
   options(DT.options = list(scrollY="20vh", scrollX="300px", pageLength = 100, autoWidth = TRUE))
-  df_table_env_l5XroL() %>%
+  df_table_env_oygrdI() %>%
     dplyr::group_by(level, feature) %>%
     dplyr::mutate(is_non_zero_exprs = expression > 0) %>%
     dplyr::summarise(n_samples = dplyr::n(), n_nonzero = sum(is_non_zero_exprs)) %>%
@@ -1515,10 +1522,10 @@ output$tbl_env_l5XroL <- DT::renderDataTable({
     dplyr::mutate(info = paste0(n_nonzero, " / ", n_samples, " (", freq, "%)")) %>%
     dplyr::select(level, feature, info) %>%
     tidyr::spread(level, info) %>%
-    dplyr::mutate(feature = row.names(exprs_values_env_l5XroL)) %>%
+    dplyr::mutate(feature = row.names(exprs_values_env_oygrdI)) %>%
     DT::datatable(filter = 'top', selection = list(mode = 'single', selected = 1, target = 'row'), caption = 'Table: No. of cells with positive expression (>0)')
 })
-renderUI({DT::dataTableOutput('tbl_env_l5XroL')})
+renderUI({DT::dataTableOutput('tbl_env_oygrdI')})
 ```
 
 
@@ -1527,28 +1534,28 @@ renderUI({DT::dataTableOutput('tbl_env_l5XroL')})
 
 ```{r, eval=!is_shiny}
 # compare with colormaps
-if(is.factor(group_by_env_l5XroL[,1])){
-  if(colnames(group_by_env_l5XroL)[1] %in% names(colormaps)) colors_env_l5XroL <- colormaps[[colnames(group_by_env_l5XroL)[1]]] else colors_env_l5XroL <- "Set1"
+if(is.factor(group_by_env_oygrdI[,1])){
+  if(colnames(group_by_env_oygrdI)[1] %in% names(colormaps)) colors_env_oygrdI <- colormaps[[colnames(group_by_env_oygrdI)[1]]] else colors_env_oygrdI <- "Set1"
 }
 
-i2dash.scrnaseq::plotly_violinplot(y = exprs_values_env_l5XroL[1,], group_by = group_by_env_l5XroL[,1], y_title = "Expression", group_by_title = "Group", , colors = colors_env_l5XroL) %>%
+i2dash.scrnaseq::plotly_violinplot(y = exprs_values_env_oygrdI[1,], group_by = group_by_env_oygrdI[,1], y_title = "Expression", group_by_title = "Group", , colors = colors_env_oygrdI) %>%
   plotly::layout(
-    title = row.names(exprs_values_env_l5XroL)[1]
-  ) -> violin_env_l5XroL
+    title = row.names(exprs_values_env_oygrdI)[1]
+  ) -> violin_env_oygrdI
 # %>%
-  # plotly::config(fillFrame = TRUE) -> violin_env_l5XroL
-violin_env_l5XroL$elementId <- "violin_env_l5XroL"
-violin_env_l5XroL
+  # plotly::config(fillFrame = TRUE) -> violin_env_oygrdI
+violin_env_oygrdI$elementId <- "violin_env_oygrdI"
+violin_env_oygrdI
 ```
 
 ```{r, eval=is_shiny}
 #
 # subsetting the data.frame for the violinplot according to the transmitted keys from scatterplot
 #
-df2_env_l5XroL <- shiny::reactive({
-  keys <- plotly::event_data("plotly_selected", source = "scatter_env_l5XroL")$key
-  if(!is.null(plotly::event_data("plotly_selected", source = "scatter_2_env_l5XroL")$key)) keys <- plotly::event_data("plotly_selected", source = "scatter_2_env_l5XroL")$key
-  df <- data.frame(df_env_l5XroL()$df, "level" = as.factor(group_by_env_l5XroL[[input$select_grouping_env_l5XroL]]))
+df2_env_oygrdI <- shiny::reactive({
+  keys <- plotly::event_data("plotly_selected", source = "scatter_env_oygrdI")$key
+  if(!is.null(plotly::event_data("plotly_selected", source = "scatter_2_env_oygrdI")$key)) keys <- plotly::event_data("plotly_selected", source = "scatter_2_env_oygrdI")$key
+  df <- data.frame(df_env_oygrdI()$df, "level" = as.factor(group_by_env_oygrdI[[input$select_grouping_env_oygrdI]]))
   if(!is.null(keys)) {
     return(df[keys, ])
   }
@@ -1558,14 +1565,14 @@ df2_env_l5XroL <- shiny::reactive({
 #
 # creating a violinplot with the primitive function of i2dash.scrnaseq::plotly_violinplot
 #
-output$violin_env_l5XroL <- plotly::renderPlotly({
+output$violin_env_oygrdI <- plotly::renderPlotly({
     # compare with colormaps
-  if(input$select_grouping_env_l5XroL %in% names(colormaps)) colors <- colormaps[[input$select_grouping_env_l5XroL]] else colors <- "Set1"
+  if(input$select_grouping_env_oygrdI %in% names(colormaps)) colors <- colormaps[[input$select_grouping_env_oygrdI]] else colors <- "Set1"
   
-  i2dash.scrnaseq::plotly_violinplot(y = df2_env_l5XroL()$expression, group_by = df2_env_l5XroL()$level, y_title = "Expression", group_by_title = input$select_grouping_env_l5XroL, colors = colors) %>%
-  plotly::layout(title = df_env_l5XroL()$feature) -> violin
+  i2dash.scrnaseq::plotly_violinplot(y = df2_env_oygrdI()$expression, group_by = df2_env_oygrdI()$level, y_title = "Expression", group_by_title = input$select_grouping_env_oygrdI, colors = colors) %>%
+  plotly::layout(title = df_env_oygrdI()$feature) -> violin
 })
-renderUI({plotly::plotlyOutput("violin_env_l5XroL", height = "100%")})
+renderUI({plotly::plotlyOutput("violin_env_oygrdI", height = "100%")})
 ```
 
 
@@ -1575,9 +1582,9 @@ Column
 ### Select points to recalculate the violin plot according to selection:
 
 ```{r, eval=!is_shiny}
-i2dash.scrnaseq::plotly_scatterplot(x =reduced_dim_env_l5XroL[,1], y = reduced_dim_env_l5XroL[,2], color = exprs_values_env_l5XroL[1,], colors = "YlOrRd", text = row.names(reduced_dim_env_l5XroL), hoverinfo = "x+y+text", y_title = "Dimension 2", x_title = "Dimension 1") %>%
+i2dash.scrnaseq::plotly_scatterplot(x =reduced_dim_env_oygrdI[,1], y = reduced_dim_env_oygrdI[,2], color = exprs_values_env_oygrdI[1,], colors = "YlOrRd", text = row.names(reduced_dim_env_oygrdI), hoverinfo = "x+y+text", y_title = "Dimension 2", x_title = "Dimension 1") %>%
   plotly::layout(
-    title = row.names(exprs_values_env_l5XroL)[1],
+    title = row.names(exprs_values_env_oygrdI)[1],
     autosize = F, 
     xaxis = list(title = "Dimension 1", automargin = T),
     yaxis = list(title = "Dimension 2", automargin = T)
@@ -1586,9 +1593,9 @@ i2dash.scrnaseq::plotly_scatterplot(x =reduced_dim_env_l5XroL[,1], y = reduced_d
     // --------------------
     // workaround for plotly.js bug (https://github.com/ropensci/plotly/issues/1546)
     // get size of parents div container
-    document.getElementById('scatter_env_l5XroL').parentElement.id = 'parent_scatter_env_l5XroL'
-    var clientHeight = document.getElementById('parent_scatter_env_l5XroL').clientHeight;
-    var clientWidth = document.getElementById('parent_scatter_env_l5XroL').clientWidth;
+    document.getElementById('scatter_env_oygrdI').parentElement.id = 'parent_scatter_env_oygrdI'
+    var clientHeight = document.getElementById('parent_scatter_env_oygrdI').clientHeight;
+    var clientWidth = document.getElementById('parent_scatter_env_oygrdI').clientWidth;
     
     // avoid errors at 0 width and height
     if (clientHeight === 0){
@@ -1606,10 +1613,10 @@ i2dash.scrnaseq::plotly_scatterplot(x =reduced_dim_env_l5XroL[,1], y = reduced_d
     Plotly.relayout(el, layout)
     // --------------------
     
-    var id_violin = 'violin_env_l5XroL';
+    var id_violin = 'violin_env_oygrdI';
     var violin_div = document.getElementById(id_violin);
 
-    var div_group_by = document.getElementById('group_by_env_l5XroL');
+    var div_group_by = document.getElementById('group_by_env_oygrdI');
     var group_str = div_group_by.getAttribute('data-grouping');
     var group = group_str.split(';');
 
@@ -1682,91 +1689,91 @@ i2dash.scrnaseq::plotly_scatterplot(x =reduced_dim_env_l5XroL[,1], y = reduced_d
       }
     });
   }") %>% 
-  plotly::toWebGL() -> scatter_env_l5XroL
+  plotly::toWebGL() -> scatter_env_oygrdI
 
 # %>%
-#   plotly::config(fillFrame = TRUE) -> scatter_env_l5XroL
+#   plotly::config(fillFrame = TRUE) -> scatter_env_oygrdI
 
-scatter_env_l5XroL$elementId <- "scatter_env_l5XroL"
-scatter_env_l5XroL
+scatter_env_oygrdI$elementId <- "scatter_env_oygrdI"
+scatter_env_oygrdI
 ```
 
 ```{r, eval=is_shiny}
 #
 # Create reactive data table for the scatterplot according to the selected feature
 #
-df_env_l5XroL <- shiny::reactive({
-  selected_gene <- input$tbl_env_l5XroL_row_last_clicked
+df_env_oygrdI <- shiny::reactive({
+  selected_gene <- input$tbl_env_oygrdI_row_last_clicked
   if(is.null(selected_gene)){
-    expression <- exprs_values_env_l5XroL[1,] 
+    expression <- exprs_values_env_oygrdI[1,] 
     featurename <- featurenames[1]
   } else {
-    expression <- exprs_values_env_l5XroL[selected_gene,]
+    expression <- exprs_values_env_oygrdI[selected_gene,]
     featurename <- featurenames[selected_gene]
   }
-  df <- data.frame("x" = reduced_dim_env_l5XroL[,1], "y" = reduced_dim_env_l5XroL[,2], "expression" = expression)
+  df <- data.frame("x" = reduced_dim_env_oygrdI[,1], "y" = reduced_dim_env_oygrdI[,2], "expression" = expression)
   return(list("df" = df, "feature" = featurename))
 })
 
 #
 # Output
 #
-output$scatter_env_l5XroL <- plotly::renderPlotly({
-  i2dash.scrnaseq::plotly_scatterplot(x = df_env_l5XroL()$df$x, y = df_env_l5XroL()$df$y, color = df_env_l5XroL()$df$expression, colors = "YlOrRd", text = rownames(df_env_l5XroL()$df), hoverinfo = "x+y+text", source = "scatter_env_l5XroL", key = rownames(df_env_l5XroL()$df), y_title = "Dimension 2", x_title = "Dimension 1") %>%
+output$scatter_env_oygrdI <- plotly::renderPlotly({
+  i2dash.scrnaseq::plotly_scatterplot(x = df_env_oygrdI()$df$x, y = df_env_oygrdI()$df$y, color = df_env_oygrdI()$df$expression, colors = "YlOrRd", text = rownames(df_env_oygrdI()$df), hoverinfo = "x+y+text", source = "scatter_env_oygrdI", key = rownames(df_env_oygrdI()$df), y_title = "Dimension 2", x_title = "Dimension 1") %>%
     plotly::layout(
-      title = df_env_l5XroL()$feature
+      title = df_env_oygrdI()$feature
     ) %>% 
     plotly::event_register("plotly_selected") %>%
     plotly::toWebGL() -> plot
   plot
 })
-renderUI({plotly::plotlyOutput("scatter_env_l5XroL", height = "100%")})
+renderUI({plotly::plotlyOutput("scatter_env_oygrdI", height = "100%")})
 ```
 
 ###
 
 ```{r, eval=!is_shiny}
 # compare with colormaps
-if(is.factor(group_by_env_l5XroL[,1])){
-  if(colnames(group_by_env_l5XroL)[1] %in% names(colormaps)) colors_env_l5XroL <- colormaps[[colnames(group_by_env_l5XroL)[1]]] else colors_env_l5XroL <- "Set1"
+if(is.factor(group_by_env_oygrdI[,1])){
+  if(colnames(group_by_env_oygrdI)[1] %in% names(colormaps)) colors_env_oygrdI <- colormaps[[colnames(group_by_env_oygrdI)[1]]] else colors_env_oygrdI <- "Set1"
 }
 
-i2dash.scrnaseq::plotly_scatterplot(x =reduced_dim_env_l5XroL[,1], y = reduced_dim_env_l5XroL[,2], color = group_by_env_l5XroL[,1], text = row.names(reduced_dim_env_l5XroL), hoverinfo = "x+y+text", y_title = "Dimension 2", x_title = "Dimension 1", colors = colors_env_l5XroL) %>%
+i2dash.scrnaseq::plotly_scatterplot(x =reduced_dim_env_oygrdI[,1], y = reduced_dim_env_oygrdI[,2], color = group_by_env_oygrdI[,1], text = row.names(reduced_dim_env_oygrdI), hoverinfo = "x+y+text", y_title = "Dimension 2", x_title = "Dimension 1", colors = colors_env_oygrdI) %>%
   plotly::layout(
-    title = paste0("Coloured by: ", colnames(group_by_env_l5XroL)[1])
-  ) -> scatter_2_env_l5XroL
+    title = paste0("Coloured by: ", colnames(group_by_env_oygrdI)[1])
+  ) -> scatter_2_env_oygrdI
 
 # %>%
-#   plotly::config(fillFrame = TRUE) -> scatter_env_l5XroL
+#   plotly::config(fillFrame = TRUE) -> scatter_env_oygrdI
 
-scatter_2_env_l5XroL$elementId <- "scatter_2_env_l5XroL"
-scatter_2_env_l5XroL
+scatter_2_env_oygrdI$elementId <- "scatter_2_env_oygrdI"
+scatter_2_env_oygrdI
 ```
 
 ```{r, eval=is_shiny}
 #
 # Output
 #
-output$scatter_2_env_l5XroL <- plotly::renderPlotly({
+output$scatter_2_env_oygrdI <- plotly::renderPlotly({
     # compare with colormaps
-    if(input$select_grouping_env_l5XroL %in% names(colormaps)) colors <- colormaps[[input$select_grouping_env_l5XroL]] else colors <- "Set1"
+    if(input$select_grouping_env_oygrdI %in% names(colormaps)) colors <- colormaps[[input$select_grouping_env_oygrdI]] else colors <- "Set1"
     
-    i2dash.scrnaseq::plotly_scatterplot(x = reduced_dim_env_l5XroL[,1], y = reduced_dim_env_l5XroL[,2], color = as.factor(group_by_env_l5XroL[[input$select_grouping_env_l5XroL]]), text = rownames(reduced_dim_env_l5XroL[,1]), hoverinfo = "x+y+text", source = "scatter_2_env_l5XroL", key = rownames(reduced_dim_env_l5XroL), y_title = "Dimension 2", x_title = "Dimension 1", colors = colors) %>% 
+    i2dash.scrnaseq::plotly_scatterplot(x = reduced_dim_env_oygrdI[,1], y = reduced_dim_env_oygrdI[,2], color = as.factor(group_by_env_oygrdI[[input$select_grouping_env_oygrdI]]), text = rownames(reduced_dim_env_oygrdI[,1]), hoverinfo = "x+y+text", source = "scatter_2_env_oygrdI", key = rownames(reduced_dim_env_oygrdI), y_title = "Dimension 2", x_title = "Dimension 1", colors = colors) %>% 
     plotly::layout(
-      title = paste0("Coloured by: ", input$select_grouping_env_l5XroL)
+      title = paste0("Coloured by: ", input$select_grouping_env_oygrdI)
     ) %>% 
     plotly::event_register("plotly_selected") %>%
     plotly::toWebGL() -> plot
   plot
 })
-renderUI({plotly::plotlyOutput("scatter_2_env_l5XroL", height = "100%")})
+renderUI({plotly::plotlyOutput("scatter_2_env_oygrdI", height = "100%")})
 ```
 
 
 Marker genes 
 ====================================================
 
-<!-- Page created on 2020-06-15 11:19:37 -->
+<!-- Page created on 2020-07-02 17:51:04 -->
 
 
 Column {.tabset}
@@ -1775,10 +1782,10 @@ Column {.tabset}
 
 ### Expression of marker genes
 
-<!-- Component created on 2020-06-15 11:19:31 -->
+<!-- Component created on 2020-07-02 17:51:03 -->
 
 ```{r}
-env_ayusrU <- readRDS(file.path(datadir, "env_ayusrU.rds"))
+env_LJWNYH <- readRDS(file.path(datadir, "env_LJWNYH.rds"))
 is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
 
 library(magrittr)
@@ -1796,67 +1803,67 @@ aggregate_data <- function(data, group) {
 
 ```{r, eval=!is_shiny}
 # Create defaults for heatmap
-exprs_values_env_ayusrU <- env_ayusrU$exprs_values
-split_by_env_ayusrU <- NULL
-cell_fun_env_ayusrU <- NULL
-column_names_rot_env_ayusrU <- 45
-ha_env_ayusrU <- NULL
+exprs_values_env_LJWNYH <- env_LJWNYH$exprs_values
+split_by_env_LJWNYH <- NULL
+cell_fun_env_LJWNYH <- NULL
+column_names_rot_env_LJWNYH <- 45
+ha_env_LJWNYH <- NULL
 
 # Handle column split
-if (!is.null(env_ayusrU$split_by)) {
-  split_by_env_ayusrU <- env_ayusrU$split_by[,1]
+if (!is.null(env_LJWNYH$split_by)) {
+  split_by_env_LJWNYH <- env_LJWNYH$split_by[,1]
   
   # Handle annotation
   # Use colors defined by colormap else use random colors
-  if (colnames(env_ayusrU$split_by)[1] %in% names(colormaps)){
-    ha_env_ayusrU = ComplexHeatmap::HeatmapAnnotation(
-      group_by = split_by_env_ayusrU,
-      col = list(group_by = colormaps[[colnames(env_ayusrU$split_by)[1]]])
+  if (colnames(env_LJWNYH$split_by)[1] %in% names(colormaps)){
+    ha_env_LJWNYH = ComplexHeatmap::HeatmapAnnotation(
+      group_by = split_by_env_LJWNYH,
+      col = list(group_by = colormaps[[colnames(env_LJWNYH$split_by)[1]]])
     )
   } else {
-    ha_env_ayusrU = ComplexHeatmap::HeatmapAnnotation(
-      group_by = split_by_env_ayusrU
+    ha_env_LJWNYH = ComplexHeatmap::HeatmapAnnotation(
+      group_by = split_by_env_LJWNYH
     )
   }
 }
 
 # Remove column names
-if (!env_ayusrU$show_column_labels) colnames(exprs_values_env_ayusrU) <- c()
+if (!env_LJWNYH$show_column_labels) colnames(exprs_values_env_LJWNYH) <- c()
 
 # Handle data aggregation
-if (!is.null(env_ayusrU$aggregate_by)) {
-  exprs_values_env_ayusrU <- aggregate_data(env_ayusrU$exprs_values, env_ayusrU$aggregate_by[,1])
-  cell_fun_env_ayusrU <- function(j, i, x, y, width, height, fill) {
-      grid::grid.text(sprintf("%.1f", exprs_values_env_ayusrU[i, j]), x, y, gp = grid::gpar(fontsize = 10))
+if (!is.null(env_LJWNYH$aggregate_by)) {
+  exprs_values_env_LJWNYH <- aggregate_data(env_LJWNYH$exprs_values, env_LJWNYH$aggregate_by[,1])
+  cell_fun_env_LJWNYH <- function(j, i, x, y, width, height, fill) {
+      grid::grid.text(sprintf("%.1f", exprs_values_env_LJWNYH[i, j]), x, y, gp = grid::gpar(fontsize = 10))
   }
-  split_by_env_ayusrU <- NULL
-  ha_env_ayusrU <- NULL
+  split_by_env_LJWNYH <- NULL
+  ha_env_LJWNYH <- NULL
 }
 
 # Todo?
-row_split_env_ayusrU <- NULL
+row_split_env_LJWNYH <- NULL
 
 # Provide data for download
-# htmltools::tags$button(i2dash::embed_var(exprs_values_env_ayusrU)) # prevents large size of the plot
+# htmltools::tags$button(i2dash::embed_var(exprs_values_env_LJWNYH)) # prevents large size of the plot
 # htmltools::tags$br()
 
 # Render plot
 i2dash.scrnaseq::ComplexHeatmap_heatmap(
-    matrix = exprs_values_env_ayusrU,
-    legend_title = env_ayusrU$legend_title,
-    cluster_rows = env_ayusrU$cluster_rows,
-    cluster_columns = env_ayusrU$cluster_columns,
-    clustering_distance_rows = env_ayusrU$clustering_distance,
-    clustering_distance_columns = env_ayusrU$clustering_distance,
-    clustering_method_rows = env_ayusrU$clustering_method,
-    clustering_method_columns = env_ayusrU$clustering_method,
-    column_split = split_by_env_ayusrU,
-    row_split = row_split_env_ayusrU,
-    column_names_rot = column_names_rot_env_ayusrU,
-    cell_fun = cell_fun_env_ayusrU,
-    top_annotation = ha_env_ayusrU,
-    column_title = env_ayusrU$column_title,
-    row_title = env_ayusrU$row_title,
+    matrix = exprs_values_env_LJWNYH,
+    legend_title = env_LJWNYH$legend_title,
+    cluster_rows = env_LJWNYH$cluster_rows,
+    cluster_columns = env_LJWNYH$cluster_columns,
+    clustering_distance_rows = env_LJWNYH$clustering_distance,
+    clustering_distance_columns = env_LJWNYH$clustering_distance,
+    clustering_method_rows = env_LJWNYH$clustering_method,
+    clustering_method_columns = env_LJWNYH$clustering_method,
+    column_split = split_by_env_LJWNYH,
+    row_split = row_split_env_LJWNYH,
+    column_names_rot = column_names_rot_env_LJWNYH,
+    cell_fun = cell_fun_env_LJWNYH,
+    top_annotation = ha_env_LJWNYH,
+    column_title = env_LJWNYH$column_title,
+    row_title = env_LJWNYH$row_title,
     row_names_gp = grid::gpar(fontsize = 7),
     column_names_gp = grid::gpar(fontsize = 7),
     column_title_gp = grid::gpar(fontsize = 10),
@@ -1867,16 +1874,16 @@ i2dash.scrnaseq::ComplexHeatmap_heatmap(
 ```{r, eval=is_shiny}
 ui_list <- list(
   # Split_by
-  shiny::selectInput("select_split_by_env_ayusrU", label = "Split columns by:", choices = c("None", colnames(env_ayusrU$split_by))),
+  shiny::selectInput("select_split_by_env_LJWNYH", label = "Split columns by:", choices = c("None", colnames(env_LJWNYH$split_by))),
   # Aggregate_by
-  shiny::selectInput("select_aggregate_by_env_ayusrU", label = "Aggregate columns by:", choices = c("None", colnames(env_ayusrU$aggregate_by))),
+  shiny::selectInput("select_aggregate_by_env_LJWNYH", label = "Aggregate columns by:", choices = c("None", colnames(env_LJWNYH$aggregate_by))),
   # Subset_rows
-  shiny::selectInput("select_subset_env_ayusrU", label = "Select features:", choices = rownames(env_ayusrU$exprs_values), multiple = TRUE),
+  shiny::selectInput("select_subset_env_LJWNYH", label = "Select features:", choices = rownames(env_LJWNYH$exprs_values), multiple = TRUE),
   # Clustering
-  shiny::radioButtons("select_clustering_env_ayusrU", label = "Clustering", choices = c("None" = "none", "Columns and rows" = "both", "Columns" = "column", "Rows" = "row")),
-  shiny::selectInput("select_clustdist_env_ayusrU", label = "Cluster distance:", choices = c("euclidean", "maximum", "manhattan", "binary", "minkowski")),
-  shiny::selectInput("select_clustmethod_env_ayusrU", label = "Cluster method:", choices = c("average", "ward.D", "ward.D2", "single", "complete", "mcquitty")),
-  shiny::tags$div(shiny::tags$br(), shiny::downloadButton("downloadData_env_ayusrU", "Download data"))
+  shiny::radioButtons("select_clustering_env_LJWNYH", label = "Clustering", choices = c("None" = "none", "Columns and rows" = "both", "Columns" = "column", "Rows" = "row")),
+  shiny::selectInput("select_clustdist_env_LJWNYH", label = "Cluster distance:", choices = c("euclidean", "maximum", "manhattan", "binary", "minkowski")),
+  shiny::selectInput("select_clustmethod_env_LJWNYH", label = "Cluster method:", choices = c("average", "ward.D", "ward.D2", "single", "complete", "mcquitty")),
+  shiny::tags$div(shiny::tags$br(), shiny::downloadButton("downloadData_env_LJWNYH", "Download data"))
 )
 
 # Function for subsetting a matrix accoriding to a vector of features
@@ -1892,23 +1899,23 @@ subset_features <- function(matrix, features){
 #
 # Handle inputs
 #
-exprs_values_env_ayusrU <- shiny::reactive({
-  exprs_values <- env_ayusrU$exprs_values
+exprs_values_env_LJWNYH <- shiny::reactive({
+  exprs_values <- env_LJWNYH$exprs_values
   
   # Subset features
-  exprs_values <- subset_features(exprs_values, input$select_subset_env_ayusrU)
-  if (!env_ayusrU$show_column_labels) colnames(exprs_values) <- c()
+  exprs_values <- subset_features(exprs_values, input$select_subset_env_LJWNYH)
+  if (!env_LJWNYH$show_column_labels) colnames(exprs_values) <- c()
   
   # Handle aggregation
-  if (input$select_aggregate_by_env_ayusrU != "None") {
-    exprs_values <- aggregate_data(exprs_values, env_ayusrU$aggregate_by[, input$select_aggregate_by_env_ayusrU])
+  if (input$select_aggregate_by_env_LJWNYH != "None") {
+    exprs_values <- aggregate_data(exprs_values, env_LJWNYH$aggregate_by[, input$select_aggregate_by_env_LJWNYH])
   }
   
   return(exprs_values)
 })
 
-clust_env_ayusrU <- shiny::reactive({
-  clustering <- input$select_clustering_env_ayusrU
+clust_env_LJWNYH <- shiny::reactive({
+  clustering <- input$select_clustering_env_LJWNYH
   if (clustering == "none") {
     cluster_rows <- FALSE
     cluster_columns <- FALSE
@@ -1925,67 +1932,67 @@ clust_env_ayusrU <- shiny::reactive({
   return(list(rows = cluster_rows, columns = cluster_columns))
 })
 
-split_by_env_ayusrU <- shiny::reactive({
-  if(input$select_split_by_env_ayusrU == "None" | input$select_aggregate_by_env_ayusrU != "None") {
+split_by_env_LJWNYH <- shiny::reactive({
+  if(input$select_split_by_env_LJWNYH == "None" | input$select_aggregate_by_env_LJWNYH != "None") {
     return(NULL)
   }
-  return(env_ayusrU$split_by[[input$select_split_by_env_ayusrU]])
+  return(env_LJWNYH$split_by[[input$select_split_by_env_LJWNYH]])
 })
 
 #
 # Generate plot
 #
-output$plot_env_ayusrU <- shiny::renderPlot({
-  clustdist <- input$select_clustdist_env_ayusrU
-  clustmethod <- input$select_clustmethod_env_ayusrU
+output$plot_env_LJWNYH <- shiny::renderPlot({
+  clustdist <- input$select_clustdist_env_LJWNYH
+  clustmethod <- input$select_clustmethod_env_LJWNYH
   cell_fun <- NULL
   column_names_rot <- 45
   ha <- NULL
       
-  if (input$select_aggregate_by_env_ayusrU != "None") {
-    cell_fun <- function(j, i, x, y, width, height, fill) {grid::grid.text(sprintf("%.1f", exprs_values_env_ayusrU()[i, j]), x, y, gp = grid::gpar(fontsize = 10))}
+  if (input$select_aggregate_by_env_LJWNYH != "None") {
+    cell_fun <- function(j, i, x, y, width, height, fill) {grid::grid.text(sprintf("%.1f", exprs_values_env_LJWNYH()[i, j]), x, y, gp = grid::gpar(fontsize = 10))}
   }
   
   # Handle annotation
-  if (input$select_split_by_env_ayusrU != "None" & input$select_aggregate_by_env_ayusrU == "None") {
+  if (input$select_split_by_env_LJWNYH != "None" & input$select_aggregate_by_env_LJWNYH == "None") {
     # Use colors defined by colormap else use random colors
-    if (input$select_split_by_env_ayusrU %in% names(colormaps)){
+    if (input$select_split_by_env_LJWNYH %in% names(colormaps)){
       ha = ComplexHeatmap::HeatmapAnnotation(
-        group_by = split_by_env_ayusrU(),
-        col = list(group_by = colormaps[[input$select_split_by_env_ayusrU]])
+        group_by = split_by_env_LJWNYH(),
+        col = list(group_by = colormaps[[input$select_split_by_env_LJWNYH]])
       )
     } else {
       ha = ComplexHeatmap::HeatmapAnnotation(
-        group_by = split_by_env_ayusrU()
+        group_by = split_by_env_LJWNYH()
       )
     }
   }
   
   i2dash.scrnaseq::ComplexHeatmap_heatmap(
-    matrix = exprs_values_env_ayusrU(),
-    legend_title = env_ayusrU$legend_title,
-    cluster_rows = clust_env_ayusrU()$rows,
-    cluster_columns = clust_env_ayusrU()$columns,
+    matrix = exprs_values_env_LJWNYH(),
+    legend_title = env_LJWNYH$legend_title,
+    cluster_rows = clust_env_LJWNYH()$rows,
+    cluster_columns = clust_env_LJWNYH()$columns,
     clustering_distance_rows = clustdist,
     clustering_distance_columns = clustdist,
     clustering_method_rows = clustmethod,
     clustering_method_columns = clustmethod,
-    column_split = split_by_env_ayusrU(),
+    column_split = split_by_env_LJWNYH(),
     column_names_rot = column_names_rot,
     cell_fun = cell_fun,
     top_annotation = ha,
-    column_title = env_ayusrU$column_title,
-    row_title = env_ayusrU$row_title
+    column_title = env_LJWNYH$column_title,
+    row_title = env_LJWNYH$row_title
   )
 })
 
 #
 # Download
 #
-output$downloadData_env_ayusrU <- downloadHandler(
+output$downloadData_env_LJWNYH <- downloadHandler(
   filename =  paste('data-', Sys.Date(), '.csv', sep=''),
   content = function(file) {
-    write.csv(exprs_values_env_ayusrU(), file)
+    write.csv(exprs_values_env_LJWNYH(), file)
   }
 )
 
@@ -1999,7 +2006,7 @@ shiny::fillRow(flex = c(NA, 1),
                                    icon = icon("gear"),
                                    width = "300px",
                                    tooltip = shinyWidgets::tooltipOptions(title = "Change plot settings:")),
-      shiny::plotOutput("plot_env_ayusrU", width = "100%", height = "400px")
+      shiny::plotOutput("plot_env_LJWNYH", width = "100%", height = "400px")
 )
 ```
 
@@ -2007,17 +2014,17 @@ shiny::fillRow(flex = c(NA, 1),
 Feature grid {data-navmenu="Tools"}
 ====================================================
 
-<!-- Component created on  2020-06-15 11:19:34  -->
+<!-- Component created on  2020-07-02 17:51:04  -->
 
 ```{r}
-env_6FcwJf = readRDS(file.path(datadir, "env_6FcwJf.rds"))
+env_0r3OHp = readRDS(file.path(datadir, "env_0r3OHp.rds"))
 
 is_shiny <- identical(knitr::opts_knit$get("rmarkdown.runtime"), "shiny")
 
 library(magrittr)
 
-use_dimred_env_6FcwJf <- env_6FcwJf$use_dimred
-exprs_values_env_6FcwJf <- env_6FcwJf$exprs_values
+use_dimred_env_0r3OHp <- env_0r3OHp$use_dimred
+exprs_values_env_0r3OHp <- env_0r3OHp$exprs_values
 
 #
 # Helper functions for generating figures
@@ -2041,27 +2048,27 @@ UI elements {.sidebar}
 #
 # Render UI elements for the selection of the dimension reduction, features and number of columns
 #
-if(length(use_dimred_env_6FcwJf) > 1){
-  selectInput("select_dimred_env_6FcwJf", label = "Select dimension reduction:", choices = names(use_dimred_env_6FcwJf))
+if(length(use_dimred_env_0r3OHp) > 1){
+  selectInput("select_dimred_env_0r3OHp", label = "Select dimension reduction:", choices = names(use_dimred_env_0r3OHp))
 }
 
-selectInput("selected_features_env_6FcwJf", label = "Select features:", choices = rownames(exprs_values_env_6FcwJf), multiple = TRUE)
+selectInput("selected_features_env_0r3OHp", label = "Select features:", choices = rownames(exprs_values_env_0r3OHp), multiple = TRUE)
 
 # Maximum number of columns depends on selected features
-output$select_columns_env_6FcwJf <- renderUI({
-  max_columns <- max(length(input$selected_features_env_6FcwJf), 1)
-  numericInput("columns_env_6FcwJf",
+output$select_columns_env_0r3OHp <- renderUI({
+  max_columns <- max(length(input$selected_features_env_0r3OHp), 1)
+  numericInput("columns_env_0r3OHp",
                label = HTML("(Please select features first) <br/> Number of columns:"),
                value = 1,
                min = 1,
                max = max_columns)
 })
-uiOutput("select_columns_env_6FcwJf")
+uiOutput("select_columns_env_0r3OHp")
 
 #
 # Render a button to preview the figure
 #
-actionButton("preview_figure_env_6FcwJf", label = "Preview figure")
+actionButton("preview_figure_env_0r3OHp", label = "Preview figure")
 
 ```
 
@@ -2071,19 +2078,19 @@ The following **width** and **height** selections are applied only to the downlo
 #
 # Render UI elements for the selection of figure width and height
 #
-numericInput("width_env_6FcwJf", label = "Choose width (cm):", value = 0, min = 0)
-numericInput("height_env_6FcwJf", label = "Choose height (cm):", value = 0, min = 0)
+numericInput("width_env_0r3OHp", label = "Choose width (cm):", value = 0, min = 0)
+numericInput("height_env_0r3OHp", label = "Choose height (cm):", value = 0, min = 0)
 
 # Add a checkbox to preview with selected figure width and height
-checkboxInput("checkbox_env_6FcwJf", label = "Preview with customized size", value = FALSE)
+checkboxInput("checkbox_env_0r3OHp", label = "Preview with customized size", value = FALSE)
 
 #
 # Render buttons for figure and data download
 #
 htmltools::div(style="display:block;float:left;margin-top:20px",
-               downloadButton("download_figure_env_6FcwJf", "Download figure"))
+               downloadButton("download_figure_env_0r3OHp", "Download figure"))
 htmltools::div(style="display:block;float:left;margin-top:20px",
-               downloadButton("download_data_env_6FcwJf", "Download data"))
+               downloadButton("download_data_env_0r3OHp", "Download data"))
 ```
 
 Column
@@ -2098,33 +2105,33 @@ htmltools::HTML("<div class='alert alert-warning' role='alert'>
 ```
 
 ```{r, eval=is_shiny}
-reactive_env_6FcwJf <- eventReactive(input$preview_figure_env_6FcwJf, {
+reactive_env_0r3OHp <- eventReactive(input$preview_figure_env_0r3OHp, {
   # validate if at least a feature is selected
   validate(
-      need(input$selected_features_env_6FcwJf != "", "Please select at least one feature.")
+      need(input$selected_features_env_0r3OHp != "", "Please select at least one feature.")
   )
   
-  if(length(use_dimred_env_6FcwJf) > 1){
-    red_dim <- use_dimred_env_6FcwJf[[input$select_dimred_env_6FcwJf]]
+  if(length(use_dimred_env_0r3OHp) > 1){
+    red_dim <- use_dimred_env_0r3OHp[[input$select_dimred_env_0r3OHp]]
   } else {
-    red_dim <- use_dimred_env_6FcwJf[[1]]
+    red_dim <- use_dimred_env_0r3OHp[[1]]
   }
   
   #
   # Create data for the figure from selected features
   #
-  selected_features <- input$selected_features_env_6FcwJf
+  selected_features <- input$selected_features_env_0r3OHp
   data <- data.frame(dim1 = red_dim[, 1],
                      dim2 = red_dim[, 2],
-                     t(exprs_values_env_6FcwJf[selected_features, ]))
+                     t(exprs_values_env_0r3OHp[selected_features, ]))
   
   #
   # Create figures
   #
-  figure_columns <- input$columns_env_6FcwJf
+  figure_columns <- input$columns_env_0r3OHp
   
   # Calculate number of rows
-  figure_rows <- ceiling(length(selected_features)/input$columns_env_6FcwJf)
+  figure_rows <- ceiling(length(selected_features)/input$columns_env_0r3OHp)
   
   figure_autosize <- multipanelfigure::multi_panel_figure(
     width = "auto",
@@ -2133,11 +2140,11 @@ reactive_env_6FcwJf <- eventReactive(input$preview_figure_env_6FcwJf, {
     rows = figure_rows)
   
   figure_customsize <- NULL
-  if(input$width_env_6FcwJf > 0 & input$height_env_6FcwJf > 0) {
+  if(input$width_env_0r3OHp > 0 & input$height_env_0r3OHp > 0) {
     figure_customsize <- multipanelfigure::multi_panel_figure(
-      width = input$width_env_6FcwJf,
+      width = input$width_env_0r3OHp,
       columns = figure_columns,
-      height = input$height_env_6FcwJf,
+      height = input$height_env_0r3OHp,
       rows = figure_rows,
       unit = "cm")
   }
@@ -2158,33 +2165,33 @@ reactive_env_6FcwJf <- eventReactive(input$preview_figure_env_6FcwJf, {
 #
 # Render output and prepare downloads
 #
-output$plot_env_6FcwJf <- renderPlot({
-  if(input$checkbox_env_6FcwJf & !is.null(reactive_env_6FcwJf()$figure_custom)){
-    reactive_env_6FcwJf()$figure_custom
+output$plot_env_0r3OHp <- renderPlot({
+  if(input$checkbox_env_0r3OHp & !is.null(reactive_env_0r3OHp()$figure_custom)){
+    reactive_env_0r3OHp()$figure_custom
   } else {
-    reactive_env_6FcwJf()$figure_auto
+    reactive_env_0r3OHp()$figure_auto
   }
 })
 
-plotOutput("plot_env_6FcwJf")
+plotOutput("plot_env_0r3OHp")
 
 # Download figure
-output$download_figure_env_6FcwJf <- downloadHandler(
+output$download_figure_env_0r3OHp <- downloadHandler(
   filename = function() { paste("feature_grid_", Sys.Date(), ".png", sep="") },
   content = function(file) {
-    if(!is.null(reactive_env_6FcwJf()$figure_custom)){
-      multipanelfigure::save_multi_panel_figure(figure = reactive_env_6FcwJf()$figure_custom, filename = file, dpi = 300, device = "png")
+    if(!is.null(reactive_env_0r3OHp()$figure_custom)){
+      multipanelfigure::save_multi_panel_figure(figure = reactive_env_0r3OHp()$figure_custom, filename = file, dpi = 300, device = "png")
     } else {
-      multipanelfigure::save_multi_panel_figure(figure = reactive_env_6FcwJf()$figure_auto, filename = file, dpi = 300, device = "png")
+      multipanelfigure::save_multi_panel_figure(figure = reactive_env_0r3OHp()$figure_auto, filename = file, dpi = 300, device = "png")
     }
   }
 )
 
 # Download data
-output$download_data_env_6FcwJf <- downloadHandler(
+output$download_data_env_0r3OHp <- downloadHandler(
   filename =  paste("feature_grid_", Sys.Date(), ".csv", sep = ""),
   content = function(file) {
-    write.csv(reactive_env_6FcwJf()$df, file)
+    write.csv(reactive_env_0r3OHp()$df, file)
   }
 )
 ```
