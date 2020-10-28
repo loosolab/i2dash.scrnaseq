@@ -139,44 +139,44 @@
     <p>Renders a component containing an HTML table of summarized sample or feature metadata of single-cell experiment objects or data.frames.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>summarize_metadata</span>(<span class='no'>dashboard</span>, <span class='no'>object</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>summarize_metadata</span><span class='op'>(</span><span class='va'>dashboard</span>, <span class='va'>object</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S4 method for i2dashboard,missing</span>
-<span class='fu'>summarize_metadata</span>(
-  <span class='no'>dashboard</span>,
-  <span class='no'>data</span>,
-  <span class='kw'>columns</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span>(<span class='no'>data</span>),
-  <span class='kw'>FUNS</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"min"</span>, <span class='st'>"max"</span>, <span class='st'>"mean"</span>, <span class='st'>"median"</span>),
-  <span class='kw'>group_by</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>caption</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>description</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>title</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
-)
+<span class='fu'>summarize_metadata</span><span class='op'>(</span>
+  <span class='va'>dashboard</span>,
+  <span class='va'>data</span>,
+  columns <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span>,
+  FUNS <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"min"</span>, <span class='st'>"max"</span>, <span class='st'>"mean"</span>, <span class='st'>"median"</span><span class='op'>)</span>,
+  group_by <span class='op'>=</span> <span class='cn'>NULL</span>,
+  caption <span class='op'>=</span> <span class='cn'>NULL</span>,
+  description <span class='op'>=</span> <span class='cn'>NULL</span>,
+  title <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span>
 
 <span class='co'># S4 method for i2dashboard,SingleCellExperiment</span>
-<span class='fu'>summarize_metadata</span>(
-  <span class='no'>dashboard</span>,
-  <span class='no'>object</span>,
-  <span class='kw'>from</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"colData"</span>, <span class='st'>"rowData"</span>),
-  <span class='kw'>columns</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>group_by</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>caption</span> <span class='kw'>=</span> <span class='st'>"Table: "</span>,
-  <span class='kw'>description</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>...</span>
-)
+<span class='fu'>summarize_metadata</span><span class='op'>(</span>
+  <span class='va'>dashboard</span>,
+  <span class='va'>object</span>,
+  from <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"colData"</span>, <span class='st'>"rowData"</span><span class='op'>)</span>,
+  columns <span class='op'>=</span> <span class='cn'>NULL</span>,
+  group_by <span class='op'>=</span> <span class='cn'>NULL</span>,
+  caption <span class='op'>=</span> <span class='st'>"Table: "</span>,
+  description <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
 
 <span class='co'># S4 method for i2dashboard,Seurat</span>
-<span class='fu'>summarize_metadata</span>(
-  <span class='no'>dashboard</span>,
-  <span class='no'>object</span>,
-  <span class='kw'>from</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"meta.data"</span>, <span class='st'>"meta.features"</span>),
-  <span class='kw'>assay</span> <span class='kw'>=</span> <span class='st'>"RNA"</span>,
-  <span class='kw'>columns</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>group_by</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>caption</span> <span class='kw'>=</span> <span class='st'>"Table"</span>,
-  <span class='kw'>description</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>...</span>
-)</pre>
+<span class='fu'>summarize_metadata</span><span class='op'>(</span>
+  <span class='va'>dashboard</span>,
+  <span class='va'>object</span>,
+  from <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"meta.data"</span>, <span class='st'>"meta.features"</span><span class='op'>)</span>,
+  assay <span class='op'>=</span> <span class='st'>"RNA"</span>,
+  columns <span class='op'>=</span> <span class='cn'>NULL</span>,
+  group_by <span class='op'>=</span> <span class='cn'>NULL</span>,
+  caption <span class='op'>=</span> <span class='st'>"Table"</span>,
+  description <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -250,7 +250,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

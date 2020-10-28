@@ -84,7 +84,8 @@
 
       
 
-      </header><link href="sc_data_explorer_files/font-awesome-5.1.0/css/all.css" rel="stylesheet">
+      </header><script src="sc_data_explorer_files/header-attrs-2.5/header-attrs.js"></script><script src="sc_data_explorer_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="sc_data_explorer_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
+<script src="sc_data_explorer_files/anchor-sections-1.0/anchor-sections.js"></script><link href="sc_data_explorer_files/font-awesome-5.1.0/css/all.css" rel="stylesheet">
 <link href="sc_data_explorer_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet">
 <div class="row">
   <div class="col-md-9 contents">
@@ -97,7 +98,7 @@
                   <a class="author_email" href="mailto:#"></a><a href="mailto:jens.preussner@mpi-bn.mpg.de" class="email">jens.preussner@mpi-bn.mpg.de</a>
       
                   
-            <h4 class="date">12 June 2020</h4>
+            <h4 class="date">28 Oktober 2020</h4>
       
       
       <div class="hidden name"><code>sc_data_explorer.Rmd</code></div>
@@ -106,7 +107,7 @@
 
     
     
-<p>Vignette last complied on 2020-06-12. i2dash is licenced under MIT + file LICENSE.</p>
+<p>Vignette last complied on 2020-10-28. i2dash is licenced under MIT + file LICENSE.</p>
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
@@ -116,61 +117,63 @@
 <h1 class="hasAnchor">
 <a href="#data-preparation" class="anchor"></a>Data preparation</h1>
 <p>At first, load the SingleCellExperiment object of the data we used in the first use-case (see <a href="docs/articles/Quality_metrics.html#setting-up-the-data">here</a>). We subset the sce object according to the identified outliers, perform a log-transformed normalization on the count-matrix and identify the highly variable genes. For these steps, the packages <a href="https://bioconductor.org/packages/3.10/bioc/html/scater.html">scater</a> and <a href="http://bioconductor.org/packages/release/bioc/html/scran.html">scran</a> are used.</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">SingleCellExperiment</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">scater</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">scran</span>)
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">SingleCellExperiment</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://bioconductor.org/packages/scater/">scater</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">scran</span><span class="op">)</span>
 
 <span class="co"># Read the SingleCellExperiment</span>
-<span class="no">sce_full</span> <span class="kw">&lt;-</span> <span class="kw pkg">scRNAseq</span><span class="kw ns">::</span><span class="fu">ZilionisLungData</span>(<span class="st">"mouse"</span>)
-<span class="no">sce_full</span> <span class="kw">&lt;-</span> <span class="no">sce_full</span>[, <span class="fu">colData</span>(<span class="no">sce_full</span>)$<span class="no">Used</span><span class="kw">==</span><span class="fl">TRUE</span>]
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="no">sce_full</span>) <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="no">sce_full</span>),<span class="st">"_"</span>, <span class="fu">colData</span>(<span class="no">sce_full</span>)$<span class="no">Library</span>)
-<span class="no">as_factor</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Library"</span>, <span class="st">"Animal"</span>, <span class="st">"Run"</span>, <span class="st">"Tissue"</span>, <span class="st">"Library prep batch"</span>, <span class="st">"Most likely Immgen cell type"</span>, <span class="st">"Major cell type"</span>, <span class="st">"Minor subset"</span>)
-<span class="fu">colData</span>(<span class="no">sce_full</span>)[<span class="no">as_factor</span>] <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(<span class="fu">colData</span>(<span class="no">sce_full</span>)[<span class="no">as_factor</span>], <span class="no">as.factor</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="fu">colData</span>(<span class="no">sce_full</span>))[<span class="fl">11</span>] <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Major.cell.type"</span>)
+<span class="va">sce_full</span> <span class="op">&lt;-</span> <span class="fu">scRNAseq</span><span class="fu">::</span><span class="fu">ZilionisLungData</span><span class="op">(</span><span class="st">"mouse"</span><span class="op">)</span>
+<span class="va">sce_full</span> <span class="op">&lt;-</span> <span class="va">sce_full</span><span class="op">[</span>, <span class="fu">colData</span><span class="op">(</span><span class="va">sce_full</span><span class="op">)</span><span class="op">$</span><span class="va">Used</span><span class="op">==</span><span class="cn">TRUE</span><span class="op">]</span>
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">sce_full</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">sce_full</span><span class="op">)</span>,<span class="st">"_"</span>, <span class="fu">colData</span><span class="op">(</span><span class="va">sce_full</span><span class="op">)</span><span class="op">$</span><span class="va">Library</span><span class="op">)</span>
+<span class="va">as_factor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Library"</span>, <span class="st">"Animal"</span>, <span class="st">"Run"</span>, <span class="st">"Tissue"</span>, <span class="st">"Library prep batch"</span>, <span class="st">"Most likely Immgen cell type"</span>, <span class="st">"Major cell type"</span>, <span class="st">"Minor subset"</span><span class="op">)</span>
+<span class="fu">colData</span><span class="op">(</span><span class="va">sce_full</span><span class="op">)</span><span class="op">[</span><span class="va">as_factor</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">sce_full</span><span class="op">)</span><span class="op">[</span><span class="va">as_factor</span><span class="op">]</span>, <span class="va">as.factor</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">sce_full</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">11</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Major.cell.type"</span><span class="op">)</span>
 
 <span class="co"># optional downsampling for better performance</span>
-<span class="no">sce</span> <span class="kw">&lt;-</span> <span class="no">sce_full</span>[, <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span>(<span class="no">sce_full</span>), <span class="fl">6000</span>)]
+<span class="va">sce</span> <span class="op">&lt;-</span> <span class="va">sce_full</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">sce_full</span><span class="op">)</span>, <span class="fl">6000</span><span class="op">)</span><span class="op">]</span>
 
 <span class="co"># Cell-level QC</span>
-<span class="no">per.cell</span>     <span class="kw">&lt;-</span> <span class="fu">perCellQCMetrics</span>(<span class="no">sce</span>, <span class="kw">subsets</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">Mito</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html">grep</a></span>(<span class="st">"mt-"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="no">sce</span>))))
-<span class="fu">colData</span>(<span class="no">sce</span>) <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="fu">colData</span>(<span class="no">sce</span>), <span class="no">per.cell</span>)
+<span class="va">per.cell</span>     <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scater/man/perCellQCMetrics.html">perCellQCMetrics</a></span><span class="op">(</span><span class="va">sce</span>, subsets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>Mito <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html">grep</a></span><span class="op">(</span><span class="st">"mt-"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="fu">colData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/edgeR/man/cbind.html">cbind</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>, <span class="va">per.cell</span><span class="op">)</span>
 
 <span class="co"># Detect outliers</span>
-<span class="no">qc.stats</span>     <span class="kw">&lt;-</span> <span class="fu">quickPerCellQC</span>(<span class="no">sce</span>, <span class="kw">percent_subsets</span><span class="kw">=</span><span class="st">"subsets_Mito_percent"</span>)
-<span class="fu">colData</span>(<span class="no">sce</span>) <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="fu">colData</span>(<span class="no">sce</span>), <span class="no">qc.stats</span>)
+<span class="va">qc.stats</span>     <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scater/man/quickPerCellQC.html">quickPerCellQC</a></span><span class="op">(</span><span class="va">sce</span>, percent_subsets<span class="op">=</span><span class="st">"subsets_Mito_percent"</span><span class="op">)</span>
+<span class="fu">colData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/edgeR/man/cbind.html">cbind</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>, <span class="va">qc.stats</span><span class="op">)</span>
 
 <span class="co"># Filtering</span>
-<span class="no">sce2</span>         <span class="kw">&lt;-</span> <span class="no">sce</span>[,!<span class="fu">colData</span>(<span class="no">sce</span>)$<span class="no">discard</span>]
-<span class="no">keep_feature</span> <span class="kw">&lt;-</span> <span class="fu">nexprs</span>(<span class="no">sce</span>, <span class="kw">byrow</span><span class="kw">=</span><span class="fl">TRUE</span>) <span class="kw">&gt;</span> <span class="fl">0</span>
-<span class="no">sce2</span>         <span class="kw">&lt;-</span> <span class="no">sce2</span>[<span class="no">keep_feature</span>,]
+<span class="va">sce2</span>         <span class="op">&lt;-</span> <span class="va">sce</span><span class="op">[</span>,<span class="op">!</span><span class="fu">colData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">discard</span><span class="op">]</span>
+<span class="va">keep_feature</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scater/man/nexprs.html">nexprs</a></span><span class="op">(</span><span class="va">sce</span>, byrow<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span>
+<span class="va">sce2</span>         <span class="op">&lt;-</span> <span class="va">sce2</span><span class="op">[</span><span class="va">keep_feature</span>,<span class="op">]</span>
 
 <span class="co"># Normalization</span>
-<span class="no">sce2</span> <span class="kw">&lt;-</span> <span class="fu">logNormCounts</span>(<span class="no">sce2</span>)
+<span class="va">sce2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scater/man/logNormCounts.html">logNormCounts</a></span><span class="op">(</span><span class="va">sce2</span><span class="op">)</span>
 
 <span class="co"># Get highly variable genes</span>
-<span class="no">gene.var</span> <span class="kw">&lt;-</span> <span class="fu">modelGeneVar</span>(<span class="no">sce2</span>) <span class="co"># the warning message can be ignored</span>
-<span class="no">hvg</span>      <span class="kw">&lt;-</span> <span class="fu">getTopHVGs</span>(<span class="no">gene.var</span>, <span class="kw">prop</span><span class="kw">=</span><span class="fl">0.1</span>)</pre></body></html></div>
+<span class="va">gene.var</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scran/man/modelGeneVar.html">modelGeneVar</a></span><span class="op">(</span><span class="va">sce2</span><span class="op">)</span> <span class="co"># the warning message can be ignored</span>
+<span class="va">hvg</span>      <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scran/man/getTopHVGs.html">getTopHVGs</a></span><span class="op">(</span><span class="va">gene.var</span>, prop<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span></pre></div>
 </div>
 <div id="creating-an-i2dashboard-object" class="section level1">
 <h1 class="hasAnchor">
 <a href="#creating-an-i2dashboard-object" class="anchor"></a>Creating an i2dashboard object</h1>
 <p>Simmilar to the first use-case, we create the <code>i2dashboard</code> object. In contrast, the mode of this dashboard is “interactive” (<code>interactive = TRUE</code>), which means that the interactivity is increased through Shiny input options.</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">i2dash</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">i2dash.scrnaseq</span>)
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">i2dash</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">i2dash.scrnaseq</span><span class="op">)</span>
 
 <span class="co"># Creating a new i2dashboard class object</span>
-<span class="no">dashboard</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-class.html">i2dashboard</a></span>(
-  <span class="kw">title</span>       <span class="kw">=</span> <span class="st">"Single-Cell Data Explorer"</span>,
-  <span class="kw">author</span>      <span class="kw">=</span> <span class="st">"i2dash Team"</span>,
-  <span class="kw">interactive</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-  <span class="kw">theme</span>       <span class="kw">=</span> <span class="st">"yeti"</span>,
-  <span class="kw">datadir</span>     <span class="kw">=</span> <span class="st">"datadir_use_case2"</span>
-)</pre></body></html></div>
+<span class="va">dashboard</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-class.html">i2dashboard</a></span><span class="op">(</span>
+  title       <span class="op">=</span> <span class="st">"Single-Cell Data Explorer"</span>,
+  author      <span class="op">=</span> <span class="st">"i2dash Team"</span>,
+  interactive <span class="op">=</span> <span class="cn">TRUE</span>,
+  theme       <span class="op">=</span> <span class="st">"yeti"</span>,
+  datadir     <span class="op">=</span> <span class="st">"datadir_use_case2"</span>
+<span class="op">)</span></pre></div>
 </div>
 <div id="explorer-for-cell-metadata" class="section level1">
 <h1 class="hasAnchor">
 <a href="#explorer-for-cell-metadata" class="anchor"></a>Explorer for cell metadata</h1>
-<p>The following page for cell metadata analysis is one of the pre-defined pages in the <code>i2dash.scrnaseq</code> package. We add and define this page with the function <code><a href="../reference/dimred-sample-page.html">add_dimred_sample_page()</a></code>.</p>
+<p>The following page for cell metadata analysis is one of the pre-defined pages in the <code>i2dash.scrnaseq</code> package. We add and define this page with the function <code><a href="../reference/add_dimred_sample_page.html">add_dimred_sample_page()</a></code>.</p>
 <p>This page provides the possibility to inspect the dimension reduction and distribution of cell metadata (e.g. cluster, timepoint, number of genes, etc). The page is build up on the 2x2 grid layout, which means that it may conatain a maximum of four components. The first component is obligatory a dimension reduction plot and the three other component slots are occupied by either box-, bar- or silhouette plots.</p>
 <ul>
 <li><p><strong>Reduced dimension plot:</strong> The data to use for the reduced dimension plot is defined by the parameter <code>use_dimred</code>. The plot is coloured by factorial metadata. With the parameter <code>sample_metadata</code> we provide a character vector containing the column names of sample metadata stored in the SingleCellExperiment or Seurat object. The parameter <code>group_by</code> should be one of the column names from <code>sample_metadata</code> and defines the colouring of the scatterplot. In the interactive mode of the dashboard, we can choose from columns of factorial data and colour the scatter plot by this factors. E.g. this is useful when we have processed a clustering on the dimension reduction and provide the name of the metadata column containing the clustering result with <code>sample_metadata</code>.</p></li>
@@ -180,31 +183,32 @@
 </ul>
 <p>A special feature of this page is, that the plots are linked together. This means that it is possible to select several points in the scatterplot of the dimension reduction or bars in the bar-/ silhouette plots with <code>plotly</code>’s selection tool. According to the selection the other plots are recalculated. This functionality works also in the static mode of the dashboard.</p>
 <p>In this example we create two of these pages. Both pages are grouped under the button “Cell metadata” in the navigation bar. The first page contains a dimension reduction, a bar plot of the groups shown in the dimension reduction, a silhouette plot and a box plot of the <code>subsets_Mito_percent</code> column. Therefore, we provide only two metadata columns in <code>sample_metadata</code>. The second page does not contain the silhouette plot or the bar plot of <code>group_by</code>, instead we provide three more metadata column names, which will be used in the three free component slots.</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="co"># Page for metadata exploration with show_group_sizes = TRUE and show_silhouette = TRUE (see left image below) </span>
-<span class="no">dashboard</span> <span class="kw">%&lt;&gt;%</span> <span class="kw pkg">i2dash.scrnaseq</span><span class="kw ns">::</span><span class="fu"><a href="../reference/dimred-sample-page.html">add_dimred_sample_page</a></span>(
-  <span class="kw">object</span>           <span class="kw">=</span> <span class="no">sce2</span>,
-  <span class="kw">use_dimred</span>       <span class="kw">=</span> <span class="st">"SPRING"</span>,
-  <span class="kw">sample_metadata</span>  <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Major.cell.type"</span>, <span class="st">"subsets_Mito_percent"</span>, <span class="st">"Library"</span>, <span class="st">"Tissue"</span>),
-  <span class="kw">group_by</span>         <span class="kw">=</span> <span class="st">"Major.cell.type"</span>,
-  <span class="kw">show_group_sizes</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-  <span class="kw">show_silhouette</span>  <span class="kw">=</span> <span class="fl">TRUE</span>,
-  <span class="kw">page</span>             <span class="kw">=</span> <span class="st">"dimred_sample_page1"</span>,
-  <span class="kw">title</span>            <span class="kw">=</span> <span class="st">"Cell metadata 1"</span>,
-  <span class="kw">menu</span>             <span class="kw">=</span> <span class="st">"Cell metadata"</span>
-)
+<div class="sourceCode" id="cb3"><pre class="downlit">
+<span class="co"># Page for metadata exploration with show_group_sizes = TRUE and show_silhouette = TRUE (see left image below) </span>
+<span class="va">dashboard</span> <span class="op">%&lt;&gt;%</span> <span class="fu">i2dash.scrnaseq</span><span class="fu">::</span><span class="fu"><a href="../reference/add_dimred_sample_page.html">add_dimred_sample_page</a></span><span class="op">(</span>
+  object           <span class="op">=</span> <span class="va">sce2</span>,
+  use_dimred       <span class="op">=</span> <span class="st">"SPRING"</span>,
+  sample_metadata  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Major.cell.type"</span>, <span class="st">"subsets_Mito_percent"</span>, <span class="st">"Library"</span>, <span class="st">"Tissue"</span><span class="op">)</span>,
+  group_by         <span class="op">=</span> <span class="st">"Major.cell.type"</span>,
+  show_group_sizes <span class="op">=</span> <span class="cn">TRUE</span>,
+  show_silhouette  <span class="op">=</span> <span class="cn">TRUE</span>,
+  page             <span class="op">=</span> <span class="st">"dimred_sample_page1"</span>,
+  title            <span class="op">=</span> <span class="st">"Cell metadata 1"</span>,
+  menu             <span class="op">=</span> <span class="st">"Cell metadata"</span>
+<span class="op">)</span>
 
 <span class="co"># Page for metadata exploration with show_group_sizes = FALSE and show_silhouette = FALSE (see right image below) </span>
-<span class="no">dashboard</span> <span class="kw">%&lt;&gt;%</span> <span class="kw pkg">i2dash.scrnaseq</span><span class="kw ns">::</span><span class="fu"><a href="../reference/dimred-sample-page.html">add_dimred_sample_page</a></span>(
-  <span class="kw">object</span>           <span class="kw">=</span> <span class="no">sce2</span>,
-  <span class="kw">use_dimred</span>       <span class="kw">=</span> <span class="st">"SPRING"</span>,
-  <span class="kw">sample_metadata</span>  <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Major.cell.type"</span>, <span class="st">"Tissue"</span>, <span class="st">"sum"</span>, <span class="st">"detected"</span>),
-  <span class="kw">group_by</span>         <span class="kw">=</span> <span class="st">"Major.cell.type"</span>,
-  <span class="kw">show_group_sizes</span> <span class="kw">=</span> <span class="fl">FALSE</span>,
-  <span class="kw">show_silhouette</span>  <span class="kw">=</span> <span class="fl">FALSE</span>,
-  <span class="kw">page</span>             <span class="kw">=</span> <span class="st">"dimred_sample_page2"</span>,
-  <span class="kw">title</span>            <span class="kw">=</span> <span class="st">"Cell metadata 2"</span>,
-  <span class="kw">menu</span>             <span class="kw">=</span> <span class="st">"Cell metadata"</span>
-)</pre></body></html></div>
+<span class="va">dashboard</span> <span class="op">%&lt;&gt;%</span> <span class="fu">i2dash.scrnaseq</span><span class="fu">::</span><span class="fu"><a href="../reference/add_dimred_sample_page.html">add_dimred_sample_page</a></span><span class="op">(</span>
+  object           <span class="op">=</span> <span class="va">sce2</span>,
+  use_dimred       <span class="op">=</span> <span class="st">"SPRING"</span>,
+  sample_metadata  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Major.cell.type"</span>, <span class="st">"Tissue"</span>, <span class="st">"sum"</span>, <span class="st">"detected"</span><span class="op">)</span>,
+  group_by         <span class="op">=</span> <span class="st">"Major.cell.type"</span>,
+  show_group_sizes <span class="op">=</span> <span class="cn">FALSE</span>,
+  show_silhouette  <span class="op">=</span> <span class="cn">FALSE</span>,
+  page             <span class="op">=</span> <span class="st">"dimred_sample_page2"</span>,
+  title            <span class="op">=</span> <span class="st">"Cell metadata 2"</span>,
+  menu             <span class="op">=</span> <span class="st">"Cell metadata"</span>
+<span class="op">)</span></pre></div>
 <table class="table">
 <colgroup>
 <col width="50%">
@@ -225,48 +229,51 @@
 <div id="explorer-for-gene-expression" class="section level1">
 <h1 class="hasAnchor">
 <a href="#explorer-for-gene-expression" class="anchor"></a>Explorer for gene expression</h1>
-<p>The next page enables the exploration of gene expression values along the dimension reduction and clustering. This can be very useful e.g. for marker genes to compare their expression with the clustering. We add and define this page with the <code><a href="../reference/feature-expression-page.html">add_feature_expression_page()</a></code> method.</p>
+<p>The next page enables the exploration of gene expression values along the dimension reduction and clustering. This can be very useful e.g. for marker genes to compare their expression with the clustering. We add and define this page with the <code><a href="../reference/add_feature_expression_page.html">add_feature_expression_page()</a></code> method.</p>
 <p>The page is build up on the 2x2 grid layout: + <strong>Table of genes:</strong> The top left component is a table representing the statistic of the number of cells per grouping factor. Each row corresponds to a gene. We define the genes in the table with the parameter <code>subset_row</code>. In our example the first hundred highly variable genes are used. We provide several grouping factors with the parameter <code>group_by</code>. The grouping factor can be interactively selected.</p>
 <ul>
 <li><p><strong>Violin plot:</strong> The violin plot is located in the bottom left corner of the page and shows the expression values of the gene selected in the table. The plot is grouped by the selected grouping factor.</p></li>
 <li><p><strong>Reduced dimension plots:</strong> On the right side of the page two scatterplots represent the dimension reduction (<code>use_dimred</code>). The upper one is coloured by expression values of the selected gene. The lower one is coloured by the selected grouping factor.</p></li>
 </ul>
 <p>The components are linked together, which means that it is possible to select a row in the table, which represents a gene and the upper scatterplot changes its colouring according to the expression values of the selected gene. The distributions in the violinplot are also recalculated. Further, it is possible to select several points in the scatterplot with <code>plotly</code>’s selection tool. According to the selection the violin plot reacts and is recalculated. This functionality works also in the static mode.</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">dashboard</span> <span class="kw">%&lt;&gt;%</span> <span class="kw pkg">i2dash.scrnaseq</span><span class="kw ns">::</span><span class="fu"><a href="../reference/feature-expression-page.html">add_feature_expression_page</a></span>(
-  <span class="kw">object</span>       <span class="kw">=</span> <span class="no">sce2</span>,
-  <span class="kw">use_dimred</span>   <span class="kw">=</span> <span class="st">"SPRING"</span>,
-  <span class="kw">exprs_values</span> <span class="kw">=</span> <span class="st">"logcounts"</span>,
-  <span class="kw">group_by</span>     <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Major.cell.type"</span>, <span class="st">"Tissue"</span>, <span class="st">"Library"</span>),
-  <span class="kw">subset_row</span>   <span class="kw">=</span> <span class="no">hvg</span>[<span class="fl">1</span>:<span class="fl">100</span>],
-  <span class="kw">title</span>        <span class="kw">=</span> <span class="st">"Gene explorer"</span>
-)
+<div class="sourceCode" id="cb4"><pre class="downlit">
+<span class="va">dashboard</span> <span class="op">%&lt;&gt;%</span> <span class="fu">i2dash.scrnaseq</span><span class="fu">::</span><span class="fu"><a href="../reference/add_feature_expression_page.html">add_feature_expression_page</a></span><span class="op">(</span>
+  object       <span class="op">=</span> <span class="va">sce2</span>,
+  use_dimred   <span class="op">=</span> <span class="st">"SPRING"</span>,
+  exprs_values <span class="op">=</span> <span class="st">"logcounts"</span>,
+  group_by     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Major.cell.type"</span>, <span class="st">"Tissue"</span>, <span class="st">"Library"</span><span class="op">)</span>,
+  subset_row   <span class="op">=</span> <span class="va">hvg</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span><span class="op">]</span>,
+  title        <span class="op">=</span> <span class="st">"Gene explorer"</span>
+<span class="op">)</span>
 
-<span class="co"># The warning message: "attributes are not identical across measure variables; they will be dropped" can be ignored.</span></pre></body></html></div>
+<span class="co"># The warning message: "attributes are not identical across measure variables; they will be dropped" can be ignored.</span></pre></div>
 <p><img src="images/use_case_2/feature_explorer.PNG"></p>
 </div>
 <div id="marker-gene-detection" class="section level1">
 <h1 class="hasAnchor">
 <a href="#marker-gene-detection" class="anchor"></a>Marker gene detection</h1>
 <p>The used data set already contains metadata of a clustering. On the previous page we have already used the metadata “Major.cell.type” to colour the clusters of the scatterplot. To interpret these clusters, we need to identify the genes that drive separation between clusters. “These marker genes allow us to assign biological meaning to each cluster based on their functional annotation. In the most obvious case, the marker genes for each cluster are a priori associated with particular cell types, allowing us to treat the clustering as a proxy for cell type identity.” <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
-<p>We use the <code>findMarkers()</code> function from the <code>scran</code> package to get a DataFrame for each cluster containing the ranked genes based on the pairwise comparison of their differential gene expression between clusters. The <code><a href="https://rdrr.io/r/base/lapply.html">lapply()</a></code> function subsets the first ten marker gene candidates for each cluster. Finally, we get a vector with these unique marker gene candidates.</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">markers</span> <span class="kw">&lt;-</span> <span class="fu">findMarkers</span>(<span class="no">sce2</span>, <span class="fu">colData</span>(<span class="no">sce2</span>)$<span class="no">Major.cell.type</span>)
-<span class="no">marker_list</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(<span class="no">markers</span>, <span class="kw">function</span>(<span class="no">x</span>){<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="no">x</span>)[<span class="fl">1</span>:<span class="fl">10</span>]})
-<span class="no">marker_names</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span>(<span class="no">marker_list</span>, <span class="kw">recursive</span> <span class="kw">=</span> <span class="no">F</span>, <span class="kw">use.names</span> <span class="kw">=</span> <span class="no">F</span>))</pre></body></html></div>
-<p>The expression values grouped by the clusters can be nicely displayed as a heatmap. Therefore, we add an interactive heatmap to the next page of the dashboard. This component has the advantage of some interactive elements, e.g. the possibility to split or aggregate the heatmap according to a grouping or to cluster the rows and columns. The heatmap visualize each cell as column and the marker genes as rows. The color value corresponds to the expression value of the respective gene. We create the component with the <code><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_component()</a></code> function and provide the function <code><a href="../reference/heatmap.html">i2dash.scrnaseq::heatmap</a></code> as the <code>component</code> parameter. We define the <code>logcount</code> assay, which should be used for the expression values of the heatmap. With <code>subset_row</code> we subset the assay according to the marker candidates. Further, we provide the possibility to split or group the heatmap according to factorial metadata e.g. “Major.cell.type”. We define several metadata columns so that the user can select the grouping interactively.</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">dashboard</span> <span class="kw">%&lt;&gt;%</span> <span class="kw pkg">i2dash</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-pages.html">add_page</a></span>(
-  <span class="kw">page</span>   <span class="kw">=</span> <span class="st">"marker"</span>,
-  <span class="kw">title</span>  <span class="kw">=</span> <span class="st">"Marker genes"</span>,
-  <span class="kw">layout</span> <span class="kw">=</span> <span class="st">"default"</span>
-) <span class="kw">%&gt;%</span> <span class="kw pkg">i2dash</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_component</a></span>(
-  <span class="kw">page</span>         <span class="kw">=</span> <span class="st">"marker"</span>,
-  <span class="kw">component</span>    <span class="kw">=</span> <span class="kw pkg">i2dash.scrnaseq</span><span class="kw ns">::</span><span class="no"><a href="../reference/heatmap.html">heatmap</a></span>,
-  <span class="kw">object</span>       <span class="kw">=</span> <span class="no">sce2</span>,
-  <span class="kw">exprs_values</span> <span class="kw">=</span> <span class="st">"logcounts"</span>,
-  <span class="kw">subset_row</span>   <span class="kw">=</span> <span class="no">marker_names</span>,
-  <span class="kw">split_by</span>     <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Major.cell.type"</span>, <span class="st">"Tissue"</span>, <span class="st">"Library"</span>),
-  <span class="kw">aggregate_by</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Major.cell.type"</span>, <span class="st">"Tissue"</span>, <span class="st">"Library"</span>),
-  <span class="kw">title</span>        <span class="kw">=</span> <span class="st">"Expression of marker genes"</span>
-)</pre></body></html></div>
+<p>We use the <code><a href="https://rdrr.io/pkg/scran/man/findMarkers.html">findMarkers()</a></code> function from the <code>scran</code> package to get a DataFrame for each cluster containing the ranked genes based on the pairwise comparison of their differential gene expression between clusters. The <code><a href="https://rdrr.io/r/base/lapply.html">lapply()</a></code> function subsets the first ten marker gene candidates for each cluster. Finally, we get a vector with these unique marker gene candidates.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit">
+<span class="va">markers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scran/man/findMarkers.html">findMarkers</a></span><span class="op">(</span><span class="va">sce2</span>, <span class="fu">colData</span><span class="op">(</span><span class="va">sce2</span><span class="op">)</span><span class="op">$</span><span class="va">Major.cell.type</span><span class="op">)</span>
+<span class="va">marker_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">markers</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">}</span><span class="op">)</span>
+<span class="va">marker_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span><span class="va">marker_list</span>, recursive <span class="op">=</span> <span class="cn">F</span>, use.names <span class="op">=</span> <span class="cn">F</span><span class="op">)</span><span class="op">)</span></pre></div>
+<p>The expression values grouped by the clusters can be nicely displayed as a heatmap. Therefore, we add an interactive heatmap to the next page of the dashboard. This component has the advantage of some interactive elements, e.g. the possibility to split or aggregate the heatmap according to a grouping or to cluster the rows and columns. The heatmap visualize each cell as column and the marker genes as rows. The color value corresponds to the expression value of the respective gene. We create the component with the <code><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_component()</a></code> function and provide the function <code><a href="../reference/heatmap.html">i2dash.scrnaseq::heatmap</a></code> as the <code>component</code> parameter. We define the <code>logcount</code> assay, which should be used for the expression values of the heatmap. With <code>subset_row</code> we subset the assay according to the marker candidates. Further, we provide the possibility to split or group the heatmap according to factorial metadata e.g. “Major.cell.type”. We define several metadata columns so that the user can select the grouping interactively.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit">
+<span class="va">dashboard</span> <span class="op">%&lt;&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-pages.html">add_page</a></span><span class="op">(</span>
+  page   <span class="op">=</span> <span class="st">"marker"</span>,
+  title  <span class="op">=</span> <span class="st">"Marker genes"</span>,
+  layout <span class="op">=</span> <span class="st">"default"</span>
+<span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_component</a></span><span class="op">(</span>
+  page         <span class="op">=</span> <span class="st">"marker"</span>,
+  component    <span class="op">=</span> <span class="fu">i2dash.scrnaseq</span><span class="fu">::</span><span class="va"><a href="../reference/heatmap.html">heatmap</a></span>,
+  object       <span class="op">=</span> <span class="va">sce2</span>,
+  exprs_values <span class="op">=</span> <span class="st">"logcounts"</span>,
+  subset_row   <span class="op">=</span> <span class="va">marker_names</span>,
+  split_by     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Major.cell.type"</span>, <span class="st">"Tissue"</span>, <span class="st">"Library"</span><span class="op">)</span>,
+  aggregate_by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Major.cell.type"</span>, <span class="st">"Tissue"</span>, <span class="st">"Library"</span><span class="op">)</span>,
+  title        <span class="op">=</span> <span class="st">"Expression of marker genes"</span>
+<span class="op">)</span></pre></div>
 <p>Interactively, the end-user can select <code>Major.cell.type</code> in the “Split columns by” dropdown menu found in the plot settings (the red gear button) and set “Clustering” to <code>row</code>. This will produce the heatmap shown below. With this heatmap it is possible to visualize the extression values of the marker genes according to their cluster.</p>
 <p><img src="images/use_case_2/heatmap.PNG"></p>
 </div>
@@ -275,41 +282,44 @@
 <a href="#tools" class="anchor"></a>Tools</h1>
 <p>In the first use-case, we created objects and used them as input for the <code><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_component()</a></code> function. In this way, we visualized the metadata of the <code>SingleCellExperiment</code>. Now we want to use components of <code>i2dash.scrnaseq</code>, which allows us to provide an enhanced interactivity for the end-user. With the <code><a href="../reference/scatterplot.html">i2dash.scrnaseq::scatterplot</a></code> component we can easily define several columns of metadata plotted along the axis, so the user can interactively choose the data he is most interested in.</p>
 <p>To create this scatterplot component, the function <code><a href="../reference/scatterplot.html">i2dash.scrnaseq::scatterplot</a></code> is used in the function call of <code><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_component()</a></code>. Then we need to provide further specific parameters required by <code><a href="../reference/scatterplot.html">i2dash.scrnaseq::scatterplot</a></code>. We provide the <code>sce</code> object, from which the required data will extracted. Further, we limit the columns the end-user can choose from by providing the parameters <code>x</code>, <code>y</code> and <code>colour_by</code>.</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">dashboard</span> <span class="kw">%&lt;&gt;%</span> <span class="kw pkg">i2dash</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-pages.html">add_page</a></span>(
-  <span class="kw">page</span>   <span class="kw">=</span> <span class="st">"tools_1"</span>,
-  <span class="kw">title</span>  <span class="kw">=</span> <span class="st">"Interactive scatter plot"</span>,
-  <span class="kw">layout</span> <span class="kw">=</span> <span class="st">"default"</span>,
-  <span class="kw">menu</span>   <span class="kw">=</span> <span class="st">"Tools"</span>
-) <span class="kw">%&gt;%</span> <span class="kw pkg">i2dash</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_component</a></span>(
-  <span class="kw">component</span> <span class="kw">=</span> <span class="kw pkg">i2dash.scrnaseq</span><span class="kw ns">::</span><span class="no"><a href="../reference/scatterplot.html">scatterplot</a></span>,
-  <span class="kw">page</span>      <span class="kw">=</span> <span class="st">"tools_1"</span>,
-  <span class="kw">title</span>     <span class="kw">=</span> <span class="st">"scatter plot of metadata"</span>,
-  <span class="kw">object</span>    <span class="kw">=</span> <span class="no">sce2</span>,
-  <span class="kw">from</span>      <span class="kw">=</span> <span class="st">"colData"</span>,
-  <span class="kw">x</span>         <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"sum"</span>, <span class="st">"detected"</span>, <span class="st">"subsets_Mito_percent"</span>),
-  <span class="kw">y</span>         <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"sum"</span>, <span class="st">"detected"</span>, <span class="st">"subsets_Mito_percent"</span>),
-  <span class="kw">colour_by</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Tissue"</span>, <span class="st">"Major.cell.type"</span>, <span class="st">"Library"</span>, <span class="st">"discard"</span>)
-)</pre></body></html></div>
+<div class="sourceCode" id="cb7"><pre class="downlit">
+<span class="va">dashboard</span> <span class="op">%&lt;&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-pages.html">add_page</a></span><span class="op">(</span>
+  page   <span class="op">=</span> <span class="st">"tools_1"</span>,
+  title  <span class="op">=</span> <span class="st">"Interactive scatter plot"</span>,
+  layout <span class="op">=</span> <span class="st">"default"</span>,
+  menu   <span class="op">=</span> <span class="st">"Tools"</span>
+<span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_component</a></span><span class="op">(</span>
+  component <span class="op">=</span> <span class="fu">i2dash.scrnaseq</span><span class="fu">::</span><span class="va"><a href="../reference/scatterplot.html">scatterplot</a></span>,
+  page      <span class="op">=</span> <span class="st">"tools_1"</span>,
+  title     <span class="op">=</span> <span class="st">"scatter plot of metadata"</span>,
+  object    <span class="op">=</span> <span class="va">sce2</span>,
+  from      <span class="op">=</span> <span class="st">"colData"</span>,
+  x         <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"sum"</span>, <span class="st">"detected"</span>, <span class="st">"subsets_Mito_percent"</span><span class="op">)</span>,
+  y         <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"sum"</span>, <span class="st">"detected"</span>, <span class="st">"subsets_Mito_percent"</span><span class="op">)</span>,
+  colour_by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Tissue"</span>, <span class="st">"Major.cell.type"</span>, <span class="st">"Library"</span>, <span class="st">"discard"</span><span class="op">)</span>
+<span class="op">)</span></pre></div>
 <p><img src="images/use_case_2/scatterplot.PNG"></p>
 <p>Another pre-defined page, that is only used in the interactive mode, is the “Feature grid” page. It visualizes several feature expressions (obtained from <code>exprs_values</code>) along a dimension reduction in a grid layout. Interactively, the user can select the dimension reduction (defined by the parameter <code>use_dimred</code>), several features of interest (from <code>subset_row</code>) and the number of columns of the grid layout. If <code>subset_row</code> is not provided, all features of <code>exprs_values</code> are selectible on the page. After the user selceted the features, the image will be generated by clicking on the button “Generate plot”. This page enables the user to create and download high-quality figures with user-defined dimensions for presentations/ publications.</p>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">dashboard</span> <span class="kw">%&lt;&gt;%</span> <span class="kw pkg">i2dash.scrnaseq</span><span class="kw ns">::</span><span class="fu"><a href="../reference/feature-grid-page.html">add_feature_grid_page</a></span>(
-  <span class="kw">object</span>       <span class="kw">=</span> <span class="no">sce2</span>,
-  <span class="kw">use_dimred</span>   <span class="kw">=</span> <span class="st">"SPRING"</span>,
-  <span class="kw">exprs_values</span> <span class="kw">=</span> <span class="st">"logcounts"</span>,
-  <span class="kw">subset_row</span>   <span class="kw">=</span> <span class="no">hvg</span>[<span class="fl">1</span>:<span class="fl">100</span>]
-)</pre></body></html></div>
+<div class="sourceCode" id="cb8"><pre class="downlit">
+<span class="va">dashboard</span> <span class="op">%&lt;&gt;%</span> <span class="fu">i2dash.scrnaseq</span><span class="fu">::</span><span class="fu"><a href="../reference/add_feature_grid_page.html">add_feature_grid_page</a></span><span class="op">(</span>
+  object       <span class="op">=</span> <span class="va">sce2</span>,
+  use_dimred   <span class="op">=</span> <span class="st">"SPRING"</span>,
+  exprs_values <span class="op">=</span> <span class="st">"logcounts"</span>,
+  subset_row   <span class="op">=</span> <span class="va">hvg</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span><span class="op">]</span>
+<span class="op">)</span></pre></div>
 <p><img src="images/use_case_2/feature_grid.PNG"></p>
 </div>
 <div id="assembling-the-dashboard" class="section level1">
 <h1 class="hasAnchor">
 <a href="#assembling-the-dashboard" class="anchor"></a>Assembling the dashboard</h1>
 <p>The final step is the assembly of the dashboard. During this step an R markdown (Rmd) document is created. This Rmd file needs to be deployed to a Shiny Server. You can use the i2dash docker container available <a href="https://gitlab.gwdg.de/loosolab/container/i2dash.deployment">here</a> to create a local Shiny server. Alternatively, you can view the dashboard by clicking the “Run Document” button in RStudio IDE.</p>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="kw pkg">i2dash</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/assemble.html">assemble</a></span>(<span class="no">dashboard</span>, <span class="kw">file</span> <span class="kw">=</span> <span class="st">"scDataExplorer.Rmd"</span>, <span class="kw">exclude</span> <span class="kw">=</span> <span class="st">"default"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb9"><pre class="downlit">
+<span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/assemble.html">assemble</a></span><span class="op">(</span><span class="va">dashboard</span>, file <span class="op">=</span> <span class="st">"scDataExplorer.Rmd"</span>, exclude <span class="op">=</span> <span class="st">"default"</span><span class="op">)</span></pre></div>
 </div>
 <div class="footnotes">
 <hr>
 <ol>
-<li id="fn1"><p><a href="https://osca.bioconductor.org/marker-detection.html">“Marker gene detection”</a><a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn1"><p><a href="https://osca.bioconductor.org/marker-detection.html">“Marker gene detection”</a><a href="#fnref1" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
   </div>
@@ -329,7 +339,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

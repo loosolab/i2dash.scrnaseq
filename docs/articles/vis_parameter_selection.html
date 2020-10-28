@@ -84,7 +84,8 @@
 
       
 
-      </header><link href="vis_parameter_selection_files/font-awesome-5.1.0/css/all.css" rel="stylesheet">
+      </header><script src="vis_parameter_selection_files/header-attrs-2.5/header-attrs.js"></script><script src="vis_parameter_selection_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="vis_parameter_selection_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
+<script src="vis_parameter_selection_files/anchor-sections-1.0/anchor-sections.js"></script><link href="vis_parameter_selection_files/font-awesome-5.1.0/css/all.css" rel="stylesheet">
 <link href="vis_parameter_selection_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet">
 <div class="row">
   <div class="col-md-9 contents">
@@ -97,7 +98,7 @@
                   <a class="author_email" href="mailto:#"></a><a href="mailto:jens.preussner@mpi-bn.mpg.de" class="email">jens.preussner@mpi-bn.mpg.de</a>
       
                   
-            <h4 class="date">12 June 2020</h4>
+            <h4 class="date">28 Oktober 2020</h4>
       
       
       <div class="hidden name"><code>vis_parameter_selection.Rmd</code></div>
@@ -106,7 +107,7 @@
 
     
     
-<p>Vignette last complied on 2020-06-12. i2dash is licenced under MIT + file LICENSE.</p>
+<p>Vignette last complied on 2020-10-28. i2dash is licenced under MIT + file LICENSE.</p>
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
@@ -115,64 +116,69 @@
 <div id="data-preparation" class="section level1">
 <h1 class="hasAnchor">
 <a href="#data-preparation" class="anchor"></a>Data preparation</h1>
-<p>In this use-case the mouse brain single-cell RNA-seq data set from Zeisel et al. (2015) <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> is used. We compute the log-transformed normalized expression values from the count-matrix by using the <code>logNormCounts()</code> function from the <a href="https://bioconductor.org/packages/3.10/bioc/html/scater.html">scater</a> package.</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="co"># load data</span>
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">scRNAseq</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">scater</span>)
+<p>In this use-case the mouse brain single-cell RNA-seq data set from Zeisel et al. (2015) <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> is used. We compute the log-transformed normalized expression values from the count-matrix by using the <code><a href="https://rdrr.io/pkg/scater/man/logNormCounts.html">logNormCounts()</a></code> function from the <a href="https://bioconductor.org/packages/3.10/bioc/html/scater.html">scater</a> package.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="co"># load data</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">scRNAseq</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://bioconductor.org/packages/scater/">scater</a></span><span class="op">)</span>
 
-<span class="no">sce</span> <span class="kw">&lt;-</span> <span class="fu">ZeiselBrainData</span>()
-<span class="fu">colData</span>(<span class="no">sce</span>)$<span class="no">sex</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span>(<span class="fu">colData</span>(<span class="no">sce</span>)$<span class="no">sex</span>)
+<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scRNAseq/man/ZeiselBrainData.html">ZeiselBrainData</a></span><span class="op">(</span><span class="op">)</span>
+<span class="fu">colData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">sex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">sex</span><span class="op">)</span>
 
 <span class="co"># log normalization</span>
-<span class="no">sce</span> <span class="kw">&lt;-</span> <span class="fu">logNormCounts</span>(<span class="no">sce</span>)</pre></body></html></div>
+<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scater/man/logNormCounts.html">logNormCounts</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></pre></div>
 <p><a name="i2dashboard"></a></p>
 </div>
 <div id="creating-an-i2dashboard-object" class="section level1">
 <h1 class="hasAnchor">
 <a href="#creating-an-i2dashboard-object" class="anchor"></a>Creating an i2dashboard object</h1>
 <p>Simmilar to the previous use-cases, we initialize a new object of class <code>i2dashboard</code>.</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">i2dash</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">i2dash.scrnaseq</span>)
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">i2dash</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">i2dash.scrnaseq</span><span class="op">)</span>
 
 <span class="co"># Creating a new i2dashboard class object</span>
-<span class="no">dashboard</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-class.html">i2dashboard</a></span>(
-  <span class="kw">title</span>       <span class="kw">=</span> <span class="st">"Parameter Selection"</span>,
-  <span class="kw">author</span>      <span class="kw">=</span> <span class="st">"i2dash Team"</span>,
-  <span class="kw">interactive</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-  <span class="kw">theme</span>       <span class="kw">=</span> <span class="st">"yeti"</span>,
-  <span class="kw">datadir</span>     <span class="kw">=</span> <span class="st">"datadir_use_case3"</span>
-)</pre></body></html></div>
+<span class="va">dashboard</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-class.html">i2dashboard</a></span><span class="op">(</span>
+  title       <span class="op">=</span> <span class="st">"Parameter Selection"</span>,
+  author      <span class="op">=</span> <span class="st">"i2dash Team"</span>,
+  interactive <span class="op">=</span> <span class="cn">TRUE</span>,
+  theme       <span class="op">=</span> <span class="st">"yeti"</span>,
+  datadir     <span class="op">=</span> <span class="st">"datadir_use_case3"</span>
+<span class="op">)</span></pre></div>
 <p><a name="feature"></a></p>
 </div>
 <div id="feature-selection-tool" class="section level1">
 <h1 class="hasAnchor">
 <a href="#feature-selection-tool" class="anchor"></a>Feature selection tool</h1>
 <p>The following pre-defined page can be created by the function <code><a href="../reference/feature-selection-page.html">add_feature_selection_page()</a></code> and allows the quantification of the per-gene variation and the exploration of the threshold on the metric of variation to get the desired set of highly variable genes (hvg). The function creates a page containing a scatter plot of the per-gene variation of log-expression against the mean log-expression and a table with features and their metrics of variation. The sidebar on the left contains Shiny inputs, by which you can color highlight the highly variable genes in dependency to the proportion and minimal threshold of the relevant variation metric. Also you can download the color highlighted hvg’s or the entire variation metrics table. With the parameter <code>use_function</code> we can define the function, which should be used for the quantification of per-gene variation. We can choose one of <a href="http://bioconductor.org/packages/release/bioc/html/scran.html">scran</a>’s functions (“modelGeneVar”, “modelGeneVarByPoisson”, “modelGeneCV2”, “modelGeneCV2WithSpikes”, “modelGeneVarWithSpikes”). Note, that this page only works in the interactive mode with the use of Shiny.</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">dashboard</span> <span class="kw">%&lt;&gt;%</span> <span class="kw pkg">i2dash.scrnaseq</span><span class="kw ns">::</span><span class="fu"><a href="../reference/feature-selection-page.html">add_feature_selection_page</a></span>(
-  <span class="kw">object</span>       <span class="kw">=</span> <span class="no">sce</span>,
-  <span class="kw">exprs_values</span> <span class="kw">=</span> <span class="st">"logcounts"</span>,
-  <span class="kw">use_function</span> <span class="kw">=</span> <span class="st">"modelGeneVar"</span>,
-  <span class="kw">menu</span>         <span class="kw">=</span> <span class="kw">NULL</span>
-)</pre></body></html></div>
+<div class="sourceCode" id="cb3"><pre class="downlit">
+<span class="va">dashboard</span> <span class="op">%&lt;&gt;%</span> <span class="fu">i2dash.scrnaseq</span><span class="fu">::</span><span class="fu"><a href="../reference/feature-selection-page.html">add_feature_selection_page</a></span><span class="op">(</span>
+  object       <span class="op">=</span> <span class="va">sce</span>,
+  exprs_values <span class="op">=</span> <span class="st">"logcounts"</span>,
+  use_function <span class="op">=</span> <span class="st">"modelGeneVar"</span>,
+  menu         <span class="op">=</span> <span class="cn">NULL</span>
+<span class="op">)</span></pre></div>
 <p><img src="images/use_case_3/feature_selection.PNG"></p>
 </div>
 <div id="choose-dimension-reduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#choose-dimension-reduction" class="anchor"></a>Choose dimension reduction</h1>
 <p>For plotting or clustering cells to identify cells with similar transcriptomic profiles of thousands of genes, it is necessery to reduce the number of separate dimensions. i2dash.scrnaseq provides a pre-defined page, which calculates the dimension reduction from count tables and enables the inspection of specific key paramters. This allows the user to compare reduced dimension plots with different values for key parameters and find the optimal values for your dataset. The user can choose interactively between the the non-linear t-stochastic neighbor embedding (t-SNE) merthod or the non-linear uniform manifold approximation and projection (UMAP) method.</p>
-<p>t-SNE finds a low-dimensional representation of the data that preserves the distances between each point and its neighbours in the high-dimensional space. With <code><a href="../reference/dimred-comparison-page.html">add_dimred_comparison_page()</a></code> we can inspect the “perplexity” parameter that determines the granularity of the visualization as well as the “theta” parameter, that describes the accuracy of optimization. <a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p>
+<p>t-SNE finds a low-dimensional representation of the data that preserves the distances between each point and its neighbours in the high-dimensional space. With <code><a href="../reference/add_dimred_comparison_page.html">add_dimred_comparison_page()</a></code> we can inspect the “perplexity” parameter that determines the granularity of the visualization as well as the “theta” parameter, that describes the accuracy of optimization. <a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p>
 <p>As described in the book “Orchestrating Single-Cell Analysis with Bioconductor” <a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> the UMAP visualization, compaired to t-SNE, tends to have more compact visual clusters with more empty space between them. It also attempts to preserve more of the global structure than t-SNE. From a practical perspective, UMAP is much faster than t-SNE, which may be an important consideration for large datasets. The page allows the verification of the number of neighbours (“n_neighbors”), which has a great effect on the granularity of the output. <a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a></p>
 <p>In the next step we calculate the variance of the log-expression profiles for each gene and get the top thousand highly variable genes with functions from the package <a href="http://bioconductor.org/packages/release/bioc/html/scran.html">scran</a>. We use these genes to subset the <code>sce</code> object and use them in the dimensionality reduction algorithm.</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">scran</span>)
-<span class="no">hvg</span> <span class="kw">&lt;-</span> <span class="fu">modelGeneVar</span>(<span class="no">sce</span>)
-<span class="no">top.hvg</span> <span class="kw">&lt;-</span> <span class="fu">getTopHVGs</span>(<span class="no">hvg</span>, <span class="kw">n</span><span class="kw">=</span><span class="fl">1000</span>)</pre></body></html></div>
-<p>The page we create with <code><a href="../reference/dimred-comparison-page.html">add_dimred_comparison_page()</a></code> has two tabs “Dimension reduction” and “Compare selected plots”. By adjusting the parameters in the sidebar and clicking on the “Generate plot” button the scatterplot is generated in the “Dimension reduction” tab. If we want to compare the current plot representing the specified parameters with other dimension reduction plots, we click the button “Add plot for comparison”. The plot is then listed in the table of the sidebar. It is also possible to delete specific plots from the table by clicking the delete button in the row of the respective plot. In the tab “Compare selected plots” all saved plots are visualized in a grid layout.</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">dashboard</span> <span class="kw">%&lt;&gt;%</span> <span class="kw pkg">i2dash.scrnaseq</span><span class="kw ns">::</span><span class="fu"><a href="../reference/dimred-comparison-page.html">add_dimred_comparison_page</a></span>(
-  <span class="kw">object</span>       <span class="kw">=</span> <span class="no">sce</span>,
-  <span class="kw">exprs_values</span> <span class="kw">=</span> <span class="st">"logcounts"</span>,
-  <span class="kw">seed</span>         <span class="kw">=</span> <span class="fl">100</span>,
-  <span class="kw">subset_row</span>   <span class="kw">=</span> <span class="no">top.hvg</span>
-)</pre></body></html></div>
+<div class="sourceCode" id="cb4"><pre class="downlit">
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">scran</span><span class="op">)</span>
+<span class="va">hvg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scran/man/modelGeneVar.html">modelGeneVar</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>
+<span class="va">top.hvg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scran/man/getTopHVGs.html">getTopHVGs</a></span><span class="op">(</span><span class="va">hvg</span>, n<span class="op">=</span><span class="fl">1000</span><span class="op">)</span></pre></div>
+<p>The page we create with <code><a href="../reference/add_dimred_comparison_page.html">add_dimred_comparison_page()</a></code> has two tabs “Dimension reduction” and “Compare selected plots”. By adjusting the parameters in the sidebar and clicking on the “Generate plot” button the scatterplot is generated in the “Dimension reduction” tab. If we want to compare the current plot representing the specified parameters with other dimension reduction plots, we click the button “Add plot for comparison”. The plot is then listed in the table of the sidebar. It is also possible to delete specific plots from the table by clicking the delete button in the row of the respective plot. In the tab “Compare selected plots” all saved plots are visualized in a grid layout.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit">
+<span class="va">dashboard</span> <span class="op">%&lt;&gt;%</span> <span class="fu">i2dash.scrnaseq</span><span class="fu">::</span><span class="fu"><a href="../reference/add_dimred_comparison_page.html">add_dimred_comparison_page</a></span><span class="op">(</span>
+  object       <span class="op">=</span> <span class="va">sce</span>,
+  exprs_values <span class="op">=</span> <span class="st">"logcounts"</span>,
+  seed         <span class="op">=</span> <span class="fl">100</span>,
+  subset_row   <span class="op">=</span> <span class="va">top.hvg</span>
+<span class="op">)</span></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="center">Tab: “Dimension reduction”</th>
@@ -187,15 +193,16 @@
 <div id="assembling-the-dashboard" class="section level1">
 <h1 class="hasAnchor">
 <a href="#assembling-the-dashboard" class="anchor"></a>Assembling the dashboard</h1>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="kw pkg">i2dash</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/assemble.html">assemble</a></span>(<span class="no">dashboard</span>, <span class="kw">file</span> <span class="kw">=</span> <span class="st">"visParameter.Rmd"</span>, <span class="kw">exclude</span> <span class="kw">=</span> <span class="st">"default"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb6"><pre class="downlit">
+<span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/assemble.html">assemble</a></span><span class="op">(</span><span class="va">dashboard</span>, file <span class="op">=</span> <span class="st">"visParameter.Rmd"</span>, exclude <span class="op">=</span> <span class="st">"default"</span><span class="op">)</span></pre></div>
 </div>
 <div class="footnotes">
 <hr>
 <ol>
-<li id="fn1"><p>Zeisel A. et al. (2015). Brain structure. <em>Cell types in the mouse cortex and hippocampus revealed by single-cell RNA-seq.</em> Science 347(6226), 1138-42.<a href="#fnref1" class="footnote-back">↩</a></p></li>
-<li id="fn2"><p>Further information on dimensionsionality reduction for visualization <a href="https://osca.bioconductor.org/dimensionality-reduction.html#dimensionality-reduction-for-visualization">here</a>.<a href="#fnref2" class="footnote-back">↩</a></p></li>
-<li id="fn3"><p><a href="https://osca.bioconductor.org/">“Orchestrating Single-Cell Analysis with Bioconductor”</a>.<a href="#fnref3" class="footnote-back">↩</a></p></li>
-<li id="fn4"><p>Further information on dimensionsionality reduction for visualization <a href="https://osca.bioconductor.org/dimensionality-reduction.html#dimensionality-reduction-for-visualization">here</a>.<a href="#fnref4" class="footnote-back">↩</a></p></li>
+<li id="fn1"><p>Zeisel A. et al. (2015). Brain structure. <em>Cell types in the mouse cortex and hippocampus revealed by single-cell RNA-seq.</em> Science 347(6226), 1138-42.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>Further information on dimensionsionality reduction for visualization <a href="https://osca.bioconductor.org/dimensionality-reduction.html#dimensionality-reduction-for-visualization">here</a>.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p><a href="https://osca.bioconductor.org/">“Orchestrating Single-Cell Analysis with Bioconductor”</a>.<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p>Further information on dimensionsionality reduction for visualization <a href="https://osca.bioconductor.org/dimensionality-reduction.html#dimensionality-reduction-for-visualization">here</a>.<a href="#fnref4" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
   </div>
@@ -215,7 +222,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
