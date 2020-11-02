@@ -56,11 +56,6 @@ The following example demonstrates how to build a `SingleCellExperiment` object 
 ## Installation
 
 ```{r, eval=FALSE}
-remotes::install_git(url = "https://gitlab.gwdg.de/loosolab/software/i2dash.git", repos = BiocManager::repositories())
-remotes::install_git(url = "https://gitlab.gwdg.de/loosolab/software/i2dash.scrnaseq.git", repos = BiocManager::repositories())
-```
-
-```{r, eval=FALSE}
 # Install further necessary packages:
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")

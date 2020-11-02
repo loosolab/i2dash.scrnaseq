@@ -27,7 +27,7 @@ The ability of i2dash to generate R Markdown code can be extended with additiona
 installinstall.packages("i2dash")
 
 install.packages("devtools")
-devtools::install_gitlab("loosolab/software/i2dash.scrnaseq", host="https://gitlab.gwdg.de/")
+devtools::install_github("loosolab/i2dash.scrnaseq", dependencies=c("Depends", "Imports", "LinkingTo"))
 ```
 
 ## Where to start
@@ -36,23 +36,23 @@ Based on three common use-cases for single-cell data analysis you can explore th
 
 ### Use-cases:
 
-1. [**Quality metrics**](https://loosolab.gitlab.gwdg.io/i2dash/articles/Quality_metrics.html)
+1. [**Quality metrics**](https://loosolab.github.io/i2dash.scrnaseq/articles/Quality_metrics.html)
 
    This use-case shows how to build a SingleCellExperiment object from a count-matrix, calculate quality metrics and create a simple dashboard to visualize different quality aspects of an scRNA-seq dataset. [Demo](http://mpibn-mampok.134.176.27.161.xip.io/use-case-1/i2dash/)
 
-2. [**Single-cell data explorer**](https://loosolab.gitlab.gwdg.io/i2dash/articles/sc_data_explorer.html)
+2. [**Single-cell data explorer**]((https://loosolab.github.io/i2dash.scrnaseq/articles/sc_data_explorer.html)
 
    The second use-case demonstrates how to build a dashboard, which enables the exploration of gene expression values and metadata coupled with reduced dimension plots. Mainly native tools and pre-defined pages from the i2dash.scrnaseq package are used. [Demo](http://mpibn-mampok.134.176.27.161.xip.io/use-case-2/i2dash/)
 
-3. [**Visualized parameter selection for experts**](https://loosolab.gitlab.gwdg.io/i2dash/articles/vis_parameter_selection.html)
+3. [**Visualized parameter selection for experts**]((https://loosolab.github.io/i2dash.scrnaseq/articles/vis_parameter_selection.html)
 
    The third use-case provides tools of i2dash.scrnaseq, which are useful during the process of data analysis but are not reasonable for the final report. The pre-defined pages enable the selection of features, the inspection of the normalisazion and the selection of optimal paramters for a dimensionality reduction. [Demo](http://mpibn-mampok.134.176.27.161.xip.io/use-case-3/i2dash/)
 
 ### Further reading:
 
-- [**Documentation**](https://loosolab.gitlab.gwdg.io/i2dash/articles/articles/Documentation.html) This page gives you an overview over all features containing in the **i2dash.scrnaseq** package.
+- [**Documentation**](https://loosolab.github.io/i2dash.scrnaseq/articles/articles/Documentation.html) This page gives you an overview over all features containing in the **i2dash.scrnaseq** package.
 
-- [**Developer guide**](https://loosolab.gitlab.gwdg.io/i2dash/articles/articles/Developer_guide.html) This tutorial explains how to build a customized componentor a pre-defined page from scratch and how to link the components of your page together.
+- [**Developer guide**](https://loosolab.github.io/i2dash.scrnaseq/articles/articles/Developer_guide.html) This tutorial explains how to build a customized componentor a pre-defined page from scratch and how to link the components of your page together.
 
 
 ## How to cite

@@ -15,7 +15,6 @@ LazyData: true
 RoxygenNote: 7.1.1
 Imports:
     assertive.properties,
-    ComplexHeatmap,
     i2dash,
     magrittr,
     methods,
