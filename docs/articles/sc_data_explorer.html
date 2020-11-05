@@ -84,7 +84,7 @@
 
       
 
-      </header><script src="sc_data_explorer_files/header-attrs-2.5/header-attrs.js"></script><script src="sc_data_explorer_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="sc_data_explorer_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
+      </header><script src="sc_data_explorer_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="sc_data_explorer_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
 <script src="sc_data_explorer_files/anchor-sections-1.0/anchor-sections.js"></script><link href="sc_data_explorer_files/font-awesome-5.1.0/css/all.css" rel="stylesheet">
 <link href="sc_data_explorer_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet">
 <div class="row">
@@ -98,7 +98,7 @@
                   <a class="author_email" href="mailto:#"></a><a href="mailto:jens.preussner@mpi-bn.mpg.de" class="email">jens.preussner@mpi-bn.mpg.de</a>
       
                   
-            <h4 class="date">28 Oktober 2020</h4>
+            <h4 class="date">5 November 2020</h4>
       
       
       <div class="hidden name"><code>sc_data_explorer.Rmd</code></div>
@@ -107,16 +107,16 @@
 
     
     
-<p>Vignette last complied on 2020-10-28. i2dash is licenced under MIT + file LICENSE.</p>
+<p>Vignette last complied on 2020-11-05. i2dash is licenced under MIT + file LICENSE.</p>
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>In the following example we build a dashboard, which enables the exploration of gene expression values and metadata coupled with low dimensional embedding. Instead of creating local objects and load these in the components, like we did in the <a href="Quality_metrics.html">previous use case</a>, we use mainly native tools and pre-defined pages from the <code>i2dash.scrnaseq</code> package. You can inspect the demo of the resulting dashboard <a href="http://mpibn-mampok.134.176.27.161.xip.io/use-case-2/i2dash/">here</a>.</p>
+<p>In the following example we build a dashboard, which enables the exploration of gene expression values and metadata coupled with low dimensional embedding. Instead of creating local objects and load these in the components, like we did in the <a href="Quality_metrics.html">previous use case</a>, we use mainly native tools and pre-defined pages from the <code>i2dash.scrnaseq</code> package. You can inspect the demo of the resulting dashboard <a href="https://mpibn.mampok.ingress.rancher.computational.bio/use-case-2/i2dash/">here</a>.</p>
 </div>
 <div id="data-preparation" class="section level1">
 <h1 class="hasAnchor">
 <a href="#data-preparation" class="anchor"></a>Data preparation</h1>
-<p>At first, load the SingleCellExperiment object of the data we used in the first use-case (see <a href="docs/articles/Quality_metrics.html#setting-up-the-data">here</a>). We subset the sce object according to the identified outliers, perform a log-transformed normalization on the count-matrix and identify the highly variable genes. For these steps, the packages <a href="https://bioconductor.org/packages/3.10/bioc/html/scater.html">scater</a> and <a href="http://bioconductor.org/packages/release/bioc/html/scran.html">scran</a> are used.</p>
+<p>At first, load the SingleCellExperiment object of the data we used in the first use-case (see <a href="https://loosolab.github.io/i2dash.scrnaseq/articles/Quality_metrics.html">here</a>). We subset the sce object according to the identified outliers, perform a log-transformed normalization on the count-matrix and identify the highly variable genes. For these steps, the packages <a href="https://bioconductor.org/packages/3.10/bioc/html/scater.html">scater</a> and <a href="http://bioconductor.org/packages/release/bioc/html/scran.html">scran</a> are used.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit">
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">SingleCellExperiment</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://bioconductor.org/packages/scater/">scater</a></span><span class="op">)</span>
@@ -158,11 +158,11 @@
 <a href="#creating-an-i2dashboard-object" class="anchor"></a>Creating an i2dashboard object</h1>
 <p>Simmilar to the first use-case, we create the <code>i2dashboard</code> object. In contrast, the mode of this dashboard is “interactive” (<code>interactive = TRUE</code>), which means that the interactivity is increased through Shiny input options.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">i2dash</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://loosolab.github.io/i2dash/">i2dash</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://gitlab.gwdg.de/loosolab/software/i2dash.scrnaseq">i2dash.scrnaseq</a></span><span class="op">)</span>
 
 <span class="co"># Creating a new i2dashboard class object</span>
-<span class="va">dashboard</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-class.html">i2dashboard</a></span><span class="op">(</span>
+<span class="va">dashboard</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-class.html">i2dashboard</a></span><span class="op">(</span>
   title       <span class="op">=</span> <span class="st">"Single-Cell Data Explorer"</span>,
   author      <span class="op">=</span> <span class="st">"i2dash Team"</span>,
   interactive <span class="op">=</span> <span class="cn">TRUE</span>,
@@ -258,13 +258,13 @@
 <span class="va">markers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scran/man/findMarkers.html">findMarkers</a></span><span class="op">(</span><span class="va">sce2</span>, <span class="fu">colData</span><span class="op">(</span><span class="va">sce2</span><span class="op">)</span><span class="op">$</span><span class="va">Major.cell.type</span><span class="op">)</span>
 <span class="va">marker_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">markers</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">}</span><span class="op">)</span>
 <span class="va">marker_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span><span class="va">marker_list</span>, recursive <span class="op">=</span> <span class="cn">F</span>, use.names <span class="op">=</span> <span class="cn">F</span><span class="op">)</span><span class="op">)</span></pre></div>
-<p>The expression values grouped by the clusters can be nicely displayed as a heatmap. Therefore, we add an interactive heatmap to the next page of the dashboard. This component has the advantage of some interactive elements, e.g. the possibility to split or aggregate the heatmap according to a grouping or to cluster the rows and columns. The heatmap visualize each cell as column and the marker genes as rows. The color value corresponds to the expression value of the respective gene. We create the component with the <code><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_component()</a></code> function and provide the function <code><a href="../reference/heatmap.html">i2dash.scrnaseq::heatmap</a></code> as the <code>component</code> parameter. We define the <code>logcount</code> assay, which should be used for the expression values of the heatmap. With <code>subset_row</code> we subset the assay according to the marker candidates. Further, we provide the possibility to split or group the heatmap according to factorial metadata e.g. “Major.cell.type”. We define several metadata columns so that the user can select the grouping interactively.</p>
+<p>The expression values grouped by the clusters can be nicely displayed as a heatmap. Therefore, we add an interactive heatmap to the next page of the dashboard. This component has the advantage of some interactive elements, e.g. the possibility to split or aggregate the heatmap according to a grouping or to cluster the rows and columns. The heatmap visualize each cell as column and the marker genes as rows. The color value corresponds to the expression value of the respective gene. We create the component with the <code><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-content.html">add_component()</a></code> function and provide the function <code><a href="../reference/heatmap.html">i2dash.scrnaseq::heatmap</a></code> as the <code>component</code> parameter. We define the <code>logcount</code> assay, which should be used for the expression values of the heatmap. With <code>subset_row</code> we subset the assay according to the marker candidates. Further, we provide the possibility to split or group the heatmap according to factorial metadata e.g. “Major.cell.type”. We define several metadata columns so that the user can select the grouping interactively.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="va">dashboard</span> <span class="op">%&lt;&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-pages.html">add_page</a></span><span class="op">(</span>
+<span class="va">dashboard</span> <span class="op">%&lt;&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-pages.html">add_page</a></span><span class="op">(</span>
   page   <span class="op">=</span> <span class="st">"marker"</span>,
   title  <span class="op">=</span> <span class="st">"Marker genes"</span>,
   layout <span class="op">=</span> <span class="st">"default"</span>
-<span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_component</a></span><span class="op">(</span>
+<span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-content.html">add_component</a></span><span class="op">(</span>
   page         <span class="op">=</span> <span class="st">"marker"</span>,
   component    <span class="op">=</span> <span class="fu">i2dash.scrnaseq</span><span class="fu">::</span><span class="va"><a href="../reference/heatmap.html">heatmap</a></span>,
   object       <span class="op">=</span> <span class="va">sce2</span>,
@@ -280,15 +280,15 @@
 <div id="tools" class="section level1">
 <h1 class="hasAnchor">
 <a href="#tools" class="anchor"></a>Tools</h1>
-<p>In the first use-case, we created objects and used them as input for the <code><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_component()</a></code> function. In this way, we visualized the metadata of the <code>SingleCellExperiment</code>. Now we want to use components of <code>i2dash.scrnaseq</code>, which allows us to provide an enhanced interactivity for the end-user. With the <code><a href="../reference/scatterplot.html">i2dash.scrnaseq::scatterplot</a></code> component we can easily define several columns of metadata plotted along the axis, so the user can interactively choose the data he is most interested in.</p>
-<p>To create this scatterplot component, the function <code><a href="../reference/scatterplot.html">i2dash.scrnaseq::scatterplot</a></code> is used in the function call of <code><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_component()</a></code>. Then we need to provide further specific parameters required by <code><a href="../reference/scatterplot.html">i2dash.scrnaseq::scatterplot</a></code>. We provide the <code>sce</code> object, from which the required data will extracted. Further, we limit the columns the end-user can choose from by providing the parameters <code>x</code>, <code>y</code> and <code>colour_by</code>.</p>
+<p>In the first use-case, we created objects and used them as input for the <code><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-content.html">add_component()</a></code> function. In this way, we visualized the metadata of the <code>SingleCellExperiment</code>. Now we want to use components of <code>i2dash.scrnaseq</code>, which allows us to provide an enhanced interactivity for the end-user. With the <code><a href="../reference/scatterplot.html">i2dash.scrnaseq::scatterplot</a></code> component we can easily define several columns of metadata plotted along the axis, so the user can interactively choose the data he is most interested in.</p>
+<p>To create this scatterplot component, the function <code><a href="../reference/scatterplot.html">i2dash.scrnaseq::scatterplot</a></code> is used in the function call of <code><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-content.html">add_component()</a></code>. Then we need to provide further specific parameters required by <code><a href="../reference/scatterplot.html">i2dash.scrnaseq::scatterplot</a></code>. We provide the <code>sce</code> object, from which the required data will extracted. Further, we limit the columns the end-user can choose from by providing the parameters <code>x</code>, <code>y</code> and <code>colour_by</code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="va">dashboard</span> <span class="op">%&lt;&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-pages.html">add_page</a></span><span class="op">(</span>
+<span class="va">dashboard</span> <span class="op">%&lt;&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-pages.html">add_page</a></span><span class="op">(</span>
   page   <span class="op">=</span> <span class="st">"tools_1"</span>,
   title  <span class="op">=</span> <span class="st">"Interactive scatter plot"</span>,
   layout <span class="op">=</span> <span class="st">"default"</span>,
   menu   <span class="op">=</span> <span class="st">"Tools"</span>
-<span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_component</a></span><span class="op">(</span>
+<span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-content.html">add_component</a></span><span class="op">(</span>
   component <span class="op">=</span> <span class="fu">i2dash.scrnaseq</span><span class="fu">::</span><span class="va"><a href="../reference/scatterplot.html">scatterplot</a></span>,
   page      <span class="op">=</span> <span class="st">"tools_1"</span>,
   title     <span class="op">=</span> <span class="st">"scatter plot of metadata"</span>,
@@ -314,7 +314,7 @@
 <a href="#assembling-the-dashboard" class="anchor"></a>Assembling the dashboard</h1>
 <p>The final step is the assembly of the dashboard. During this step an R markdown (Rmd) document is created. This Rmd file needs to be deployed to a Shiny Server. You can use the i2dash docker container available <a href="https://gitlab.gwdg.de/loosolab/container/i2dash.deployment">here</a> to create a local Shiny server. Alternatively, you can view the dashboard by clicking the “Run Document” button in RStudio IDE.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/assemble.html">assemble</a></span><span class="op">(</span><span class="va">dashboard</span>, file <span class="op">=</span> <span class="st">"scDataExplorer.Rmd"</span>, exclude <span class="op">=</span> <span class="st">"default"</span><span class="op">)</span></pre></div>
+<span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/assemble.html">assemble</a></span><span class="op">(</span><span class="va">dashboard</span>, file <span class="op">=</span> <span class="st">"scDataExplorer.Rmd"</span>, exclude <span class="op">=</span> <span class="st">"default"</span><span class="op">)</span></pre></div>
 </div>
 <div class="footnotes">
 <hr>

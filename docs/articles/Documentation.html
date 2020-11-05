@@ -84,7 +84,7 @@
 
       
 
-      </header><script src="Documentation_files/header-attrs-2.5/header-attrs.js"></script><script src="Documentation_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="Documentation_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
+      </header><script src="Documentation_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="Documentation_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
 <script src="Documentation_files/anchor-sections-1.0/anchor-sections.js"></script><link href="Documentation_files/font-awesome-5.1.0/css/all.css" rel="stylesheet">
 <link href="Documentation_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet">
 <div class="row">
@@ -98,7 +98,7 @@
                   <a class="author_email" href="mailto:#"></a><a href="mailto:jens.preussner@mpi-bn.mpg.de" class="email">jens.preussner@mpi-bn.mpg.de</a>
       
                   
-            <h4 class="date">28 Oktober 2020</h4>
+            <h4 class="date">5 November 2020</h4>
       
       
       <div class="hidden name"><code>Documentation.Rmd</code></div>
@@ -107,7 +107,7 @@
 
     
     
-<p><strong>Compiled date</strong>: 2020-10-28</p>
+<p><strong>Compiled date</strong>: 2020-11-05</p>
 <p><strong>Last edited</strong>: 22.01.2020</p>
 <p><strong>License</strong>:</p>
 <script type="text/javascript">
@@ -165,11 +165,11 @@ document.addEventListener("DOMContentLoaded", function() {
 <a href="#creating-an-i2dashboard-object" class="anchor"></a>Creating an <code>i2dashboard</code> object</h2>
 <p>At first, we create a new <code>i2dashboard</code> object<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">i2dash</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://loosolab.github.io/i2dash/">i2dash</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://gitlab.gwdg.de/loosolab/software/i2dash.scrnaseq">i2dash.scrnaseq</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">magrittr</span><span class="op">)</span>
 
-<span class="va">dashboard</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-class.html">i2dashboard</a></span><span class="op">(</span>
+<span class="va">dashboard</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-class.html">i2dashboard</a></span><span class="op">(</span>
   title <span class="op">=</span> <span class="st">"scRNA-Seq Analysis"</span>,
   author <span class="op">=</span> <span class="st">"i2dash team"</span>,
   interactive <span class="op">=</span> <span class="cn">TRUE</span>,
@@ -186,26 +186,26 @@ document.addEventListener("DOMContentLoaded", function() {
 <a href="#scatterplot" class="anchor"></a>Scatterplot</h3>
 <p>For demonstration, we add a new page “Scatterplot” with the 2x2 grid layout to the dashboard:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="va">dashboard</span> <span class="op">%&lt;&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-pages.html">add_page</a></span><span class="op">(</span>
+<span class="va">dashboard</span> <span class="op">%&lt;&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-pages.html">add_page</a></span><span class="op">(</span>
     page   <span class="op">=</span> <span class="st">"scatter"</span>,
     title  <span class="op">=</span> <span class="st">"Scatterplot"</span>,
     layout <span class="op">=</span> <span class="st">"2x2_grid"</span>,
     menu   <span class="op">=</span> <span class="st">"Components"</span>
 <span class="op">)</span></pre></div>
-<p>Now, we add the scatterplot compoenent to the <code>i2dashboard</code> object with the <code><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_component()</a></code> function from the <code>i2dash</code> package. We specify the type of the component by providing the character string “i2dash.scrnaseq::scatterplot” as the <code>component</code> argument. With the <code>page</code> parameter we define the page the component is added to. If we do not define a page the component is added to the “default” page of the <code>i2dashboard</code> object.</p>
+<p>Now, we add the scatterplot compoenent to the <code>i2dashboard</code> object with the <code><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-content.html">add_component()</a></code> function from the <code>i2dash</code> package. We specify the type of the component by providing the character string “i2dash.scrnaseq::scatterplot” as the <code>component</code> argument. With the <code>page</code> parameter we define the page the component is added to. If we do not define a page the component is added to the “default” page of the <code>i2dashboard</code> object.</p>
 <p>The further parameters are specific for scatterplot component. As the <code>object</code> parameter we provide the <code>sce</code> object, from which the required data is extracted. Additionally, we need to specify with the <code>from</code> parameter, where the data for the scatterplot is obtained from. In case of a <code>SingleCellExperiment</code> object we can choose, wether the columns from “colData”, “rowData” or “reducedDim” should be used for mapping on the x- and y-axis as well as for the colour by options. By default all numeric and integer columns are utilized for the x and y-values and all numeric, integer or factorial columns for the colour by option. In the interactive mode the dropdown menues of for the x-, y-axis and colour_by are provided where the user can select the column that should be plotted (the column names are used in the dropdown menu). In the static mode always the first column is used. Furthermore, we can specify the columns that should be mapped. For colouring the scatterplot by feature expression values, we can provide an assay with the parameter <code>exprs_values</code>. It should be a character vector containing the column names. Optionally, we can provide our own axis titles with the parameters <code>x_title</code> and <code>y_title</code>, that do not change according to the selected columns.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit">
 <span class="co"># this component is added to the page "scatter" in the i2dashboard object;</span>
 <span class="co"># by default the colData of the object is used for the 'use' parameter;</span>
 
-<span class="va">dashboard</span> <span class="op">%&lt;&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_component</a></span><span class="op">(</span>
+<span class="va">dashboard</span> <span class="op">%&lt;&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-content.html">add_component</a></span><span class="op">(</span>
   component <span class="op">=</span> <span class="fu">i2dash.scrnaseq</span><span class="fu">::</span><span class="va"><a href="../reference/scatterplot.html">scatterplot</a></span>,
   page      <span class="op">=</span> <span class="st">"scatter"</span>,
   object    <span class="op">=</span> <span class="va">sce</span>,
   x         <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"total_features_by_counts"</span>, <span class="st">"log10_total_features_by_counts"</span><span class="op">)</span>, <span class="co"># specify columns for x and y axis</span>
   y         <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"total_counts"</span>, <span class="st">"log10_total_counts"</span><span class="op">)</span>, 
   title     <span class="op">=</span> <span class="st">"Scatterplot of colData"</span> <span class="co"># title of the component</span>
-<span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_component</a></span><span class="op">(</span>
+<span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-content.html">add_component</a></span><span class="op">(</span>
   component    <span class="op">=</span> <span class="fu">i2dash.scrnaseq</span><span class="fu">::</span><span class="va"><a href="../reference/scatterplot.html">scatterplot</a></span>,
   page         <span class="op">=</span> <span class="st">"scatter"</span>,
   object       <span class="op">=</span> <span class="va">sce</span>,
@@ -218,7 +218,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <p>Note: In the static mode no selection options are given, therefore it is required to specify the columns explicitly, which should be used with <code>x</code> and <code>y</code> parameters.</p>
 <p>After assembling the dashboard with the code below, we can inspect the resulting R markdown file by using the “Run Document” button of Shiny inside RStudio.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/assemble.html">assemble</a></span><span class="op">(</span><span class="va">dashboard</span>, exclude <span class="op">=</span> <span class="st">"default"</span><span class="op">)</span></pre></div>
+<span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/assemble.html">assemble</a></span><span class="op">(</span><span class="va">dashboard</span>, exclude <span class="op">=</span> <span class="st">"default"</span><span class="op">)</span></pre></div>
 <table class="table">
 <colgroup>
 <col width="50%">
@@ -254,14 +254,14 @@ document.addEventListener("DOMContentLoaded", function() {
 <div class="sourceCode" id="cb6"><pre class="downlit">
 <span class="co"># on the left side of the page will be a violinplot without grouping</span>
 <span class="co"># on the right side will be a violinplot with grouping</span>
-<span class="va">dashboard</span> <span class="op">%&lt;&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-pages.html">add_page</a></span><span class="op">(</span>page <span class="op">=</span> <span class="st">"violin"</span>, title <span class="op">=</span> <span class="st">"Violin plot"</span>, layout <span class="op">=</span> <span class="st">"2x2_grid"</span>, menu <span class="op">=</span> <span class="st">"Components"</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_component</a></span><span class="op">(</span>
+<span class="va">dashboard</span> <span class="op">%&lt;&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-pages.html">add_page</a></span><span class="op">(</span>page <span class="op">=</span> <span class="st">"violin"</span>, title <span class="op">=</span> <span class="st">"Violin plot"</span>, layout <span class="op">=</span> <span class="st">"2x2_grid"</span>, menu <span class="op">=</span> <span class="st">"Components"</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-content.html">add_component</a></span><span class="op">(</span>
   component <span class="op">=</span> <span class="fu">i2dash.scrnaseq</span><span class="fu">::</span><span class="va"><a href="../reference/violinplot.html">violinplot</a></span>,
   page      <span class="op">=</span> <span class="st">"violin"</span>,
   object    <span class="op">=</span> <span class="va">sce</span>,
   y         <span class="op">=</span> <span class="st">"log10_total_counts"</span>,
   from      <span class="op">=</span> <span class="st">"colData"</span>,
   title     <span class="op">=</span> <span class="st">"1. Violin plot of colData"</span>
-<span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_component</a></span><span class="op">(</span>
+<span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-content.html">add_component</a></span><span class="op">(</span>
   component <span class="op">=</span> <span class="fu">i2dash.scrnaseq</span><span class="fu">::</span><span class="va"><a href="../reference/violinplot.html">violinplot</a></span>,
   page      <span class="op">=</span> <span class="st">"violin"</span>,
   object    <span class="op">=</span> <span class="va">sce</span>,
@@ -278,14 +278,14 @@ document.addEventListener("DOMContentLoaded", function() {
 <div class="sourceCode" id="cb7"><pre class="downlit">
 <span class="co"># on the left side of the page will be a boxplot without grouping</span>
 <span class="co"># on the right side will be a boxplot with grouping</span>
-<span class="va">dashboard</span> <span class="op">%&lt;&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-pages.html">add_page</a></span><span class="op">(</span>page <span class="op">=</span> <span class="st">"box"</span>, title <span class="op">=</span> <span class="st">"Boxplot"</span>, layout <span class="op">=</span> <span class="st">"2x2_grid"</span>, menu <span class="op">=</span> <span class="st">"Components"</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_component</a></span><span class="op">(</span>
+<span class="va">dashboard</span> <span class="op">%&lt;&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-pages.html">add_page</a></span><span class="op">(</span>page <span class="op">=</span> <span class="st">"box"</span>, title <span class="op">=</span> <span class="st">"Boxplot"</span>, layout <span class="op">=</span> <span class="st">"2x2_grid"</span>, menu <span class="op">=</span> <span class="st">"Components"</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-content.html">add_component</a></span><span class="op">(</span>
   component <span class="op">=</span> <span class="fu">i2dash.scrnaseq</span><span class="fu">::</span><span class="va"><a href="../reference/boxplot.html">boxplot</a></span>,
   page      <span class="op">=</span> <span class="st">"box"</span>,
   object    <span class="op">=</span> <span class="va">sce</span>,
   from      <span class="op">=</span> <span class="st">"colData"</span>,
   x         <span class="op">=</span> <span class="st">"log10_total_counts"</span>,
   title     <span class="op">=</span> <span class="st">"1. boxplot of colData"</span>
-<span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_component</a></span><span class="op">(</span>
+<span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-content.html">add_component</a></span><span class="op">(</span>
   component <span class="op">=</span> <span class="fu">i2dash.scrnaseq</span><span class="fu">::</span><span class="va"><a href="../reference/boxplot.html">boxplot</a></span>,
   page      <span class="op">=</span> <span class="st">"box"</span>,
   object    <span class="op">=</span> <span class="va">sce</span>,
@@ -302,15 +302,15 @@ document.addEventListener("DOMContentLoaded", function() {
 <div class="sourceCode" id="cb8"><pre class="downlit">
 <span class="co"># 1. mode: absolute number of observations (left component)</span>
 <span class="co"># 2. mode: relative number of observations grouped by 'x_group_by' (right component)</span>
-<span class="va">dashboard</span> <span class="op">%&lt;&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-pages.html">add_page</a></span><span class="op">(</span>page <span class="op">=</span> <span class="st">"bar"</span>, title <span class="op">=</span> <span class="st">"Barplot"</span>, layout <span class="op">=</span> <span class="st">"2x2_grid"</span>, menu <span class="op">=</span> <span class="st">"Components"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-<span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_component</a></span><span class="op">(</span>
+<span class="va">dashboard</span> <span class="op">%&lt;&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-pages.html">add_page</a></span><span class="op">(</span>page <span class="op">=</span> <span class="st">"bar"</span>, title <span class="op">=</span> <span class="st">"Barplot"</span>, layout <span class="op">=</span> <span class="st">"2x2_grid"</span>, menu <span class="op">=</span> <span class="st">"Components"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+<span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-content.html">add_component</a></span><span class="op">(</span>
   component <span class="op">=</span> <span class="fu">i2dash.scrnaseq</span><span class="fu">::</span><span class="va"><a href="../reference/barplot.html">barplot</a></span>,
   page      <span class="op">=</span> <span class="st">"bar"</span>,
   object    <span class="op">=</span> <span class="va">sce</span>,
   from      <span class="op">=</span> <span class="st">"colData"</span>,
   title     <span class="op">=</span> <span class="st">"sce barplot: total number of observations"</span>,
   x_group_by_title <span class="op">=</span> <span class="st">"Number of cells"</span>
-<span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_component</a></span><span class="op">(</span>
+<span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-content.html">add_component</a></span><span class="op">(</span>
   component  <span class="op">=</span> <span class="fu">i2dash.scrnaseq</span><span class="fu">::</span><span class="va"><a href="../reference/barplot.html">barplot</a></span>,
   page       <span class="op">=</span> <span class="st">"bar"</span>,
   object     <span class="op">=</span> <span class="va">sce</span>,
@@ -326,8 +326,8 @@ document.addEventListener("DOMContentLoaded", function() {
 <a href="#heatmap" class="anchor"></a>Heatmap</h3>
 <p>i2dash.scrnaseq provides a component containing a heatmap based on the package ComplexHeatmap. In case of the wrapper for the <code>SingleCellExperiment</code> and <code>Seurat</code> object it is recommended to provide a vector with names of features/ genes of interest (<code>subset_row</code>) that match with the row names of the used assay. The assay name is defined by <code>exprs_values</code>/ <code>assay</code> (by default the “counts” assay of the SingleCellExperiment object is used and the “data” slot of the “RNA” assay of the Seurat object). The rows of the heatmap are the features of interest and columns are the cells. Optionally, we can provide the parameter <code>split_by</code>, that should be a character vector containing the column names of “colData” (only columns with factors are valid). This creates a heatmap that is splitted according to the levels of <code>split_by</code>. Another parameter enables to visualize a heatmap, where the cells (columns) are aggregated according to the levels inside <code>aggregate_by</code> (each level is a column in the heatmap). These visualization options can be interactively adjust in the interactive mode. Also the interactive mode enables the selection of the clustering distance, the clustering method, the options whether to cluster none, only the rows or columns or both. The static mode doesn’t offer interactive selection options. Therefore, we can specify several factors with the parameters to be used in the static mode: <code>split_by</code>, <code>aggregate_by</code> (if you use the static mode and provide both parameters, <code>aggregate_by</code> will be preffered against <code>split_by</code>), <code>cluster_rows</code> (a logical), <code>cluster_columns</code> (a logical), <code>clustering_distance</code> (a pre-defined character which is one of the follwing: (“euclidean”, “maximum”, “manhattan”, “binary”, “minkowski”) and <code>clustering_method</code> (to perform hierarchical clustering (“average”, “ward.D”, “ward.D2”, “single”, “complete”, “mcquitty”, “median”,“centroid”)).</p>
 <div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="va">dashboard</span> <span class="op">%&lt;&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-pages.html">add_page</a></span><span class="op">(</span>page <span class="op">=</span> <span class="st">"heatmap"</span>, title <span class="op">=</span> <span class="st">"Heatmap"</span>, layout <span class="op">=</span> <span class="st">"focal_left"</span>, menu <span class="op">=</span> <span class="st">"Components"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-<span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_component</a></span><span class="op">(</span><span class="co"># the basic heatmap with cells as columns and features as rows</span>
+<span class="va">dashboard</span> <span class="op">%&lt;&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-pages.html">add_page</a></span><span class="op">(</span>page <span class="op">=</span> <span class="st">"heatmap"</span>, title <span class="op">=</span> <span class="st">"Heatmap"</span>, layout <span class="op">=</span> <span class="st">"focal_left"</span>, menu <span class="op">=</span> <span class="st">"Components"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+<span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-content.html">add_component</a></span><span class="op">(</span><span class="co"># the basic heatmap with cells as columns and features as rows</span>
   component    <span class="op">=</span> <span class="fu">i2dash.scrnaseq</span><span class="fu">::</span><span class="va"><a href="../reference/heatmap.html">heatmap</a></span>,
   page         <span class="op">=</span> <span class="st">"heatmap"</span>,
   object       <span class="op">=</span> <span class="va">sce</span>,
@@ -335,7 +335,7 @@ document.addEventListener("DOMContentLoaded", function() {
   subset_row   <span class="op">=</span> <span class="va">hvg</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">]</span>,
   title        <span class="op">=</span> <span class="st">"Basic heatmap sce"</span>
 <span class="op">)</span> <span class="op">%&gt;%</span>
-<span class="va">dashboard</span> <span class="op">&lt;-</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_component</a></span><span class="op">(</span><span class="co"># splitted heatmap</span>
+<span class="va">dashboard</span> <span class="op">&lt;-</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-content.html">add_component</a></span><span class="op">(</span><span class="co"># splitted heatmap</span>
   page         <span class="op">=</span> <span class="st">"heatmap"</span>,
   component    <span class="op">=</span> <span class="fu">i2dash.scrnaseq</span><span class="fu">::</span><span class="va"><a href="../reference/heatmap.html">heatmap</a></span>,
   object       <span class="op">=</span> <span class="va">sce</span>,
@@ -344,7 +344,7 @@ document.addEventListener("DOMContentLoaded", function() {
   split_by     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"CellCyclePhase"</span>,<span class="st">"Lane"</span>,<span class="st">"DaysPostAmputation"</span>,<span class="st">"Condition"</span><span class="op">)</span>,
   aggregate_by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"CellCyclePhase"</span>,<span class="st">"Lane"</span>,<span class="st">"DaysPostAmputation"</span>,<span class="st">"Condition"</span><span class="op">)</span>,
   title        <span class="op">=</span> <span class="st">"Splitted heatmap"</span>
-<span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_component</a></span><span class="op">(</span><span class="co"># aggregated heatmap</span>
+<span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-content.html">add_component</a></span><span class="op">(</span><span class="co"># aggregated heatmap</span>
   component    <span class="op">=</span> <span class="fu">i2dash.scrnaseq</span><span class="fu">::</span><span class="va"><a href="../reference/heatmap.html">heatmap</a></span>,
   page         <span class="op">=</span> <span class="st">"heatmap"</span>,
   object       <span class="op">=</span> <span class="va">sce</span>,
@@ -522,7 +522,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <p>All components and pages can be used without a <code>SingleCellExperiment</code> or <code>Seurat</code> object. In case of the single-cell object a wrapper function is used, therefore it is possible to provide raw data (e.g. data.frames) to the underlying functions. The following is an example use-case of the core bubbleplot component function. For demonstration purpose we use the <code>mtcars</code> <code>data.frame</code>.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit">
 <span class="co"># adding the bubbleplot component to the i2dashboard object</span>
-<span class="va">dashboard</span> <span class="op">%&lt;&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_component</a></span><span class="op">(</span>
+<span class="va">dashboard</span> <span class="op">%&lt;&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-content.html">add_component</a></span><span class="op">(</span>
   component <span class="op">=</span> <span class="fu">i2dash.scrnaseq</span><span class="fu">::</span><span class="va"><a href="../reference/bubbleplot.html">bubbleplot</a></span>,
   x <span class="op">=</span> <span class="va">mtcars</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"mpg"</span>, <span class="st">"disp"</span><span class="op">)</span><span class="op">]</span>,
   y <span class="op">=</span> <span class="va">mtcars</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"drat"</span>, <span class="st">"wt"</span><span class="op">)</span><span class="op">]</span>,
@@ -531,7 +531,7 @@ document.addEventListener("DOMContentLoaded", function() {
   title <span class="op">=</span> <span class="st">"Core function of bubbleplot"</span>
 <span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/assemble.html">assemble</a></span><span class="op">(</span><span class="va">dashboard</span>, file <span class="op">=</span> <span class="st">"docu.Rmd"</span>, pages <span class="op">=</span> <span class="st">"default"</span><span class="op">)</span></pre></div>
+<span class="fu"><a href="https://loosolab.github.io/i2dash/reference/assemble.html">assemble</a></span><span class="op">(</span><span class="va">dashboard</span>, file <span class="op">=</span> <span class="st">"docu.Rmd"</span>, pages <span class="op">=</span> <span class="st">"default"</span><span class="op">)</span></pre></div>
 </div>
 <div id="use-colormaps" class="section level2">
 <h2 class="hasAnchor">
@@ -546,13 +546,13 @@ document.addEventListener("DOMContentLoaded", function() {
 <span class="va">colormap2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html">setNames</a></span><span class="op">(</span><span class="va">colormap2</span>, <span class="fu"><a href="https://rdrr.io/r/base/levels.html">levels</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">Lane</span><span class="op">)</span><span class="op">)</span>
 
 <span class="co"># it is important, that the name of the colormap is identical with the column in the sce</span>
-<span class="va">dashboard</span> <span class="op">&lt;-</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_colormap</a></span><span class="op">(</span><span class="va">dashboard</span>, map <span class="op">=</span> <span class="va">colormap1</span>, name <span class="op">=</span> <span class="st">"CellCyclePhase"</span><span class="op">)</span> 
-<span class="va">dashboard</span> <span class="op">&lt;-</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_colormap</a></span><span class="op">(</span><span class="va">dashboard</span>, map <span class="op">=</span> <span class="va">colormap2</span>, name <span class="op">=</span> <span class="st">"Lane"</span><span class="op">)</span></pre></div>
+<span class="va">dashboard</span> <span class="op">&lt;-</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-content.html">add_colormap</a></span><span class="op">(</span><span class="va">dashboard</span>, map <span class="op">=</span> <span class="va">colormap1</span>, name <span class="op">=</span> <span class="st">"CellCyclePhase"</span><span class="op">)</span> 
+<span class="va">dashboard</span> <span class="op">&lt;-</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-content.html">add_colormap</a></span><span class="op">(</span><span class="va">dashboard</span>, map <span class="op">=</span> <span class="va">colormap2</span>, name <span class="op">=</span> <span class="st">"Lane"</span><span class="op">)</span></pre></div>
 <p>Now we create a <code>2x2_grid</code> page and add a scatterplot and a boxplot to the page.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit">
 <span class="co"># add new page</span>
-<span class="va">dashboard</span> <span class="op">%&lt;&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-pages.html">add_page</a></span><span class="op">(</span>page <span class="op">=</span> <span class="st">"color"</span>, title <span class="op">=</span> <span class="st">"Colormaps"</span>, layout <span class="op">=</span> <span class="st">"2x2_grid"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-<span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_component</a></span><span class="op">(</span><span class="co"># add scatterplot to the page</span>
+<span class="va">dashboard</span> <span class="op">%&lt;&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-pages.html">add_page</a></span><span class="op">(</span>page <span class="op">=</span> <span class="st">"color"</span>, title <span class="op">=</span> <span class="st">"Colormaps"</span>, layout <span class="op">=</span> <span class="st">"2x2_grid"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+<span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-content.html">add_component</a></span><span class="op">(</span><span class="co"># add scatterplot to the page</span>
   component <span class="op">=</span> <span class="fu">i2dash.scrnaseq</span><span class="fu">::</span><span class="va"><a href="../reference/scatterplot.html">scatterplot</a></span>,
   page      <span class="op">=</span> <span class="st">"color"</span>,
   object    <span class="op">=</span> <span class="va">sce</span>,
@@ -561,7 +561,7 @@ document.addEventListener("DOMContentLoaded", function() {
   colour_by <span class="op">=</span> <span class="st">"CellCyclePhase"</span>,
   title     <span class="op">=</span> <span class="st">"Scatterplot with colormap 1"</span>
 <span class="op">)</span> <span class="op">%&gt;%</span> 
-<span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_component</a></span><span class="op">(</span><span class="co"># add violinplot to the page</span>
+<span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-content.html">add_component</a></span><span class="op">(</span><span class="co"># add violinplot to the page</span>
   dashboard <span class="op">=</span> <span class="va">dashboard</span>,
   component <span class="op">=</span> <span class="fu">i2dash.scrnaseq</span><span class="fu">::</span><span class="va"><a href="../reference/violinplot.html">violinplot</a></span>,
   page      <span class="op">=</span> <span class="st">"color"</span>,
@@ -570,7 +570,7 @@ document.addEventListener("DOMContentLoaded", function() {
   y         <span class="op">=</span> <span class="st">"total_counts"</span>,
   group_by  <span class="op">=</span> <span class="st">"Lane"</span>,
   title     <span class="op">=</span> <span class="st">"Boxplot with colormap 2"</span>
-<span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/assemble.html">assemble</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">"docu.Rmd"</span>, exclude <span class="op">=</span> <span class="st">"default"</span><span class="op">)</span></pre></div>
+<span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://loosolab.github.io/i2dash/reference/assemble.html">assemble</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">"docu.Rmd"</span>, exclude <span class="op">=</span> <span class="st">"default"</span><span class="op">)</span></pre></div>
 <p><img src="images/documentation/colormaps.PNG"></p>
 </div>
 <div id="link-components-together" class="section level2">
@@ -579,12 +579,12 @@ document.addEventListener("DOMContentLoaded", function() {
 <p>The linking of several components enables an improvement in the communication of the structure of high-dimensional data. When linking several components, the data of the two visualizations are connected to each other by queries. Thus the interactive manipulation, e.g. selecting data points, of a component is transferred to the associated component. We can either use the native possibility of linking plotly charts as described in the “i2dash-intro” vignette of the <code>i2dash</code> package or we can use the linking functionality implemented in <code>i2dash.scrnaseq</code>. Note, that the implemented linking mechanics are serer-sided and an interactive shiny-based dashboard is required.</p>
 <p>In the following example, a page contains four components. The first component is a scatterplot acting as the transmitter. A transmitter emits the data to the receiver. The remaining three components are a scatterplot, a violinplot and the verbatim-text component, which act as receivers. The transmitter is defined by the parameter <code>source</code> that describes a string identifying this component. The parameter <code>transmitter</code> defines which component should be used as the transmitter.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-class.html">i2dashboard</a></span><span class="op">(</span>interactive<span class="op">=</span><span class="cn">T</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-pages.html">add_page</a></span><span class="op">(</span>
+<span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-class.html">i2dashboard</a></span><span class="op">(</span>interactive<span class="op">=</span><span class="cn">T</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-pages.html">add_page</a></span><span class="op">(</span>
   page <span class="op">=</span> <span class="st">"linking"</span>,
   layout <span class="op">=</span> <span class="st">"2x2_grid"</span>,
   title <span class="op">=</span> <span class="st">"Linking example"</span>
 <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_component</a></span><span class="op">(</span>
+  <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-content.html">add_component</a></span><span class="op">(</span>
     component <span class="op">=</span> <span class="fu">i2dash.scrnaseq</span><span class="fu">::</span><span class="va"><a href="../reference/scatterplot.html">scatterplot</a></span>,
     page      <span class="op">=</span> <span class="st">"linking"</span>,
     object    <span class="op">=</span> <span class="va">sce</span>,
@@ -594,14 +594,14 @@ document.addEventListener("DOMContentLoaded", function() {
     title     <span class="op">=</span> <span class="st">"Scatterplot transmitter"</span>,
     source    <span class="op">=</span> <span class="st">"transmitter"</span>
   <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_component</a></span><span class="op">(</span>
+  <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-content.html">add_component</a></span><span class="op">(</span>
     component <span class="op">=</span> <span class="fu">i2dash.scrnaseq</span><span class="fu">::</span><span class="va"><a href="../reference/scatterplot.html">scatterplot</a></span>,
     object    <span class="op">=</span> <span class="va">sce</span>,
     title <span class="op">=</span> <span class="st">"Scatterplot receiver"</span>,
     page <span class="op">=</span> <span class="st">"linking"</span>,
     transmitter <span class="op">=</span> <span class="st">"transmitter"</span>
   <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_component</a></span><span class="op">(</span>
+  <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-content.html">add_component</a></span><span class="op">(</span>
     component <span class="op">=</span> <span class="fu">i2dash.scrnaseq</span><span class="fu">::</span><span class="va"><a href="../reference/violinplot.html">violinplot</a></span>,
     object    <span class="op">=</span> <span class="va">sce</span>,
     group_by <span class="op">=</span> <span class="st">"CellCyclePhase"</span>,
@@ -610,12 +610,12 @@ document.addEventListener("DOMContentLoaded", function() {
     page <span class="op">=</span> <span class="st">"linking"</span>,
     transmitter <span class="op">=</span> <span class="st">"transmitter"</span>
   <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-content.html">add_component</a></span><span class="op">(</span>
+  <span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-content.html">add_component</a></span><span class="op">(</span>
     component <span class="op">=</span> <span class="fu">i2dash.scrnaseq</span><span class="fu">::</span><span class="va">verbatim_text</span>,
     title <span class="op">=</span> <span class="st">"Verbatim_text receiver"</span>,
     page <span class="op">=</span> <span class="st">"linking"</span>,
     transmitter <span class="op">=</span> <span class="st">"transmitter"</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/assemble.html">assemble</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">"docu.Rmd"</span>, exclude <span class="op">=</span> <span class="st">"default"</span><span class="op">)</span></pre></div>
+  <span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://loosolab.github.io/i2dash/reference/assemble.html">assemble</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">"docu.Rmd"</span>, exclude <span class="op">=</span> <span class="st">"default"</span><span class="op">)</span></pre></div>
 </div>
 </div>
 <div class="footnotes">

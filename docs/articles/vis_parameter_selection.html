@@ -84,7 +84,7 @@
 
       
 
-      </header><script src="vis_parameter_selection_files/header-attrs-2.5/header-attrs.js"></script><script src="vis_parameter_selection_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="vis_parameter_selection_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
+      </header><script src="vis_parameter_selection_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="vis_parameter_selection_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
 <script src="vis_parameter_selection_files/anchor-sections-1.0/anchor-sections.js"></script><link href="vis_parameter_selection_files/font-awesome-5.1.0/css/all.css" rel="stylesheet">
 <link href="vis_parameter_selection_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet">
 <div class="row">
@@ -98,7 +98,7 @@
                   <a class="author_email" href="mailto:#"></a><a href="mailto:jens.preussner@mpi-bn.mpg.de" class="email">jens.preussner@mpi-bn.mpg.de</a>
       
                   
-            <h4 class="date">28 Oktober 2020</h4>
+            <h4 class="date">5 November 2020</h4>
       
       
       <div class="hidden name"><code>vis_parameter_selection.Rmd</code></div>
@@ -107,11 +107,11 @@
 
     
     
-<p>Vignette last complied on 2020-10-28. i2dash is licenced under MIT + file LICENSE.</p>
+<p>Vignette last complied on 2020-11-05. i2dash is licenced under MIT + file LICENSE.</p>
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>The following dashboard provides tools of the <code>i2dash.scrnaseq</code> package, which are useful during the process of data analysis but are not reasonable for the final report. The pre-defined pages enable the selection of features and optimal paramters for a low dimensional embedding. Also these pages are useful for demonstration purposes and teaching. You can inspect the demo of the resulting dashboard <a href="http://mpibn-mampok.134.176.27.161.xip.io/use-case-3/i2dash/">here</a>.</p>
+<p>The following dashboard provides tools of the <code>i2dash.scrnaseq</code> package, which are useful during the process of data analysis but are not reasonable for the final report. The pre-defined pages enable the selection of features and optimal paramters for a low dimensional embedding. Also these pages are useful for demonstration purposes and teaching. You can inspect the demo of the resulting dashboard <a href="https://mpibn.mampok.ingress.rancher.computational.bio/use-case-3/i2dash/">here</a>.</p>
 </div>
 <div id="data-preparation" class="section level1">
 <h1 class="hasAnchor">
@@ -134,11 +134,11 @@
 <a href="#creating-an-i2dashboard-object" class="anchor"></a>Creating an i2dashboard object</h1>
 <p>Simmilar to the previous use-cases, we initialize a new object of class <code>i2dashboard</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">i2dash</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://loosolab.github.io/i2dash/">i2dash</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://gitlab.gwdg.de/loosolab/software/i2dash.scrnaseq">i2dash.scrnaseq</a></span><span class="op">)</span>
 
 <span class="co"># Creating a new i2dashboard class object</span>
-<span class="va">dashboard</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/i2dashboard-class.html">i2dashboard</a></span><span class="op">(</span>
+<span class="va">dashboard</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://loosolab.github.io/i2dash/reference/i2dashboard-class.html">i2dashboard</a></span><span class="op">(</span>
   title       <span class="op">=</span> <span class="st">"Parameter Selection"</span>,
   author      <span class="op">=</span> <span class="st">"i2dash Team"</span>,
   interactive <span class="op">=</span> <span class="cn">TRUE</span>,
@@ -194,7 +194,7 @@
 <h1 class="hasAnchor">
 <a href="#assembling-the-dashboard" class="anchor"></a>Assembling the dashboard</h1>
 <div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/i2dash/man/assemble.html">assemble</a></span><span class="op">(</span><span class="va">dashboard</span>, file <span class="op">=</span> <span class="st">"visParameter.Rmd"</span>, exclude <span class="op">=</span> <span class="st">"default"</span><span class="op">)</span></pre></div>
+<span class="fu">i2dash</span><span class="fu">::</span><span class="fu"><a href="https://loosolab.github.io/i2dash/reference/assemble.html">assemble</a></span><span class="op">(</span><span class="va">dashboard</span>, file <span class="op">=</span> <span class="st">"visParameter.Rmd"</span>, exclude <span class="op">=</span> <span class="st">"default"</span><span class="op">)</span></pre></div>
 </div>
 <div class="footnotes">
 <hr>

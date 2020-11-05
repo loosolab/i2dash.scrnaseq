@@ -47,7 +47,7 @@ knitr::opts_chunk$set(eval = FALSE)
 
 # Introduction 
 
-The following dashboard provides tools of the `i2dash.scrnaseq` package, which are useful during the process of data analysis but are not reasonable for the final report. The pre-defined pages enable the selection of features and optimal paramters for a low dimensional embedding. Also these pages are useful for demonstration purposes and teaching. You can inspect the demo of the resulting dashboard [here](http://mpibn-mampok.134.176.27.161.xip.io/use-case-3/i2dash/).
+The following dashboard provides tools of the `i2dash.scrnaseq` package, which are useful during the process of data analysis but are not reasonable for the final report. The pre-defined pages enable the selection of features and optimal paramters for a low dimensional embedding. Also these pages are useful for demonstration purposes and teaching. You can inspect the demo of the resulting dashboard [here](https://mpibn.mampok.ingress.rancher.computational.bio/use-case-3/i2dash/).
 
 # Data preparation
 
