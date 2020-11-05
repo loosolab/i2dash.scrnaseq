@@ -49,7 +49,7 @@ knitr::opts_chunk$set(eval = FALSE)
 
 The first step in the analysis of single-cell RNA sequencing (scRNA-seq) data is quality control (QC). This step is essential for the further processing of the data and often requires a visual check, in order to effectively eliminate outliers and gain insight into the data set.
 
-The following example demonstrates how to build a `SingleCellExperiment` object from a count-matrix, where each entry represents the expression value of a given feature (rows) in the corresponding cell (column). We demonstrate, how to calculate quality metrics and create an interactive dashboard containing several quality metric plots and statistics. It illustrates the basic functions of the two packages `i2dash` and `i2dash.scrnaseq` and serves as a guide for beginners. You can inspect the demo of the resulting dashboard [here](https://mpibn.mampok.ingress.rancher.computational.bio/use-case-1/i2dash/).
+The following example demonstrates how to build a `SingleCellExperiment` object from a count-matrix, where each entry represents the expression value of a given feature (rows) in the corresponding cell (column). We demonstrate, how to calculate quality metrics and create an interactive dashboard containing several quality metric plots and statistics. It illustrates the basic functions of the two packages `i2dash` and `i2dash.scrnaseq` and serves as a guide for beginners. You can inspect the demo of the resulting dashboard [here](https://mpibn.paper.ingress.rancher.computational.bio/use-case-1/i2dash/).
 
 # Setting up the data
 

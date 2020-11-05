@@ -38,15 +38,15 @@ Based on three common use-cases for single-cell data analysis you can explore th
 
 1. [**Quality metrics**](https://loosolab.github.io/i2dash.scrnaseq/articles/Quality_metrics.html)
 
-   This use-case shows how to build a SingleCellExperiment object from a count-matrix, calculate quality metrics and create a simple dashboard to visualize different quality aspects of an scRNA-seq dataset. [Demo](https://mpibn.mampok.ingress.rancher.computational.bio/use-case-1/i2dash/)
+   This use-case shows how to build a SingleCellExperiment object from a count-matrix, calculate quality metrics and create a simple dashboard to visualize different quality aspects of an scRNA-seq dataset. [Demo](https://mpibn.paper.ingress.rancher.computational.bio/use-case-1/i2dash/)
 
 2. [**Single-cell data explorer**]((https://loosolab.github.io/i2dash.scrnaseq/articles/sc_data_explorer.html)
 
-   The second use-case demonstrates how to build a dashboard, which enables the exploration of gene expression values and metadata coupled with reduced dimension plots. Mainly native tools and pre-defined pages from the i2dash.scrnaseq package are used. [Demo](https://mpibn.mampok.ingress.rancher.computational.bio/use-case-2/i2dash/)
+   The second use-case demonstrates how to build a dashboard, which enables the exploration of gene expression values and metadata coupled with reduced dimension plots. Mainly native tools and pre-defined pages from the i2dash.scrnaseq package are used. [Demo](https://mpibn.paper.ingress.rancher.computational.bio/use-case-2/i2dash/)
 
 3. [**Visualized parameter selection for experts**]((https://loosolab.github.io/i2dash.scrnaseq/articles/vis_parameter_selection.html)
 
-   The third use-case provides tools of i2dash.scrnaseq, which are useful during the process of data analysis but are not reasonable for the final report. The pre-defined pages enable the selection of features, the inspection of the normalisazion and the selection of optimal paramters for a dimensionality reduction. [Demo](https://mpibn.mampok.ingress.rancher.computational.bio/use-case-3/i2dash/)
+   The third use-case provides tools of i2dash.scrnaseq, which are useful during the process of data analysis but are not reasonable for the final report. The pre-defined pages enable the selection of features, the inspection of the normalisazion and the selection of optimal paramters for a dimensionality reduction. [Demo](https://mpibn.paper.ingress.rancher.computational.bio/use-case-3/i2dash/)
 
 ### Further reading:
 

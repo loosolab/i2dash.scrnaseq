@@ -47,7 +47,7 @@ knitr::opts_chunk$set(eval = FALSE)
 
 # Introduction 
 
-In the following example we build a dashboard, which enables the exploration of gene expression values and metadata coupled with low dimensional embedding. Instead of creating local objects and load these in the components, like we did in the [previous use case](Quality_metrics.html), we use mainly native tools and pre-defined pages from the `i2dash.scrnaseq` package. You can inspect the demo of the resulting dashboard [here](https://mpibn.mampok.ingress.rancher.computational.bio/use-case-2/i2dash/).
+In the following example we build a dashboard, which enables the exploration of gene expression values and metadata coupled with low dimensional embedding. Instead of creating local objects and load these in the components, like we did in the [previous use case](Quality_metrics.html), we use mainly native tools and pre-defined pages from the `i2dash.scrnaseq` package. You can inspect the demo of the resulting dashboard [here](https://mpibn.paper.ingress.rancher.computational.bio/use-case-2/i2dash/).
 
 # Data preparation
 
