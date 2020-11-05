@@ -1,5 +1,5 @@
-pandoc: 2.3.1
-pkgdown: 1.5.1
+pandoc: 2.7.3
+pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   Developer_guide: Developer_guide.html
@@ -7,5 +7,5 @@ articles:
   Quality_metrics: Quality_metrics.html
   sc_data_explorer: sc_data_explorer.html
   vis_parameter_selection: vis_parameter_selection.html
-last_built: 2020-06-12T13:31Z
+last_built: 2020-11-05T14:14Z
 

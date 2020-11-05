@@ -139,42 +139,42 @@
     <p>This function adds a page with two linked components to the <code>dashboard</code> object: A scatterplot, showing samples in along two-dimensional coordinates, and a violin plot, showing feature expression values by groups defined in <code>group_by</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>add_feature_expression_page</span>(<span class='no'>dashboard</span>, <span class='no'>object</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>add_feature_expression_page</span><span class='op'>(</span><span class='va'>dashboard</span>, <span class='va'>object</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S4 method for i2dashboard,missing</span>
-<span class='fu'>add_feature_expression_page</span>(
-  <span class='no'>dashboard</span>,
-  <span class='no'>use_dimred</span>,
-  <span class='no'>exprs_values</span>,
-  <span class='kw'>group_by</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>labels</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span>(<span class='no'>use_dimred</span>),
-  <span class='kw'>title</span> <span class='kw'>=</span> <span class='st'>"Feature expression"</span>,
-  <span class='kw'>menu</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>page</span> <span class='kw'>=</span> <span class='st'>"feature_expression_page"</span>
-)
+<span class='fu'>add_feature_expression_page</span><span class='op'>(</span>
+  <span class='va'>dashboard</span>,
+  <span class='va'>use_dimred</span>,
+  <span class='va'>exprs_values</span>,
+  group_by <span class='op'>=</span> <span class='cn'>NULL</span>,
+  labels <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>use_dimred</span><span class='op'>)</span>,
+  title <span class='op'>=</span> <span class='st'>"Feature expression"</span>,
+  menu <span class='op'>=</span> <span class='cn'>NULL</span>,
+  page <span class='op'>=</span> <span class='st'>"feature_expression_page"</span>
+<span class='op'>)</span>
 
 <span class='co'># S4 method for i2dashboard,SingleCellExperiment</span>
-<span class='fu'>add_feature_expression_page</span>(
-  <span class='no'>dashboard</span>,
-  <span class='no'>object</span>,
-  <span class='no'>use_dimred</span>,
-  <span class='no'>exprs_values</span>,
-  <span class='kw'>group_by</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>subset_row</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>...</span>
-)
+<span class='fu'>add_feature_expression_page</span><span class='op'>(</span>
+  <span class='va'>dashboard</span>,
+  <span class='va'>object</span>,
+  <span class='va'>use_dimred</span>,
+  <span class='va'>exprs_values</span>,
+  group_by <span class='op'>=</span> <span class='cn'>NULL</span>,
+  subset_row <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
 
 <span class='co'># S4 method for i2dashboard,Seurat</span>
-<span class='fu'>add_feature_expression_page</span>(
-  <span class='no'>dashboard</span>,
-  <span class='no'>object</span>,
-  <span class='no'>use_dimred</span>,
-  <span class='no'>assay</span>,
-  <span class='no'>group_by</span>,
-  <span class='kw'>slot</span> <span class='kw'>=</span> <span class='st'>"data"</span>,
-  <span class='kw'>subset_row</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>...</span>
-)</pre>
+<span class='fu'>add_feature_expression_page</span><span class='op'>(</span>
+  <span class='va'>dashboard</span>,
+  <span class='va'>object</span>,
+  <span class='va'>use_dimred</span>,
+  <span class='va'>assay</span>,
+  <span class='va'>group_by</span>,
+  slot <span class='op'>=</span> <span class='st'>"data"</span>,
+  subset_row <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -262,7 +262,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

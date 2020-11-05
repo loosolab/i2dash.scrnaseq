@@ -86,17 +86,17 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="i2dash-scrnaseq-an-i2dash-extension-for-single-cell-rna-sequencing-data" class="section level1">
+<div id="i2dashscrnaseq-an-i2dash-extension-for-single-cell-rna-sequencing-data" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#i2dash-scrnaseq-an-i2dash-extension-for-single-cell-rna-sequencing-data" class="anchor"></a><strong>i2dash.scRNAseq</strong>: An i2dash extension for single-cell RNA-sequencing data</h1></div>
+<a href="#i2dashscrnaseq-an-i2dash-extension-for-single-cell-rna-sequencing-data" class="anchor"></a><strong>i2dash.scRNAseq</strong>: An i2dash extension for single-cell RNA-sequencing data</h1></div>
 <p><img src="reference/figures/i2dash_header.png"></p>
 <div id="abstract" class="section level2">
 <h2 class="hasAnchor">
 <a href="#abstract" class="anchor"></a>Abstract</h2>
 <p>The rapid development of NGS technologies enables the investigation of the transcriptome of thousands of cells in a single experiment. scRNA-seq allows to identify rare cell types and populations, to uncover gene regulatory networks, and to track the trajectories of distinct cell lineages in development. The extension <strong>i2dash.scrnaseq</strong> enables an enhanced user interactivity and contains simple but effective tools for the creation of an i2dashboard with focus on scRNA-seq data visualization and exploration. Read further information of the core i2dash package <a href="https://loosolab.github.io/i2dash/">here</a>.</p>
-<div id="features-of-i2dash-scrnaseq" class="section level3">
+<div id="features-of-i2dashscrnaseq" class="section level3">
 <h3 class="hasAnchor">
-<a href="#features-of-i2dash-scrnaseq" class="anchor"></a>Features of <strong>i2dash.scrnaseq</strong>:</h3>
+<a href="#features-of-i2dashscrnaseq" class="anchor"></a>Features of <strong>i2dash.scrnaseq</strong>:</h3>
 <ul>
 <li>Usage of common single-cell classes “SingleCellExperiment” &amp; “Seurat” for fast creation of components</li>
 <li>Useful and flexible plots with extended interactivity through Shiny widgets</li>
@@ -104,12 +104,22 @@
 <li>Linked plots, which recalculate themselfes based on specific selections</li>
 </ul>
 </div>
+<div id="concept-of-the-extensibility" class="section level3">
+<h3 class="hasAnchor">
+<a href="#concept-of-the-extensibility" class="anchor"></a>Concept of the extensibility</h3>
+<p>The ability of i2dash to generate R Markdown code can be extended with additional packages. The figure below demonstrates the concept of extensibility. In order to develop a component or a page with a pre-defined layout and specific composition of components as an extension, the developer needs to provide a method and an R Markdown template. The method takes the i2dashboard object and the data relevant for the component. It validates and stores the data in a suitable data structure in a file (e.g. RDS file). Furthermore the method generates an R Markdown string based on a template for the component or page and extends the i2dashboard object. This package follows the concept of extensibility described in <a href="https://loosolab.github.io/i2dash/articles/i2dash-extension.html">this i2dash vignette</a>.</p>
+<p><img src="https://gitlab.gwdg.de/loosolab/software/i2dash/-/raw/master/vignettes/images/concept1.png"></p>
+</div>
 </div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation:</h2>
-<div class="sourceCode" id="cb1"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"BiocManager"</span>)
-<span class="kw pkg">BiocManager</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"i2dash"</span>, <span class="st">"i2dash.scrnaseq"</span>))</pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="co"># if i2dash is not installed:</span>
+<span class="fu">installinstall.packages</span><span class="op">(</span><span class="st">"i2dash"</span><span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span>
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_gitlab</a></span><span class="op">(</span><span class="st">"loosolab/software/i2dash.scrnaseq"</span>, host<span class="op">=</span><span class="st">"https://gitlab.gwdg.de/"</span><span class="op">)</span></pre></div>
 </div>
 <div id="where-to-start" class="section level2">
 <h2 class="hasAnchor">
@@ -121,15 +131,15 @@
 <ol>
 <li>
 <p><a href="articles/Quality_metrics.html"><strong>Quality metrics</strong></a></p>
-<p>This use-case shows how to build a SingleCellExperiment object from a count-matrix, calculate quality metrics and create a simple dashboard to visualize different quality aspects of an scRNA-seq dataset. <a href="http://mpibn-mampok.134.176.27.161.xip.io/use-case-1/i2dash/">Demo</a></p>
+<p>This use-case shows how to build a SingleCellExperiment object from a count-matrix, calculate quality metrics and create a simple dashboard to visualize different quality aspects of an scRNA-seq dataset. <a href="https://mpibn.paper.ingress.rancher.computational.bio/use-case-1/i2dash/">Demo</a></p>
 </li>
 <li>
 <p><a href="articles/sc_data_explorer.html"><strong>Single-cell data explorer</strong></a></p>
-<p>The second use-case demonstrates how to build a dashboard, which enables the exploration of gene expression values and metadata coupled with reduced dimension plots. Mainly native tools and pre-defined pages from the i2dash.scrnaseq package are used. <a href="http://mpibn-mampok.134.176.27.161.xip.io/use-case-2/i2dash/">Demo</a></p>
+<p>The second use-case demonstrates how to build a dashboard, which enables the exploration of gene expression values and metadata coupled with reduced dimension plots. Mainly native tools and pre-defined pages from the i2dash.scrnaseq package are used. <a href="https://mpibn.paper.ingress.rancher.computational.bio/use-case-2/i2dash/">Demo</a></p>
 </li>
 <li>
 <p><a href="articles/vis_parameter_selection.html"><strong>Visualized parameter selection for experts</strong></a></p>
-<p>The third use-case provides tools of i2dash.scrnaseq, which are useful during the process of data analysis but are not reasonable for the final report. The pre-defined pages enable the selection of features, the inspection of the normalisazion and the selection of optimal paramters for a dimensionality reduction. <a href="http://mpibn-mampok.134.176.27.161.xip.io/use-case-3/i2dash/">Demo</a></p>
+<p>The third use-case provides tools of i2dash.scrnaseq, which are useful during the process of data analysis but are not reasonable for the final report. The pre-defined pages enable the selection of features, the inspection of the normalisazion and the selection of optimal paramters for a dimensionality reduction. <a href="https://mpibn.paper.ingress.rancher.computational.bio/use-case-3/i2dash/">Demo</a></p>
 </li>
 </ol>
 </div>
@@ -145,12 +155,76 @@
 <div id="how-to-cite" class="section level2">
 <h2 class="hasAnchor">
 <a href="#how-to-cite" class="anchor"></a>How to cite</h2>
-<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</p>
+<p>If you use i2dash or i2dash.scrnaseq in your work, please cite:</p>
+<p>Ustjanzew A., Preussner J., Bentsen M., Kuenne C., and Looso M. i2dash: creation of flexible, interactive and web-based dashboards for visualization of omics-pipeline results. tba (2020)</p>
 </div>
 <div id="license" class="section level2">
 <h2 class="hasAnchor">
 <a href="#license" class="anchor"></a>License</h2>
 <p>This project is licensed under the MIT license.</p>
+</div>
+<div id="dependencies" class="section level2">
+<h2 class="hasAnchor">
+<a href="#dependencies" class="anchor"></a>Dependencies:</h2>
+<table class="table">
+<thead><tr class="header">
+<th>Visualization</th>
+<th>Data manipulation</th>
+<th>Further</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>ComplexHeatmap</td>
+<td>stringi</td>
+<td>i2dash</td>
+</tr>
+<tr class="even">
+<td>plotly</td>
+<td>methods</td>
+<td>magrittr</td>
+</tr>
+<tr class="odd">
+<td>ggplot2</td>
+<td>rlist</td>
+<td>assertive.sets</td>
+</tr>
+<tr class="even">
+<td>shiny</td>
+<td>data.table</td>
+<td>assertive.types</td>
+</tr>
+<tr class="odd">
+<td>shinyWidgets</td>
+<td>tidyr</td>
+<td>assertive.properties</td>
+</tr>
+<tr class="even">
+<td>ComplexHeatmap</td>
+<td>dplyr</td>
+<td>htmltools</td>
+</tr>
+<tr class="odd">
+<td>knitr</td>
+<td>tibble</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>multipanelfigure</td>
+<td>scran</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>DT</td>
+<td>scater</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>kableExtra</td>
+<td>SingleCellExperiment</td>
+<td></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
   </div>
@@ -182,7 +256,7 @@
 <div class="developers">
 <h2>Developers</h2>
 <ul class="list-unstyled">
-<li>Arsenij Ustjanzew <br><small class="roles"> Author, maintainer </small>  </li>
+<li>Arsenij Ustjanzew <br><small class="roles"> Author, maintainer, copyright holder </small> <a href="https://orcid.org/0000-0002-1014-4521" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 <li>Jens Preussner <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0003-1927-3458" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 <li>Mario Looso <br><small class="roles"> Author </small>  </li>
 </ul>
@@ -197,7 +271,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

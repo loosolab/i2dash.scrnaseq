@@ -13,11 +13,21 @@ The rapid development of NGS technologies enables the investigation of the trans
 - Pre-defined pages with focus on different aspects of scRNA-seq data
 - Linked plots, which recalculate themselfes based on specific selections
 
+### Concept of the extensibility
+
+The ability of i2dash to generate R Markdown code can be extended with additional packages. The figure below demonstrates the concept of extensibility. In order to develop a component or a page with a pre-defined layout and specific composition of components as an extension, the developer needs to provide a method and an R Markdown template. The method takes the i2dashboard object and the data relevant for the component. It validates and stores the data in a suitable data structure in a file (e.g. RDS file). Furthermore the method generates an R Markdown string based on a template for the component or page and extends the i2dashboard object. This package follows the concept of extensibility described in [this i2dash vignette](https://loosolab.github.io/i2dash/articles/i2dash-extension.html). 
+
+![](https://gitlab.gwdg.de/loosolab/software/i2dash/-/raw/master/vignettes/images/concept1.png)
+
+
 ## Installation:
 
 ```r
-install.packages("BiocManager")
-BiocManager::install(c("i2dash", "i2dash.scrnaseq"))
+# if i2dash is not installed:
+installinstall.packages("i2dash")
+
+install.packages("devtools")
+devtools::install_gitlab("loosolab/software/i2dash.scrnaseq", host="https://gitlab.gwdg.de/")
 ```
 
 ## Where to start
@@ -28,15 +38,15 @@ Based on three common use-cases for single-cell data analysis you can explore th
 
 1. [**Quality metrics**](articles/Quality_metrics.html)
 
-   This use-case shows how to build a SingleCellExperiment object from a count-matrix, calculate quality metrics and create a simple dashboard to visualize different quality aspects of an scRNA-seq dataset. [Demo](http://mpibn-mampok.134.176.27.161.xip.io/use-case-1/i2dash/)
+   This use-case shows how to build a SingleCellExperiment object from a count-matrix, calculate quality metrics and create a simple dashboard to visualize different quality aspects of an scRNA-seq dataset. [Demo](https://mpibn.paper.ingress.rancher.computational.bio/use-case-1/i2dash/)
 
 2. [**Single-cell data explorer**](articles/sc_data_explorer.html)
 
-   The second use-case demonstrates how to build a dashboard, which enables the exploration of gene expression values and metadata coupled with reduced dimension plots. Mainly native tools and pre-defined pages from the i2dash.scrnaseq package are used. [Demo](http://mpibn-mampok.134.176.27.161.xip.io/use-case-2/i2dash/)
+   The second use-case demonstrates how to build a dashboard, which enables the exploration of gene expression values and metadata coupled with reduced dimension plots. Mainly native tools and pre-defined pages from the i2dash.scrnaseq package are used. [Demo](https://mpibn.paper.ingress.rancher.computational.bio/use-case-2/i2dash/)
 
 3. [**Visualized parameter selection for experts**](articles/vis_parameter_selection.html)
 
-   The third use-case provides tools of i2dash.scrnaseq, which are useful during the process of data analysis but are not reasonable for the final report. The pre-defined pages enable the selection of features, the inspection of the normalisazion and the selection of optimal paramters for a dimensionality reduction. [Demo](http://mpibn-mampok.134.176.27.161.xip.io/use-case-3/i2dash/)
+   The third use-case provides tools of i2dash.scrnaseq, which are useful during the process of data analysis but are not reasonable for the final report. The pre-defined pages enable the selection of features, the inspection of the normalisazion and the selection of optimal paramters for a dimensionality reduction. [Demo](https://mpibn.paper.ingress.rancher.computational.bio/use-case-3/i2dash/)
 
 ### Further reading:
 
@@ -45,9 +55,24 @@ Based on three common use-cases for single-cell data analysis you can explore th
 - [**Developer guide**](articles/Developer_guide.html) This tutorial explains how to build a customized componentor a pre-defined page from scratch and how to link the components of your page together.
 
 ## How to cite
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
+If you use i2dash or i2dash.scrnaseq in your work, please cite:
+
+Ustjanzew A., Preussner J., Bentsen M., Kuenne C., and Looso M. i2dash: creation of flexible, interactive and web-based dashboards for visualization of omics-pipeline results. tba (2020)
 
 ## License
 This project is licensed under the MIT license.
 
 
+## Dependencies:
+| Visualization  |  Data manipulation | Further  |
+|---|---|---|
+| ComplexHeatmap    | stringi  | i2dash  |
+| plotly            | methods  | magrittr  |
+| ggplot2           | rlist  | assertive.sets  |
+| shiny             | data.table  | assertive.types  |
+| shinyWidgets      | tidyr  | assertive.properties  |
+| ComplexHeatmap    | dplyr  | htmltools  |
+| knitr             | tibble  |   |
+| multipanelfigure  | scran  |   |
+| DT                | scater  |   |
+| kableExtra        | SingleCellExperiment  |   |
