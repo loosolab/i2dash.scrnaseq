@@ -141,27 +141,27 @@ Additional sample metadata is visualized using boxplots and barplots, depending 
 Additional sample metadata is visualized using boxplots and barplots, depending on the data type of the underlying variable.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>add_dimred_sample_page</span>(<span class='no'>dashboard</span>, <span class='no'>object</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>add_dimred_sample_page</span><span class='op'>(</span><span class='va'>dashboard</span>, <span class='va'>object</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S4 method for i2dashboard,missing</span>
-<span class='fu'>add_dimred_sample_page</span>(
-  <span class='no'>dashboard</span>,
-  <span class='no'>use_dimred</span>,
-  <span class='no'>sample_metadata</span>,
-  <span class='no'>group_by</span>,
-  <span class='kw'>page</span> <span class='kw'>=</span> <span class='st'>"dimred_sample_page"</span>,
-  <span class='kw'>title</span> <span class='kw'>=</span> <span class='st'>"Dim. reduction &amp; sample metadata"</span>,
-  <span class='kw'>labels</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span>(<span class='no'>use_dimred</span>),
-  <span class='kw'>show_group_sizes</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>show_silhouette</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>menu</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
-)
+<span class='fu'>add_dimred_sample_page</span><span class='op'>(</span>
+  <span class='va'>dashboard</span>,
+  <span class='va'>use_dimred</span>,
+  <span class='va'>sample_metadata</span>,
+  <span class='va'>group_by</span>,
+  page <span class='op'>=</span> <span class='st'>"dimred_sample_page"</span>,
+  title <span class='op'>=</span> <span class='st'>"Dim. reduction &amp; sample metadata"</span>,
+  labels <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>use_dimred</span><span class='op'>)</span>,
+  show_group_sizes <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  show_silhouette <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  menu <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span>
 
 <span class='co'># S4 method for i2dashboard,SingleCellExperiment</span>
-<span class='fu'>add_dimred_sample_page</span>(<span class='no'>dashboard</span>, <span class='no'>object</span>, <span class='no'>use_dimred</span>, <span class='no'>sample_metadata</span>, <span class='no'>...</span>)
+<span class='fu'>add_dimred_sample_page</span><span class='op'>(</span><span class='va'>dashboard</span>, <span class='va'>object</span>, <span class='va'>use_dimred</span>, <span class='va'>sample_metadata</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S4 method for i2dashboard,Seurat</span>
-<span class='fu'>add_dimred_sample_page</span>(<span class='no'>dashboard</span>, <span class='no'>object</span>, <span class='no'>use_dimred</span>, <span class='no'>sample_metadata</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>add_dimred_sample_page</span><span class='op'>(</span><span class='va'>dashboard</span>, <span class='va'>object</span>, <span class='va'>use_dimred</span>, <span class='va'>sample_metadata</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -245,7 +245,7 @@ Additional sample metadata is visualized using boxplots and barplots, depending 
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
