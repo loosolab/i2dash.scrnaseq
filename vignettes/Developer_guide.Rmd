@@ -3,7 +3,7 @@ title: "A guide for developer"
 author:
 - name: Arsenij Ustjanzew
   affiliation: 
-  email: arsenij.ustjanzew@mpi-bn.mpg.de
+  email: arsenij.ustjanzew@gmail.com
 - name: Jens Preussner
   affiliation: 
   email: jens.preussner@mpi-bn.mpg.de

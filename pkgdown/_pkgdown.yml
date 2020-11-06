@@ -13,16 +13,18 @@ reference:
       - heatmap
       - scatterplot
       - violinplot
-      #- bubbleplot
+      - bubbleplot
+      - text_output
+      - summarize_metadata
   - title: "Pre-defined Pages"
     desc: "Functions for adding pre-defined pages to the dashboard."
     contents:
       - add_dimred_feature_page
       - add_dimred_sample_page
-      - feature-expression-page
+      - add_feature_expression_page
+      - add_feature_selection_page
       - add_feature_grid_page
-      #- add_dimred_comparison_page
-      #- add_feature_selection_page
+      - add_dimred_comparison_page
 
 navbar:
   structure:
@@ -37,8 +39,8 @@ navbar:
           href: articles/Quality_metrics.html
         - text: "Use-case 2: Single-cell Data explorer"
           href: articles/sc_data_explorer.html
-        - text: "Use-case 3: Visualized parameter selection"
-          href: articles/vis_parameterselection.html
+        - text: "Use-case 3: Visual parameter selection"
+          href: articles/vis_parameter_selection.html
         - text: -------
         - text: "Further reading"
         - text: "Documentation"
