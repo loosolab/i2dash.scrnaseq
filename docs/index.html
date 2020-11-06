@@ -58,7 +58,7 @@
       <a href="articles/sc_data_explorer.html">Use-case 2: Single-cell Data explorer</a>
     </li>
     <li>
-      <a href="articles/vis_parameterselection.html">Use-case 3: Visualized parameter selection</a>
+      <a href="articles/vis_parameter_selection.html">Use-case 3: Visual parameter selection</a>
     </li>
     <li class="divider">
     <li class="dropdown-header">Further reading</li>
@@ -116,10 +116,10 @@
 <a href="#installation" class="anchor"></a>Installation:</h2>
 <div class="sourceCode" id="cb1"><pre class="downlit">
 <span class="co"># if i2dash is not installed:</span>
-<span class="fu">installinstall.packages</span><span class="op">(</span><span class="st">"i2dash"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"i2dash"</span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_gitlab</a></span><span class="op">(</span><span class="st">"loosolab/software/i2dash.scrnaseq"</span>, host<span class="op">=</span><span class="st">"https://gitlab.gwdg.de/"</span><span class="op">)</span></pre></div>
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"loosolab/i2dash.scrnaseq"</span>, dependencies<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Depends"</span>, <span class="st">"Imports"</span>, <span class="st">"LinkingTo"</span><span class="op">)</span><span class="op">)</span></pre></div>
 </div>
 <div id="where-to-start" class="section level2">
 <h2 class="hasAnchor">
@@ -138,7 +138,7 @@
 <p>The second use-case demonstrates how to build a dashboard, which enables the exploration of gene expression values and metadata coupled with reduced dimension plots. Mainly native tools and pre-defined pages from the i2dash.scrnaseq package are used. <a href="https://mpibn.paper.ingress.rancher.computational.bio/use-case-2/i2dash/">Demo</a></p>
 </li>
 <li>
-<p><a href="articles/vis_parameter_selection.html"><strong>Visualized parameter selection for experts</strong></a></p>
+<p><a href="articles/vis_parameter_selection.html"><strong>Visual parameter selection for experts</strong></a></p>
 <p>The third use-case provides tools of i2dash.scrnaseq, which are useful during the process of data analysis but are not reasonable for the final report. The pre-defined pages enable the selection of features, the inspection of the normalisazion and the selection of optimal paramters for a dimensionality reduction. <a href="https://mpibn.paper.ingress.rancher.computational.bio/use-case-3/i2dash/">Demo</a></p>
 </li>
 </ol>
