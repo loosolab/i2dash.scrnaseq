@@ -1,5 +1,5 @@
 ---
-title: "Use-case 3: Visualized parameter selection"
+title: "Use-case 3: Visual parameter selection"
 author:
 - name: Arsenij Ustjanzew
   affiliation: 

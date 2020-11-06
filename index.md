@@ -24,10 +24,10 @@ The ability of i2dash to generate R Markdown code can be extended with additiona
 
 ```r
 # if i2dash is not installed:
-installinstall.packages("i2dash")
+install.packages("i2dash")
 
 install.packages("devtools")
-devtools::install_gitlab("loosolab/software/i2dash.scrnaseq", host="https://gitlab.gwdg.de/")
+devtools::install_github("loosolab/i2dash.scrnaseq", dependencies=c("Depends", "Imports", "LinkingTo"))
 ```
 
 ## Where to start
@@ -44,7 +44,7 @@ Based on three common use-cases for single-cell data analysis you can explore th
 
    The second use-case demonstrates how to build a dashboard, which enables the exploration of gene expression values and metadata coupled with reduced dimension plots. Mainly native tools and pre-defined pages from the i2dash.scrnaseq package are used. [Demo](https://mpibn.paper.ingress.rancher.computational.bio/use-case-2/i2dash/)
 
-3. [**Visualized parameter selection for experts**](articles/vis_parameter_selection.html)
+3. [**Visual parameter selection for experts**](articles/vis_parameter_selection.html)
 
    The third use-case provides tools of i2dash.scrnaseq, which are useful during the process of data analysis but are not reasonable for the final report. The pre-defined pages enable the selection of features, the inspection of the normalisazion and the selection of optimal paramters for a dimensionality reduction. [Demo](https://mpibn.paper.ingress.rancher.computational.bio/use-case-3/i2dash/)
 
